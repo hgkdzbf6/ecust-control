@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 5.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage2">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="0.1094367197">
+			<storageModule externalCElementFile="0.1094367197_org.eclipse.cdt.core.settings" id="0.1094367197" name="Default"/>
+			<storageModule externalCElementFile="0.1094367197_cdtBuildSystem" version="4.0.0"/>
+			<storageModule externalCElementFile="0.1094367197_org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="0.1094367197.2049424898">
+			<storageModule externalCElementFile="0.1094367197.2049424898_org.eclipse.cdt.core.settings" id="0.1094367197.2049424898" name="PATH"/>
+			<storageModule externalCElementFile="0.1094367197.2049424898_cdtBuildSystem" version="4.0.0"/>
+			<storageModule externalCElementFile="0.1094367197.2049424898_org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="sb.null.877915567" name="sb"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="0.1355161626">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="0.1094367197">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="PATH">
+			<resource resourceType="PROJECT" workspacePath="/sb"/>
+		</configuration>
+		<configuration configurationName="Default">
+			<resource resourceType="PROJECT" workspacePath="/sb"/>
+		</configuration>
+	</storageModule>
+</cproject>

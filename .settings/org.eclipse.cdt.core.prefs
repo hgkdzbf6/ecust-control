@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568=
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/CWD/delimiter=\:
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/CWD/operation=replace
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/CWD/value=/home/asctec/workspace/AutoPilot_HL_SDK_v2.0
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/PWD/delimiter=\:
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/PWD/operation=replace
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/PWD/value=/home/asctec/workspace/AutoPilot_HL_SDK_v2.0
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/append=true
+environment/project/org.eclipse.cdt.gnuarm.exe.target.win32.debug.tc.223374568/appendContributed=true
