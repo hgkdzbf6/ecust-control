@@ -1,0 +1,2057 @@
+   1              		.file	"LL_HL_comm.c"
+   3              		.text
+   4              	.Ltext0:
+  44              		.global	SSP_ack
+  45              		.bss
+  46              		.align	1
+  49              	SSP_ack:
+  50 0000 0000     		.space	2
+  51              		.global	wpCtrlWpCmd
+  54              	wpCtrlWpCmd:
+  55 0002 00       		.space	1
+  56              		.global	wpCtrlWpCmdUpdated
+  59              	wpCtrlWpCmdUpdated:
+  60 0003 00       		.space	1
+  61              		.global	wpCtrlAckTrigger
+  64              	wpCtrlAckTrigger:
+  65 0004 00       		.space	1
+  66              		.global	wpCtrlNavStatus
+  67 0005 00       		.align	1
+  70              	wpCtrlNavStatus:
+  71 0006 0000     		.space	2
+  72              		.global	wpCtrlDistToWp
+  73              		.align	1
+  76              	wpCtrlDistToWp:
+  77 0008 0000     		.space	2
+  78              		.text
+  79              		.align	2
+  81              		.global	SSP_data_distribution_HL
+  83              	SSP_data_distribution_HL:
+   1:LL_HL_comm.c  **** /*
+   2:LL_HL_comm.c  **** 
+   3:LL_HL_comm.c  **** Copyright (c) 2011, Ascending Technologies GmbH
+   4:LL_HL_comm.c  **** All rights reserved.
+   5:LL_HL_comm.c  **** 
+   6:LL_HL_comm.c  **** Redistribution and use in source and binary forms, with or without
+   7:LL_HL_comm.c  **** modification, are permitted provided that the following conditions are met:
+   8:LL_HL_comm.c  **** 
+   9:LL_HL_comm.c  ****  * Redistributions of source code must retain the above copyright notice,
+  10:LL_HL_comm.c  ****    this list of conditions and the following disclaimer.
+  11:LL_HL_comm.c  ****  * Redistributions in binary form must reproduce the above copyright
+  12:LL_HL_comm.c  ****    notice, this list of conditions and the following disclaimer in the
+  13:LL_HL_comm.c  ****    documentation and/or other materials provided with the distribution.
+  14:LL_HL_comm.c  **** 
+  15:LL_HL_comm.c  **** THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+  16:LL_HL_comm.c  **** EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  17:LL_HL_comm.c  **** WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  18:LL_HL_comm.c  **** DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+  19:LL_HL_comm.c  **** DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  20:LL_HL_comm.c  **** (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  21:LL_HL_comm.c  **** SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  22:LL_HL_comm.c  **** CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  23:LL_HL_comm.c  **** LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  24:LL_HL_comm.c  **** OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  25:LL_HL_comm.c  **** DAMAGE.
+  26:LL_HL_comm.c  **** 
+  27:LL_HL_comm.c  ****  */
+  28:LL_HL_comm.c  **** 
+  29:LL_HL_comm.c  **** #include "main.h"
+  30:LL_HL_comm.c  **** #include "LL_HL_comm.h"
+  31:LL_HL_comm.c  **** #include "system.h"
+  32:LL_HL_comm.c  **** #include "gpsmath.h"
+  33:LL_HL_comm.c  **** #include "sdk.h"
+  34:LL_HL_comm.c  **** #include "declination.h"
+  35:LL_HL_comm.c  **** 
+  36:LL_HL_comm.c  **** unsigned short SSP_ack=0;
+  37:LL_HL_comm.c  **** extern char SPIWRData[128];
+  38:LL_HL_comm.c  **** extern char data_sent_to_HL;
+  39:LL_HL_comm.c  **** extern char data_sent_to_LL;
+  40:LL_HL_comm.c  **** extern unsigned int SPIWR_num_bytes;
+  41:LL_HL_comm.c  **** 
+  42:LL_HL_comm.c  **** struct LL_ATTITUDE_DATA LL_1khz_attitude_data;
+  43:LL_HL_comm.c  **** struct LL_CONTROL_INPUT LL_1khz_control_input;
+  44:LL_HL_comm.c  **** 
+  45:LL_HL_comm.c  **** 
+  46:LL_HL_comm.c  **** unsigned char wpCtrlWpCmd=0;
+  47:LL_HL_comm.c  **** unsigned char wpCtrlWpCmdUpdated=0;
+  48:LL_HL_comm.c  **** 
+  49:LL_HL_comm.c  **** unsigned char wpCtrlAckTrigger=0;
+  50:LL_HL_comm.c  **** 
+  51:LL_HL_comm.c  **** unsigned short wpCtrlNavStatus=0;
+  52:LL_HL_comm.c  **** unsigned short wpCtrlDistToWp=0;
+  53:LL_HL_comm.c  **** 
+  54:LL_HL_comm.c  **** struct WAYPOINT wpToLL;
+  55:LL_HL_comm.c  **** 
+  56:LL_HL_comm.c  **** void SSP_data_distribution_HL(void)
+  57:LL_HL_comm.c  **** {
+  85              	.LM0:
+  86              		@ Function supports interworking.
+  87              		@ args = 0, pretend = 0, frame = 4
+  88              		@ frame_needed = 1, uses_anonymous_args = 0
+  89 0000 0DC0A0E1 		mov	ip, sp
+  90 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+  91 0008 04B04CE2 		sub	fp, ip, #4
+  92 000c 04D04DE2 		sub	sp, sp, #4
+  58:LL_HL_comm.c  **** 	unsigned char i;
+  59:LL_HL_comm.c  **** 	unsigned char current_page=LL_1khz_attitude_data.system_flags&0x03;
+  94              	.LM1:
+  95 0010 C4359FE5 		ldr	r3, .L25
+  96 0014 B030D3E1 		ldrh	r3, [r3, #0]
+  97 0018 FF3003E2 		and	r3, r3, #255
+  98 001c FF3003E2 		and	r3, r3, #255
+  99 0020 033003E2 		and	r3, r3, #3
+ 100 0024 0E304BE5 		strb	r3, [fp, #-14]
+  60:LL_HL_comm.c  **** 
+  61:LL_HL_comm.c  **** 	if(LL_1khz_attitude_data.system_flags&SF_GPS_NEW) gpsDataOkTrigger=0;
+ 102              	.LM2:
+ 103 0028 AC359FE5 		ldr	r3, .L25
+ 104 002c B030D3E1 		ldrh	r3, [r3, #0]
+ 105 0030 083003E2 		and	r3, r3, #8
+ 106 0034 000053E3 		cmp	r3, #0
+ 107 0038 0200000A 		beq	.L2
+ 108 003c 9C259FE5 		ldr	r2, .L25+4
+ 109 0040 0030A0E3 		mov	r3, #0
+ 110 0044 003082E5 		str	r3, [r2, #0]
+ 111              	.L2:
+  62:LL_HL_comm.c  **** 
+  63:LL_HL_comm.c  **** 	IMU_CalcData.angle_nick=LL_1khz_attitude_data.angle_pitch*10;
+ 113              	.LM3:
+ 114 0048 8C359FE5 		ldr	r3, .L25
+ 115 004c B230D3E1 		ldrh	r3, [r3, #2]
+ 116 0050 0338A0E1 		mov	r3, r3, asl #16
+ 117 0054 4328A0E1 		mov	r2, r3, asr #16
+ 118 0058 0230A0E1 		mov	r3, r2
+ 119 005c 0331A0E1 		mov	r3, r3, asl #2
+ 120 0060 023083E0 		add	r3, r3, r2
+ 121 0064 8330A0E1 		mov	r3, r3, asl #1
+ 122 0068 0320A0E1 		mov	r2, r3
+ 123 006c 70359FE5 		ldr	r3, .L25+8
+ 124 0070 002083E5 		str	r2, [r3, #0]
+  64:LL_HL_comm.c  **** 	IMU_CalcData.angle_roll=LL_1khz_attitude_data.angle_roll*10;
+ 126              	.LM4:
+ 127 0074 60359FE5 		ldr	r3, .L25
+ 128 0078 B430D3E1 		ldrh	r3, [r3, #4]
+ 129 007c 0338A0E1 		mov	r3, r3, asl #16
+ 130 0080 4328A0E1 		mov	r2, r3, asr #16
+ 131 0084 0230A0E1 		mov	r3, r2
+ 132 0088 0331A0E1 		mov	r3, r3, asl #2
+ 133 008c 023083E0 		add	r3, r3, r2
+ 134 0090 8330A0E1 		mov	r3, r3, asl #1
+ 135 0094 0320A0E1 		mov	r2, r3
+ 136 0098 44359FE5 		ldr	r3, .L25+8
+ 137 009c 042083E5 		str	r2, [r3, #4]
+  65:LL_HL_comm.c  **** 	IMU_CalcData.angle_yaw=LL_1khz_attitude_data.angle_yaw*10;
+ 139              	.LM5:
+ 140 00a0 34359FE5 		ldr	r3, .L25
+ 141 00a4 B630D3E1 		ldrh	r3, [r3, #6]
+ 142 00a8 0320A0E1 		mov	r2, r3
+ 143 00ac 0230A0E1 		mov	r3, r2
+ 144 00b0 0331A0E1 		mov	r3, r3, asl #2
+ 145 00b4 023083E0 		add	r3, r3, r2
+ 146 00b8 8330A0E1 		mov	r3, r3, asl #1
+ 147 00bc 0320A0E1 		mov	r2, r3
+ 148 00c0 1C359FE5 		ldr	r3, .L25+8
+ 149 00c4 082083E5 		str	r2, [r3, #8]
+  66:LL_HL_comm.c  **** 
+  67:LL_HL_comm.c  **** 	IMU_CalcData.angvel_nick=LL_1khz_attitude_data.angvel_pitch;
+ 151              	.LM6:
+ 152 00c8 0C359FE5 		ldr	r3, .L25
+ 153 00cc B830D3E1 		ldrh	r3, [r3, #8]
+ 154 00d0 0338A0E1 		mov	r3, r3, asl #16
+ 155 00d4 4328A0E1 		mov	r2, r3, asr #16
+ 156 00d8 04359FE5 		ldr	r3, .L25+8
+ 157 00dc 0C2083E5 		str	r2, [r3, #12]
+  68:LL_HL_comm.c  **** 	IMU_CalcData.angvel_roll=LL_1khz_attitude_data.angvel_roll;
+ 159              	.LM7:
+ 160 00e0 F4349FE5 		ldr	r3, .L25
+ 161 00e4 BA30D3E1 		ldrh	r3, [r3, #10]
+ 162 00e8 0338A0E1 		mov	r3, r3, asl #16
+ 163 00ec 4328A0E1 		mov	r2, r3, asr #16
+ 164 00f0 EC349FE5 		ldr	r3, .L25+8
+ 165 00f4 102083E5 		str	r2, [r3, #16]
+  69:LL_HL_comm.c  **** 	IMU_CalcData.angvel_yaw=LL_1khz_attitude_data.angvel_yaw;
+ 167              	.LM8:
+ 168 00f8 DC349FE5 		ldr	r3, .L25
+ 169 00fc BC30D3E1 		ldrh	r3, [r3, #12]
+ 170 0100 0338A0E1 		mov	r3, r3, asl #16
+ 171 0104 4328A0E1 		mov	r2, r3, asr #16
+ 172 0108 D4349FE5 		ldr	r3, .L25+8
+ 173 010c 142083E5 		str	r2, [r3, #20]
+  70:LL_HL_comm.c  **** 
+  71:LL_HL_comm.c  **** 	RO_ALL_Data.angle_pitch=IMU_CalcData.angle_nick;
+ 175              	.LM9:
+ 176 0110 CC349FE5 		ldr	r3, .L25+8
+ 177 0114 002093E5 		ldr	r2, [r3, #0]
+ 178 0118 C8349FE5 		ldr	r3, .L25+12
+ 179 011c 102083E5 		str	r2, [r3, #16]
+  72:LL_HL_comm.c  **** 	RO_ALL_Data.angle_roll=IMU_CalcData.angle_roll;
+ 181              	.LM10:
+ 182 0120 BC349FE5 		ldr	r3, .L25+8
+ 183 0124 042093E5 		ldr	r2, [r3, #4]
+ 184 0128 B8349FE5 		ldr	r3, .L25+12
+ 185 012c 142083E5 		str	r2, [r3, #20]
+  73:LL_HL_comm.c  **** 	RO_ALL_Data.angle_yaw=IMU_CalcData.angle_yaw;
+ 187              	.LM11:
+ 188 0130 AC349FE5 		ldr	r3, .L25+8
+ 189 0134 082093E5 		ldr	r2, [r3, #8]
+ 190 0138 A8349FE5 		ldr	r3, .L25+12
+ 191 013c 182083E5 		str	r2, [r3, #24]
+  74:LL_HL_comm.c  **** 
+  75:LL_HL_comm.c  **** 	RO_ALL_Data.angvel_pitch=LL_1khz_attitude_data.angvel_pitch;
+ 193              	.LM12:
+ 194 0140 94349FE5 		ldr	r3, .L25
+ 195 0144 B830D3E1 		ldrh	r3, [r3, #8]
+ 196 0148 0338A0E1 		mov	r3, r3, asl #16
+ 197 014c 4328A0E1 		mov	r2, r3, asr #16
+ 198 0150 90349FE5 		ldr	r3, .L25+12
+ 199 0154 1C2083E5 		str	r2, [r3, #28]
+  76:LL_HL_comm.c  **** 	RO_ALL_Data.angvel_roll=LL_1khz_attitude_data.angvel_roll;
+ 201              	.LM13:
+ 202 0158 7C349FE5 		ldr	r3, .L25
+ 203 015c BA30D3E1 		ldrh	r3, [r3, #10]
+ 204 0160 0338A0E1 		mov	r3, r3, asl #16
+ 205 0164 4328A0E1 		mov	r2, r3, asr #16
+ 206 0168 78349FE5 		ldr	r3, .L25+12
+ 207 016c 202083E5 		str	r2, [r3, #32]
+  77:LL_HL_comm.c  **** 	RO_ALL_Data.angvel_yaw=LL_1khz_attitude_data.angvel_yaw;
+ 209              	.LM14:
+ 210 0170 64349FE5 		ldr	r3, .L25
+ 211 0174 BC30D3E1 		ldrh	r3, [r3, #12]
+ 212 0178 0338A0E1 		mov	r3, r3, asl #16
+ 213 017c 4328A0E1 		mov	r2, r3, asr #16
+ 214 0180 60349FE5 		ldr	r3, .L25+12
+ 215 0184 242083E5 		str	r2, [r3, #36]
+  78:LL_HL_comm.c  **** 
+  79:LL_HL_comm.c  **** 	if(!current_page)	//page 0
+ 217              	.LM15:
+ 218 0188 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 219 018c 000053E3 		cmp	r3, #0
+ 220 0190 8100001A 		bne	.L4
+  80:LL_HL_comm.c  **** 	{
+  81:LL_HL_comm.c  **** 		for(i=0;i<8;i++)
+ 222              	.LM16:
+ 223 0194 0030A0E3 		mov	r3, #0
+ 224 0198 0F304BE5 		strb	r3, [fp, #-15]
+ 225 019c 1A0000EA 		b	.L6
+ 226              	.L7:
+  82:LL_HL_comm.c  **** 		{
+  83:LL_HL_comm.c  **** 			RO_RC_Data.channel[i]=LL_1khz_attitude_data.RC_data[i]*16;
+ 228              	.LM17:
+ 229 01a0 0F005BE5 		ldrb	r0, [fp, #-15]	@ zero_extendqisi2
+ 230 01a4 0F105BE5 		ldrb	r1, [fp, #-15]	@ zero_extendqisi2
+ 231 01a8 2C349FE5 		ldr	r3, .L25
+ 232 01ac 0C20A0E3 		mov	r2, #12
+ 233 01b0 033081E0 		add	r3, r1, r3
+ 234 01b4 023083E0 		add	r3, r3, r2
+ 235 01b8 0230D3E5 		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 236 01bc 0332A0E1 		mov	r3, r3, asl #4
+ 237 01c0 0338A0E1 		mov	r3, r3, asl #16
+ 238 01c4 2318A0E1 		mov	r1, r3, lsr #16
+ 239 01c8 1C249FE5 		ldr	r2, .L25+16
+ 240 01cc 8030A0E1 		mov	r3, r0, asl #1
+ 241 01d0 023083E0 		add	r3, r3, r2
+ 242 01d4 B010C3E1 		strh	r1, [r3, #0]	@ movhi
+  84:LL_HL_comm.c  **** 			RO_ALL_Data.channel[i]=RO_RC_Data.channel[i];
+ 244              	.LM18:
+ 245 01d8 0F005BE5 		ldrb	r0, [fp, #-15]	@ zero_extendqisi2
+ 246 01dc 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 247 01e0 04249FE5 		ldr	r2, .L25+16
+ 248 01e4 8330A0E1 		mov	r3, r3, asl #1
+ 249 01e8 023083E0 		add	r3, r3, r2
+ 250 01ec B010D3E1 		ldrh	r1, [r3, #0]
+ 251 01f0 F0239FE5 		ldr	r2, .L25+12
+ 252 01f4 8030A0E1 		mov	r3, r0, asl #1
+ 253 01f8 023083E0 		add	r3, r3, r2
+ 254 01fc B010C3E1 		strh	r1, [r3, #0]	@ movhi
+  81:LL_HL_comm.c  **** 		for(i=0;i<8;i++)
+ 256              	.LM19:
+ 257 0200 0F305BE5 		ldrb	r3, [fp, #-15]
+ 258 0204 013083E2 		add	r3, r3, #1
+ 259 0208 0F304BE5 		strb	r3, [fp, #-15]
+ 260              	.L6:
+ 261 020c 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 262 0210 070053E3 		cmp	r3, #7
+ 263 0214 E1FFFF9A 		bls	.L7
+  85:LL_HL_comm.c  **** 		}
+  86:LL_HL_comm.c  **** 		IMU_CalcData.acc_x_calib=LL_1khz_attitude_data.acc_x*10;
+ 265              	.LM20:
+ 266 0218 BC339FE5 		ldr	r3, .L25
+ 267 021c B032D3E1 		ldrh	r3, [r3, #32]
+ 268 0220 0338A0E1 		mov	r3, r3, asl #16
+ 269 0224 4328A0E1 		mov	r2, r3, asr #16
+ 270 0228 0230A0E1 		mov	r3, r2
+ 271 022c 0331A0E1 		mov	r3, r3, asl #2
+ 272 0230 023083E0 		add	r3, r3, r2
+ 273 0234 8330A0E1 		mov	r3, r3, asl #1
+ 274 0238 0338A0E1 		mov	r3, r3, asl #16
+ 275 023c 2328A0E1 		mov	r2, r3, lsr #16
+ 276 0240 9C339FE5 		ldr	r3, .L25+8
+ 277 0244 B821C3E1 		strh	r2, [r3, #24]	@ movhi
+  87:LL_HL_comm.c  **** 		IMU_CalcData.acc_y_calib=LL_1khz_attitude_data.acc_y*10;
+ 279              	.LM21:
+ 280 0248 8C339FE5 		ldr	r3, .L25
+ 281 024c B232D3E1 		ldrh	r3, [r3, #34]
+ 282 0250 0338A0E1 		mov	r3, r3, asl #16
+ 283 0254 4328A0E1 		mov	r2, r3, asr #16
+ 284 0258 0230A0E1 		mov	r3, r2
+ 285 025c 0331A0E1 		mov	r3, r3, asl #2
+ 286 0260 023083E0 		add	r3, r3, r2
+ 287 0264 8330A0E1 		mov	r3, r3, asl #1
+ 288 0268 0338A0E1 		mov	r3, r3, asl #16
+ 289 026c 2328A0E1 		mov	r2, r3, lsr #16
+ 290 0270 6C339FE5 		ldr	r3, .L25+8
+ 291 0274 BA21C3E1 		strh	r2, [r3, #26]	@ movhi
+  88:LL_HL_comm.c  **** 		IMU_CalcData.acc_z_calib=LL_1khz_attitude_data.acc_z*10;
+ 293              	.LM22:
+ 294 0278 5C339FE5 		ldr	r3, .L25
+ 295 027c B432D3E1 		ldrh	r3, [r3, #36]
+ 296 0280 0338A0E1 		mov	r3, r3, asl #16
+ 297 0284 4328A0E1 		mov	r2, r3, asr #16
+ 298 0288 0230A0E1 		mov	r3, r2
+ 299 028c 0331A0E1 		mov	r3, r3, asl #2
+ 300 0290 023083E0 		add	r3, r3, r2
+ 301 0294 8330A0E1 		mov	r3, r3, asl #1
+ 302 0298 0338A0E1 		mov	r3, r3, asl #16
+ 303 029c 2328A0E1 		mov	r2, r3, lsr #16
+ 304 02a0 3C339FE5 		ldr	r3, .L25+8
+ 305 02a4 BC21C3E1 		strh	r2, [r3, #28]	@ movhi
+  89:LL_HL_comm.c  **** 
+  90:LL_HL_comm.c  **** 		//system is initialized as soon as values differ from 0
+  91:LL_HL_comm.c  **** 		if(IMU_CalcData.acc_z_calib&&(SYSTEM_initialized<10)) SYSTEM_initialized++;
+ 307              	.LM23:
+ 308 02a8 34339FE5 		ldr	r3, .L25+8
+ 309 02ac BC31D3E1 		ldrh	r3, [r3, #28]
+ 310 02b0 000053E3 		cmp	r3, #0
+ 311 02b4 0B00000A 		beq	.L9
+ 312 02b8 30339FE5 		ldr	r3, .L25+20
+ 313 02bc 0030D3E5 		ldrb	r3, [r3, #0]
+ 314 02c0 FF3003E2 		and	r3, r3, #255
+ 315 02c4 090053E3 		cmp	r3, #9
+ 316 02c8 0600008A 		bhi	.L9
+ 317 02cc 1C339FE5 		ldr	r3, .L25+20
+ 318 02d0 0030D3E5 		ldrb	r3, [r3, #0]
+ 319 02d4 FF3003E2 		and	r3, r3, #255
+ 320 02d8 013083E2 		add	r3, r3, #1
+ 321 02dc FF3003E2 		and	r3, r3, #255
+ 322 02e0 08239FE5 		ldr	r2, .L25+20
+ 323 02e4 0030C2E5 		strb	r3, [r2, #0]
+ 324              	.L9:
+  92:LL_HL_comm.c  **** 
+  93:LL_HL_comm.c  **** 		RO_ALL_Data.acc_x=LL_1khz_attitude_data.acc_x*10;
+ 326              	.LM24:
+ 327 02e8 EC329FE5 		ldr	r3, .L25
+ 328 02ec B032D3E1 		ldrh	r3, [r3, #32]
+ 329 02f0 0338A0E1 		mov	r3, r3, asl #16
+ 330 02f4 4328A0E1 		mov	r2, r3, asr #16
+ 331 02f8 0230A0E1 		mov	r3, r2
+ 332 02fc 0331A0E1 		mov	r3, r3, asl #2
+ 333 0300 023083E0 		add	r3, r3, r2
+ 334 0304 8330A0E1 		mov	r3, r3, asl #1
+ 335 0308 0338A0E1 		mov	r3, r3, asl #16
+ 336 030c 2328A0E1 		mov	r2, r3, lsr #16
+ 337 0310 D0329FE5 		ldr	r3, .L25+12
+ 338 0314 B822C3E1 		strh	r2, [r3, #40]	@ movhi
+  94:LL_HL_comm.c  **** 		RO_ALL_Data.acc_y=LL_1khz_attitude_data.acc_y*10;
+ 340              	.LM25:
+ 341 0318 BC329FE5 		ldr	r3, .L25
+ 342 031c B232D3E1 		ldrh	r3, [r3, #34]
+ 343 0320 0338A0E1 		mov	r3, r3, asl #16
+ 344 0324 4328A0E1 		mov	r2, r3, asr #16
+ 345 0328 0230A0E1 		mov	r3, r2
+ 346 032c 0331A0E1 		mov	r3, r3, asl #2
+ 347 0330 023083E0 		add	r3, r3, r2
+ 348 0334 8330A0E1 		mov	r3, r3, asl #1
+ 349 0338 0338A0E1 		mov	r3, r3, asl #16
+ 350 033c 2328A0E1 		mov	r2, r3, lsr #16
+ 351 0340 A0329FE5 		ldr	r3, .L25+12
+ 352 0344 BA22C3E1 		strh	r2, [r3, #42]	@ movhi
+  95:LL_HL_comm.c  **** 		RO_ALL_Data.acc_z=LL_1khz_attitude_data.acc_z*10;
+ 354              	.LM26:
+ 355 0348 8C329FE5 		ldr	r3, .L25
+ 356 034c B432D3E1 		ldrh	r3, [r3, #36]
+ 357 0350 0338A0E1 		mov	r3, r3, asl #16
+ 358 0354 4328A0E1 		mov	r2, r3, asr #16
+ 359 0358 0230A0E1 		mov	r3, r2
+ 360 035c 0331A0E1 		mov	r3, r3, asl #2
+ 361 0360 023083E0 		add	r3, r3, r2
+ 362 0364 8330A0E1 		mov	r3, r3, asl #1
+ 363 0368 0338A0E1 		mov	r3, r3, asl #16
+ 364 036c 2328A0E1 		mov	r2, r3, lsr #16
+ 365 0370 70329FE5 		ldr	r3, .L25+12
+ 366 0374 BC22C3E1 		strh	r2, [r3, #44]	@ movhi
+  96:LL_HL_comm.c  **** 
+  97:LL_HL_comm.c  **** 		RO_ALL_Data.fusion_latitude=LL_1khz_attitude_data.latitude_best_estimate;
+ 368              	.LM27:
+ 369 0378 5C329FE5 		ldr	r3, .L25
+ 370 037c 182093E5 		ldr	r2, [r3, #24]
+ 371 0380 60329FE5 		ldr	r3, .L25+12
+ 372 0384 802083E5 		str	r2, [r3, #128]
+  98:LL_HL_comm.c  **** 		RO_ALL_Data.fusion_longitude=LL_1khz_attitude_data.longitude_best_estimate;
+ 374              	.LM28:
+ 375 0388 4C329FE5 		ldr	r3, .L25
+ 376 038c 1C2093E5 		ldr	r2, [r3, #28]
+ 377 0390 50329FE5 		ldr	r3, .L25+12
+ 378 0394 842083E5 		str	r2, [r3, #132]
+ 379 0398 8C0000EA 		b	.L24
+ 380              	.L4:
+  99:LL_HL_comm.c  **** 
+ 100:LL_HL_comm.c  **** 	}
+ 101:LL_HL_comm.c  **** 	else if(current_page==1)	//page 1
+ 382              	.LM29:
+ 383 039c 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 384 03a0 010053E3 		cmp	r3, #1
+ 385 03a4 3200001A 		bne	.L13
+ 102:LL_HL_comm.c  **** 	{
+ 103:LL_HL_comm.c  **** 		IMU_CalcData.height=LL_1khz_attitude_data.height;
+ 387              	.LM30:
+ 388 03a8 2C329FE5 		ldr	r3, .L25
+ 389 03ac 3C2093E5 		ldr	r2, [r3, #60]
+ 390 03b0 2C329FE5 		ldr	r3, .L25+8
+ 391 03b4 4C2083E5 		str	r2, [r3, #76]
+ 104:LL_HL_comm.c  **** 		IMU_CalcData.dheight=LL_1khz_attitude_data.dheight;
+ 393              	.LM31:
+ 394 03b8 1C329FE5 		ldr	r3, .L25
+ 395 03bc B034D3E1 		ldrh	r3, [r3, #64]
+ 396 03c0 0338A0E1 		mov	r3, r3, asl #16
+ 397 03c4 4328A0E1 		mov	r2, r3, asr #16
+ 398 03c8 14329FE5 		ldr	r3, .L25+8
+ 399 03cc 502083E5 		str	r2, [r3, #80]
+ 105:LL_HL_comm.c  **** 
+ 106:LL_HL_comm.c  **** 		RO_ALL_Data.fusion_height=LL_1khz_attitude_data.height;
+ 401              	.LM32:
+ 402 03d0 04329FE5 		ldr	r3, .L25
+ 403 03d4 3C2093E5 		ldr	r2, [r3, #60]
+ 404 03d8 08329FE5 		ldr	r3, .L25+12
+ 405 03dc 782083E5 		str	r2, [r3, #120]
+ 107:LL_HL_comm.c  **** 		RO_ALL_Data.fusion_dheight=LL_1khz_attitude_data.dheight;
+ 407              	.LM33:
+ 408 03e0 F4319FE5 		ldr	r3, .L25
+ 409 03e4 B034D3E1 		ldrh	r3, [r3, #64]
+ 410 03e8 0338A0E1 		mov	r3, r3, asl #16
+ 411 03ec 4328A0E1 		mov	r2, r3, asr #16
+ 412 03f0 F0319FE5 		ldr	r3, .L25+12
+ 413 03f4 7C2083E5 		str	r2, [r3, #124]
+ 108:LL_HL_comm.c  **** 
+ 109:LL_HL_comm.c  **** 		RO_ALL_Data.fusion_speed_x=LL_1khz_attitude_data.speed_x_best_estimate;
+ 415              	.LM34:
+ 416 03f8 DC319FE5 		ldr	r3, .L25
+ 417 03fc B823D3E1 		ldrh	r2, [r3, #56]
+ 418 0400 E0319FE5 		ldr	r3, .L25+12
+ 419 0404 B828C3E1 		strh	r2, [r3, #136]	@ movhi
+ 110:LL_HL_comm.c  **** 		RO_ALL_Data.fusion_speed_y=LL_1khz_attitude_data.speed_y_best_estimate;
+ 421              	.LM35:
+ 422 0408 CC319FE5 		ldr	r3, .L25
+ 423 040c BA23D3E1 		ldrh	r2, [r3, #58]
+ 424 0410 D0319FE5 		ldr	r3, .L25+12
+ 425 0414 BA28C3E1 		strh	r2, [r3, #138]	@ movhi
+ 111:LL_HL_comm.c  **** 		for(i=0;i<6;i++)
+ 427              	.LM36:
+ 428 0418 0030A0E3 		mov	r3, #0
+ 429 041c 0F304BE5 		strb	r3, [fp, #-15]
+ 430 0420 0F0000EA 		b	.L15
+ 431              	.L16:
+ 112:LL_HL_comm.c  **** 		{
+ 113:LL_HL_comm.c  **** 			RO_ALL_Data.motor_rpm[i]=LL_1khz_attitude_data.motor_data[i];
+ 433              	.LM37:
+ 434 0424 0F005BE5 		ldrb	r0, [fp, #-15]	@ zero_extendqisi2
+ 435 0428 0F105BE5 		ldrb	r1, [fp, #-15]	@ zero_extendqisi2
+ 436 042c A8319FE5 		ldr	r3, .L25
+ 437 0430 2820A0E3 		mov	r2, #40
+ 438 0434 033081E0 		add	r3, r1, r3
+ 439 0438 023083E0 		add	r3, r3, r2
+ 440 043c 0010D3E5 		ldrb	r1, [r3, #0]	@ zero_extendqisi2
+ 441 0440 A0319FE5 		ldr	r3, .L25+12
+ 442 0444 3C20A0E3 		mov	r2, #60
+ 443 0448 033080E0 		add	r3, r0, r3
+ 444 044c 022083E0 		add	r2, r3, r2
+ 445 0450 0130A0E1 		mov	r3, r1
+ 446 0454 0030C2E5 		strb	r3, [r2, #0]
+ 111:LL_HL_comm.c  **** 		for(i=0;i<6;i++)
+ 448              	.LM38:
+ 449 0458 0F305BE5 		ldrb	r3, [fp, #-15]
+ 450 045c 013083E2 		add	r3, r3, #1
+ 451 0460 0F304BE5 		strb	r3, [fp, #-15]
+ 452              	.L15:
+ 453 0464 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 454 0468 050053E3 		cmp	r3, #5
+ 455 046c ECFFFF9A 		bls	.L16
+ 456 0470 560000EA 		b	.L24
+ 457              	.L13:
+ 114:LL_HL_comm.c  **** 		}
+ 115:LL_HL_comm.c  **** 	}
+ 116:LL_HL_comm.c  **** 	else if(current_page==2)
+ 459              	.LM39:
+ 460 0474 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 461 0478 020053E3 		cmp	r3, #2
+ 462 047c 5300001A 		bne	.L24
+ 463              	.LBB2:
+ 117:LL_HL_comm.c  **** 	{
+ 118:LL_HL_comm.c  **** 		IMU_CalcData.Hx=LL_1khz_attitude_data.mag_x;
+ 465              	.LM40:
+ 466 0480 54319FE5 		ldr	r3, .L25
+ 467 0484 B234D3E1 		ldrh	r3, [r3, #66]
+ 468 0488 0338A0E1 		mov	r3, r3, asl #16
+ 469 048c 4328A0E1 		mov	r2, r3, asr #16
+ 470 0490 4C319FE5 		ldr	r3, .L25+8
+ 471 0494 302083E5 		str	r2, [r3, #48]
+ 119:LL_HL_comm.c  **** 		IMU_CalcData.Hy=LL_1khz_attitude_data.mag_y;
+ 473              	.LM41:
+ 474 0498 3C319FE5 		ldr	r3, .L25
+ 475 049c B434D3E1 		ldrh	r3, [r3, #68]
+ 476 04a0 0338A0E1 		mov	r3, r3, asl #16
+ 477 04a4 4328A0E1 		mov	r2, r3, asr #16
+ 478 04a8 34319FE5 		ldr	r3, .L25+8
+ 479 04ac 342083E5 		str	r2, [r3, #52]
+ 120:LL_HL_comm.c  **** 		IMU_CalcData.Hz=LL_1khz_attitude_data.mag_z;
+ 481              	.LM42:
+ 482 04b0 24319FE5 		ldr	r3, .L25
+ 483 04b4 B634D3E1 		ldrh	r3, [r3, #70]
+ 484 04b8 0338A0E1 		mov	r3, r3, asl #16
+ 485 04bc 4328A0E1 		mov	r2, r3, asr #16
+ 486 04c0 1C319FE5 		ldr	r3, .L25+8
+ 487 04c4 382083E5 		str	r2, [r3, #56]
+ 121:LL_HL_comm.c  **** 
+ 122:LL_HL_comm.c  **** 		RO_ALL_Data.Hx=LL_1khz_attitude_data.mag_x;
+ 489              	.LM43:
+ 490 04c8 0C319FE5 		ldr	r3, .L25
+ 491 04cc B234D3E1 		ldrh	r3, [r3, #66]
+ 492 04d0 0338A0E1 		mov	r3, r3, asl #16
+ 493 04d4 4328A0E1 		mov	r2, r3, asr #16
+ 494 04d8 08319FE5 		ldr	r3, .L25+12
+ 495 04dc 302083E5 		str	r2, [r3, #48]
+ 123:LL_HL_comm.c  **** 		RO_ALL_Data.Hy=LL_1khz_attitude_data.mag_y;
+ 497              	.LM44:
+ 498 04e0 F4309FE5 		ldr	r3, .L25
+ 499 04e4 B434D3E1 		ldrh	r3, [r3, #68]
+ 500 04e8 0338A0E1 		mov	r3, r3, asl #16
+ 501 04ec 4328A0E1 		mov	r2, r3, asr #16
+ 502 04f0 F0309FE5 		ldr	r3, .L25+12
+ 503 04f4 342083E5 		str	r2, [r3, #52]
+ 124:LL_HL_comm.c  **** 		RO_ALL_Data.Hz=LL_1khz_attitude_data.mag_z;
+ 505              	.LM45:
+ 506 04f8 DC309FE5 		ldr	r3, .L25
+ 507 04fc B634D3E1 		ldrh	r3, [r3, #70]
+ 508 0500 0338A0E1 		mov	r3, r3, asl #16
+ 509 0504 4328A0E1 		mov	r2, r3, asr #16
+ 510 0508 D8309FE5 		ldr	r3, .L25+12
+ 511 050c 382083E5 		str	r2, [r3, #56]
+ 125:LL_HL_comm.c  **** 
+ 126:LL_HL_comm.c  **** 		unsigned char slowDataUpChannelSelect=(LL_1khz_attitude_data.status2>>1)&0x7F;
+ 513              	.LM46:
+ 514 0510 C4309FE5 		ldr	r3, .L25
+ 515 0514 BA35D3E1 		ldrh	r3, [r3, #90]
+ 516 0518 0338A0E1 		mov	r3, r3, asl #16
+ 517 051c 4338A0E1 		mov	r3, r3, asr #16
+ 518 0520 C330A0E1 		mov	r3, r3, asr #1
+ 519 0524 0338A0E1 		mov	r3, r3, asl #16
+ 520 0528 2338A0E1 		mov	r3, r3, lsr #16
+ 521 052c FF3003E2 		and	r3, r3, #255
+ 522 0530 FF3003E2 		and	r3, r3, #255
+ 523 0534 7F3003E2 		and	r3, r3, #127
+ 524 0538 0D304BE5 		strb	r3, [fp, #-13]
+ 127:LL_HL_comm.c  **** 		switch (slowDataUpChannelSelect)
+ 526              	.LM47:
+ 527 053c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 528 0540 013043E2 		sub	r3, r3, #1
+ 529 0544 070053E3 		cmp	r3, #7
+ 530 0548 03F19F97 		ldrls	pc, [pc, r3, asl #2]
+ 531 054c 1F0000EA 		b	.L24
+ 532              		.align	2
+ 533              	.L23:
+ 534 0550 70050000 		.word	.L19
+ 535 0554 D0050000 		.word	.L24
+ 536 0558 D0050000 		.word	.L24
+ 537 055c D0050000 		.word	.L24
+ 538 0560 D0050000 		.word	.L24
+ 539 0564 84050000 		.word	.L20
+ 540 0568 A0050000 		.word	.L21
+ 541 056c BC050000 		.word	.L22
+ 542              	.L19:
+ 128:LL_HL_comm.c  **** 		{
+ 129:LL_HL_comm.c  **** 		case SUDC_FLIGHTTIME:
+ 130:LL_HL_comm.c  **** 
+ 131:LL_HL_comm.c  **** 			HL_Status.flight_time=LL_1khz_attitude_data.slowDataUpChannelDataShort;
+ 544              	.LM48:
+ 545 0570 64309FE5 		ldr	r3, .L25
+ 546 0574 B425D3E1 		ldrh	r2, [r3, #84]
+ 547 0578 74309FE5 		ldr	r3, .L25+24
+ 548 057c B620C3E1 		strh	r2, [r3, #6]	@ movhi
+ 132:LL_HL_comm.c  **** 			break;
+ 550              	.LM49:
+ 551 0580 120000EA 		b	.L24
+ 552              	.L20:
+ 133:LL_HL_comm.c  **** 		case SUDC_NAVSTATUS:
+ 134:LL_HL_comm.c  **** 			wpCtrlNavStatus=LL_1khz_attitude_data.slowDataUpChannelDataShort;
+ 554              	.LM50:
+ 555 0584 50309FE5 		ldr	r3, .L25
+ 556 0588 B435D3E1 		ldrh	r3, [r3, #84]
+ 557 058c 0338A0E1 		mov	r3, r3, asl #16
+ 558 0590 2328A0E1 		mov	r2, r3, lsr #16
+ 559 0594 5C309FE5 		ldr	r3, .L25+28
+ 560 0598 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 135:LL_HL_comm.c  **** 		break;
+ 562              	.LM51:
+ 563 059c 0B0000EA 		b	.L24
+ 564              	.L21:
+ 136:LL_HL_comm.c  **** 		case SUDC_DISTTOWP:
+ 137:LL_HL_comm.c  **** 			wpCtrlDistToWp=LL_1khz_attitude_data.slowDataUpChannelDataShort;
+ 566              	.LM52:
+ 567 05a0 34309FE5 		ldr	r3, .L25
+ 568 05a4 B435D3E1 		ldrh	r3, [r3, #84]
+ 569 05a8 0338A0E1 		mov	r3, r3, asl #16
+ 570 05ac 2328A0E1 		mov	r2, r3, lsr #16
+ 571 05b0 44309FE5 		ldr	r3, .L25+32
+ 572 05b4 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 138:LL_HL_comm.c  **** 		break;
+ 574              	.LM53:
+ 575 05b8 040000EA 		b	.L24
+ 576              	.L22:
+ 139:LL_HL_comm.c  **** 		case SUDC_WPACKTRIGGER:
+ 140:LL_HL_comm.c  **** 			wpCtrlAckTrigger=LL_1khz_attitude_data.slowDataUpChannelDataShort;
+ 578              	.LM54:
+ 579 05bc 18309FE5 		ldr	r3, .L25
+ 580 05c0 B435D3E1 		ldrh	r3, [r3, #84]
+ 581 05c4 FF3003E2 		and	r3, r3, #255
+ 582 05c8 30209FE5 		ldr	r2, .L25+36
+ 583 05cc 0030C2E5 		strb	r3, [r2, #0]
+ 584              	.L24:
+ 585              	.LBE2:
+ 141:LL_HL_comm.c  **** 		break;
+ 142:LL_HL_comm.c  **** 
+ 143:LL_HL_comm.c  **** 		}
+ 144:LL_HL_comm.c  **** 
+ 145:LL_HL_comm.c  **** 	}
+ 146:LL_HL_comm.c  **** }
+ 587              	.LM55:
+ 588 05d0 0CD04BE2 		sub	sp, fp, #12
+ 589 05d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 590 05d8 1EFF2FE1 		bx	lr
+ 591              	.L26:
+ 592              		.align	2
+ 593              	.L25:
+ 594 05dc 00000000 		.word	LL_1khz_attitude_data
+ 595 05e0 00000000 		.word	gpsDataOkTrigger
+ 596 05e4 00000000 		.word	IMU_CalcData
+ 597 05e8 00000000 		.word	RO_ALL_Data
+ 598 05ec 00000000 		.word	RO_RC_Data
+ 599 05f0 00000000 		.word	SYSTEM_initialized
+ 600 05f4 00000000 		.word	HL_Status
+ 601 05f8 00000000 		.word	wpCtrlNavStatus
+ 602 05fc 00000000 		.word	wpCtrlDistToWp
+ 603 0600 00000000 		.word	wpCtrlAckTrigger
+ 612              	.Lscope0:
+ 613              		.bss
+ 614              	pageselect.1648:
+ 615 000a 00       		.space	1
+ 617              		.text
+ 618              		.align	2
+ 620              		.global	HL2LL_write_cycle
+ 622              	HL2LL_write_cycle:
+ 147:LL_HL_comm.c  **** 
+ 148:LL_HL_comm.c  **** int HL2LL_write_cycle(void)	//write data to low-level processor
+ 149:LL_HL_comm.c  **** {
+ 624              	.LM56:
+ 625              		@ Function supports interworking.
+ 626              		@ args = 0, pretend = 0, frame = 20
+ 627              		@ frame_needed = 1, uses_anonymous_args = 0
+ 628 0604 0DC0A0E1 		mov	ip, sp
+ 629 0608 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 630 060c 04B04CE2 		sub	fp, ip, #4
+ 631 0610 14D04DE2 		sub	sp, sp, #20
+ 150:LL_HL_comm.c  **** 	static char pageselect=0;
+ 151:LL_HL_comm.c  **** 	unsigned char i;
+ 152:LL_HL_comm.c  **** 
+ 153:LL_HL_comm.c  **** 	if(!data_sent_to_LL) return(0);
+ 633              	.LM57:
+ 634 0614 58389FE5 		ldr	r3, .L70
+ 635 0618 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 636 061c 000053E3 		cmp	r3, #0
+ 637 0620 0200001A 		bne	.L28
+ 638 0624 0020A0E3 		mov	r2, #0
+ 639 0628 20200BE5 		str	r2, [fp, #-32]
+ 640 062c 0B0200EA 		b	.L30
+ 641              	.L28:
+ 154:LL_HL_comm.c  **** 
+ 155:LL_HL_comm.c  **** 	//update 1kHz data
+ 156:LL_HL_comm.c  **** 	LL_1khz_control_input.system_flags=0|pageselect;
+ 643              	.LM58:
+ 644 0630 40389FE5 		ldr	r3, .L70+4
+ 645 0634 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 646 0638 0320A0E1 		mov	r2, r3
+ 647 063c 38389FE5 		ldr	r3, .L70+8
+ 648 0640 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 157:LL_HL_comm.c  **** 	//SSP_ack=0;	//reset ack
+ 158:LL_HL_comm.c  **** 
+ 159:LL_HL_comm.c  **** 	if(gpsDataOkTrigger) LL_1khz_control_input.system_flags|=SF_GPS_NEW;
+ 650              	.LM59:
+ 651 0644 34389FE5 		ldr	r3, .L70+12
+ 652 0648 003093E5 		ldr	r3, [r3, #0]
+ 653 064c 000053E3 		cmp	r3, #0
+ 654 0650 0600000A 		beq	.L31
+ 655 0654 20389FE5 		ldr	r3, .L70+8
+ 656 0658 B030D3E1 		ldrh	r3, [r3, #0]
+ 657 065c 083083E3 		orr	r3, r3, #8
+ 658 0660 0338A0E1 		mov	r3, r3, asl #16
+ 659 0664 2328A0E1 		mov	r2, r3, lsr #16
+ 660 0668 0C389FE5 		ldr	r3, .L70+8
+ 661 066c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 662              	.L31:
+ 160:LL_HL_comm.c  **** 
+ 161:LL_HL_comm.c  **** 	if(WO_SDK.ctrl_enabled)  LL_1khz_control_input.system_flags|=SF_HL_CONTROL_ENABLED|SF_NEW_SDK;
+ 664              	.LM60:
+ 665 0670 0C389FE5 		ldr	r3, .L70+16
+ 666 0674 0130D3E5 		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 667 0678 000053E3 		cmp	r3, #0
+ 668 067c 0900000A 		beq	.L33
+ 669 0680 F4379FE5 		ldr	r3, .L70+8
+ 670 0684 B030D3E1 		ldrh	r3, [r3, #0]
+ 671 0688 433183E3 		orr	r3, r3, #-1073741808
+ 672 068c FF3583E3 		orr	r3, r3, #1069547520
+ 673 0690 FE3983E3 		orr	r3, r3, #4161536
+ 674 0694 0338A0E1 		mov	r3, r3, asl #16
+ 675 0698 2328A0E1 		mov	r2, r3, lsr #16
+ 676 069c D8379FE5 		ldr	r3, .L70+8
+ 677 06a0 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 678 06a4 070000EA 		b	.L35
+ 679              	.L33:
+ 162:LL_HL_comm.c  **** 	else LL_1khz_control_input.system_flags&=~(SF_HL_CONTROL_ENABLED|SF_NEW_SDK);
+ 681              	.LM61:
+ 682 06a8 CC379FE5 		ldr	r3, .L70+8
+ 683 06ac B030D3E1 		ldrh	r3, [r3, #0]
+ 684 06b0 0320A0E1 		mov	r2, r3
+ 685 06b4 7F3CA0E3 		mov	r3, #32512
+ 686 06b8 EF3083E2 		add	r3, r3, #239
+ 687 06bc 032002E0 		and	r2, r2, r3
+ 688 06c0 B4379FE5 		ldr	r3, .L70+8
+ 689 06c4 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 690              	.L35:
+ 163:LL_HL_comm.c  **** 
+ 164:LL_HL_comm.c  **** 	if(WO_SDK.disable_motor_onoff_by_stick) LL_1khz_control_input.system_flags|=SF_SDK_DISABLE_MOTORON
+ 692              	.LM62:
+ 693 06c8 B4379FE5 		ldr	r3, .L70+16
+ 694 06cc 0230D3E5 		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 695 06d0 000053E3 		cmp	r3, #0
+ 696 06d4 0700000A 		beq	.L36
+ 697 06d8 9C379FE5 		ldr	r3, .L70+8
+ 698 06dc B030D3E1 		ldrh	r3, [r3, #0]
+ 699 06e0 013C83E3 		orr	r3, r3, #256
+ 700 06e4 0338A0E1 		mov	r3, r3, asl #16
+ 701 06e8 2328A0E1 		mov	r2, r3, lsr #16
+ 702 06ec 88379FE5 		ldr	r3, .L70+8
+ 703 06f0 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 704 06f4 0A0000EA 		b	.L38
+ 705              	.L36:
+ 165:LL_HL_comm.c  **** 	else LL_1khz_control_input.system_flags&=~SF_SDK_DISABLE_MOTORONOFF_BY_STICK;
+ 707              	.LM63:
+ 708 06f8 7C379FE5 		ldr	r3, .L70+8
+ 709 06fc B030D3E1 		ldrh	r3, [r3, #0]
+ 710 0700 1C300BE5 		str	r3, [fp, #-28]
+ 711 0704 1C201BE5 		ldr	r2, [fp, #-28]
+ 712 0708 013CC2E3 		bic	r3, r2, #256
+ 713 070c 0338A0E1 		mov	r3, r3, asl #16
+ 714 0710 2338A0E1 		mov	r3, r3, lsr #16
+ 715 0714 1C300BE5 		str	r3, [fp, #-28]
+ 716 0718 5C379FE5 		ldr	r3, .L70+8
+ 717 071c 1C201BE5 		ldr	r2, [fp, #-28]
+ 718 0720 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 719              	.L38:
+ 166:LL_HL_comm.c  **** 
+ 167:LL_HL_comm.c  **** 	if(WO_SDK.ctrl_mode==0x00) //direct individual motor control
+ 721              	.LM64:
+ 722 0724 58379FE5 		ldr	r3, .L70+16
+ 723 0728 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 724 072c 000053E3 		cmp	r3, #0
+ 725 0730 1B00001A 		bne	.L39
+ 168:LL_HL_comm.c  **** 	{
+ 169:LL_HL_comm.c  **** 		LL_1khz_control_input.system_flags|=SF_DIRECT_MOTOR_CONTROL_INDIVIDUAL;
+ 727              	.LM65:
+ 728 0734 40379FE5 		ldr	r3, .L70+8
+ 729 0738 B030D3E1 		ldrh	r3, [r3, #0]
+ 730 073c 803083E3 		orr	r3, r3, #128
+ 731 0740 0338A0E1 		mov	r3, r3, asl #16
+ 732 0744 2328A0E1 		mov	r2, r3, lsr #16
+ 733 0748 2C379FE5 		ldr	r3, .L70+8
+ 734 074c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 170:LL_HL_comm.c  **** 		for(i=0;i<8;i++)
+ 736              	.LM66:
+ 737 0750 0030A0E3 		mov	r3, #0
+ 738 0754 0D304BE5 		strb	r3, [fp, #-13]
+ 739 0758 0D0000EA 		b	.L41
+ 740              	.L42:
+ 171:LL_HL_comm.c  **** 		{
+ 172:LL_HL_comm.c  **** 			LL_1khz_control_input.direct_motor_control[i]=WO_Direct_Individual_Motor_Control.motor[i];
+ 742              	.LM67:
+ 743 075c 0D005BE5 		ldrb	r0, [fp, #-13]	@ zero_extendqisi2
+ 744 0760 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 745 0764 1C379FE5 		ldr	r3, .L70+20
+ 746 0768 023083E0 		add	r3, r3, r2
+ 747 076c 0010D3E5 		ldrb	r1, [r3, #0]	@ zero_extendqisi2
+ 748 0770 04379FE5 		ldr	r3, .L70+8
+ 749 0774 0C20A0E3 		mov	r2, #12
+ 750 0778 033080E0 		add	r3, r0, r3
+ 751 077c 022083E0 		add	r2, r3, r2
+ 752 0780 0130A0E1 		mov	r3, r1
+ 753 0784 0030C2E5 		strb	r3, [r2, #0]
+ 170:LL_HL_comm.c  **** 		for(i=0;i<8;i++)
+ 755              	.LM68:
+ 756 0788 0D305BE5 		ldrb	r3, [fp, #-13]
+ 757 078c 013083E2 		add	r3, r3, #1
+ 758 0790 0D304BE5 		strb	r3, [fp, #-13]
+ 759              	.L41:
+ 760 0794 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 761 0798 070053E3 		cmp	r3, #7
+ 762 079c EEFFFF9A 		bls	.L42
+ 763 07a0 280100EA 		b	.L44
+ 764              	.L39:
+ 173:LL_HL_comm.c  **** 		}
+ 174:LL_HL_comm.c  **** 	}
+ 175:LL_HL_comm.c  **** 	else if(WO_SDK.ctrl_mode==0x01) //direct motor control with standard output mapping
+ 766              	.LM69:
+ 767 07a4 D8369FE5 		ldr	r3, .L70+16
+ 768 07a8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 769 07ac 010053E3 		cmp	r3, #1
+ 770 07b0 1700001A 		bne	.L45
+ 176:LL_HL_comm.c  **** 	{
+ 177:LL_HL_comm.c  **** 		LL_1khz_control_input.system_flags|=SF_DIRECT_MOTOR_CONTROL;
+ 772              	.LM70:
+ 773 07b4 C0369FE5 		ldr	r3, .L70+8
+ 774 07b8 B030D3E1 		ldrh	r3, [r3, #0]
+ 775 07bc 203083E3 		orr	r3, r3, #32
+ 776 07c0 0338A0E1 		mov	r3, r3, asl #16
+ 777 07c4 2328A0E1 		mov	r2, r3, lsr #16
+ 778 07c8 AC369FE5 		ldr	r3, .L70+8
+ 779 07cc B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 178:LL_HL_comm.c  **** 		LL_1khz_control_input.direct_motor_control[0]=WO_Direct_Motor_Control.pitch;
+ 781              	.LM71:
+ 782 07d0 B4369FE5 		ldr	r3, .L70+24
+ 783 07d4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 784 07d8 9C269FE5 		ldr	r2, .L70+8
+ 785 07dc 0C30C2E5 		strb	r3, [r2, #12]
+ 179:LL_HL_comm.c  **** 		LL_1khz_control_input.direct_motor_control[1]=WO_Direct_Motor_Control.roll;
+ 787              	.LM72:
+ 788 07e0 A4369FE5 		ldr	r3, .L70+24
+ 789 07e4 0130D3E5 		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 790 07e8 8C269FE5 		ldr	r2, .L70+8
+ 791 07ec 0D30C2E5 		strb	r3, [r2, #13]
+ 180:LL_HL_comm.c  **** 		LL_1khz_control_input.direct_motor_control[2]=WO_Direct_Motor_Control.yaw;
+ 793              	.LM73:
+ 794 07f0 94369FE5 		ldr	r3, .L70+24
+ 795 07f4 0230D3E5 		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 796 07f8 7C269FE5 		ldr	r2, .L70+8
+ 797 07fc 0E30C2E5 		strb	r3, [r2, #14]
+ 181:LL_HL_comm.c  **** 		LL_1khz_control_input.direct_motor_control[3]=WO_Direct_Motor_Control.thrust;
+ 799              	.LM74:
+ 800 0800 84369FE5 		ldr	r3, .L70+24
+ 801 0804 0330D3E5 		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 802 0808 6C269FE5 		ldr	r2, .L70+8
+ 803 080c 0F30C2E5 		strb	r3, [r2, #15]
+ 804 0810 0C0100EA 		b	.L44
+ 805              	.L45:
+ 182:LL_HL_comm.c  **** 	}
+ 183:LL_HL_comm.c  **** 	else if (WO_SDK.ctrl_mode==0x02) //attitude control
+ 807              	.LM75:
+ 808 0814 68369FE5 		ldr	r3, .L70+16
+ 809 0818 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 810 081c 020053E3 		cmp	r3, #2
+ 811 0820 2100001A 		bne	.L47
+ 184:LL_HL_comm.c  **** 	{
+ 185:LL_HL_comm.c  **** 		LL_1khz_control_input.system_flags&=~(SF_DIRECT_MOTOR_CONTROL|SF_DIRECT_MOTOR_CONTROL_INDIVIDUAL|
+ 813              	.LM76:
+ 814 0824 50369FE5 		ldr	r3, .L70+8
+ 815 0828 B030D3E1 		ldrh	r3, [r3, #0]
+ 816 082c 18300BE5 		str	r3, [fp, #-24]
+ 817 0830 18201BE5 		ldr	r2, [fp, #-24]
+ 818 0834 E030C2E3 		bic	r3, r2, #224
+ 819 0838 0338A0E1 		mov	r3, r3, asl #16
+ 820 083c 2338A0E1 		mov	r3, r3, lsr #16
+ 821 0840 18300BE5 		str	r3, [fp, #-24]
+ 822 0844 30369FE5 		ldr	r3, .L70+8
+ 823 0848 18201BE5 		ldr	r2, [fp, #-24]
+ 824 084c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 186:LL_HL_comm.c  **** 		LL_1khz_control_input.ctrl_flags=WO_CTRL_Input.ctrl;
+ 826              	.LM77:
+ 827 0850 38369FE5 		ldr	r3, .L70+28
+ 828 0854 B830D3E1 		ldrh	r3, [r3, #8]
+ 829 0858 0338A0E1 		mov	r3, r3, asl #16
+ 830 085c 2328A0E1 		mov	r2, r3, lsr #16
+ 831 0860 14369FE5 		ldr	r3, .L70+8
+ 832 0864 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+ 187:LL_HL_comm.c  **** 		LL_1khz_control_input.pitch=WO_CTRL_Input.pitch;
+ 834              	.LM78:
+ 835 0868 20369FE5 		ldr	r3, .L70+28
+ 836 086c B020D3E1 		ldrh	r2, [r3, #0]
+ 837 0870 04369FE5 		ldr	r3, .L70+8
+ 838 0874 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+ 188:LL_HL_comm.c  **** 		LL_1khz_control_input.roll=WO_CTRL_Input.roll;
+ 840              	.LM79:
+ 841 0878 10369FE5 		ldr	r3, .L70+28
+ 842 087c B220D3E1 		ldrh	r2, [r3, #2]
+ 843 0880 F4359FE5 		ldr	r3, .L70+8
+ 844 0884 B620C3E1 		strh	r2, [r3, #6]	@ movhi
+ 189:LL_HL_comm.c  **** 		LL_1khz_control_input.yaw=WO_CTRL_Input.yaw;
+ 846              	.LM80:
+ 847 0888 00369FE5 		ldr	r3, .L70+28
+ 848 088c B420D3E1 		ldrh	r2, [r3, #4]
+ 849 0890 E4359FE5 		ldr	r3, .L70+8
+ 850 0894 B820C3E1 		strh	r2, [r3, #8]	@ movhi
+ 190:LL_HL_comm.c  **** 		LL_1khz_control_input.thrust=WO_CTRL_Input.thrust;
+ 852              	.LM81:
+ 853 0898 F0359FE5 		ldr	r3, .L70+28
+ 854 089c B620D3E1 		ldrh	r2, [r3, #6]
+ 855 08a0 D4359FE5 		ldr	r3, .L70+8
+ 856 08a4 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 857 08a8 E60000EA 		b	.L44
+ 858              	.L47:
+ 191:LL_HL_comm.c  **** 	}
+ 192:LL_HL_comm.c  **** 	else if (WO_SDK.ctrl_mode==0x03) //gps waypoint control
+ 860              	.LM82:
+ 861 08ac D0359FE5 		ldr	r3, .L70+16
+ 862 08b0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 863 08b4 030053E3 		cmp	r3, #3
+ 864 08b8 D700001A 		bne	.L49
+ 193:LL_HL_comm.c  **** 	{
+ 194:LL_HL_comm.c  **** 			LL_1khz_control_input.system_flags|=SF_WAYPOINT_MODE;
+ 866              	.LM83:
+ 867 08bc B8359FE5 		ldr	r3, .L70+8
+ 868 08c0 B030D3E1 		ldrh	r3, [r3, #0]
+ 869 08c4 403083E3 		orr	r3, r3, #64
+ 870 08c8 0338A0E1 		mov	r3, r3, asl #16
+ 871 08cc 2328A0E1 		mov	r2, r3, lsr #16
+ 872 08d0 A4359FE5 		ldr	r3, .L70+8
+ 873 08d4 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 195:LL_HL_comm.c  **** 
+ 196:LL_HL_comm.c  **** 			//check if new command should be send
+ 197:LL_HL_comm.c  **** 
+ 198:LL_HL_comm.c  **** 			if (wpCtrlWpCmdUpdated)
+ 875              	.LM84:
+ 876 08d8 B4359FE5 		ldr	r3, .L70+32
+ 877 08dc 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 878 08e0 000053E3 		cmp	r3, #0
+ 879 08e4 C600000A 		beq	.L51
+ 199:LL_HL_comm.c  **** 			{
+ 200:LL_HL_comm.c  **** 
+ 201:LL_HL_comm.c  **** 				if (wpCtrlWpCmd==WP_CMD_SINGLE_WP)
+ 881              	.LM85:
+ 882 08e8 A8359FE5 		ldr	r3, .L70+36
+ 883 08ec 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 884 08f0 010053E3 		cmp	r3, #1
+ 885 08f4 AA00001A 		bne	.L53
+ 202:LL_HL_comm.c  **** 				{
+ 203:LL_HL_comm.c  **** 					if (wpCtrlWpCmdUpdated==1)
+ 887              	.LM86:
+ 888 08f8 94359FE5 		ldr	r3, .L70+32
+ 889 08fc 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 890 0900 010053E3 		cmp	r3, #1
+ 891 0904 6000001A 		bne	.L55
+ 204:LL_HL_comm.c  **** 					{
+ 205:LL_HL_comm.c  **** 						LL_1khz_control_input.ctrl_flags&=0x00FF;
+ 893              	.LM87:
+ 894 0908 6C359FE5 		ldr	r3, .L70+8
+ 895 090c B230D3E1 		ldrh	r3, [r3, #2]
+ 896 0910 FF3003E2 		and	r3, r3, #255
+ 897 0914 60259FE5 		ldr	r2, .L70+8
+ 898 0918 B230C2E1 		strh	r3, [r2, #2]	@ movhi
+ 206:LL_HL_comm.c  **** 						LL_1khz_control_input.ctrl_flags|=WP_CMD_SINGLE_WP_PART1<<8;
+ 900              	.LM88:
+ 901 091c 58359FE5 		ldr	r3, .L70+8
+ 902 0920 B230D3E1 		ldrh	r3, [r3, #2]
+ 903 0924 FF3483E3 		orr	r3, r3, #-16777216
+ 904 0928 FF3883E3 		orr	r3, r3, #16711680
+ 905 092c 813C83E3 		orr	r3, r3, #33024
+ 906 0930 0338A0E1 		mov	r3, r3, asl #16
+ 907 0934 2328A0E1 		mov	r2, r3, lsr #16
+ 908 0938 3C359FE5 		ldr	r3, .L70+8
+ 909 093c B220C3E1 		strh	r2, [r3, #2]	@ movhi
+ 207:LL_HL_comm.c  **** 
+ 208:LL_HL_comm.c  **** 						LL_1khz_control_input.pitch=wpToLL.X&0xFFFF;
+ 911              	.LM89:
+ 912 0940 54359FE5 		ldr	r3, .L70+40
+ 913 0944 0C3093E5 		ldr	r3, [r3, #12]
+ 914 0948 0338A0E1 		mov	r3, r3, asl #16
+ 915 094c 2338A0E1 		mov	r3, r3, lsr #16
+ 916 0950 0338A0E1 		mov	r3, r3, asl #16
+ 917 0954 2328A0E1 		mov	r2, r3, lsr #16
+ 918 0958 1C359FE5 		ldr	r3, .L70+8
+ 919 095c B420C3E1 		strh	r2, [r3, #4]	@ movhi
+ 209:LL_HL_comm.c  **** 						LL_1khz_control_input.roll=wpToLL.X>>16;
+ 921              	.LM90:
+ 922 0960 34359FE5 		ldr	r3, .L70+40
+ 923 0964 0C3093E5 		ldr	r3, [r3, #12]
+ 924 0968 4338A0E1 		mov	r3, r3, asr #16
+ 925 096c 0338A0E1 		mov	r3, r3, asl #16
+ 926 0970 2328A0E1 		mov	r2, r3, lsr #16
+ 927 0974 00359FE5 		ldr	r3, .L70+8
+ 928 0978 B620C3E1 		strh	r2, [r3, #6]	@ movhi
+ 210:LL_HL_comm.c  **** 						LL_1khz_control_input.thrust=wpToLL.Y&0xFFFF;
+ 930              	.LM91:
+ 931 097c 18359FE5 		ldr	r3, .L70+40
+ 932 0980 103093E5 		ldr	r3, [r3, #16]
+ 933 0984 0338A0E1 		mov	r3, r3, asl #16
+ 934 0988 2338A0E1 		mov	r3, r3, lsr #16
+ 935 098c 0338A0E1 		mov	r3, r3, asl #16
+ 936 0990 2328A0E1 		mov	r2, r3, lsr #16
+ 937 0994 E0349FE5 		ldr	r3, .L70+8
+ 938 0998 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 211:LL_HL_comm.c  **** 						LL_1khz_control_input.yaw=wpToLL.Y>>16;
+ 940              	.LM92:
+ 941 099c F8349FE5 		ldr	r3, .L70+40
+ 942 09a0 103093E5 		ldr	r3, [r3, #16]
+ 943 09a4 4338A0E1 		mov	r3, r3, asr #16
+ 944 09a8 0338A0E1 		mov	r3, r3, asl #16
+ 945 09ac 2328A0E1 		mov	r2, r3, lsr #16
+ 946 09b0 C4349FE5 		ldr	r3, .L70+8
+ 947 09b4 B820C3E1 		strh	r2, [r3, #8]	@ movhi
+ 212:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[0]=wpToLL.height;
+ 949              	.LM93:
+ 950 09b8 DC349FE5 		ldr	r3, .L70+40
+ 951 09bc 183093E5 		ldr	r3, [r3, #24]
+ 952 09c0 FF3003E2 		and	r3, r3, #255
+ 953 09c4 B0249FE5 		ldr	r2, .L70+8
+ 954 09c8 0C30C2E5 		strb	r3, [r2, #12]
+ 213:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[1]=wpToLL.height>>8;
+ 956              	.LM94:
+ 957 09cc C8349FE5 		ldr	r3, .L70+40
+ 958 09d0 183093E5 		ldr	r3, [r3, #24]
+ 959 09d4 4334A0E1 		mov	r3, r3, asr #8
+ 960 09d8 FF3003E2 		and	r3, r3, #255
+ 961 09dc 98249FE5 		ldr	r2, .L70+8
+ 962 09e0 0D30C2E5 		strb	r3, [r2, #13]
+ 214:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[2]=wpToLL.height>>16;
+ 964              	.LM95:
+ 965 09e4 B0349FE5 		ldr	r3, .L70+40
+ 966 09e8 183093E5 		ldr	r3, [r3, #24]
+ 967 09ec 4338A0E1 		mov	r3, r3, asr #16
+ 968 09f0 FF3003E2 		and	r3, r3, #255
+ 969 09f4 80249FE5 		ldr	r2, .L70+8
+ 970 09f8 0E30C2E5 		strb	r3, [r2, #14]
+ 215:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[3]=wpToLL.height>>24;
+ 972              	.LM96:
+ 973 09fc 98349FE5 		ldr	r3, .L70+40
+ 974 0a00 183093E5 		ldr	r3, [r3, #24]
+ 975 0a04 433CA0E1 		mov	r3, r3, asr #24
+ 976 0a08 FF3003E2 		and	r3, r3, #255
+ 977 0a0c 68249FE5 		ldr	r2, .L70+8
+ 978 0a10 0F30C2E5 		strb	r3, [r2, #15]
+ 216:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[4]=wpToLL.yaw;
+ 980              	.LM97:
+ 981 0a14 80349FE5 		ldr	r3, .L70+40
+ 982 0a18 143093E5 		ldr	r3, [r3, #20]
+ 983 0a1c FF3003E2 		and	r3, r3, #255
+ 984 0a20 54249FE5 		ldr	r2, .L70+8
+ 985 0a24 1030C2E5 		strb	r3, [r2, #16]
+ 217:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[5]=wpToLL.yaw>>8;
+ 987              	.LM98:
+ 988 0a28 6C349FE5 		ldr	r3, .L70+40
+ 989 0a2c 143093E5 		ldr	r3, [r3, #20]
+ 990 0a30 4334A0E1 		mov	r3, r3, asr #8
+ 991 0a34 FF3003E2 		and	r3, r3, #255
+ 992 0a38 3C249FE5 		ldr	r2, .L70+8
+ 993 0a3c 1130C2E5 		strb	r3, [r2, #17]
+ 218:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[6]=wpToLL.yaw>>16;
+ 995              	.LM99:
+ 996 0a40 54349FE5 		ldr	r3, .L70+40
+ 997 0a44 143093E5 		ldr	r3, [r3, #20]
+ 998 0a48 4338A0E1 		mov	r3, r3, asr #16
+ 999 0a4c FF3003E2 		and	r3, r3, #255
+ 1000 0a50 24249FE5 		ldr	r2, .L70+8
+ 1001 0a54 1230C2E5 		strb	r3, [r2, #18]
+ 219:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[7]=wpToLL.yaw>>24;
+ 1003              	.LM100:
+ 1004 0a58 3C349FE5 		ldr	r3, .L70+40
+ 1005 0a5c 143093E5 		ldr	r3, [r3, #20]
+ 1006 0a60 433CA0E1 		mov	r3, r3, asr #24
+ 1007 0a64 FF3003E2 		and	r3, r3, #255
+ 1008 0a68 0C249FE5 		ldr	r2, .L70+8
+ 1009 0a6c 1330C2E5 		strb	r3, [r2, #19]
+ 220:LL_HL_comm.c  **** 
+ 221:LL_HL_comm.c  **** 						wpCtrlWpCmdUpdated++;
+ 1011              	.LM101:
+ 1012 0a70 1C349FE5 		ldr	r3, .L70+32
+ 1013 0a74 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1014 0a78 013083E2 		add	r3, r3, #1
+ 1015 0a7c FF3003E2 		and	r3, r3, #255
+ 1016 0a80 0C249FE5 		ldr	r2, .L70+32
+ 1017 0a84 0030C2E5 		strb	r3, [r2, #0]
+ 1018 0a88 6E0000EA 		b	.L44
+ 1019              	.L55:
+ 222:LL_HL_comm.c  **** 					}else if (wpCtrlWpCmdUpdated==2)
+ 1021              	.LM102:
+ 1022 0a8c 00349FE5 		ldr	r3, .L70+32
+ 1023 0a90 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1024 0a94 020053E3 		cmp	r3, #2
+ 1025 0a98 6A00001A 		bne	.L44
+ 223:LL_HL_comm.c  **** 					{
+ 224:LL_HL_comm.c  **** 						LL_1khz_control_input.ctrl_flags&=0x00FF;
+ 1027              	.LM103:
+ 1028 0a9c D8339FE5 		ldr	r3, .L70+8
+ 1029 0aa0 B230D3E1 		ldrh	r3, [r3, #2]
+ 1030 0aa4 FF3003E2 		and	r3, r3, #255
+ 1031 0aa8 CC239FE5 		ldr	r2, .L70+8
+ 1032 0aac B230C2E1 		strh	r3, [r2, #2]	@ movhi
+ 225:LL_HL_comm.c  **** 						LL_1khz_control_input.ctrl_flags|=WP_CMD_SINGLE_WP_PART2<<8;
+ 1034              	.LM104:
+ 1035 0ab0 C4339FE5 		ldr	r3, .L70+8
+ 1036 0ab4 B230D3E1 		ldrh	r3, [r3, #2]
+ 1037 0ab8 FF3483E3 		orr	r3, r3, #-16777216
+ 1038 0abc FF3883E3 		orr	r3, r3, #16711680
+ 1039 0ac0 823C83E3 		orr	r3, r3, #33280
+ 1040 0ac4 0338A0E1 		mov	r3, r3, asl #16
+ 1041 0ac8 2328A0E1 		mov	r2, r3, lsr #16
+ 1042 0acc A8339FE5 		ldr	r3, .L70+8
+ 1043 0ad0 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+ 226:LL_HL_comm.c  **** 
+ 227:LL_HL_comm.c  **** 						LL_1khz_control_input.pitch=wpToLL.time;
+ 1045              	.LM105:
+ 1046 0ad4 C0339FE5 		ldr	r3, .L70+40
+ 1047 0ad8 B630D3E1 		ldrh	r3, [r3, #6]
+ 1048 0adc 0320A0E1 		mov	r2, r3
+ 1049 0ae0 94339FE5 		ldr	r3, .L70+8
+ 1050 0ae4 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+ 228:LL_HL_comm.c  **** 						LL_1khz_control_input.roll=0; //wpToLL.cam_angle_pitch;
+ 1052              	.LM106:
+ 1053 0ae8 8C239FE5 		ldr	r2, .L70+8
+ 1054 0aec 0030A0E3 		mov	r3, #0
+ 1055 0af0 B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 229:LL_HL_comm.c  **** 						LL_1khz_control_input.thrust=wpToLL.pos_acc;
+ 1057              	.LM107:
+ 1058 0af4 A0339FE5 		ldr	r3, .L70+40
+ 1059 0af8 B830D3E1 		ldrh	r3, [r3, #8]
+ 1060 0afc 0320A0E1 		mov	r2, r3
+ 1061 0b00 74339FE5 		ldr	r3, .L70+8
+ 1062 0b04 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 230:LL_HL_comm.c  **** 						LL_1khz_control_input.yaw=wpToLL.chksum;
+ 1064              	.LM108:
+ 1065 0b08 8C339FE5 		ldr	r3, .L70+40
+ 1066 0b0c BA20D3E1 		ldrh	r2, [r3, #10]
+ 1067 0b10 64339FE5 		ldr	r3, .L70+8
+ 1068 0b14 B820C3E1 		strh	r2, [r3, #8]	@ movhi
+ 231:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[0]=0; //wpToLL.cam_angle_roll;
+ 1070              	.LM109:
+ 1071 0b18 5C239FE5 		ldr	r2, .L70+8
+ 1072 0b1c 0030A0E3 		mov	r3, #0
+ 1073 0b20 0C30C2E5 		strb	r3, [r2, #12]
+ 232:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[1]=wpToLL.max_speed;
+ 1075              	.LM110:
+ 1076 0b24 70339FE5 		ldr	r3, .L70+40
+ 1077 0b28 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 1078 0b2c 48239FE5 		ldr	r2, .L70+8
+ 1079 0b30 0D30C2E5 		strb	r3, [r2, #13]
+ 233:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[2]=wpToLL.properties;
+ 1081              	.LM111:
+ 1082 0b34 60339FE5 		ldr	r3, .L70+40
+ 1083 0b38 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 1084 0b3c 38239FE5 		ldr	r2, .L70+8
+ 1085 0b40 0E30C2E5 		strb	r3, [r2, #14]
+ 234:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[3]=wpToLL.wp_activated;
+ 1087              	.LM112:
+ 1088 0b44 50339FE5 		ldr	r3, .L70+40
+ 1089 0b48 003093E5 		ldr	r3, [r3, #0]
+ 1090 0b4c FF3003E2 		and	r3, r3, #255
+ 1091 0b50 24239FE5 		ldr	r2, .L70+8
+ 1092 0b54 0F30C2E5 		strb	r3, [r2, #15]
+ 235:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[4]=0;
+ 1094              	.LM113:
+ 1095 0b58 1C239FE5 		ldr	r2, .L70+8
+ 1096 0b5c 0030A0E3 		mov	r3, #0
+ 1097 0b60 1030C2E5 		strb	r3, [r2, #16]
+ 236:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[5]=0;
+ 1099              	.LM114:
+ 1100 0b64 10239FE5 		ldr	r2, .L70+8
+ 1101 0b68 0030A0E3 		mov	r3, #0
+ 1102 0b6c 1130C2E5 		strb	r3, [r2, #17]
+ 237:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[6]=0;
+ 1104              	.LM115:
+ 1105 0b70 04239FE5 		ldr	r2, .L70+8
+ 1106 0b74 0030A0E3 		mov	r3, #0
+ 1107 0b78 1230C2E5 		strb	r3, [r2, #18]
+ 238:LL_HL_comm.c  **** 						LL_1khz_control_input.direct_motor_control[7]=0;
+ 1109              	.LM116:
+ 1110 0b7c F8229FE5 		ldr	r2, .L70+8
+ 1111 0b80 0030A0E3 		mov	r3, #0
+ 1112 0b84 1330C2E5 		strb	r3, [r2, #19]
+ 239:LL_HL_comm.c  **** 						wpCtrlWpCmdUpdated=0;
+ 1114              	.LM117:
+ 1115 0b88 04239FE5 		ldr	r2, .L70+32
+ 1116 0b8c 0030A0E3 		mov	r3, #0
+ 1117 0b90 0030C2E5 		strb	r3, [r2, #0]
+ 240:LL_HL_comm.c  **** 						wpCtrlNavStatus=0;
+ 1119              	.LM118:
+ 1120 0b94 04239FE5 		ldr	r2, .L70+44
+ 1121 0b98 0030A0E3 		mov	r3, #0
+ 1122 0b9c B030C2E1 		strh	r3, [r2, #0]	@ movhi
+ 1123 0ba0 280000EA 		b	.L44
+ 1124              	.L53:
+ 241:LL_HL_comm.c  **** 					}
+ 242:LL_HL_comm.c  **** 				}else
+ 243:LL_HL_comm.c  **** 				{
+ 244:LL_HL_comm.c  **** 						LL_1khz_control_input.ctrl_flags&=0x00FF;
+ 1126              	.LM119:
+ 1127 0ba4 D0329FE5 		ldr	r3, .L70+8
+ 1128 0ba8 B230D3E1 		ldrh	r3, [r3, #2]
+ 1129 0bac FF3003E2 		and	r3, r3, #255
+ 1130 0bb0 C4229FE5 		ldr	r2, .L70+8
+ 1131 0bb4 B230C2E1 		strh	r3, [r2, #2]	@ movhi
+ 245:LL_HL_comm.c  **** 						LL_1khz_control_input.ctrl_flags|=wpCtrlWpCmd<<8;
+ 1133              	.LM120:
+ 1134 0bb8 BC329FE5 		ldr	r3, .L70+8
+ 1135 0bbc B230D3E1 		ldrh	r3, [r3, #2]
+ 1136 0bc0 0320A0E1 		mov	r2, r3
+ 1137 0bc4 CC329FE5 		ldr	r3, .L70+36
+ 1138 0bc8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1139 0bcc 0334A0E1 		mov	r3, r3, asl #8
+ 1140 0bd0 0338A0E1 		mov	r3, r3, asl #16
+ 1141 0bd4 2338A0E1 		mov	r3, r3, lsr #16
+ 1142 0bd8 033082E1 		orr	r3, r2, r3
+ 1143 0bdc 0338A0E1 		mov	r3, r3, asl #16
+ 1144 0be0 2338A0E1 		mov	r3, r3, lsr #16
+ 1145 0be4 0338A0E1 		mov	r3, r3, asl #16
+ 1146 0be8 2328A0E1 		mov	r2, r3, lsr #16
+ 1147 0bec 88329FE5 		ldr	r3, .L70+8
+ 1148 0bf0 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+ 246:LL_HL_comm.c  **** 					wpCtrlWpCmdUpdated=0;
+ 1150              	.LM121:
+ 1151 0bf4 98229FE5 		ldr	r2, .L70+32
+ 1152 0bf8 0030A0E3 		mov	r3, #0
+ 1153 0bfc 0030C2E5 		strb	r3, [r2, #0]
+ 1154 0c00 100000EA 		b	.L44
+ 1155              	.L51:
+ 247:LL_HL_comm.c  **** 				}
+ 248:LL_HL_comm.c  **** 			}else
+ 249:LL_HL_comm.c  **** 			{
+ 250:LL_HL_comm.c  **** 				LL_1khz_control_input.ctrl_flags&=0x00FF;
+ 1157              	.LM122:
+ 1158 0c04 70329FE5 		ldr	r3, .L70+8
+ 1159 0c08 B230D3E1 		ldrh	r3, [r3, #2]
+ 1160 0c0c FF3003E2 		and	r3, r3, #255
+ 1161 0c10 64229FE5 		ldr	r2, .L70+8
+ 1162 0c14 B230C2E1 		strh	r3, [r2, #2]	@ movhi
+ 1163 0c18 0A0000EA 		b	.L44
+ 1164              	.L49:
+ 251:LL_HL_comm.c  **** 			}
+ 252:LL_HL_comm.c  **** 	}
+ 253:LL_HL_comm.c  **** 	else LL_1khz_control_input.system_flags&=~(SF_DIRECT_MOTOR_CONTROL|SF_DIRECT_MOTOR_CONTROL_INDIVID
+ 1166              	.LM123:
+ 1167 0c1c 58329FE5 		ldr	r3, .L70+8
+ 1168 0c20 B030D3E1 		ldrh	r3, [r3, #0]
+ 1169 0c24 14300BE5 		str	r3, [fp, #-20]
+ 1170 0c28 14201BE5 		ldr	r2, [fp, #-20]
+ 1171 0c2c E030C2E3 		bic	r3, r2, #224
+ 1172 0c30 0338A0E1 		mov	r3, r3, asl #16
+ 1173 0c34 2338A0E1 		mov	r3, r3, lsr #16
+ 1174 0c38 14300BE5 		str	r3, [fp, #-20]
+ 1175 0c3c 38329FE5 		ldr	r3, .L70+8
+ 1176 0c40 14201BE5 		ldr	r2, [fp, #-20]
+ 1177 0c44 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 1178              	.L44:
+ 254:LL_HL_comm.c  **** 
+ 255:LL_HL_comm.c  **** 	if(pageselect==0)
+ 1180              	.LM124:
+ 1181 0c48 28329FE5 		ldr	r3, .L70+4
+ 1182 0c4c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1183 0c50 000053E3 		cmp	r3, #0
+ 1184 0c54 2B00001A 		bne	.L61
+ 256:LL_HL_comm.c  **** 	{
+ 257:LL_HL_comm.c  **** 		//fill struct with 500Hz data
+ 258:LL_HL_comm.c  **** 		LL_1khz_control_input.latitude=GPS_Data.latitude;
+ 1186              	.LM125:
+ 1187 0c58 44329FE5 		ldr	r3, .L70+48
+ 1188 0c5c 002093E5 		ldr	r2, [r3, #0]
+ 1189 0c60 14329FE5 		ldr	r3, .L70+8
+ 1190 0c64 142083E5 		str	r2, [r3, #20]
+ 259:LL_HL_comm.c  **** 		LL_1khz_control_input.longitude=GPS_Data.longitude;
+ 1192              	.LM126:
+ 1193 0c68 34329FE5 		ldr	r3, .L70+48
+ 1194 0c6c 042093E5 		ldr	r2, [r3, #4]
+ 1195 0c70 04329FE5 		ldr	r3, .L70+8
+ 1196 0c74 182083E5 		str	r2, [r3, #24]
+ 260:LL_HL_comm.c  **** 		LL_1khz_control_input.height=GPS_Data.height;
+ 1198              	.LM127:
+ 1199 0c78 24329FE5 		ldr	r3, .L70+48
+ 1200 0c7c 082093E5 		ldr	r2, [r3, #8]
+ 1201 0c80 F4319FE5 		ldr	r3, .L70+8
+ 1202 0c84 1C2083E5 		str	r2, [r3, #28]
+ 261:LL_HL_comm.c  **** 		LL_1khz_control_input.speed_x=GPS_Data.speed_x;
+ 1204              	.LM128:
+ 1205 0c88 14329FE5 		ldr	r3, .L70+48
+ 1206 0c8c 0C3093E5 		ldr	r3, [r3, #12]
+ 1207 0c90 0338A0E1 		mov	r3, r3, asl #16
+ 1208 0c94 2328A0E1 		mov	r2, r3, lsr #16
+ 1209 0c98 DC319FE5 		ldr	r3, .L70+8
+ 1210 0c9c B022C3E1 		strh	r2, [r3, #32]	@ movhi
+ 262:LL_HL_comm.c  **** 		LL_1khz_control_input.speed_y=GPS_Data.speed_y;
+ 1212              	.LM129:
+ 1213 0ca0 FC319FE5 		ldr	r3, .L70+48
+ 1214 0ca4 103093E5 		ldr	r3, [r3, #16]
+ 1215 0ca8 0338A0E1 		mov	r3, r3, asl #16
+ 1216 0cac 2328A0E1 		mov	r2, r3, lsr #16
+ 1217 0cb0 C4319FE5 		ldr	r3, .L70+8
+ 1218 0cb4 B222C3E1 		strh	r2, [r3, #34]	@ movhi
+ 263:LL_HL_comm.c  **** 		LL_1khz_control_input.heading=GPS_Data.heading;
+ 1220              	.LM130:
+ 1221 0cb8 E4319FE5 		ldr	r3, .L70+48
+ 1222 0cbc 143093E5 		ldr	r3, [r3, #20]
+ 1223 0cc0 0338A0E1 		mov	r3, r3, asl #16
+ 1224 0cc4 2328A0E1 		mov	r2, r3, lsr #16
+ 1225 0cc8 AC319FE5 		ldr	r3, .L70+8
+ 1226 0ccc BE22C3E1 		strh	r2, [r3, #46]	@ movhi
+ 264:LL_HL_comm.c  **** 		LL_1khz_control_input.status=GPS_Data.status;
+ 1228              	.LM131:
+ 1229 0cd0 CC319FE5 		ldr	r3, .L70+48
+ 1230 0cd4 283093E5 		ldr	r3, [r3, #40]
+ 1231 0cd8 0338A0E1 		mov	r3, r3, asl #16
+ 1232 0cdc 2328A0E1 		mov	r2, r3, lsr #16
+ 1233 0ce0 94319FE5 		ldr	r3, .L70+8
+ 1234 0ce4 B422C3E1 		strh	r2, [r3, #36]	@ movhi
+ 265:LL_HL_comm.c  **** 
+ 266:LL_HL_comm.c  **** 		//write data
+ 267:LL_HL_comm.c  **** 		LL_write_ctrl_data(pageselect);
+ 1236              	.LM132:
+ 1237 0ce8 88319FE5 		ldr	r3, .L70+4
+ 1238 0cec 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1239 0cf0 0300A0E1 		mov	r0, r3
+ 1240 0cf4 FEFFFFEB 		bl	LL_write_ctrl_data
+ 268:LL_HL_comm.c  **** 		//set pageselect to other page for next cycle
+ 269:LL_HL_comm.c  **** 		pageselect=1;
+ 1242              	.LM133:
+ 1243 0cf8 78219FE5 		ldr	r2, .L70+4
+ 1244 0cfc 0130A0E3 		mov	r3, #1
+ 1245 0d00 0030C2E5 		strb	r3, [r2, #0]
+ 1246 0d04 530000EA 		b	.L63
+ 1247              	.L61:
+ 270:LL_HL_comm.c  **** 	}
+ 271:LL_HL_comm.c  **** 	else //pageselect=1
+ 272:LL_HL_comm.c  **** 	{
+ 273:LL_HL_comm.c  **** 		//fill struct with 500Hz data
+ 274:LL_HL_comm.c  **** 		LL_1khz_control_input.hor_accuracy=GPS_Data.horizontal_accuracy;
+ 1249              	.LM134:
+ 1250 0d08 94319FE5 		ldr	r3, .L70+48
+ 1251 0d0c 183093E5 		ldr	r3, [r3, #24]
+ 1252 0d10 0338A0E1 		mov	r3, r3, asl #16
+ 1253 0d14 2328A0E1 		mov	r2, r3, lsr #16
+ 1254 0d18 5C319FE5 		ldr	r3, .L70+8
+ 1255 0d1c B622C3E1 		strh	r2, [r3, #38]	@ movhi
+ 275:LL_HL_comm.c  **** 		LL_1khz_control_input.vert_accuracy=GPS_Data.vertical_accuracy;
+ 1257              	.LM135:
+ 1258 0d20 7C319FE5 		ldr	r3, .L70+48
+ 1259 0d24 1C3093E5 		ldr	r3, [r3, #28]
+ 1260 0d28 0338A0E1 		mov	r3, r3, asl #16
+ 1261 0d2c 2328A0E1 		mov	r2, r3, lsr #16
+ 1262 0d30 44319FE5 		ldr	r3, .L70+8
+ 1263 0d34 B822C3E1 		strh	r2, [r3, #40]	@ movhi
+ 276:LL_HL_comm.c  **** 		LL_1khz_control_input.speed_accuracy=GPS_Data.speed_accuracy;
+ 1265              	.LM136:
+ 1266 0d38 64319FE5 		ldr	r3, .L70+48
+ 1267 0d3c 203093E5 		ldr	r3, [r3, #32]
+ 1268 0d40 0338A0E1 		mov	r3, r3, asl #16
+ 1269 0d44 2328A0E1 		mov	r2, r3, lsr #16
+ 1270 0d48 2C319FE5 		ldr	r3, .L70+8
+ 1271 0d4c BA22C3E1 		strh	r2, [r3, #42]	@ movhi
+ 277:LL_HL_comm.c  **** 		LL_1khz_control_input.numSV=GPS_Data.numSV;
+ 1273              	.LM137:
+ 1274 0d50 4C319FE5 		ldr	r3, .L70+48
+ 1275 0d54 243093E5 		ldr	r3, [r3, #36]
+ 1276 0d58 0338A0E1 		mov	r3, r3, asl #16
+ 1277 0d5c 2328A0E1 		mov	r2, r3, lsr #16
+ 1278 0d60 14319FE5 		ldr	r3, .L70+8
+ 1279 0d64 BC22C3E1 		strh	r2, [r3, #44]	@ movhi
+ 278:LL_HL_comm.c  **** 		LL_1khz_control_input.battery_voltage_1=HL_Status.battery_voltage_1;
+ 1281              	.LM138:
+ 1282 0d68 38319FE5 		ldr	r3, .L70+52
+ 1283 0d6c B020D3E1 		ldrh	r2, [r3, #0]
+ 1284 0d70 04319FE5 		ldr	r3, .L70+8
+ 1285 0d74 B023C3E1 		strh	r2, [r3, #48]	@ movhi
+ 279:LL_HL_comm.c  **** 		LL_1khz_control_input.battery_voltage_2=HL_Status.battery_voltage_2;
+ 1287              	.LM139:
+ 1288 0d78 28319FE5 		ldr	r3, .L70+52
+ 1289 0d7c B220D3E1 		ldrh	r2, [r3, #2]
+ 1290 0d80 F4309FE5 		ldr	r3, .L70+8
+ 1291 0d84 B223C3E1 		strh	r2, [r3, #50]	@ movhi
+ 280:LL_HL_comm.c  **** 		if (declinationAvailable==1)
+ 1293              	.LM140:
+ 1294 0d88 1C319FE5 		ldr	r3, .L70+56
+ 1295 0d8c 0030D3E5 		ldrb	r3, [r3, #0]
+ 1296 0d90 FF3003E2 		and	r3, r3, #255
+ 1297 0d94 010053E3 		cmp	r3, #1
+ 1298 0d98 0C00001A 		bne	.L64
+ 281:LL_HL_comm.c  **** 		{
+ 282:LL_HL_comm.c  **** 			declinationAvailable=2;
+ 1300              	.LM141:
+ 1301 0d9c 08219FE5 		ldr	r2, .L70+56
+ 1302 0da0 0230A0E3 		mov	r3, #2
+ 1303 0da4 0030C2E5 		strb	r3, [r2, #0]
+ 283:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelSelect=SDC_DECLINATION;
+ 1305              	.LM142:
+ 1306 0da8 CC209FE5 		ldr	r2, .L70+8
+ 1307 0dac 0130A0E3 		mov	r3, #1
+ 1308 0db0 3430C2E5 		strb	r3, [r2, #52]
+ 284:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelDataShort=estimatedDeclination;
+ 1310              	.LM143:
+ 1311 0db4 F4309FE5 		ldr	r3, .L70+60
+ 1312 0db8 003093E5 		ldr	r3, [r3, #0]
+ 1313 0dbc 0338A0E1 		mov	r3, r3, asl #16
+ 1314 0dc0 2328A0E1 		mov	r2, r3, lsr #16
+ 1315 0dc4 B0309FE5 		ldr	r3, .L70+8
+ 1316 0dc8 B623C3E1 		strh	r2, [r3, #54]	@ movhi
+ 1317 0dcc 1A0000EA 		b	.L66
+ 1318              	.L64:
+ 285:LL_HL_comm.c  **** 
+ 286:LL_HL_comm.c  **** 		}
+ 287:LL_HL_comm.c  **** 		else if (declinationAvailable==2)
+ 1320              	.LM144:
+ 1321 0dd0 D4309FE5 		ldr	r3, .L70+56
+ 1322 0dd4 0030D3E5 		ldrb	r3, [r3, #0]
+ 1323 0dd8 FF3003E2 		and	r3, r3, #255
+ 1324 0ddc 020053E3 		cmp	r3, #2
+ 1325 0de0 0C00001A 		bne	.L67
+ 288:LL_HL_comm.c  **** 		{
+ 289:LL_HL_comm.c  **** 			declinationAvailable=3;
+ 1327              	.LM145:
+ 1328 0de4 C0209FE5 		ldr	r2, .L70+56
+ 1329 0de8 0330A0E3 		mov	r3, #3
+ 1330 0dec 0030C2E5 		strb	r3, [r2, #0]
+ 290:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelSelect=SDC_INCLINATION;
+ 1332              	.LM146:
+ 1333 0df0 84209FE5 		ldr	r2, .L70+8
+ 1334 0df4 1230A0E3 		mov	r3, #18
+ 1335 0df8 3430C2E5 		strb	r3, [r2, #52]
+ 291:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelDataShort=estimatedInclination;
+ 1337              	.LM147:
+ 1338 0dfc B0309FE5 		ldr	r3, .L70+64
+ 1339 0e00 003093E5 		ldr	r3, [r3, #0]
+ 1340 0e04 0338A0E1 		mov	r3, r3, asl #16
+ 1341 0e08 2328A0E1 		mov	r2, r3, lsr #16
+ 1342 0e0c 68309FE5 		ldr	r3, .L70+8
+ 1343 0e10 B623C3E1 		strh	r2, [r3, #54]	@ movhi
+ 1344 0e14 080000EA 		b	.L66
+ 1345              	.L67:
+ 292:LL_HL_comm.c  **** 
+ 293:LL_HL_comm.c  **** 		}
+ 294:LL_HL_comm.c  **** 		else
+ 295:LL_HL_comm.c  **** 		{
+ 296:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelDataShort=0;
+ 1347              	.LM148:
+ 1348 0e18 5C209FE5 		ldr	r2, .L70+8
+ 1349 0e1c 0030A0E3 		mov	r3, #0
+ 1350 0e20 B633C2E1 		strh	r3, [r2, #54]	@ movhi
+ 297:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelSelect=0;
+ 1352              	.LM149:
+ 1353 0e24 50209FE5 		ldr	r2, .L70+8
+ 1354 0e28 0030A0E3 		mov	r3, #0
+ 1355 0e2c 3430C2E5 		strb	r3, [r2, #52]
+ 298:LL_HL_comm.c  **** 			LL_1khz_control_input.slowDataChannelDataChar=0;
+ 1357              	.LM150:
+ 1358 0e30 44209FE5 		ldr	r2, .L70+8
+ 1359 0e34 0030A0E3 		mov	r3, #0
+ 1360 0e38 3530C2E5 		strb	r3, [r2, #53]
+ 1361              	.L66:
+ 299:LL_HL_comm.c  **** 		}
+ 300:LL_HL_comm.c  **** 
+ 301:LL_HL_comm.c  **** 
+ 302:LL_HL_comm.c  **** 		//write data
+ 303:LL_HL_comm.c  **** 		LL_write_ctrl_data(pageselect);
+ 1363              	.LM151:
+ 1364 0e3c 34309FE5 		ldr	r3, .L70+4
+ 1365 0e40 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1366 0e44 0300A0E1 		mov	r0, r3
+ 1367 0e48 FEFFFFEB 		bl	LL_write_ctrl_data
+ 304:LL_HL_comm.c  **** 		//set pageselect to other page for next cycle
+ 305:LL_HL_comm.c  **** 		pageselect=0;
+ 1369              	.LM152:
+ 1370 0e4c 24209FE5 		ldr	r2, .L70+4
+ 1371 0e50 0030A0E3 		mov	r3, #0
+ 1372 0e54 0030C2E5 		strb	r3, [r2, #0]
+ 1373              	.L63:
+ 306:LL_HL_comm.c  **** 	}
+ 307:LL_HL_comm.c  **** 	return(1);
+ 1375              	.LM153:
+ 1376 0e58 0130A0E3 		mov	r3, #1
+ 1377 0e5c 20300BE5 		str	r3, [fp, #-32]
+ 1378              	.L30:
+ 1379 0e60 20301BE5 		ldr	r3, [fp, #-32]
+ 308:LL_HL_comm.c  **** }
+ 1381              	.LM154:
+ 1382 0e64 0300A0E1 		mov	r0, r3
+ 1383 0e68 0CD04BE2 		sub	sp, fp, #12
+ 1384 0e6c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1385 0e70 1EFF2FE1 		bx	lr
+ 1386              	.L71:
+ 1387              		.align	2
+ 1388              	.L70:
+ 1389 0e74 00000000 		.word	data_sent_to_LL
+ 1390 0e78 0A000000 		.word	pageselect.1648
+ 1391 0e7c 00000000 		.word	LL_1khz_control_input
+ 1392 0e80 00000000 		.word	gpsDataOkTrigger
+ 1393 0e84 00000000 		.word	WO_SDK
+ 1394 0e88 00000000 		.word	WO_Direct_Individual_Motor_Control
+ 1395 0e8c 00000000 		.word	WO_Direct_Motor_Control
+ 1396 0e90 00000000 		.word	WO_CTRL_Input
+ 1397 0e94 00000000 		.word	wpCtrlWpCmdUpdated
+ 1398 0e98 00000000 		.word	wpCtrlWpCmd
+ 1399 0e9c 00000000 		.word	wpToLL
+ 1400 0ea0 00000000 		.word	wpCtrlNavStatus
+ 1401 0ea4 00000000 		.word	GPS_Data
+ 1402 0ea8 00000000 		.word	HL_Status
+ 1403 0eac 00000000 		.word	declinationAvailable
+ 1404 0eb0 00000000 		.word	estimatedDeclination
+ 1405 0eb4 00000000 		.word	estimatedInclination
+ 1411              	.Lscope1:
+ 1412              		.bss
+ 1413 000b 00       		.align	1
+ 1414              	spi_chksum.1846:
+ 1415 000c 0000     		.space	2
+ 1417              		.text
+ 1418              		.align	2
+ 1421              		.global	LL_write_ctrl_data
+ 1423              	LL_write_ctrl_data:
+ 309:LL_HL_comm.c  **** 
+ 310:LL_HL_comm.c  **** void LL_write_ctrl_data(char page)
+ 311:LL_HL_comm.c  **** {
+ 1425              	.LM155:
+ 1426              		@ Function supports interworking.
+ 1427              		@ args = 0, pretend = 0, frame = 12
+ 1428              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1429 0eb8 0DC0A0E1 		mov	ip, sp
+ 1430 0ebc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1431 0ec0 04B04CE2 		sub	fp, ip, #4
+ 1432 0ec4 0CD04DE2 		sub	sp, sp, #12
+ 1433 0ec8 0030A0E1 		mov	r3, r0
+ 1434 0ecc 18304BE5 		strb	r3, [fp, #-24]
+ 312:LL_HL_comm.c  **** 	unsigned int i;
+ 313:LL_HL_comm.c  **** 	unsigned char *dataptr;
+ 314:LL_HL_comm.c  **** 	static volatile short spi_chksum;
+ 315:LL_HL_comm.c  **** 
+ 316:LL_HL_comm.c  **** 	dataptr=(unsigned char *)&LL_1khz_control_input;
+ 1436              	.LM156:
+ 1437 0ed0 40329FE5 		ldr	r3, .L85
+ 1438 0ed4 10300BE5 		str	r3, [fp, #-16]
+ 317:LL_HL_comm.c  **** 
+ 318:LL_HL_comm.c  **** 	//initialize syncbytes
+ 319:LL_HL_comm.c  **** 	SPIWRData[0]='>';
+ 1440              	.LM157:
+ 1441 0ed8 3C229FE5 		ldr	r2, .L85+4
+ 1442 0edc 3E30A0E3 		mov	r3, #62
+ 1443 0ee0 0030C2E5 		strb	r3, [r2, #0]
+ 320:LL_HL_comm.c  **** 	SPIWRData[1]='*';
+ 1445              	.LM158:
+ 1446 0ee4 30229FE5 		ldr	r2, .L85+4
+ 1447 0ee8 2A30A0E3 		mov	r3, #42
+ 1448 0eec 0130C2E5 		strb	r3, [r2, #1]
+ 321:LL_HL_comm.c  **** 
+ 322:LL_HL_comm.c  **** 	spi_chksum=0xAAAA;
+ 1450              	.LM159:
+ 1451 0ef0 28229FE5 		ldr	r2, .L85+8
+ 1452 0ef4 553CE0E3 		mvn	r3, #21760
+ 1453 0ef8 553043E2 		sub	r3, r3, #85
+ 1454 0efc B030C2E1 		strh	r3, [r2, #0]	@ movhi
+ 323:LL_HL_comm.c  **** 
+ 324:LL_HL_comm.c  **** 	if(!page)
+ 1456              	.LM160:
+ 1457 0f00 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1458 0f04 000053E3 		cmp	r3, #0
+ 1459 0f08 2100001A 		bne	.L73
+ 325:LL_HL_comm.c  **** 	{
+ 326:LL_HL_comm.c  **** 		for(i=2;i<40;i++)
+ 1461              	.LM161:
+ 1462 0f0c 0230A0E3 		mov	r3, #2
+ 1463 0f10 14300BE5 		str	r3, [fp, #-20]
+ 1464 0f14 1A0000EA 		b	.L75
+ 1465              	.L76:
+ 327:LL_HL_comm.c  **** 		{
+ 328:LL_HL_comm.c  **** 			SPIWRData[i]=*dataptr++;
+ 1467              	.LM162:
+ 1468 0f18 14101BE5 		ldr	r1, [fp, #-20]
+ 1469 0f1c 10301BE5 		ldr	r3, [fp, #-16]
+ 1470 0f20 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1471 0f24 F0219FE5 		ldr	r2, .L85+4
+ 1472 0f28 0130C2E7 		strb	r3, [r2, r1]
+ 1473 0f2c 10301BE5 		ldr	r3, [fp, #-16]
+ 1474 0f30 013083E2 		add	r3, r3, #1
+ 1475 0f34 10300BE5 		str	r3, [fp, #-16]
+ 329:LL_HL_comm.c  **** 			spi_chksum+=SPIWRData[i];
+ 1477              	.LM163:
+ 1478 0f38 14201BE5 		ldr	r2, [fp, #-20]
+ 1479 0f3c D8319FE5 		ldr	r3, .L85+4
+ 1480 0f40 0230D3E7 		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 1481 0f44 0320A0E1 		mov	r2, r3
+ 1482 0f48 D0319FE5 		ldr	r3, .L85+8
+ 1483 0f4c B030D3E1 		ldrh	r3, [r3, #0]	@ movhi
+ 1484 0f50 0338A0E1 		mov	r3, r3, asl #16
+ 1485 0f54 2338A0E1 		mov	r3, r3, lsr #16
+ 1486 0f58 0338A0E1 		mov	r3, r3, asl #16
+ 1487 0f5c 2338A0E1 		mov	r3, r3, lsr #16
+ 1488 0f60 033082E0 		add	r3, r2, r3
+ 1489 0f64 0338A0E1 		mov	r3, r3, asl #16
+ 1490 0f68 2338A0E1 		mov	r3, r3, lsr #16
+ 1491 0f6c 0320A0E1 		mov	r2, r3
+ 1492 0f70 A8319FE5 		ldr	r3, .L85+8
+ 1493 0f74 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 326:LL_HL_comm.c  **** 		for(i=2;i<40;i++)
+ 1495              	.LM164:
+ 1496 0f78 14301BE5 		ldr	r3, [fp, #-20]
+ 1497 0f7c 013083E2 		add	r3, r3, #1
+ 1498 0f80 14300BE5 		str	r3, [fp, #-20]
+ 1499              	.L75:
+ 1500 0f84 14301BE5 		ldr	r3, [fp, #-20]
+ 1501 0f88 270053E3 		cmp	r3, #39
+ 1502 0f8c E1FFFF9A 		bls	.L76
+ 1503 0f90 440000EA 		b	.L78
+ 1504              	.L73:
+ 330:LL_HL_comm.c  **** 		}
+ 331:LL_HL_comm.c  **** 	}
+ 332:LL_HL_comm.c  **** 	else
+ 333:LL_HL_comm.c  **** 	{
+ 334:LL_HL_comm.c  **** 		for(i=2;i<22;i++)
+ 1506              	.LM165:
+ 1507 0f94 0230A0E3 		mov	r3, #2
+ 1508 0f98 14300BE5 		str	r3, [fp, #-20]
+ 1509 0f9c 1A0000EA 		b	.L79
+ 1510              	.L80:
+ 335:LL_HL_comm.c  **** 		{
+ 336:LL_HL_comm.c  **** 			SPIWRData[i]=*dataptr++;
+ 1512              	.LM166:
+ 1513 0fa0 14101BE5 		ldr	r1, [fp, #-20]
+ 1514 0fa4 10301BE5 		ldr	r3, [fp, #-16]
+ 1515 0fa8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1516 0fac 68219FE5 		ldr	r2, .L85+4
+ 1517 0fb0 0130C2E7 		strb	r3, [r2, r1]
+ 1518 0fb4 10301BE5 		ldr	r3, [fp, #-16]
+ 1519 0fb8 013083E2 		add	r3, r3, #1
+ 1520 0fbc 10300BE5 		str	r3, [fp, #-16]
+ 337:LL_HL_comm.c  **** 			spi_chksum+=SPIWRData[i];
+ 1522              	.LM167:
+ 1523 0fc0 14201BE5 		ldr	r2, [fp, #-20]
+ 1524 0fc4 50319FE5 		ldr	r3, .L85+4
+ 1525 0fc8 0230D3E7 		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 1526 0fcc 0320A0E1 		mov	r2, r3
+ 1527 0fd0 48319FE5 		ldr	r3, .L85+8
+ 1528 0fd4 B030D3E1 		ldrh	r3, [r3, #0]	@ movhi
+ 1529 0fd8 0338A0E1 		mov	r3, r3, asl #16
+ 1530 0fdc 2338A0E1 		mov	r3, r3, lsr #16
+ 1531 0fe0 0338A0E1 		mov	r3, r3, asl #16
+ 1532 0fe4 2338A0E1 		mov	r3, r3, lsr #16
+ 1533 0fe8 033082E0 		add	r3, r2, r3
+ 1534 0fec 0338A0E1 		mov	r3, r3, asl #16
+ 1535 0ff0 2338A0E1 		mov	r3, r3, lsr #16
+ 1536 0ff4 0320A0E1 		mov	r2, r3
+ 1537 0ff8 20319FE5 		ldr	r3, .L85+8
+ 1538 0ffc B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 334:LL_HL_comm.c  **** 		for(i=2;i<22;i++)
+ 1540              	.LM168:
+ 1541 1000 14301BE5 		ldr	r3, [fp, #-20]
+ 1542 1004 013083E2 		add	r3, r3, #1
+ 1543 1008 14300BE5 		str	r3, [fp, #-20]
+ 1544              	.L79:
+ 1545 100c 14301BE5 		ldr	r3, [fp, #-20]
+ 1546 1010 150053E3 		cmp	r3, #21
+ 1547 1014 E1FFFF9A 		bls	.L80
+ 338:LL_HL_comm.c  **** 		}
+ 339:LL_HL_comm.c  **** 		dataptr+=18;
+ 1549              	.LM169:
+ 1550 1018 10301BE5 		ldr	r3, [fp, #-16]
+ 1551 101c 123083E2 		add	r3, r3, #18
+ 1552 1020 10300BE5 		str	r3, [fp, #-16]
+ 340:LL_HL_comm.c  **** 		for(i=22;i<40;i++)
+ 1554              	.LM170:
+ 1555 1024 1630A0E3 		mov	r3, #22
+ 1556 1028 14300BE5 		str	r3, [fp, #-20]
+ 1557 102c 1A0000EA 		b	.L82
+ 1558              	.L83:
+ 341:LL_HL_comm.c  **** 		{
+ 342:LL_HL_comm.c  **** 			SPIWRData[i]=*dataptr++;
+ 1560              	.LM171:
+ 1561 1030 14101BE5 		ldr	r1, [fp, #-20]
+ 1562 1034 10301BE5 		ldr	r3, [fp, #-16]
+ 1563 1038 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1564 103c D8209FE5 		ldr	r2, .L85+4
+ 1565 1040 0130C2E7 		strb	r3, [r2, r1]
+ 1566 1044 10301BE5 		ldr	r3, [fp, #-16]
+ 1567 1048 013083E2 		add	r3, r3, #1
+ 1568 104c 10300BE5 		str	r3, [fp, #-16]
+ 343:LL_HL_comm.c  **** 			spi_chksum+=SPIWRData[i];
+ 1570              	.LM172:
+ 1571 1050 14201BE5 		ldr	r2, [fp, #-20]
+ 1572 1054 C0309FE5 		ldr	r3, .L85+4
+ 1573 1058 0230D3E7 		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 1574 105c 0320A0E1 		mov	r2, r3
+ 1575 1060 B8309FE5 		ldr	r3, .L85+8
+ 1576 1064 B030D3E1 		ldrh	r3, [r3, #0]	@ movhi
+ 1577 1068 0338A0E1 		mov	r3, r3, asl #16
+ 1578 106c 2338A0E1 		mov	r3, r3, lsr #16
+ 1579 1070 0338A0E1 		mov	r3, r3, asl #16
+ 1580 1074 2338A0E1 		mov	r3, r3, lsr #16
+ 1581 1078 033082E0 		add	r3, r2, r3
+ 1582 107c 0338A0E1 		mov	r3, r3, asl #16
+ 1583 1080 2338A0E1 		mov	r3, r3, lsr #16
+ 1584 1084 0320A0E1 		mov	r2, r3
+ 1585 1088 90309FE5 		ldr	r3, .L85+8
+ 1586 108c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 340:LL_HL_comm.c  **** 		for(i=22;i<40;i++)
+ 1588              	.LM173:
+ 1589 1090 14301BE5 		ldr	r3, [fp, #-20]
+ 1590 1094 013083E2 		add	r3, r3, #1
+ 1591 1098 14300BE5 		str	r3, [fp, #-20]
+ 1592              	.L82:
+ 1593 109c 14301BE5 		ldr	r3, [fp, #-20]
+ 1594 10a0 270053E3 		cmp	r3, #39
+ 1595 10a4 E1FFFF9A 		bls	.L83
+ 1596              	.L78:
+ 344:LL_HL_comm.c  **** 		}
+ 345:LL_HL_comm.c  **** 	}
+ 346:LL_HL_comm.c  **** 
+ 347:LL_HL_comm.c  **** 	SPIWRData[40]=spi_chksum;		//chksum LSB
+ 1598              	.LM174:
+ 1599 10a8 70309FE5 		ldr	r3, .L85+8
+ 1600 10ac B030D3E1 		ldrh	r3, [r3, #0]	@ movhi
+ 1601 10b0 0338A0E1 		mov	r3, r3, asl #16
+ 1602 10b4 2338A0E1 		mov	r3, r3, lsr #16
+ 1603 10b8 FF3003E2 		and	r3, r3, #255
+ 1604 10bc 58209FE5 		ldr	r2, .L85+4
+ 1605 10c0 2830C2E5 		strb	r3, [r2, #40]
+ 348:LL_HL_comm.c  **** 	SPIWRData[41]=(spi_chksum>>8);	//chksum MSB
+ 1607              	.LM175:
+ 1608 10c4 54309FE5 		ldr	r3, .L85+8
+ 1609 10c8 B030D3E1 		ldrh	r3, [r3, #0]	@ movhi
+ 1610 10cc 0338A0E1 		mov	r3, r3, asl #16
+ 1611 10d0 2338A0E1 		mov	r3, r3, lsr #16
+ 1612 10d4 0338A0E1 		mov	r3, r3, asl #16
+ 1613 10d8 4338A0E1 		mov	r3, r3, asr #16
+ 1614 10dc 4334A0E1 		mov	r3, r3, asr #8
+ 1615 10e0 0338A0E1 		mov	r3, r3, asl #16
+ 1616 10e4 2338A0E1 		mov	r3, r3, lsr #16
+ 1617 10e8 FF3003E2 		and	r3, r3, #255
+ 1618 10ec 28209FE5 		ldr	r2, .L85+4
+ 1619 10f0 2930C2E5 		strb	r3, [r2, #41]
+ 349:LL_HL_comm.c  **** 
+ 350:LL_HL_comm.c  **** 	SPIWR_num_bytes=42;
+ 1621              	.LM176:
+ 1622 10f4 28209FE5 		ldr	r2, .L85+12
+ 1623 10f8 2A30A0E3 		mov	r3, #42
+ 1624 10fc 003082E5 		str	r3, [r2, #0]
+ 351:LL_HL_comm.c  **** 	data_sent_to_LL=0;
+ 1626              	.LM177:
+ 1627 1100 20209FE5 		ldr	r2, .L85+16
+ 1628 1104 0030A0E3 		mov	r3, #0
+ 1629 1108 0030C2E5 		strb	r3, [r2, #0]
+ 352:LL_HL_comm.c  **** }
+ 1631              	.LM178:
+ 1632 110c 0CD04BE2 		sub	sp, fp, #12
+ 1633 1110 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1634 1114 1EFF2FE1 		bx	lr
+ 1635              	.L86:
+ 1636              		.align	2
+ 1637              	.L85:
+ 1638 1118 00000000 		.word	LL_1khz_control_input
+ 1639 111c 00000000 		.word	SPIWRData
+ 1640 1120 0C000000 		.word	spi_chksum.1846
+ 1641 1124 00000000 		.word	SPIWR_num_bytes
+ 1642 1128 00000000 		.word	data_sent_to_LL
+ 1649              	.Lscope2:
+ 1650              		.bss
+ 1651              	incoming_page.1897:
+ 1652 000e 00       		.space	1
+ 1654 000f 00       		.align	2
+ 1655              	SPI_rxptr.1896:
+ 1656 0010 00000000 		.space	4
+ 1658              	SPI_rxcount.1895:
+ 1659 0014 00       		.space	1
+ 1661              	SPI_syncstate.1894:
+ 1662 0015 00       		.space	1
+ 1664 0016 0000     		.text
+ 1665              		.align	2
+ 1668              		.global	SSP_rx_handler_HL
+ 1670              	SSP_rx_handler_HL:
+ 353:LL_HL_comm.c  **** 
+ 354:LL_HL_comm.c  **** 
+ 355:LL_HL_comm.c  **** inline void SSP_rx_handler_HL(unsigned char SPI_rxdata)	//rx_handler @ high-level processor
+ 356:LL_HL_comm.c  **** {
+ 1672              	.LM179:
+ 1673              		@ Function supports interworking.
+ 1674              		@ args = 0, pretend = 0, frame = 4
+ 1675              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1676 112c 0DC0A0E1 		mov	ip, sp
+ 1677 1130 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1678 1134 04B04CE2 		sub	fp, ip, #4
+ 1679 1138 04D04DE2 		sub	sp, sp, #4
+ 1680 113c 0030A0E1 		mov	r3, r0
+ 1681 1140 10304BE5 		strb	r3, [fp, #-16]
+ 357:LL_HL_comm.c  **** 	static volatile unsigned char SPI_syncstate=0;
+ 358:LL_HL_comm.c  **** 	static volatile unsigned char SPI_rxcount=0;
+ 359:LL_HL_comm.c  **** 	static volatile unsigned char *SPI_rxptr;
+ 360:LL_HL_comm.c  **** 	static volatile unsigned char incoming_page;
+ 361:LL_HL_comm.c  **** 
+ 362:LL_HL_comm.c  ****         //receive handler
+ 363:LL_HL_comm.c  ****         if (SPI_syncstate==0)
+ 1683              	.LM180:
+ 1684 1144 08329FE5 		ldr	r3, .L113
+ 1685 1148 0030D3E5 		ldrb	r3, [r3, #0]
+ 1686 114c FF3003E2 		and	r3, r3, #255
+ 1687 1150 000053E3 		cmp	r3, #0
+ 1688 1154 0E00001A 		bne	.L88
+ 364:LL_HL_comm.c  **** 		{
+ 365:LL_HL_comm.c  **** 			if (SPI_rxdata=='>') SPI_syncstate++; else SPI_syncstate=0;
+ 1690              	.LM181:
+ 1691 1158 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 1692 115c 3E0053E3 		cmp	r3, #62
+ 1693 1160 0700001A 		bne	.L90
+ 1694 1164 E8319FE5 		ldr	r3, .L113
+ 1695 1168 0030D3E5 		ldrb	r3, [r3, #0]
+ 1696 116c FF3003E2 		and	r3, r3, #255
+ 1697 1170 013083E2 		add	r3, r3, #1
+ 1698 1174 FF3003E2 		and	r3, r3, #255
+ 1699 1178 D4219FE5 		ldr	r2, .L113
+ 1700 117c 0030C2E5 		strb	r3, [r2, #0]
+ 1701 1180 700000EA 		b	.L112
+ 1702              	.L90:
+ 1703 1184 C8319FE5 		ldr	r3, .L113
+ 1704 1188 0020A0E3 		mov	r2, #0
+ 1705 118c 0020C3E5 		strb	r2, [r3, #0]
+ 1706 1190 6C0000EA 		b	.L112
+ 1707              	.L88:
+ 366:LL_HL_comm.c  **** 		}
+ 367:LL_HL_comm.c  **** 		else if (SPI_syncstate==1)
+ 1709              	.LM182:
+ 1710 1194 B8319FE5 		ldr	r3, .L113
+ 1711 1198 0030D3E5 		ldrb	r3, [r3, #0]
+ 1712 119c FF3003E2 		and	r3, r3, #255
+ 1713 11a0 010053E3 		cmp	r3, #1
+ 1714 11a4 1400001A 		bne	.L94
+ 368:LL_HL_comm.c  **** 		{
+ 369:LL_HL_comm.c  **** 			if (SPI_rxdata=='*')
+ 1716              	.LM183:
+ 1717 11a8 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 1718 11ac 2A0053E3 		cmp	r3, #42
+ 1719 11b0 0D00001A 		bne	.L96
+ 370:LL_HL_comm.c  **** 			{
+ 371:LL_HL_comm.c  **** 				SPI_syncstate++;
+ 1721              	.LM184:
+ 1722 11b4 98319FE5 		ldr	r3, .L113
+ 1723 11b8 0030D3E5 		ldrb	r3, [r3, #0]
+ 1724 11bc FF3003E2 		and	r3, r3, #255
+ 1725 11c0 013083E2 		add	r3, r3, #1
+ 1726 11c4 FF3003E2 		and	r3, r3, #255
+ 1727 11c8 84219FE5 		ldr	r2, .L113
+ 1728 11cc 0030C2E5 		strb	r3, [r2, #0]
+ 372:LL_HL_comm.c  **** 				SPI_rxptr=(unsigned char *)&LL_1khz_attitude_data;
+ 1730              	.LM185:
+ 1731 11d0 80219FE5 		ldr	r2, .L113+4
+ 1732 11d4 80319FE5 		ldr	r3, .L113+8
+ 1733 11d8 002083E5 		str	r2, [r3, #0]
+ 373:LL_HL_comm.c  **** 				SPI_rxcount=40;
+ 1735              	.LM186:
+ 1736 11dc 7C219FE5 		ldr	r2, .L113+12
+ 1737 11e0 2830A0E3 		mov	r3, #40
+ 1738 11e4 0030C2E5 		strb	r3, [r2, #0]
+ 1739 11e8 560000EA 		b	.L112
+ 1740              	.L96:
+ 374:LL_HL_comm.c  **** 			}
+ 375:LL_HL_comm.c  **** 			else SPI_syncstate=0;
+ 1742              	.LM187:
+ 1743 11ec 60319FE5 		ldr	r3, .L113
+ 1744 11f0 0020A0E3 		mov	r2, #0
+ 1745 11f4 0020C3E5 		strb	r2, [r3, #0]
+ 1746 11f8 520000EA 		b	.L112
+ 1747              	.L94:
+ 376:LL_HL_comm.c  **** 		}
+ 377:LL_HL_comm.c  **** 		else if (SPI_syncstate==2)
+ 1749              	.LM188:
+ 1750 11fc 50319FE5 		ldr	r3, .L113
+ 1751 1200 0030D3E5 		ldrb	r3, [r3, #0]
+ 1752 1204 FF3003E2 		and	r3, r3, #255
+ 1753 1208 020053E3 		cmp	r3, #2
+ 1754 120c 3D00001A 		bne	.L99
+ 378:LL_HL_comm.c  **** 		{
+ 379:LL_HL_comm.c  **** 			if(SPI_rxcount==26) //14 bytes transmitted => select 500Hz page
+ 1756              	.LM189:
+ 1757 1210 48319FE5 		ldr	r3, .L113+12
+ 1758 1214 0030D3E5 		ldrb	r3, [r3, #0]
+ 1759 1218 FF3003E2 		and	r3, r3, #255
+ 1760 121c 1A0053E3 		cmp	r3, #26
+ 1761 1220 1B00001A 		bne	.L101
+ 380:LL_HL_comm.c  **** 			{
+ 381:LL_HL_comm.c  **** 				incoming_page=LL_1khz_attitude_data.system_flags&0x03;	//system flags were already received
+ 1763              	.LM190:
+ 1764 1224 2C319FE5 		ldr	r3, .L113+4
+ 1765 1228 B030D3E1 		ldrh	r3, [r3, #0]
+ 1766 122c FF3003E2 		and	r3, r3, #255
+ 1767 1230 FF3003E2 		and	r3, r3, #255
+ 1768 1234 033003E2 		and	r3, r3, #3
+ 1769 1238 24219FE5 		ldr	r2, .L113+16
+ 1770 123c 0030C2E5 		strb	r3, [r2, #0]
+ 382:LL_HL_comm.c  **** 				if(incoming_page==1) SPI_rxptr+=26;
+ 1772              	.LM191:
+ 1773 1240 1C319FE5 		ldr	r3, .L113+16
+ 1774 1244 0030D3E5 		ldrb	r3, [r3, #0]
+ 1775 1248 FF3003E2 		and	r3, r3, #255
+ 1776 124c 010053E3 		cmp	r3, #1
+ 1777 1250 0500001A 		bne	.L103
+ 1778 1254 00319FE5 		ldr	r3, .L113+8
+ 1779 1258 003093E5 		ldr	r3, [r3, #0]
+ 1780 125c 1A2083E2 		add	r2, r3, #26
+ 1781 1260 F4309FE5 		ldr	r3, .L113+8
+ 1782 1264 002083E5 		str	r2, [r3, #0]
+ 1783 1268 090000EA 		b	.L101
+ 1784              	.L103:
+ 383:LL_HL_comm.c  **** 				else if(incoming_page==2) SPI_rxptr+=52;
+ 1786              	.LM192:
+ 1787 126c F0309FE5 		ldr	r3, .L113+16
+ 1788 1270 0030D3E5 		ldrb	r3, [r3, #0]
+ 1789 1274 FF3003E2 		and	r3, r3, #255
+ 1790 1278 020053E3 		cmp	r3, #2
+ 1791 127c 0400001A 		bne	.L101
+ 1792 1280 D4309FE5 		ldr	r3, .L113+8
+ 1793 1284 003093E5 		ldr	r3, [r3, #0]
+ 1794 1288 342083E2 		add	r2, r3, #52
+ 1795 128c C8309FE5 		ldr	r3, .L113+8
+ 1796 1290 002083E5 		str	r2, [r3, #0]
+ 1797              	.L101:
+ 384:LL_HL_comm.c  **** 			}
+ 385:LL_HL_comm.c  **** 			SPI_rxcount--;
+ 1799              	.LM193:
+ 1800 1294 C4309FE5 		ldr	r3, .L113+12
+ 1801 1298 0030D3E5 		ldrb	r3, [r3, #0]
+ 1802 129c FF3003E2 		and	r3, r3, #255
+ 1803 12a0 013043E2 		sub	r3, r3, #1
+ 1804 12a4 FF3003E2 		and	r3, r3, #255
+ 1805 12a8 B0209FE5 		ldr	r2, .L113+12
+ 1806 12ac 0030C2E5 		strb	r3, [r2, #0]
+ 386:LL_HL_comm.c  **** 			*SPI_rxptr=SPI_rxdata;
+ 1808              	.LM194:
+ 1809 12b0 A4309FE5 		ldr	r3, .L113+8
+ 1810 12b4 002093E5 		ldr	r2, [r3, #0]
+ 1811 12b8 10305BE5 		ldrb	r3, [fp, #-16]
+ 1812 12bc 0030C2E5 		strb	r3, [r2, #0]
+ 387:LL_HL_comm.c  **** 			SPI_rxptr++;
+ 1814              	.LM195:
+ 1815 12c0 94309FE5 		ldr	r3, .L113+8
+ 1816 12c4 003093E5 		ldr	r3, [r3, #0]
+ 1817 12c8 012083E2 		add	r2, r3, #1
+ 1818 12cc 88309FE5 		ldr	r3, .L113+8
+ 1819 12d0 002083E5 		str	r2, [r3, #0]
+ 388:LL_HL_comm.c  **** 			if (SPI_rxcount==0)
+ 1821              	.LM196:
+ 1822 12d4 84309FE5 		ldr	r3, .L113+12
+ 1823 12d8 0030D3E5 		ldrb	r3, [r3, #0]
+ 1824 12dc FF3003E2 		and	r3, r3, #255
+ 1825 12e0 000053E3 		cmp	r3, #0
+ 1826 12e4 1700001A 		bne	.L112
+ 389:LL_HL_comm.c  ****         	{
+ 390:LL_HL_comm.c  ****              	SPI_syncstate++;
+ 1828              	.LM197:
+ 1829 12e8 64309FE5 		ldr	r3, .L113
+ 1830 12ec 0030D3E5 		ldrb	r3, [r3, #0]
+ 1831 12f0 FF3003E2 		and	r3, r3, #255
+ 1832 12f4 013083E2 		add	r3, r3, #1
+ 1833 12f8 FF3003E2 		and	r3, r3, #255
+ 1834 12fc 50209FE5 		ldr	r2, .L113
+ 1835 1300 0030C2E5 		strb	r3, [r2, #0]
+ 1836 1304 0F0000EA 		b	.L112
+ 1837              	.L99:
+ 391:LL_HL_comm.c  ****         	}
+ 392:LL_HL_comm.c  **** 		}
+ 393:LL_HL_comm.c  **** 		else if (SPI_syncstate==3)
+ 1839              	.LM198:
+ 1840 1308 44309FE5 		ldr	r3, .L113
+ 1841 130c 0030D3E5 		ldrb	r3, [r3, #0]
+ 1842 1310 FF3003E2 		and	r3, r3, #255
+ 1843 1314 030053E3 		cmp	r3, #3
+ 1844 1318 0700001A 		bne	.L108
+ 394:LL_HL_comm.c  **** 		{
+ 395:LL_HL_comm.c  **** 			if(SPI_rxdata=='<')	//last byte ok => data should be valid
+ 1846              	.LM199:
+ 1847 131c 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 1848 1320 3C0053E3 		cmp	r3, #60
+ 1849 1324 0000001A 		bne	.L110
+ 396:LL_HL_comm.c  **** 			{
+ 397:LL_HL_comm.c  **** 				SSP_data_distribution_HL();	//only distribute data to other structs, if it was received correct
+ 1851              	.LM200:
+ 1852 1328 FEFFFFEB 		bl	SSP_data_distribution_HL
+ 1853              	.L110:
+ 398:LL_HL_comm.c  **** 											//ack data receiption
+ 399:LL_HL_comm.c  **** 			}
+ 400:LL_HL_comm.c  **** 			SPI_syncstate=0;
+ 1855              	.LM201:
+ 1856 132c 20309FE5 		ldr	r3, .L113
+ 1857 1330 0020A0E3 		mov	r2, #0
+ 1858 1334 0020C3E5 		strb	r2, [r3, #0]
+ 1859 1338 020000EA 		b	.L112
+ 1860              	.L108:
+ 401:LL_HL_comm.c  **** 		}
+ 402:LL_HL_comm.c  **** 		else SPI_syncstate=0;
+ 1862              	.LM202:
+ 1863 133c 10309FE5 		ldr	r3, .L113
+ 1864 1340 0020A0E3 		mov	r2, #0
+ 1865 1344 0020C3E5 		strb	r2, [r3, #0]
+ 1866              	.L112:
+ 403:LL_HL_comm.c  **** }
+ 1868              	.LM203:
+ 1869 1348 0CD04BE2 		sub	sp, fp, #12
+ 1870 134c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1871 1350 1EFF2FE1 		bx	lr
+ 1872              	.L114:
+ 1873              		.align	2
+ 1874              	.L113:
+ 1875 1354 15000000 		.word	SPI_syncstate.1894
+ 1876 1358 00000000 		.word	LL_1khz_attitude_data
+ 1877 135c 10000000 		.word	SPI_rxptr.1896
+ 1878 1360 14000000 		.word	SPI_rxcount.1895
+ 1879 1364 0E000000 		.word	incoming_page.1897
+ 1887              	.Lscope3:
+ 1888              		.comm	GPS_timeout,4,4
+ 1889              		.comm	SYSTEM_initialized,1,1
+ 1890              		.comm	LL_1khz_attitude_data,92,4
+ 1891              		.comm	LL_1khz_control_input,56,4
+ 1892              		.comm	wpToLL,28,4
+ 1905              	.Letext0:
+ 1906              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 LL_HL_comm.c
+     /tmp/ccRPrBQQ.s:49     .bss:00000000 SSP_ack
+     /tmp/ccRPrBQQ.s:46     .bss:00000000 $d
+     /tmp/ccRPrBQQ.s:54     .bss:00000002 wpCtrlWpCmd
+     /tmp/ccRPrBQQ.s:59     .bss:00000003 wpCtrlWpCmdUpdated
+     /tmp/ccRPrBQQ.s:64     .bss:00000004 wpCtrlAckTrigger
+     /tmp/ccRPrBQQ.s:70     .bss:00000006 wpCtrlNavStatus
+     /tmp/ccRPrBQQ.s:76     .bss:00000008 wpCtrlDistToWp
+     /tmp/ccRPrBQQ.s:79     .text:00000000 $a
+     /tmp/ccRPrBQQ.s:83     .text:00000000 SSP_data_distribution_HL
+     /tmp/ccRPrBQQ.s:534    .text:00000550 $d
+     /tmp/ccRPrBQQ.s:545    .text:00000570 $a
+     /tmp/ccRPrBQQ.s:594    .text:000005dc $d
+                            *COM*:0000005c LL_1khz_attitude_data
+                            *COM*:00000001 SYSTEM_initialized
+     /tmp/ccRPrBQQ.s:614    .bss:0000000a pageselect.1648
+     /tmp/ccRPrBQQ.s:618    .text:00000604 $a
+     /tmp/ccRPrBQQ.s:622    .text:00000604 HL2LL_write_cycle
+     /tmp/ccRPrBQQ.s:1423   .text:00000eb8 LL_write_ctrl_data
+     /tmp/ccRPrBQQ.s:1389   .text:00000e74 $d
+                            *COM*:00000038 LL_1khz_control_input
+                            *COM*:0000001c wpToLL
+     /tmp/ccRPrBQQ.s:1414   .bss:0000000c spi_chksum.1846
+     /tmp/ccRPrBQQ.s:1418   .text:00000eb8 $a
+     /tmp/ccRPrBQQ.s:1638   .text:00001118 $d
+     /tmp/ccRPrBQQ.s:1651   .bss:0000000e incoming_page.1897
+     /tmp/ccRPrBQQ.s:1655   .bss:00000010 SPI_rxptr.1896
+     /tmp/ccRPrBQQ.s:1658   .bss:00000014 SPI_rxcount.1895
+     /tmp/ccRPrBQQ.s:1661   .bss:00000015 SPI_syncstate.1894
+     /tmp/ccRPrBQQ.s:1665   .text:0000112c $a
+     /tmp/ccRPrBQQ.s:1670   .text:0000112c SSP_rx_handler_HL
+     /tmp/ccRPrBQQ.s:1875   .text:00001354 $d
+                            *COM*:00000004 GPS_timeout
+
+UNDEFINED SYMBOLS
+gpsDataOkTrigger
+IMU_CalcData
+RO_ALL_Data
+RO_RC_Data
+HL_Status
+data_sent_to_LL
+WO_SDK
+WO_Direct_Individual_Motor_Control
+WO_Direct_Motor_Control
+WO_CTRL_Input
+GPS_Data
+declinationAvailable
+estimatedDeclination
+estimatedInclination
+SPIWRData
+SPIWR_num_bytes

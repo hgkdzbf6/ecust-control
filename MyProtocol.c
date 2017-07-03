@@ -43,39 +43,40 @@ void my_send(int fd
 }
 
 void send_single(int fd,unsigned char c){
-	//read_callback(fd,&c,1);
-	UARTWriteChar(c);
+	UARTWriteChar(c);//read_callback(fd,&c,1);
 }
 
 int receive_single(int fd,unsigned char* result){
 	*result=(unsigned char)fd;
 	return 1;
 }
+
 //return 0: package is not completed
 //return 1:package is available
-unsigned char my_receive(
+ReceiveState my_receive(
 		int fd,
 		void* buffer,
 		void* data,
+		int* id,
 		unsigned char check){
 	//character store temporally
 	static int status;
 	static ParseStatus flag=PARSE_NOT_START;
 	static unsigned char t;
 	//get package index
-	static unsigned char p_id;
+	static unsigned char my_index;
 	//get package length
 	static unsigned char len;
 	static unsigned char i=0;
 	static unsigned char crc;
 	status=receive_single(fd,&t);
-	if(status==1){
+	if(status!=0){
 		//some data received
 		if(t==254&&flag==PARSE_NOT_START){
 			crc=254;
 			flag=PARSE_READ_ID;
 		}else if(flag==PARSE_READ_ID){
-			p_id=t;
+			my_index=t;
 			crc+=t;
 			flag=PARSE_READ_LEN;
 		}else if(flag==PARSE_READ_LEN){
@@ -100,21 +101,43 @@ unsigned char my_receive(
 				flag=PARSE_FAIL;
 			}
 		}
-
 		if(flag==PARSE_SUCCEED){
 			//need to check?
 			memcpy(data,buffer,len);
+			*id=my_index;
 			status=0;flag=PARSE_NOT_START;t=0;
-			p_id=0;len=0;i=0;crc=0;
-			return 1;
+			my_index=0;len=0;i=0;crc=0;
+			return RECEIVE_STATE_SUCCESS;
 		}else if(flag==PARSE_FAIL){
 			//need to check?
 			//memcpy(data,buffer,len);
 			memset(data,0,len);
 			status=0;flag=PARSE_NOT_START;t=0;
-			p_id=0;len=0;i=0;crc=0;
+			my_index=0;len=0;i=0;crc=0;
 		}
 		//printf("%d  %d  %d  %d\n",crc,len,i,t);
 	}
-	return 0;
+	*id=-1;
+	return RECEIVE_STATE_NOT_COMPLETED;
+}
+
+unsigned char getPackageLength(PackageDefine pd){
+	switch(pd){
+	case PACKAGE_DEFINE_STATUS:
+		return SYSTEM_STATE_LENGTH;
+	case PACKAGE_DEFINE_VICON:
+		return VICON_DATA_LENGTH;
+	case PACKAGE_DEFINE_SENSOR:
+		return SENSOR_DATA_LENGTH;
+	case PACKAGE_DEFINE_FUSION:
+		return FUSION_DATA_LENGTH;
+	case PACKAGE_DEFINE_DEBUG:
+		return DEBUG_DATA_LENGTH;
+	case PACKAGE_DEFINE_PARAM:
+		return PARAM_DEBUG_LENGTH;
+	case PACKAGE_DEFINE_CMD:
+		return CMD_DATA_LENGTH;
+	default:
+		return -1;
+	}
 }

@@ -47,9 +47,6 @@ struct RO_ALL_DATA RO_ALL_Data;
 struct WO_DIRECT_MOTOR_CONTROL WO_Direct_Motor_Control;
 struct WO_DIRECT_INDIVIDUAL_MOTOR_CONTROL WO_Direct_Individual_Motor_Control;
 
-
-
-
 void SDK_EXAMPLE_direct_individual_motor_commands(void);
 void SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping(void);
 void SDK_EXAMPLE_attitude_commands(void);
@@ -59,10 +56,15 @@ int SDK_EXAMPLE_turn_motors_off(void);
 
 void fake_gps3(void );
 
-MyViconData viconData={0};
-DebugData debugData={0};
+unsigned char allDataBuffer[256]={0};
+MyViconData receivedViconData={0};
+DebugData sendDebugData={0};
 ParamDebug sendParamDebug={0};
 ParamDebug receiveParamDebug={0};
+CmdData receiveCmdData={0};
+unsigned char pack_id=0;
+
+
 //ParamDebug paramDebug={0};
 int vicon_count=0;
 float calc_thrust;

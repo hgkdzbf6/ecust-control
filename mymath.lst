@@ -1,0 +1,9 @@
+   1              		.file	"mymath.c"
+   3              		.text
+   4              	.Ltext0:
+  22              	.Letext0:
+  23              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 mymath.c
+
+NO UNDEFINED SYMBOLS

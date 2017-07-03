@@ -1,0 +1,1572 @@
+   1              		.file	"buzzer.c"
+   3              		.text
+   4              	.Ltext0:
+  35              		.bss
+  36              	bat_warning_enabled.1427:
+  37 0000 00       		.space	1
+  39 0001 000000   		.align	2
+  40              	bat_warning.1426:
+  41 0004 00000000 		.space	4
+  43              		.align	2
+  44              	bat_cnt.1425:
+  45 0008 00000000 		.space	4
+  47              		.align	1
+  48              	buz_cnt.1424:
+  49 000c 0000     		.space	2
+  51              		.align	1
+  52              	error_cnt_compass.1422:
+  53 000e 0000     		.space	2
+  55              		.align	1
+  56              	error_cnt_mag_inc.1421:
+  57 0010 0000     		.space	2
+  59              		.align	1
+  60              	error_cnt_mag_fs.1420:
+  61 0012 0000     		.space	2
+  63              		.text
+  64              		.align	2
+  67              		.global	buzzer_handler
+  69              	buzzer_handler:
+   1:buzzer.c      **** /*
+   2:buzzer.c      ****  * buzzer.c
+   3:buzzer.c      ****  *
+   4:buzzer.c      ****  *  Created on: 14.09.2011
+   5:buzzer.c      ****  *      Author: daniel
+   6:buzzer.c      ****  */
+   7:buzzer.c      **** 
+   8:buzzer.c      **** #include "buzzer.h"
+   9:buzzer.c      **** #include "main.h"
+  10:buzzer.c      **** #include "hardware.h"
+  11:buzzer.c      **** #include "system.h"
+  12:buzzer.c      **** #include "LL_HL_comm.h"
+  13:buzzer.c      **** #include "gpsmath.h"
+  14:buzzer.c      **** #include "LPC214x.h"
+  15:buzzer.c      **** 
+  16:buzzer.c      **** //Buzzer active defines
+  17:buzzer.c      **** #define BU_INIT				0x01
+  18:buzzer.c      **** #define BU_ERROR_GYRO 		0x02
+  19:buzzer.c      **** #define BU_ERROR_ACC  		0x04
+  20:buzzer.c      **** #define BU_ERROR_ADC		0x08
+  21:buzzer.c      **** #define BU_BATTERY			0x10
+  22:buzzer.c      **** #define BU_COMPASS_FAILURE	0x20
+  23:buzzer.c      **** #define BU_WARNING_MAG_FS	0x40
+  24:buzzer.c      **** #define BU_WARNING_MAG_INC	0x80
+  25:buzzer.c      **** #define BU_GPS_BEEP			0x100
+  26:buzzer.c      **** 
+  27:buzzer.c      **** #define BUZZ_LENGTH		5	//50 ms
+  28:buzzer.c      **** #define BUZZ_PAUSE		5 //50 ms
+  29:buzzer.c      **** #define BUZZ_INTERVAL	200 //2 s
+  30:buzzer.c      **** #define BUZZ_MAG_WARNING_TIMEOUT 500 //mag warning for 5 seconds only
+  31:buzzer.c      **** #define BUZZ_NR_OF_WARNINGS		9 //total number of different buzzer signals (see BU_ defines above)
+  32:buzzer.c      **** 
+  33:buzzer.c      **** void buzzer_handler(unsigned int vbat)	//needs to be triggered at 100 Hz
+  34:buzzer.c      **** {
+  71              	.LM0:
+  72              		@ Function supports interworking.
+  73              		@ args = 0, pretend = 0, frame = 16
+  74              		@ frame_needed = 1, uses_anonymous_args = 0
+  75 0000 0DC0A0E1 		mov	ip, sp
+  76 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+  77 0008 04B04CE2 		sub	fp, ip, #4
+  78 000c 10D04DE2 		sub	sp, sp, #16
+  79 0010 1C000BE5 		str	r0, [fp, #-28]
+  35:buzzer.c      **** 	unsigned int buz_active=0;
+  81              	.LM1:
+  82 0014 0030A0E3 		mov	r3, #0
+  83 0018 18300BE5 		str	r3, [fp, #-24]
+  36:buzzer.c      **** 	static unsigned short error_cnt_mag_fs;
+  37:buzzer.c      **** 	static unsigned short error_cnt_mag_inc;
+  38:buzzer.c      **** 	static unsigned short error_cnt_compass;
+  39:buzzer.c      **** 
+  40:buzzer.c      **** 	unsigned int buz_priority=0;
+  85              	.LM2:
+  86 001c 0030A0E3 		mov	r3, #0
+  87 0020 14300BE5 		str	r3, [fp, #-20]
+  41:buzzer.c      **** 	static unsigned short buz_cnt=0;
+  42:buzzer.c      **** 
+  43:buzzer.c      **** 	static int bat_cnt=0, bat_warning=0;
+  44:buzzer.c      **** 	static char bat_warning_enabled=0;
+  45:buzzer.c      **** 
+  46:buzzer.c      **** 	if(++buz_cnt>=BUZZ_INTERVAL) buz_cnt=0;
+  89              	.LM3:
+  90 0024 C43F9FE5 		ldr	r3, .L152
+  91 0028 B030D3E1 		ldrh	r3, [r3, #0]
+  92 002c 013083E2 		add	r3, r3, #1
+  93 0030 0338A0E1 		mov	r3, r3, asl #16
+  94 0034 2328A0E1 		mov	r2, r3, lsr #16
+  95 0038 B03F9FE5 		ldr	r3, .L152
+  96 003c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  97 0040 A83F9FE5 		ldr	r3, .L152
+  98 0044 B030D3E1 		ldrh	r3, [r3, #0]
+  99 0048 C70053E3 		cmp	r3, #199
+ 100 004c 0200009A 		bls	.L2
+ 101 0050 983F9FE5 		ldr	r3, .L152
+ 102 0054 0020A0E3 		mov	r2, #0
+ 103 0058 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 104              	.L2:
+  47:buzzer.c      **** 
+  48:buzzer.c      **** 	//battery warning
+  49:buzzer.c      **** 	if(++bat_cnt==100) bat_cnt=0;
+ 106              	.LM4:
+ 107 005c 903F9FE5 		ldr	r3, .L152+4
+ 108 0060 003093E5 		ldr	r3, [r3, #0]
+ 109 0064 012083E2 		add	r2, r3, #1
+ 110 0068 843F9FE5 		ldr	r3, .L152+4
+ 111 006c 002083E5 		str	r2, [r3, #0]
+ 112 0070 7C3F9FE5 		ldr	r3, .L152+4
+ 113 0074 003093E5 		ldr	r3, [r3, #0]
+ 114 0078 640053E3 		cmp	r3, #100
+ 115 007c 0200001A 		bne	.L4
+ 116 0080 6C2F9FE5 		ldr	r2, .L152+4
+ 117 0084 0030A0E3 		mov	r3, #0
+ 118 0088 003082E5 		str	r3, [r2, #0]
+ 119              	.L4:
+  50:buzzer.c      **** 	if(vbat<10001) vbat=10001;
+ 121              	.LM5:
+ 122 008c 1C201BE5 		ldr	r2, [fp, #-28]
+ 123 0090 273CA0E3 		mov	r3, #9984
+ 124 0094 103083E2 		add	r3, r3, #16
+ 125 0098 030052E1 		cmp	r2, r3
+ 126 009c 0200008A 		bhi	.L6
+ 127 00a0 273CA0E3 		mov	r3, #9984
+ 128 00a4 113083E2 		add	r3, r3, #17
+ 129 00a8 1C300BE5 		str	r3, [fp, #-28]
+ 130              	.L6:
+  51:buzzer.c      **** 
+  52:buzzer.c      **** 	if(vbat<BATTERY_WARNING_VOLTAGE)	//decide if it's really an empty battery
+ 132              	.LM6:
+ 133 00ac 1C201BE5 		ldr	r2, [fp, #-28]
+ 134 00b0 A53DA0E3 		mov	r3, #10560
+ 135 00b4 273083E2 		add	r3, r3, #39
+ 136 00b8 030052E1 		cmp	r2, r3
+ 137 00bc 0D00008A 		bhi	.L8
+  53:buzzer.c      **** 	{
+  54:buzzer.c      **** 		if(bat_warning<ControllerCyclesPerSecond/5) bat_warning++;
+ 139              	.LM7:
+ 140 00c0 303F9FE5 		ldr	r3, .L152+8
+ 141 00c4 003093E5 		ldr	r3, [r3, #0]
+ 142 00c8 C70053E3 		cmp	r3, #199
+ 143 00cc 050000CA 		bgt	.L10
+ 144 00d0 203F9FE5 		ldr	r3, .L152+8
+ 145 00d4 003093E5 		ldr	r3, [r3, #0]
+ 146 00d8 012083E2 		add	r2, r3, #1
+ 147 00dc 143F9FE5 		ldr	r3, .L152+8
+ 148 00e0 002083E5 		str	r2, [r3, #0]
+ 149 00e4 130000EA 		b	.L13
+ 150              	.L10:
+  55:buzzer.c      **** 		else bat_warning_enabled=1;
+ 152              	.LM8:
+ 153 00e8 0C3F9FE5 		ldr	r3, .L152+12
+ 154 00ec 0120A0E3 		mov	r2, #1
+ 155 00f0 0020C3E5 		strb	r2, [r3, #0]
+ 156 00f4 0F0000EA 		b	.L13
+ 157              	.L8:
+  56:buzzer.c      **** 	}
+  57:buzzer.c      **** 	else
+  58:buzzer.c      **** 	{
+  59:buzzer.c      **** 		if(bat_warning>10) bat_warning-=2;
+ 159              	.LM9:
+ 160 00f8 F83E9FE5 		ldr	r3, .L152+8
+ 161 00fc 003093E5 		ldr	r3, [r3, #0]
+ 162 0100 0A0053E3 		cmp	r3, #10
+ 163 0104 050000DA 		ble	.L14
+ 164 0108 E83E9FE5 		ldr	r3, .L152+8
+ 165 010c 003093E5 		ldr	r3, [r3, #0]
+ 166 0110 022043E2 		sub	r2, r3, #2
+ 167 0114 DC3E9FE5 		ldr	r3, .L152+8
+ 168 0118 002083E5 		str	r2, [r3, #0]
+ 169 011c 050000EA 		b	.L13
+ 170              	.L14:
+  60:buzzer.c      **** 		else
+  61:buzzer.c      **** 		{
+  62:buzzer.c      **** 			bat_warning_enabled=0;
+ 172              	.LM10:
+ 173 0120 D42E9FE5 		ldr	r2, .L152+12
+ 174 0124 0030A0E3 		mov	r3, #0
+ 175 0128 0030C2E5 		strb	r3, [r2, #0]
+  63:buzzer.c      **** 			buz_active&=~BU_BATTERY;
+ 177              	.LM11:
+ 178 012c 18301BE5 		ldr	r3, [fp, #-24]
+ 179 0130 1030C3E3 		bic	r3, r3, #16
+ 180 0134 18300BE5 		str	r3, [fp, #-24]
+ 181              	.L13:
+  64:buzzer.c      **** 		}
+  65:buzzer.c      **** 	}
+  66:buzzer.c      **** 	if(bat_warning_enabled)
+ 183              	.LM12:
+ 184 0138 BC3E9FE5 		ldr	r3, .L152+12
+ 185 013c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 186 0140 000053E3 		cmp	r3, #0
+ 187 0144 1500000A 		beq	.L16
+  67:buzzer.c      **** 	{
+  68:buzzer.c      **** 		if(bat_cnt>((vbat-10000)/BAT_DIV)) buz_active|=BU_BATTERY; //Beeper on
+ 189              	.LM13:
+ 190 0148 A43E9FE5 		ldr	r3, .L152+4
+ 191 014c 003093E5 		ldr	r3, [r3, #0]
+ 192 0150 0310A0E1 		mov	r1, r3
+ 193 0154 1C301BE5 		ldr	r3, [fp, #-28]
+ 194 0158 273C43E2 		sub	r3, r3, #9984
+ 195 015c 103043E2 		sub	r3, r3, #16
+ 196 0160 982E9FE5 		ldr	r2, .L152+16
+ 197 0164 920383E0 		umull	r0, r3, r2, r3
+ 198 0168 2331A0E1 		mov	r3, r3, lsr #2
+ 199 016c 030051E1 		cmp	r1, r3
+ 200 0170 0300009A 		bls	.L18
+ 201 0174 18301BE5 		ldr	r3, [fp, #-24]
+ 202 0178 103083E3 		orr	r3, r3, #16
+ 203 017c 18300BE5 		str	r3, [fp, #-24]
+ 204 0180 020000EA 		b	.L20
+ 205              	.L18:
+  69:buzzer.c      **** 		else buz_active&=~BU_BATTERY; //Beeper off
+ 207              	.LM14:
+ 208 0184 18301BE5 		ldr	r3, [fp, #-24]
+ 209 0188 1030C3E3 		bic	r3, r3, #16
+ 210 018c 18300BE5 		str	r3, [fp, #-24]
+ 211              	.L20:
+  70:buzzer.c      **** 		buz_priority|=BU_BATTERY;
+ 213              	.LM15:
+ 214 0190 14301BE5 		ldr	r3, [fp, #-20]
+ 215 0194 103083E3 		orr	r3, r3, #16
+ 216 0198 14300BE5 		str	r3, [fp, #-20]
+ 217 019c 050000EA 		b	.L21
+ 218              	.L16:
+  71:buzzer.c      **** 	}
+  72:buzzer.c      **** 	else
+  73:buzzer.c      **** 	{
+  74:buzzer.c      **** 		buz_active&=~BU_BATTERY;
+ 220              	.LM16:
+ 221 01a0 18301BE5 		ldr	r3, [fp, #-24]
+ 222 01a4 1030C3E3 		bic	r3, r3, #16
+ 223 01a8 18300BE5 		str	r3, [fp, #-24]
+  75:buzzer.c      **** 		buz_priority&=~BU_BATTERY;
+ 225              	.LM17:
+ 226 01ac 14301BE5 		ldr	r3, [fp, #-20]
+ 227 01b0 1030C3E3 		bic	r3, r3, #16
+ 228 01b4 14300BE5 		str	r3, [fp, #-20]
+ 229              	.L21:
+  76:buzzer.c      **** 	}
+  77:buzzer.c      **** 
+  78:buzzer.c      **** #ifdef GPS_BEEP
+  79:buzzer.c      **** 	if(((GPS_Data.status&0xFF)!=3)&&(LL_1khz_attitude_data.RC_data[5]>200))	//no lock and in GPS mode
+  80:buzzer.c      **** 	{
+  81:buzzer.c      **** 		buz_priority|=BU_GPS_BEEP;
+  82:buzzer.c      **** 		if(buz_cnt<5) buz_active|=BU_GPS_BEEP;
+  83:buzzer.c      **** 		else buz_active&=~BU_GPS_BEEP;
+  84:buzzer.c      **** 	}
+  85:buzzer.c      **** 	else
+  86:buzzer.c      **** 	{
+  87:buzzer.c      **** 		buz_active&=~BU_GPS_BEEP;
+  88:buzzer.c      **** 		buz_priority&=~BU_GPS_BEEP;
+  89:buzzer.c      **** 	}
+  90:buzzer.c      **** #endif
+  91:buzzer.c      **** 
+  92:buzzer.c      **** #ifdef ERROR_BEEP
+  93:buzzer.c      **** 	//gyro error
+  94:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_CALIBRATION_ERROR_GYROS)&&(SYSTEM_initialized))
+ 231              	.LM18:
+ 232 01b8 443E9FE5 		ldr	r3, .L152+20
+ 233 01bc B235D3E1 		ldrh	r3, [r3, #82]
+ 234 01c0 0338A0E1 		mov	r3, r3, asl #16
+ 235 01c4 2338A0E1 		mov	r3, r3, lsr #16
+ 236 01c8 023C03E2 		and	r3, r3, #512
+ 237 01cc 000053E3 		cmp	r3, #0
+ 238 01d0 2300000A 		beq	.L22
+ 239 01d4 2C3E9FE5 		ldr	r3, .L152+24
+ 240 01d8 0030D3E5 		ldrb	r3, [r3, #0]
+ 241 01dc FF3003E2 		and	r3, r3, #255
+ 242 01e0 000053E3 		cmp	r3, #0
+ 243 01e4 1E00000A 		beq	.L22
+  95:buzzer.c      **** 	{
+  96:buzzer.c      **** 		buz_priority|=BU_ERROR_GYRO;
+ 245              	.LM19:
+ 246 01e8 14301BE5 		ldr	r3, [fp, #-20]
+ 247 01ec 023083E3 		orr	r3, r3, #2
+ 248 01f0 14300BE5 		str	r3, [fp, #-20]
+  97:buzzer.c      **** 		if(buz_cnt<155) buz_active|=BU_ERROR_GYRO;
+ 250              	.LM20:
+ 251 01f4 F43D9FE5 		ldr	r3, .L152
+ 252 01f8 B030D3E1 		ldrh	r3, [r3, #0]
+ 253 01fc 9A0053E3 		cmp	r3, #154
+ 254 0200 0300008A 		bhi	.L25
+ 255 0204 18301BE5 		ldr	r3, [fp, #-24]
+ 256 0208 023083E3 		orr	r3, r3, #2
+ 257 020c 18300BE5 		str	r3, [fp, #-24]
+ 258 0210 190000EA 		b	.L32
+ 259              	.L25:
+  98:buzzer.c      **** 		else if(buz_cnt<160) buz_active&=~BU_ERROR_GYRO;
+ 261              	.LM21:
+ 262 0214 D43D9FE5 		ldr	r3, .L152
+ 263 0218 B030D3E1 		ldrh	r3, [r3, #0]
+ 264 021c 9F0053E3 		cmp	r3, #159
+ 265 0220 0300008A 		bhi	.L28
+ 266 0224 18301BE5 		ldr	r3, [fp, #-24]
+ 267 0228 0230C3E3 		bic	r3, r3, #2
+ 268 022c 18300BE5 		str	r3, [fp, #-24]
+ 269 0230 110000EA 		b	.L32
+ 270              	.L28:
+  99:buzzer.c      **** 		else if(buz_cnt<165) buz_active|=BU_ERROR_GYRO;
+ 272              	.LM22:
+ 273 0234 B43D9FE5 		ldr	r3, .L152
+ 274 0238 B030D3E1 		ldrh	r3, [r3, #0]
+ 275 023c A40053E3 		cmp	r3, #164
+ 276 0240 0300008A 		bhi	.L30
+ 277 0244 18301BE5 		ldr	r3, [fp, #-24]
+ 278 0248 023083E3 		orr	r3, r3, #2
+ 279 024c 18300BE5 		str	r3, [fp, #-24]
+ 280 0250 090000EA 		b	.L32
+ 281              	.L30:
+ 100:buzzer.c      **** 		else buz_active&=~BU_ERROR_GYRO;
+ 283              	.LM23:
+ 284 0254 18301BE5 		ldr	r3, [fp, #-24]
+ 285 0258 0230C3E3 		bic	r3, r3, #2
+ 286 025c 18300BE5 		str	r3, [fp, #-24]
+  94:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_CALIBRATION_ERROR_GYROS)&&(SYSTEM_initialized))
+ 288              	.LM24:
+ 289 0260 050000EA 		b	.L32
+ 290              	.L22:
+ 101:buzzer.c      **** 	}
+ 102:buzzer.c      **** 	else
+ 103:buzzer.c      **** 	{
+ 104:buzzer.c      **** 		buz_priority&=~BU_ERROR_GYRO;
+ 292              	.LM25:
+ 293 0264 14301BE5 		ldr	r3, [fp, #-20]
+ 294 0268 0230C3E3 		bic	r3, r3, #2
+ 295 026c 14300BE5 		str	r3, [fp, #-20]
+ 105:buzzer.c      **** 		buz_active&=~BU_ERROR_GYRO;
+ 297              	.LM26:
+ 298 0270 18301BE5 		ldr	r3, [fp, #-24]
+ 299 0274 0230C3E3 		bic	r3, r3, #2
+ 300 0278 18300BE5 		str	r3, [fp, #-24]
+ 301              	.L32:
+ 106:buzzer.c      **** 	}
+ 107:buzzer.c      **** 
+ 108:buzzer.c      **** 	//ACC error
+ 109:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_CALIBRATION_ERROR_ACC)&&(SYSTEM_initialized))
+ 303              	.LM27:
+ 304 027c 803D9FE5 		ldr	r3, .L152+20
+ 305 0280 B235D3E1 		ldrh	r3, [r3, #82]
+ 306 0284 0338A0E1 		mov	r3, r3, asl #16
+ 307 0288 2338A0E1 		mov	r3, r3, lsr #16
+ 308 028c 013B03E2 		and	r3, r3, #1024
+ 309 0290 000053E3 		cmp	r3, #0
+ 310 0294 3300000A 		beq	.L33
+ 311 0298 683D9FE5 		ldr	r3, .L152+24
+ 312 029c 0030D3E5 		ldrb	r3, [r3, #0]
+ 313 02a0 FF3003E2 		and	r3, r3, #255
+ 314 02a4 000053E3 		cmp	r3, #0
+ 315 02a8 2E00000A 		beq	.L33
+ 110:buzzer.c      **** 	{
+ 111:buzzer.c      **** 		buz_priority|=BU_ERROR_ACC;
+ 317              	.LM28:
+ 318 02ac 14301BE5 		ldr	r3, [fp, #-20]
+ 319 02b0 043083E3 		orr	r3, r3, #4
+ 320 02b4 14300BE5 		str	r3, [fp, #-20]
+ 112:buzzer.c      **** 		if(buz_cnt<145) buz_active|=BU_ERROR_ACC;
+ 322              	.LM29:
+ 323 02b8 303D9FE5 		ldr	r3, .L152
+ 324 02bc B030D3E1 		ldrh	r3, [r3, #0]
+ 325 02c0 900053E3 		cmp	r3, #144
+ 326 02c4 0300008A 		bhi	.L36
+ 327 02c8 18301BE5 		ldr	r3, [fp, #-24]
+ 328 02cc 043083E3 		orr	r3, r3, #4
+ 329 02d0 18300BE5 		str	r3, [fp, #-24]
+ 330 02d4 290000EA 		b	.L47
+ 331              	.L36:
+ 113:buzzer.c      **** 		else if(buz_cnt<150) buz_active&=~BU_ERROR_ACC;
+ 333              	.LM30:
+ 334 02d8 103D9FE5 		ldr	r3, .L152
+ 335 02dc B030D3E1 		ldrh	r3, [r3, #0]
+ 336 02e0 950053E3 		cmp	r3, #149
+ 337 02e4 0300008A 		bhi	.L39
+ 338 02e8 18301BE5 		ldr	r3, [fp, #-24]
+ 339 02ec 0430C3E3 		bic	r3, r3, #4
+ 340 02f0 18300BE5 		str	r3, [fp, #-24]
+ 341 02f4 210000EA 		b	.L47
+ 342              	.L39:
+ 114:buzzer.c      **** 		else if(buz_cnt<155) buz_active|=BU_ERROR_ACC;
+ 344              	.LM31:
+ 345 02f8 F03C9FE5 		ldr	r3, .L152
+ 346 02fc B030D3E1 		ldrh	r3, [r3, #0]
+ 347 0300 9A0053E3 		cmp	r3, #154
+ 348 0304 0300008A 		bhi	.L41
+ 349 0308 18301BE5 		ldr	r3, [fp, #-24]
+ 350 030c 043083E3 		orr	r3, r3, #4
+ 351 0310 18300BE5 		str	r3, [fp, #-24]
+ 352 0314 190000EA 		b	.L47
+ 353              	.L41:
+ 115:buzzer.c      **** 		else if(buz_cnt<160) buz_active&=~BU_ERROR_ACC;
+ 355              	.LM32:
+ 356 0318 D03C9FE5 		ldr	r3, .L152
+ 357 031c B030D3E1 		ldrh	r3, [r3, #0]
+ 358 0320 9F0053E3 		cmp	r3, #159
+ 359 0324 0300008A 		bhi	.L43
+ 360 0328 18301BE5 		ldr	r3, [fp, #-24]
+ 361 032c 0430C3E3 		bic	r3, r3, #4
+ 362 0330 18300BE5 		str	r3, [fp, #-24]
+ 363 0334 110000EA 		b	.L47
+ 364              	.L43:
+ 116:buzzer.c      **** 		else if(buz_cnt<165) buz_active|=BU_ERROR_ACC;
+ 366              	.LM33:
+ 367 0338 B03C9FE5 		ldr	r3, .L152
+ 368 033c B030D3E1 		ldrh	r3, [r3, #0]
+ 369 0340 A40053E3 		cmp	r3, #164
+ 370 0344 0300008A 		bhi	.L45
+ 371 0348 18301BE5 		ldr	r3, [fp, #-24]
+ 372 034c 043083E3 		orr	r3, r3, #4
+ 373 0350 18300BE5 		str	r3, [fp, #-24]
+ 374 0354 090000EA 		b	.L47
+ 375              	.L45:
+ 117:buzzer.c      **** 		else buz_active&=~BU_ERROR_ACC;
+ 377              	.LM34:
+ 378 0358 18301BE5 		ldr	r3, [fp, #-24]
+ 379 035c 0430C3E3 		bic	r3, r3, #4
+ 380 0360 18300BE5 		str	r3, [fp, #-24]
+ 109:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_CALIBRATION_ERROR_ACC)&&(SYSTEM_initialized))
+ 382              	.LM35:
+ 383 0364 050000EA 		b	.L47
+ 384              	.L33:
+ 118:buzzer.c      **** 	}
+ 119:buzzer.c      **** 	else
+ 120:buzzer.c      **** 	{
+ 121:buzzer.c      **** 		buz_priority&=~BU_ERROR_ACC;
+ 386              	.LM36:
+ 387 0368 14301BE5 		ldr	r3, [fp, #-20]
+ 388 036c 0430C3E3 		bic	r3, r3, #4
+ 389 0370 14300BE5 		str	r3, [fp, #-20]
+ 122:buzzer.c      **** 		buz_active&=~BU_ERROR_ACC;
+ 391              	.LM37:
+ 392 0374 18301BE5 		ldr	r3, [fp, #-24]
+ 393 0378 0430C3E3 		bic	r3, r3, #4
+ 394 037c 18300BE5 		str	r3, [fp, #-24]
+ 395              	.L47:
+ 123:buzzer.c      **** 	}
+ 124:buzzer.c      **** 
+ 125:buzzer.c      **** 	//ADC error
+ 126:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_ADC_STARTUP_ERROR)&&(SYSTEM_initialized))
+ 397              	.LM38:
+ 398 0380 7C3C9FE5 		ldr	r3, .L152+20
+ 399 0384 B235D3E1 		ldrh	r3, [r3, #82]
+ 400 0388 0338A0E1 		mov	r3, r3, asl #16
+ 401 038c 2338A0E1 		mov	r3, r3, lsr #16
+ 402 0390 023B03E2 		and	r3, r3, #2048
+ 403 0394 000053E3 		cmp	r3, #0
+ 404 0398 4300000A 		beq	.L48
+ 405 039c 643C9FE5 		ldr	r3, .L152+24
+ 406 03a0 0030D3E5 		ldrb	r3, [r3, #0]
+ 407 03a4 FF3003E2 		and	r3, r3, #255
+ 408 03a8 000053E3 		cmp	r3, #0
+ 409 03ac 3E00000A 		beq	.L48
+ 127:buzzer.c      **** 	{
+ 128:buzzer.c      **** 		buz_priority|=BU_ERROR_ADC;
+ 411              	.LM39:
+ 412 03b0 14301BE5 		ldr	r3, [fp, #-20]
+ 413 03b4 083083E3 		orr	r3, r3, #8
+ 414 03b8 14300BE5 		str	r3, [fp, #-20]
+ 129:buzzer.c      **** 		if(buz_cnt<135) buz_active|=BU_ERROR_ADC;
+ 416              	.LM40:
+ 417 03bc 2C3C9FE5 		ldr	r3, .L152
+ 418 03c0 B030D3E1 		ldrh	r3, [r3, #0]
+ 419 03c4 860053E3 		cmp	r3, #134
+ 420 03c8 0300008A 		bhi	.L51
+ 421 03cc 18301BE5 		ldr	r3, [fp, #-24]
+ 422 03d0 083083E3 		orr	r3, r3, #8
+ 423 03d4 18300BE5 		str	r3, [fp, #-24]
+ 424 03d8 390000EA 		b	.L66
+ 425              	.L51:
+ 130:buzzer.c      **** 		else if(buz_cnt<140) buz_active&=~BU_ERROR_ADC;
+ 427              	.LM41:
+ 428 03dc 0C3C9FE5 		ldr	r3, .L152
+ 429 03e0 B030D3E1 		ldrh	r3, [r3, #0]
+ 430 03e4 8B0053E3 		cmp	r3, #139
+ 431 03e8 0300008A 		bhi	.L54
+ 432 03ec 18301BE5 		ldr	r3, [fp, #-24]
+ 433 03f0 0830C3E3 		bic	r3, r3, #8
+ 434 03f4 18300BE5 		str	r3, [fp, #-24]
+ 435 03f8 310000EA 		b	.L66
+ 436              	.L54:
+ 131:buzzer.c      **** 		else if(buz_cnt<145) buz_active|=BU_ERROR_ADC;
+ 438              	.LM42:
+ 439 03fc EC3B9FE5 		ldr	r3, .L152
+ 440 0400 B030D3E1 		ldrh	r3, [r3, #0]
+ 441 0404 900053E3 		cmp	r3, #144
+ 442 0408 0300008A 		bhi	.L56
+ 443 040c 18301BE5 		ldr	r3, [fp, #-24]
+ 444 0410 083083E3 		orr	r3, r3, #8
+ 445 0414 18300BE5 		str	r3, [fp, #-24]
+ 446 0418 290000EA 		b	.L66
+ 447              	.L56:
+ 132:buzzer.c      **** 		else if(buz_cnt<150) buz_active&=~BU_ERROR_ADC;
+ 449              	.LM43:
+ 450 041c CC3B9FE5 		ldr	r3, .L152
+ 451 0420 B030D3E1 		ldrh	r3, [r3, #0]
+ 452 0424 950053E3 		cmp	r3, #149
+ 453 0428 0300008A 		bhi	.L58
+ 454 042c 18301BE5 		ldr	r3, [fp, #-24]
+ 455 0430 0830C3E3 		bic	r3, r3, #8
+ 456 0434 18300BE5 		str	r3, [fp, #-24]
+ 457 0438 210000EA 		b	.L66
+ 458              	.L58:
+ 133:buzzer.c      **** 		else if(buz_cnt<155) buz_active|=BU_ERROR_ADC;
+ 460              	.LM44:
+ 461 043c AC3B9FE5 		ldr	r3, .L152
+ 462 0440 B030D3E1 		ldrh	r3, [r3, #0]
+ 463 0444 9A0053E3 		cmp	r3, #154
+ 464 0448 0300008A 		bhi	.L60
+ 465 044c 18301BE5 		ldr	r3, [fp, #-24]
+ 466 0450 083083E3 		orr	r3, r3, #8
+ 467 0454 18300BE5 		str	r3, [fp, #-24]
+ 468 0458 190000EA 		b	.L66
+ 469              	.L60:
+ 134:buzzer.c      **** 		else if(buz_cnt<160) buz_active&=~BU_ERROR_ADC;
+ 471              	.LM45:
+ 472 045c 8C3B9FE5 		ldr	r3, .L152
+ 473 0460 B030D3E1 		ldrh	r3, [r3, #0]
+ 474 0464 9F0053E3 		cmp	r3, #159
+ 475 0468 0300008A 		bhi	.L62
+ 476 046c 18301BE5 		ldr	r3, [fp, #-24]
+ 477 0470 0830C3E3 		bic	r3, r3, #8
+ 478 0474 18300BE5 		str	r3, [fp, #-24]
+ 479 0478 110000EA 		b	.L66
+ 480              	.L62:
+ 135:buzzer.c      **** 		else if(buz_cnt<165) buz_active|=BU_ERROR_ADC;
+ 482              	.LM46:
+ 483 047c 6C3B9FE5 		ldr	r3, .L152
+ 484 0480 B030D3E1 		ldrh	r3, [r3, #0]
+ 485 0484 A40053E3 		cmp	r3, #164
+ 486 0488 0300008A 		bhi	.L64
+ 487 048c 18301BE5 		ldr	r3, [fp, #-24]
+ 488 0490 083083E3 		orr	r3, r3, #8
+ 489 0494 18300BE5 		str	r3, [fp, #-24]
+ 490 0498 090000EA 		b	.L66
+ 491              	.L64:
+ 136:buzzer.c      **** 		else buz_active&=~BU_ERROR_ADC;
+ 493              	.LM47:
+ 494 049c 18301BE5 		ldr	r3, [fp, #-24]
+ 495 04a0 0830C3E3 		bic	r3, r3, #8
+ 496 04a4 18300BE5 		str	r3, [fp, #-24]
+ 126:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_ADC_STARTUP_ERROR)&&(SYSTEM_initialized))
+ 498              	.LM48:
+ 499 04a8 050000EA 		b	.L66
+ 500              	.L48:
+ 137:buzzer.c      **** 	}
+ 138:buzzer.c      **** 	else
+ 139:buzzer.c      **** 	{
+ 140:buzzer.c      **** 		buz_priority&=~BU_ERROR_ADC;
+ 502              	.LM49:
+ 503 04ac 14301BE5 		ldr	r3, [fp, #-20]
+ 504 04b0 0830C3E3 		bic	r3, r3, #8
+ 505 04b4 14300BE5 		str	r3, [fp, #-20]
+ 141:buzzer.c      **** 		buz_active&=~BU_ERROR_ADC;
+ 507              	.LM50:
+ 508 04b8 18301BE5 		ldr	r3, [fp, #-24]
+ 509 04bc 0830C3E3 		bic	r3, r3, #8
+ 510 04c0 18300BE5 		str	r3, [fp, #-24]
+ 511              	.L66:
+ 142:buzzer.c      **** 	}
+ 143:buzzer.c      **** 
+ 144:buzzer.c      **** 	//compass failure: warn 3 seconds only
+ 145:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_COMPASS_FAILURE)&&(SYSTEM_initialized)&&(error_cnt_compass
+ 513              	.LM51:
+ 514 04c4 383B9FE5 		ldr	r3, .L152+20
+ 515 04c8 B235D3E1 		ldrh	r3, [r3, #82]
+ 516 04cc 0338A0E1 		mov	r3, r3, asl #16
+ 517 04d0 2338A0E1 		mov	r3, r3, lsr #16
+ 518 04d4 103003E2 		and	r3, r3, #16
+ 519 04d8 000053E3 		cmp	r3, #0
+ 520 04dc E400000A 		beq	.L67
+ 521 04e0 203B9FE5 		ldr	r3, .L152+24
+ 522 04e4 0030D3E5 		ldrb	r3, [r3, #0]
+ 523 04e8 FF3003E2 		and	r3, r3, #255
+ 524 04ec 000053E3 		cmp	r3, #0
+ 525 04f0 DF00000A 		beq	.L67
+ 526 04f4 103B9FE5 		ldr	r3, .L152+28
+ 527 04f8 B020D3E1 		ldrh	r2, [r3, #0]
+ 528 04fc 633FA0E3 		mov	r3, #396
+ 529 0500 033083E2 		add	r3, r3, #3
+ 530 0504 030052E1 		cmp	r2, r3
+ 531 0508 0030A083 		movhi	r3, #0
+ 532 050c 0130A093 		movls	r3, #1
+ 533 0510 FF1003E2 		and	r1, r3, #255
+ 534 0514 013082E2 		add	r3, r2, #1
+ 535 0518 0338A0E1 		mov	r3, r3, asl #16
+ 536 051c 2328A0E1 		mov	r2, r3, lsr #16
+ 537 0520 E43A9FE5 		ldr	r3, .L152+28
+ 538 0524 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 539 0528 013021E2 		eor	r3, r1, #1
+ 540 052c FF3003E2 		and	r3, r3, #255
+ 541 0530 000053E3 		cmp	r3, #0
+ 542 0534 CE00001A 		bne	.L67
+ 146:buzzer.c      **** 	{
+ 147:buzzer.c      **** 		buz_priority|=BU_COMPASS_FAILURE;
+ 544              	.LM52:
+ 545 0538 14301BE5 		ldr	r3, [fp, #-20]
+ 546 053c 203083E3 		orr	r3, r3, #32
+ 547 0540 14300BE5 		str	r3, [fp, #-20]
+ 148:buzzer.c      **** 		if(buz_cnt%100<5) buz_active|=BU_COMPASS_FAILURE;
+ 549              	.LM53:
+ 550 0544 A43A9FE5 		ldr	r3, .L152
+ 551 0548 B010D3E1 		ldrh	r1, [r3, #0]
+ 552 054c BC3A9FE5 		ldr	r3, .L152+32
+ 553 0550 912383E0 		umull	r2, r3, r1, r3
+ 554 0554 A322A0E1 		mov	r2, r3, lsr #5
+ 555 0558 0230A0E1 		mov	r3, r2
+ 556 055c 0331A0E1 		mov	r3, r3, asl #2
+ 557 0560 023083E0 		add	r3, r3, r2
+ 558 0564 0321A0E1 		mov	r2, r3, asl #2
+ 559 0568 023083E0 		add	r3, r3, r2
+ 560 056c 0331A0E1 		mov	r3, r3, asl #2
+ 561 0570 013063E0 		rsb	r3, r3, r1
+ 562 0574 0338A0E1 		mov	r3, r3, asl #16
+ 563 0578 2338A0E1 		mov	r3, r3, lsr #16
+ 564 057c 040053E3 		cmp	r3, #4
+ 565 0580 0300008A 		bhi	.L71
+ 566 0584 18301BE5 		ldr	r3, [fp, #-24]
+ 567 0588 203083E3 		orr	r3, r3, #32
+ 568 058c 18300BE5 		str	r3, [fp, #-24]
+ 569 0590 BD0000EA 		b	.L92
+ 570              	.L71:
+ 149:buzzer.c      **** 		else if(buz_cnt%100<10) buz_active&=~BU_COMPASS_FAILURE;
+ 572              	.LM54:
+ 573 0594 543A9FE5 		ldr	r3, .L152
+ 574 0598 B010D3E1 		ldrh	r1, [r3, #0]
+ 575 059c 6C3A9FE5 		ldr	r3, .L152+32
+ 576 05a0 910383E0 		umull	r0, r3, r1, r3
+ 577 05a4 A322A0E1 		mov	r2, r3, lsr #5
+ 578 05a8 0230A0E1 		mov	r3, r2
+ 579 05ac 0331A0E1 		mov	r3, r3, asl #2
+ 580 05b0 023083E0 		add	r3, r3, r2
+ 581 05b4 0321A0E1 		mov	r2, r3, asl #2
+ 582 05b8 023083E0 		add	r3, r3, r2
+ 583 05bc 0331A0E1 		mov	r3, r3, asl #2
+ 584 05c0 013063E0 		rsb	r3, r3, r1
+ 585 05c4 0338A0E1 		mov	r3, r3, asl #16
+ 586 05c8 2338A0E1 		mov	r3, r3, lsr #16
+ 587 05cc 090053E3 		cmp	r3, #9
+ 588 05d0 0300008A 		bhi	.L74
+ 589 05d4 18301BE5 		ldr	r3, [fp, #-24]
+ 590 05d8 2030C3E3 		bic	r3, r3, #32
+ 591 05dc 18300BE5 		str	r3, [fp, #-24]
+ 592 05e0 A90000EA 		b	.L92
+ 593              	.L74:
+ 150:buzzer.c      **** 		else if(buz_cnt%100<15) buz_active|=BU_COMPASS_FAILURE;
+ 595              	.LM55:
+ 596 05e4 043A9FE5 		ldr	r3, .L152
+ 597 05e8 B010D3E1 		ldrh	r1, [r3, #0]
+ 598 05ec 1C3A9FE5 		ldr	r3, .L152+32
+ 599 05f0 912383E0 		umull	r2, r3, r1, r3
+ 600 05f4 A322A0E1 		mov	r2, r3, lsr #5
+ 601 05f8 0230A0E1 		mov	r3, r2
+ 602 05fc 0331A0E1 		mov	r3, r3, asl #2
+ 603 0600 023083E0 		add	r3, r3, r2
+ 604 0604 0321A0E1 		mov	r2, r3, asl #2
+ 605 0608 023083E0 		add	r3, r3, r2
+ 606 060c 0331A0E1 		mov	r3, r3, asl #2
+ 607 0610 013063E0 		rsb	r3, r3, r1
+ 608 0614 0338A0E1 		mov	r3, r3, asl #16
+ 609 0618 2338A0E1 		mov	r3, r3, lsr #16
+ 610 061c 0E0053E3 		cmp	r3, #14
+ 611 0620 0300008A 		bhi	.L76
+ 612 0624 18301BE5 		ldr	r3, [fp, #-24]
+ 613 0628 203083E3 		orr	r3, r3, #32
+ 614 062c 18300BE5 		str	r3, [fp, #-24]
+ 615 0630 950000EA 		b	.L92
+ 616              	.L76:
+ 151:buzzer.c      **** 		else if(buz_cnt%100<20) buz_active&=~BU_COMPASS_FAILURE;
+ 618              	.LM56:
+ 619 0634 B4399FE5 		ldr	r3, .L152
+ 620 0638 B010D3E1 		ldrh	r1, [r3, #0]
+ 621 063c CC399FE5 		ldr	r3, .L152+32
+ 622 0640 910383E0 		umull	r0, r3, r1, r3
+ 623 0644 A322A0E1 		mov	r2, r3, lsr #5
+ 624 0648 0230A0E1 		mov	r3, r2
+ 625 064c 0331A0E1 		mov	r3, r3, asl #2
+ 626 0650 023083E0 		add	r3, r3, r2
+ 627 0654 0321A0E1 		mov	r2, r3, asl #2
+ 628 0658 023083E0 		add	r3, r3, r2
+ 629 065c 0331A0E1 		mov	r3, r3, asl #2
+ 630 0660 013063E0 		rsb	r3, r3, r1
+ 631 0664 0338A0E1 		mov	r3, r3, asl #16
+ 632 0668 2338A0E1 		mov	r3, r3, lsr #16
+ 633 066c 130053E3 		cmp	r3, #19
+ 634 0670 0300008A 		bhi	.L78
+ 635 0674 18301BE5 		ldr	r3, [fp, #-24]
+ 636 0678 2030C3E3 		bic	r3, r3, #32
+ 637 067c 18300BE5 		str	r3, [fp, #-24]
+ 638 0680 810000EA 		b	.L92
+ 639              	.L78:
+ 152:buzzer.c      **** 		else if(buz_cnt%100<25) buz_active|=BU_COMPASS_FAILURE;
+ 641              	.LM57:
+ 642 0684 64399FE5 		ldr	r3, .L152
+ 643 0688 B010D3E1 		ldrh	r1, [r3, #0]
+ 644 068c 7C399FE5 		ldr	r3, .L152+32
+ 645 0690 912383E0 		umull	r2, r3, r1, r3
+ 646 0694 A322A0E1 		mov	r2, r3, lsr #5
+ 647 0698 0230A0E1 		mov	r3, r2
+ 648 069c 0331A0E1 		mov	r3, r3, asl #2
+ 649 06a0 023083E0 		add	r3, r3, r2
+ 650 06a4 0321A0E1 		mov	r2, r3, asl #2
+ 651 06a8 023083E0 		add	r3, r3, r2
+ 652 06ac 0331A0E1 		mov	r3, r3, asl #2
+ 653 06b0 013063E0 		rsb	r3, r3, r1
+ 654 06b4 0338A0E1 		mov	r3, r3, asl #16
+ 655 06b8 2338A0E1 		mov	r3, r3, lsr #16
+ 656 06bc 180053E3 		cmp	r3, #24
+ 657 06c0 0300008A 		bhi	.L80
+ 658 06c4 18301BE5 		ldr	r3, [fp, #-24]
+ 659 06c8 203083E3 		orr	r3, r3, #32
+ 660 06cc 18300BE5 		str	r3, [fp, #-24]
+ 661 06d0 6D0000EA 		b	.L92
+ 662              	.L80:
+ 153:buzzer.c      **** 		else if(buz_cnt%100<30) buz_active&=~BU_COMPASS_FAILURE;
+ 664              	.LM58:
+ 665 06d4 14399FE5 		ldr	r3, .L152
+ 666 06d8 B010D3E1 		ldrh	r1, [r3, #0]
+ 667 06dc 2C399FE5 		ldr	r3, .L152+32
+ 668 06e0 910383E0 		umull	r0, r3, r1, r3
+ 669 06e4 A322A0E1 		mov	r2, r3, lsr #5
+ 670 06e8 0230A0E1 		mov	r3, r2
+ 671 06ec 0331A0E1 		mov	r3, r3, asl #2
+ 672 06f0 023083E0 		add	r3, r3, r2
+ 673 06f4 0321A0E1 		mov	r2, r3, asl #2
+ 674 06f8 023083E0 		add	r3, r3, r2
+ 675 06fc 0331A0E1 		mov	r3, r3, asl #2
+ 676 0700 013063E0 		rsb	r3, r3, r1
+ 677 0704 0338A0E1 		mov	r3, r3, asl #16
+ 678 0708 2338A0E1 		mov	r3, r3, lsr #16
+ 679 070c 1D0053E3 		cmp	r3, #29
+ 680 0710 0300008A 		bhi	.L82
+ 681 0714 18301BE5 		ldr	r3, [fp, #-24]
+ 682 0718 2030C3E3 		bic	r3, r3, #32
+ 683 071c 18300BE5 		str	r3, [fp, #-24]
+ 684 0720 590000EA 		b	.L92
+ 685              	.L82:
+ 154:buzzer.c      **** 		else if(buz_cnt%100<35) buz_active|=BU_COMPASS_FAILURE;
+ 687              	.LM59:
+ 688 0724 C4389FE5 		ldr	r3, .L152
+ 689 0728 B010D3E1 		ldrh	r1, [r3, #0]
+ 690 072c DC389FE5 		ldr	r3, .L152+32
+ 691 0730 912383E0 		umull	r2, r3, r1, r3
+ 692 0734 A322A0E1 		mov	r2, r3, lsr #5
+ 693 0738 0230A0E1 		mov	r3, r2
+ 694 073c 0331A0E1 		mov	r3, r3, asl #2
+ 695 0740 023083E0 		add	r3, r3, r2
+ 696 0744 0321A0E1 		mov	r2, r3, asl #2
+ 697 0748 023083E0 		add	r3, r3, r2
+ 698 074c 0331A0E1 		mov	r3, r3, asl #2
+ 699 0750 013063E0 		rsb	r3, r3, r1
+ 700 0754 0338A0E1 		mov	r3, r3, asl #16
+ 701 0758 2338A0E1 		mov	r3, r3, lsr #16
+ 702 075c 220053E3 		cmp	r3, #34
+ 703 0760 0300008A 		bhi	.L84
+ 704 0764 18301BE5 		ldr	r3, [fp, #-24]
+ 705 0768 203083E3 		orr	r3, r3, #32
+ 706 076c 18300BE5 		str	r3, [fp, #-24]
+ 707 0770 450000EA 		b	.L92
+ 708              	.L84:
+ 155:buzzer.c      **** 		else if(buz_cnt%100<40) buz_active&=~BU_COMPASS_FAILURE;
+ 710              	.LM60:
+ 711 0774 74389FE5 		ldr	r3, .L152
+ 712 0778 B010D3E1 		ldrh	r1, [r3, #0]
+ 713 077c 8C389FE5 		ldr	r3, .L152+32
+ 714 0780 910383E0 		umull	r0, r3, r1, r3
+ 715 0784 A322A0E1 		mov	r2, r3, lsr #5
+ 716 0788 0230A0E1 		mov	r3, r2
+ 717 078c 0331A0E1 		mov	r3, r3, asl #2
+ 718 0790 023083E0 		add	r3, r3, r2
+ 719 0794 0321A0E1 		mov	r2, r3, asl #2
+ 720 0798 023083E0 		add	r3, r3, r2
+ 721 079c 0331A0E1 		mov	r3, r3, asl #2
+ 722 07a0 013063E0 		rsb	r3, r3, r1
+ 723 07a4 0338A0E1 		mov	r3, r3, asl #16
+ 724 07a8 2338A0E1 		mov	r3, r3, lsr #16
+ 725 07ac 270053E3 		cmp	r3, #39
+ 726 07b0 0300008A 		bhi	.L86
+ 727 07b4 18301BE5 		ldr	r3, [fp, #-24]
+ 728 07b8 2030C3E3 		bic	r3, r3, #32
+ 729 07bc 18300BE5 		str	r3, [fp, #-24]
+ 730 07c0 310000EA 		b	.L92
+ 731              	.L86:
+ 156:buzzer.c      **** 		else if(buz_cnt%100<45) buz_active|=BU_COMPASS_FAILURE;
+ 733              	.LM61:
+ 734 07c4 24389FE5 		ldr	r3, .L152
+ 735 07c8 B010D3E1 		ldrh	r1, [r3, #0]
+ 736 07cc 3C389FE5 		ldr	r3, .L152+32
+ 737 07d0 912383E0 		umull	r2, r3, r1, r3
+ 738 07d4 A322A0E1 		mov	r2, r3, lsr #5
+ 739 07d8 0230A0E1 		mov	r3, r2
+ 740 07dc 0331A0E1 		mov	r3, r3, asl #2
+ 741 07e0 023083E0 		add	r3, r3, r2
+ 742 07e4 0321A0E1 		mov	r2, r3, asl #2
+ 743 07e8 023083E0 		add	r3, r3, r2
+ 744 07ec 0331A0E1 		mov	r3, r3, asl #2
+ 745 07f0 013063E0 		rsb	r3, r3, r1
+ 746 07f4 0338A0E1 		mov	r3, r3, asl #16
+ 747 07f8 2338A0E1 		mov	r3, r3, lsr #16
+ 748 07fc 2C0053E3 		cmp	r3, #44
+ 749 0800 0300008A 		bhi	.L88
+ 750 0804 18301BE5 		ldr	r3, [fp, #-24]
+ 751 0808 203083E3 		orr	r3, r3, #32
+ 752 080c 18300BE5 		str	r3, [fp, #-24]
+ 753 0810 1D0000EA 		b	.L92
+ 754              	.L88:
+ 157:buzzer.c      **** 		else if(buz_cnt%100<50) buz_active&=~BU_COMPASS_FAILURE;
+ 756              	.LM62:
+ 757 0814 D4379FE5 		ldr	r3, .L152
+ 758 0818 B010D3E1 		ldrh	r1, [r3, #0]
+ 759 081c EC379FE5 		ldr	r3, .L152+32
+ 760 0820 910383E0 		umull	r0, r3, r1, r3
+ 761 0824 A322A0E1 		mov	r2, r3, lsr #5
+ 762 0828 0230A0E1 		mov	r3, r2
+ 763 082c 0331A0E1 		mov	r3, r3, asl #2
+ 764 0830 023083E0 		add	r3, r3, r2
+ 765 0834 0321A0E1 		mov	r2, r3, asl #2
+ 766 0838 023083E0 		add	r3, r3, r2
+ 767 083c 0331A0E1 		mov	r3, r3, asl #2
+ 768 0840 013063E0 		rsb	r3, r3, r1
+ 769 0844 0338A0E1 		mov	r3, r3, asl #16
+ 770 0848 2338A0E1 		mov	r3, r3, lsr #16
+ 771 084c 310053E3 		cmp	r3, #49
+ 772 0850 0300008A 		bhi	.L90
+ 773 0854 18301BE5 		ldr	r3, [fp, #-24]
+ 774 0858 2030C3E3 		bic	r3, r3, #32
+ 775 085c 18300BE5 		str	r3, [fp, #-24]
+ 776 0860 090000EA 		b	.L92
+ 777              	.L90:
+ 158:buzzer.c      **** 		else buz_active&=~BU_COMPASS_FAILURE;
+ 779              	.LM63:
+ 780 0864 18301BE5 		ldr	r3, [fp, #-24]
+ 781 0868 2030C3E3 		bic	r3, r3, #32
+ 782 086c 18300BE5 		str	r3, [fp, #-24]
+ 145:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_COMPASS_FAILURE)&&(SYSTEM_initialized)&&(error_cnt_compass
+ 784              	.LM64:
+ 785 0870 050000EA 		b	.L92
+ 786              	.L67:
+ 159:buzzer.c      **** 	}
+ 160:buzzer.c      **** 	else
+ 161:buzzer.c      **** 	{
+ 162:buzzer.c      **** 		buz_priority&=~BU_COMPASS_FAILURE;
+ 788              	.LM65:
+ 789 0874 14301BE5 		ldr	r3, [fp, #-20]
+ 790 0878 2030C3E3 		bic	r3, r3, #32
+ 791 087c 14300BE5 		str	r3, [fp, #-20]
+ 163:buzzer.c      **** 		buz_active&=~BU_COMPASS_FAILURE;
+ 793              	.LM66:
+ 794 0880 18301BE5 		ldr	r3, [fp, #-24]
+ 795 0884 2030C3E3 		bic	r3, r3, #32
+ 796 0888 18300BE5 		str	r3, [fp, #-24]
+ 797              	.L92:
+ 164:buzzer.c      **** 	}
+ 165:buzzer.c      **** 
+ 166:buzzer.c      **** 	//mag fieldstrength warning: warn 3 times only
+ 167:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_MAG_FIELD_STRENGTH_ERROR)&&(SYSTEM_initialized)&&(error_cn
+ 799              	.LM67:
+ 800 088c 70379FE5 		ldr	r3, .L152+20
+ 801 0890 B235D3E1 		ldrh	r3, [r3, #82]
+ 802 0894 0338A0E1 		mov	r3, r3, asl #16
+ 803 0898 2338A0E1 		mov	r3, r3, lsr #16
+ 804 089c 013903E2 		and	r3, r3, #16384
+ 805 08a0 000053E3 		cmp	r3, #0
+ 806 08a4 9400000A 		beq	.L93
+ 807 08a8 58379FE5 		ldr	r3, .L152+24
+ 808 08ac 0030D3E5 		ldrb	r3, [r3, #0]
+ 809 08b0 FF3003E2 		and	r3, r3, #255
+ 810 08b4 000053E3 		cmp	r3, #0
+ 811 08b8 8F00000A 		beq	.L93
+ 812 08bc 50379FE5 		ldr	r3, .L152+36
+ 813 08c0 B020D3E1 		ldrh	r2, [r3, #0]
+ 814 08c4 633FA0E3 		mov	r3, #396
+ 815 08c8 033083E2 		add	r3, r3, #3
+ 816 08cc 030052E1 		cmp	r2, r3
+ 817 08d0 0030A083 		movhi	r3, #0
+ 818 08d4 0130A093 		movls	r3, #1
+ 819 08d8 FF1003E2 		and	r1, r3, #255
+ 820 08dc 013082E2 		add	r3, r2, #1
+ 821 08e0 0338A0E1 		mov	r3, r3, asl #16
+ 822 08e4 2328A0E1 		mov	r2, r3, lsr #16
+ 823 08e8 24379FE5 		ldr	r3, .L152+36
+ 824 08ec B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 825 08f0 013021E2 		eor	r3, r1, #1
+ 826 08f4 FF3003E2 		and	r3, r3, #255
+ 827 08f8 000053E3 		cmp	r3, #0
+ 828 08fc 7E00001A 		bne	.L93
+ 168:buzzer.c      **** 	{
+ 169:buzzer.c      **** 		buz_priority|=BU_WARNING_MAG_FS;
+ 830              	.LM68:
+ 831 0900 14301BE5 		ldr	r3, [fp, #-20]
+ 832 0904 403083E3 		orr	r3, r3, #64
+ 833 0908 14300BE5 		str	r3, [fp, #-20]
+ 170:buzzer.c      **** 		if(buz_cnt%100<5) buz_active|=BU_WARNING_MAG_FS;
+ 835              	.LM69:
+ 836 090c DC369FE5 		ldr	r3, .L152
+ 837 0910 B010D3E1 		ldrh	r1, [r3, #0]
+ 838 0914 F4369FE5 		ldr	r3, .L152+32
+ 839 0918 912383E0 		umull	r2, r3, r1, r3
+ 840 091c A322A0E1 		mov	r2, r3, lsr #5
+ 841 0920 0230A0E1 		mov	r3, r2
+ 842 0924 0331A0E1 		mov	r3, r3, asl #2
+ 843 0928 023083E0 		add	r3, r3, r2
+ 844 092c 0321A0E1 		mov	r2, r3, asl #2
+ 845 0930 023083E0 		add	r3, r3, r2
+ 846 0934 0331A0E1 		mov	r3, r3, asl #2
+ 847 0938 013063E0 		rsb	r3, r3, r1
+ 848 093c 0338A0E1 		mov	r3, r3, asl #16
+ 849 0940 2338A0E1 		mov	r3, r3, lsr #16
+ 850 0944 040053E3 		cmp	r3, #4
+ 851 0948 0300008A 		bhi	.L97
+ 852 094c 18301BE5 		ldr	r3, [fp, #-24]
+ 853 0950 403083E3 		orr	r3, r3, #64
+ 854 0954 18300BE5 		str	r3, [fp, #-24]
+ 855 0958 6D0000EA 		b	.L110
+ 856              	.L97:
+ 171:buzzer.c      **** 		else if(buz_cnt%100<10) buz_active&=~BU_WARNING_MAG_FS;
+ 858              	.LM70:
+ 859 095c 8C369FE5 		ldr	r3, .L152
+ 860 0960 B010D3E1 		ldrh	r1, [r3, #0]
+ 861 0964 A4369FE5 		ldr	r3, .L152+32
+ 862 0968 910383E0 		umull	r0, r3, r1, r3
+ 863 096c A322A0E1 		mov	r2, r3, lsr #5
+ 864 0970 0230A0E1 		mov	r3, r2
+ 865 0974 0331A0E1 		mov	r3, r3, asl #2
+ 866 0978 023083E0 		add	r3, r3, r2
+ 867 097c 0321A0E1 		mov	r2, r3, asl #2
+ 868 0980 023083E0 		add	r3, r3, r2
+ 869 0984 0331A0E1 		mov	r3, r3, asl #2
+ 870 0988 013063E0 		rsb	r3, r3, r1
+ 871 098c 0338A0E1 		mov	r3, r3, asl #16
+ 872 0990 2338A0E1 		mov	r3, r3, lsr #16
+ 873 0994 090053E3 		cmp	r3, #9
+ 874 0998 0300008A 		bhi	.L100
+ 875 099c 18301BE5 		ldr	r3, [fp, #-24]
+ 876 09a0 4030C3E3 		bic	r3, r3, #64
+ 877 09a4 18300BE5 		str	r3, [fp, #-24]
+ 878 09a8 590000EA 		b	.L110
+ 879              	.L100:
+ 172:buzzer.c      **** 		else if(buz_cnt%100<15) buz_active|=BU_WARNING_MAG_FS;
+ 881              	.LM71:
+ 882 09ac 3C369FE5 		ldr	r3, .L152
+ 883 09b0 B010D3E1 		ldrh	r1, [r3, #0]
+ 884 09b4 54369FE5 		ldr	r3, .L152+32
+ 885 09b8 912383E0 		umull	r2, r3, r1, r3
+ 886 09bc A322A0E1 		mov	r2, r3, lsr #5
+ 887 09c0 0230A0E1 		mov	r3, r2
+ 888 09c4 0331A0E1 		mov	r3, r3, asl #2
+ 889 09c8 023083E0 		add	r3, r3, r2
+ 890 09cc 0321A0E1 		mov	r2, r3, asl #2
+ 891 09d0 023083E0 		add	r3, r3, r2
+ 892 09d4 0331A0E1 		mov	r3, r3, asl #2
+ 893 09d8 013063E0 		rsb	r3, r3, r1
+ 894 09dc 0338A0E1 		mov	r3, r3, asl #16
+ 895 09e0 2338A0E1 		mov	r3, r3, lsr #16
+ 896 09e4 0E0053E3 		cmp	r3, #14
+ 897 09e8 0300008A 		bhi	.L102
+ 898 09ec 18301BE5 		ldr	r3, [fp, #-24]
+ 899 09f0 403083E3 		orr	r3, r3, #64
+ 900 09f4 18300BE5 		str	r3, [fp, #-24]
+ 901 09f8 450000EA 		b	.L110
+ 902              	.L102:
+ 173:buzzer.c      **** 		else if(buz_cnt%100<20) buz_active&=~BU_WARNING_MAG_FS;
+ 904              	.LM72:
+ 905 09fc EC359FE5 		ldr	r3, .L152
+ 906 0a00 B010D3E1 		ldrh	r1, [r3, #0]
+ 907 0a04 04369FE5 		ldr	r3, .L152+32
+ 908 0a08 910383E0 		umull	r0, r3, r1, r3
+ 909 0a0c A322A0E1 		mov	r2, r3, lsr #5
+ 910 0a10 0230A0E1 		mov	r3, r2
+ 911 0a14 0331A0E1 		mov	r3, r3, asl #2
+ 912 0a18 023083E0 		add	r3, r3, r2
+ 913 0a1c 0321A0E1 		mov	r2, r3, asl #2
+ 914 0a20 023083E0 		add	r3, r3, r2
+ 915 0a24 0331A0E1 		mov	r3, r3, asl #2
+ 916 0a28 013063E0 		rsb	r3, r3, r1
+ 917 0a2c 0338A0E1 		mov	r3, r3, asl #16
+ 918 0a30 2338A0E1 		mov	r3, r3, lsr #16
+ 919 0a34 130053E3 		cmp	r3, #19
+ 920 0a38 0300008A 		bhi	.L104
+ 921 0a3c 18301BE5 		ldr	r3, [fp, #-24]
+ 922 0a40 4030C3E3 		bic	r3, r3, #64
+ 923 0a44 18300BE5 		str	r3, [fp, #-24]
+ 924 0a48 310000EA 		b	.L110
+ 925              	.L104:
+ 174:buzzer.c      **** 		else if(buz_cnt%100<25) buz_active|=BU_WARNING_MAG_FS;
+ 927              	.LM73:
+ 928 0a4c 9C359FE5 		ldr	r3, .L152
+ 929 0a50 B010D3E1 		ldrh	r1, [r3, #0]
+ 930 0a54 B4359FE5 		ldr	r3, .L152+32
+ 931 0a58 912383E0 		umull	r2, r3, r1, r3
+ 932 0a5c A322A0E1 		mov	r2, r3, lsr #5
+ 933 0a60 0230A0E1 		mov	r3, r2
+ 934 0a64 0331A0E1 		mov	r3, r3, asl #2
+ 935 0a68 023083E0 		add	r3, r3, r2
+ 936 0a6c 0321A0E1 		mov	r2, r3, asl #2
+ 937 0a70 023083E0 		add	r3, r3, r2
+ 938 0a74 0331A0E1 		mov	r3, r3, asl #2
+ 939 0a78 013063E0 		rsb	r3, r3, r1
+ 940 0a7c 0338A0E1 		mov	r3, r3, asl #16
+ 941 0a80 2338A0E1 		mov	r3, r3, lsr #16
+ 942 0a84 180053E3 		cmp	r3, #24
+ 943 0a88 0300008A 		bhi	.L106
+ 944 0a8c 18301BE5 		ldr	r3, [fp, #-24]
+ 945 0a90 403083E3 		orr	r3, r3, #64
+ 946 0a94 18300BE5 		str	r3, [fp, #-24]
+ 947 0a98 1D0000EA 		b	.L110
+ 948              	.L106:
+ 175:buzzer.c      **** 		else if(buz_cnt%100<30) buz_active&=~BU_WARNING_MAG_FS;
+ 950              	.LM74:
+ 951 0a9c 4C359FE5 		ldr	r3, .L152
+ 952 0aa0 B010D3E1 		ldrh	r1, [r3, #0]
+ 953 0aa4 64359FE5 		ldr	r3, .L152+32
+ 954 0aa8 910383E0 		umull	r0, r3, r1, r3
+ 955 0aac A322A0E1 		mov	r2, r3, lsr #5
+ 956 0ab0 0230A0E1 		mov	r3, r2
+ 957 0ab4 0331A0E1 		mov	r3, r3, asl #2
+ 958 0ab8 023083E0 		add	r3, r3, r2
+ 959 0abc 0321A0E1 		mov	r2, r3, asl #2
+ 960 0ac0 023083E0 		add	r3, r3, r2
+ 961 0ac4 0331A0E1 		mov	r3, r3, asl #2
+ 962 0ac8 013063E0 		rsb	r3, r3, r1
+ 963 0acc 0338A0E1 		mov	r3, r3, asl #16
+ 964 0ad0 2338A0E1 		mov	r3, r3, lsr #16
+ 965 0ad4 1D0053E3 		cmp	r3, #29
+ 966 0ad8 0300008A 		bhi	.L108
+ 967 0adc 18301BE5 		ldr	r3, [fp, #-24]
+ 968 0ae0 4030C3E3 		bic	r3, r3, #64
+ 969 0ae4 18300BE5 		str	r3, [fp, #-24]
+ 970 0ae8 090000EA 		b	.L110
+ 971              	.L108:
+ 176:buzzer.c      **** 		else buz_active&=~BU_WARNING_MAG_FS;
+ 973              	.LM75:
+ 974 0aec 18301BE5 		ldr	r3, [fp, #-24]
+ 975 0af0 4030C3E3 		bic	r3, r3, #64
+ 976 0af4 18300BE5 		str	r3, [fp, #-24]
+ 167:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_MAG_FIELD_STRENGTH_ERROR)&&(SYSTEM_initialized)&&(error_cn
+ 978              	.LM76:
+ 979 0af8 050000EA 		b	.L110
+ 980              	.L93:
+ 177:buzzer.c      **** 	}
+ 178:buzzer.c      **** 	else
+ 179:buzzer.c      **** 	{
+ 180:buzzer.c      **** 		buz_priority&=~BU_WARNING_MAG_FS;
+ 982              	.LM77:
+ 983 0afc 14301BE5 		ldr	r3, [fp, #-20]
+ 984 0b00 4030C3E3 		bic	r3, r3, #64
+ 985 0b04 14300BE5 		str	r3, [fp, #-20]
+ 181:buzzer.c      **** 		buz_active&=~BU_WARNING_MAG_FS;
+ 987              	.LM78:
+ 988 0b08 18301BE5 		ldr	r3, [fp, #-24]
+ 989 0b0c 4030C3E3 		bic	r3, r3, #64
+ 990 0b10 18300BE5 		str	r3, [fp, #-24]
+ 991              	.L110:
+ 182:buzzer.c      **** 	}
+ 183:buzzer.c      **** 
+ 184:buzzer.c      **** 	//mag inclination warning: warn 3 times only
+ 185:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_MAG_INCLINATION_ERROR)&&(SYSTEM_initialized)&&(error_cnt_m
+ 993              	.LM79:
+ 994 0b14 E8349FE5 		ldr	r3, .L152+20
+ 995 0b18 B235D3E1 		ldrh	r3, [r3, #82]
+ 996 0b1c 0338A0E1 		mov	r3, r3, asl #16
+ 997 0b20 4338A0E1 		mov	r3, r3, asr #16
+ 998 0b24 000053E3 		cmp	r3, #0
+ 999 0b28 BC0000AA 		bge	.L111
+ 1000 0b2c D4349FE5 		ldr	r3, .L152+24
+ 1001 0b30 0030D3E5 		ldrb	r3, [r3, #0]
+ 1002 0b34 FF3003E2 		and	r3, r3, #255
+ 1003 0b38 000053E3 		cmp	r3, #0
+ 1004 0b3c B700000A 		beq	.L111
+ 1005 0b40 D0349FE5 		ldr	r3, .L152+40
+ 1006 0b44 B020D3E1 		ldrh	r2, [r3, #0]
+ 1007 0b48 633FA0E3 		mov	r3, #396
+ 1008 0b4c 033083E2 		add	r3, r3, #3
+ 1009 0b50 030052E1 		cmp	r2, r3
+ 1010 0b54 0030A083 		movhi	r3, #0
+ 1011 0b58 0130A093 		movls	r3, #1
+ 1012 0b5c FF1003E2 		and	r1, r3, #255
+ 1013 0b60 013082E2 		add	r3, r2, #1
+ 1014 0b64 0338A0E1 		mov	r3, r3, asl #16
+ 1015 0b68 2328A0E1 		mov	r2, r3, lsr #16
+ 1016 0b6c A4349FE5 		ldr	r3, .L152+40
+ 1017 0b70 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 1018 0b74 013021E2 		eor	r3, r1, #1
+ 1019 0b78 FF3003E2 		and	r3, r3, #255
+ 1020 0b7c 000053E3 		cmp	r3, #0
+ 1021 0b80 A600001A 		bne	.L111
+ 186:buzzer.c      **** 	{
+ 187:buzzer.c      **** 		buz_priority|=BU_WARNING_MAG_INC;
+ 1023              	.LM80:
+ 1024 0b84 14301BE5 		ldr	r3, [fp, #-20]
+ 1025 0b88 803083E3 		orr	r3, r3, #128
+ 1026 0b8c 14300BE5 		str	r3, [fp, #-20]
+ 188:buzzer.c      **** 		if(buz_cnt%100<5) buz_active|=BU_WARNING_MAG_INC;
+ 1028              	.LM81:
+ 1029 0b90 58349FE5 		ldr	r3, .L152
+ 1030 0b94 B010D3E1 		ldrh	r1, [r3, #0]
+ 1031 0b98 70349FE5 		ldr	r3, .L152+32
+ 1032 0b9c 912383E0 		umull	r2, r3, r1, r3
+ 1033 0ba0 A322A0E1 		mov	r2, r3, lsr #5
+ 1034 0ba4 0230A0E1 		mov	r3, r2
+ 1035 0ba8 0331A0E1 		mov	r3, r3, asl #2
+ 1036 0bac 023083E0 		add	r3, r3, r2
+ 1037 0bb0 0321A0E1 		mov	r2, r3, asl #2
+ 1038 0bb4 023083E0 		add	r3, r3, r2
+ 1039 0bb8 0331A0E1 		mov	r3, r3, asl #2
+ 1040 0bbc 013063E0 		rsb	r3, r3, r1
+ 1041 0bc0 0338A0E1 		mov	r3, r3, asl #16
+ 1042 0bc4 2338A0E1 		mov	r3, r3, lsr #16
+ 1043 0bc8 040053E3 		cmp	r3, #4
+ 1044 0bcc 0300008A 		bhi	.L115
+ 1045 0bd0 18301BE5 		ldr	r3, [fp, #-24]
+ 1046 0bd4 803083E3 		orr	r3, r3, #128
+ 1047 0bd8 18300BE5 		str	r3, [fp, #-24]
+ 1048 0bdc 950000EA 		b	.L132
+ 1049              	.L115:
+ 189:buzzer.c      **** 		else if(buz_cnt%100<10) buz_active&=~BU_WARNING_MAG_INC;
+ 1051              	.LM82:
+ 1052 0be0 08349FE5 		ldr	r3, .L152
+ 1053 0be4 B010D3E1 		ldrh	r1, [r3, #0]
+ 1054 0be8 20349FE5 		ldr	r3, .L152+32
+ 1055 0bec 910383E0 		umull	r0, r3, r1, r3
+ 1056 0bf0 A322A0E1 		mov	r2, r3, lsr #5
+ 1057 0bf4 0230A0E1 		mov	r3, r2
+ 1058 0bf8 0331A0E1 		mov	r3, r3, asl #2
+ 1059 0bfc 023083E0 		add	r3, r3, r2
+ 1060 0c00 0321A0E1 		mov	r2, r3, asl #2
+ 1061 0c04 023083E0 		add	r3, r3, r2
+ 1062 0c08 0331A0E1 		mov	r3, r3, asl #2
+ 1063 0c0c 013063E0 		rsb	r3, r3, r1
+ 1064 0c10 0338A0E1 		mov	r3, r3, asl #16
+ 1065 0c14 2338A0E1 		mov	r3, r3, lsr #16
+ 1066 0c18 090053E3 		cmp	r3, #9
+ 1067 0c1c 0300008A 		bhi	.L118
+ 1068 0c20 18301BE5 		ldr	r3, [fp, #-24]
+ 1069 0c24 8030C3E3 		bic	r3, r3, #128
+ 1070 0c28 18300BE5 		str	r3, [fp, #-24]
+ 1071 0c2c 810000EA 		b	.L132
+ 1072              	.L118:
+ 190:buzzer.c      **** 		else if(buz_cnt%100<15) buz_active|=BU_WARNING_MAG_INC;
+ 1074              	.LM83:
+ 1075 0c30 B8339FE5 		ldr	r3, .L152
+ 1076 0c34 B010D3E1 		ldrh	r1, [r3, #0]
+ 1077 0c38 D0339FE5 		ldr	r3, .L152+32
+ 1078 0c3c 912383E0 		umull	r2, r3, r1, r3
+ 1079 0c40 A322A0E1 		mov	r2, r3, lsr #5
+ 1080 0c44 0230A0E1 		mov	r3, r2
+ 1081 0c48 0331A0E1 		mov	r3, r3, asl #2
+ 1082 0c4c 023083E0 		add	r3, r3, r2
+ 1083 0c50 0321A0E1 		mov	r2, r3, asl #2
+ 1084 0c54 023083E0 		add	r3, r3, r2
+ 1085 0c58 0331A0E1 		mov	r3, r3, asl #2
+ 1086 0c5c 013063E0 		rsb	r3, r3, r1
+ 1087 0c60 0338A0E1 		mov	r3, r3, asl #16
+ 1088 0c64 2338A0E1 		mov	r3, r3, lsr #16
+ 1089 0c68 0E0053E3 		cmp	r3, #14
+ 1090 0c6c 0300008A 		bhi	.L120
+ 1091 0c70 18301BE5 		ldr	r3, [fp, #-24]
+ 1092 0c74 803083E3 		orr	r3, r3, #128
+ 1093 0c78 18300BE5 		str	r3, [fp, #-24]
+ 1094 0c7c 6D0000EA 		b	.L132
+ 1095              	.L120:
+ 191:buzzer.c      **** 		else if(buz_cnt%100<20) buz_active&=~BU_WARNING_MAG_INC;
+ 1097              	.LM84:
+ 1098 0c80 68339FE5 		ldr	r3, .L152
+ 1099 0c84 B010D3E1 		ldrh	r1, [r3, #0]
+ 1100 0c88 80339FE5 		ldr	r3, .L152+32
+ 1101 0c8c 910383E0 		umull	r0, r3, r1, r3
+ 1102 0c90 A322A0E1 		mov	r2, r3, lsr #5
+ 1103 0c94 0230A0E1 		mov	r3, r2
+ 1104 0c98 0331A0E1 		mov	r3, r3, asl #2
+ 1105 0c9c 023083E0 		add	r3, r3, r2
+ 1106 0ca0 0321A0E1 		mov	r2, r3, asl #2
+ 1107 0ca4 023083E0 		add	r3, r3, r2
+ 1108 0ca8 0331A0E1 		mov	r3, r3, asl #2
+ 1109 0cac 013063E0 		rsb	r3, r3, r1
+ 1110 0cb0 0338A0E1 		mov	r3, r3, asl #16
+ 1111 0cb4 2338A0E1 		mov	r3, r3, lsr #16
+ 1112 0cb8 130053E3 		cmp	r3, #19
+ 1113 0cbc 0300008A 		bhi	.L122
+ 1114 0cc0 18301BE5 		ldr	r3, [fp, #-24]
+ 1115 0cc4 8030C3E3 		bic	r3, r3, #128
+ 1116 0cc8 18300BE5 		str	r3, [fp, #-24]
+ 1117 0ccc 590000EA 		b	.L132
+ 1118              	.L122:
+ 192:buzzer.c      **** 		else if(buz_cnt%100<25) buz_active|=BU_WARNING_MAG_INC;
+ 1120              	.LM85:
+ 1121 0cd0 18339FE5 		ldr	r3, .L152
+ 1122 0cd4 B010D3E1 		ldrh	r1, [r3, #0]
+ 1123 0cd8 30339FE5 		ldr	r3, .L152+32
+ 1124 0cdc 912383E0 		umull	r2, r3, r1, r3
+ 1125 0ce0 A322A0E1 		mov	r2, r3, lsr #5
+ 1126 0ce4 0230A0E1 		mov	r3, r2
+ 1127 0ce8 0331A0E1 		mov	r3, r3, asl #2
+ 1128 0cec 023083E0 		add	r3, r3, r2
+ 1129 0cf0 0321A0E1 		mov	r2, r3, asl #2
+ 1130 0cf4 023083E0 		add	r3, r3, r2
+ 1131 0cf8 0331A0E1 		mov	r3, r3, asl #2
+ 1132 0cfc 013063E0 		rsb	r3, r3, r1
+ 1133 0d00 0338A0E1 		mov	r3, r3, asl #16
+ 1134 0d04 2338A0E1 		mov	r3, r3, lsr #16
+ 1135 0d08 180053E3 		cmp	r3, #24
+ 1136 0d0c 0300008A 		bhi	.L124
+ 1137 0d10 18301BE5 		ldr	r3, [fp, #-24]
+ 1138 0d14 803083E3 		orr	r3, r3, #128
+ 1139 0d18 18300BE5 		str	r3, [fp, #-24]
+ 1140 0d1c 450000EA 		b	.L132
+ 1141              	.L124:
+ 193:buzzer.c      **** 		else if(buz_cnt%100<30) buz_active&=~BU_WARNING_MAG_INC;
+ 1143              	.LM86:
+ 1144 0d20 C8329FE5 		ldr	r3, .L152
+ 1145 0d24 B010D3E1 		ldrh	r1, [r3, #0]
+ 1146 0d28 E0329FE5 		ldr	r3, .L152+32
+ 1147 0d2c 910383E0 		umull	r0, r3, r1, r3
+ 1148 0d30 A322A0E1 		mov	r2, r3, lsr #5
+ 1149 0d34 0230A0E1 		mov	r3, r2
+ 1150 0d38 0331A0E1 		mov	r3, r3, asl #2
+ 1151 0d3c 023083E0 		add	r3, r3, r2
+ 1152 0d40 0321A0E1 		mov	r2, r3, asl #2
+ 1153 0d44 023083E0 		add	r3, r3, r2
+ 1154 0d48 0331A0E1 		mov	r3, r3, asl #2
+ 1155 0d4c 013063E0 		rsb	r3, r3, r1
+ 1156 0d50 0338A0E1 		mov	r3, r3, asl #16
+ 1157 0d54 2338A0E1 		mov	r3, r3, lsr #16
+ 1158 0d58 1D0053E3 		cmp	r3, #29
+ 1159 0d5c 0300008A 		bhi	.L126
+ 1160 0d60 18301BE5 		ldr	r3, [fp, #-24]
+ 1161 0d64 8030C3E3 		bic	r3, r3, #128
+ 1162 0d68 18300BE5 		str	r3, [fp, #-24]
+ 1163 0d6c 310000EA 		b	.L132
+ 1164              	.L126:
+ 194:buzzer.c      **** 		else if(buz_cnt%100<35) buz_active|=BU_WARNING_MAG_INC;
+ 1166              	.LM87:
+ 1167 0d70 78329FE5 		ldr	r3, .L152
+ 1168 0d74 B010D3E1 		ldrh	r1, [r3, #0]
+ 1169 0d78 90329FE5 		ldr	r3, .L152+32
+ 1170 0d7c 912383E0 		umull	r2, r3, r1, r3
+ 1171 0d80 A322A0E1 		mov	r2, r3, lsr #5
+ 1172 0d84 0230A0E1 		mov	r3, r2
+ 1173 0d88 0331A0E1 		mov	r3, r3, asl #2
+ 1174 0d8c 023083E0 		add	r3, r3, r2
+ 1175 0d90 0321A0E1 		mov	r2, r3, asl #2
+ 1176 0d94 023083E0 		add	r3, r3, r2
+ 1177 0d98 0331A0E1 		mov	r3, r3, asl #2
+ 1178 0d9c 013063E0 		rsb	r3, r3, r1
+ 1179 0da0 0338A0E1 		mov	r3, r3, asl #16
+ 1180 0da4 2338A0E1 		mov	r3, r3, lsr #16
+ 1181 0da8 220053E3 		cmp	r3, #34
+ 1182 0dac 0300008A 		bhi	.L128
+ 1183 0db0 18301BE5 		ldr	r3, [fp, #-24]
+ 1184 0db4 803083E3 		orr	r3, r3, #128
+ 1185 0db8 18300BE5 		str	r3, [fp, #-24]
+ 1186 0dbc 1D0000EA 		b	.L132
+ 1187              	.L128:
+ 195:buzzer.c      **** 		else if(buz_cnt%100<40) buz_active&=~BU_WARNING_MAG_INC;
+ 1189              	.LM88:
+ 1190 0dc0 28329FE5 		ldr	r3, .L152
+ 1191 0dc4 B010D3E1 		ldrh	r1, [r3, #0]
+ 1192 0dc8 40329FE5 		ldr	r3, .L152+32
+ 1193 0dcc 910383E0 		umull	r0, r3, r1, r3
+ 1194 0dd0 A322A0E1 		mov	r2, r3, lsr #5
+ 1195 0dd4 0230A0E1 		mov	r3, r2
+ 1196 0dd8 0331A0E1 		mov	r3, r3, asl #2
+ 1197 0ddc 023083E0 		add	r3, r3, r2
+ 1198 0de0 0321A0E1 		mov	r2, r3, asl #2
+ 1199 0de4 023083E0 		add	r3, r3, r2
+ 1200 0de8 0331A0E1 		mov	r3, r3, asl #2
+ 1201 0dec 013063E0 		rsb	r3, r3, r1
+ 1202 0df0 0338A0E1 		mov	r3, r3, asl #16
+ 1203 0df4 2338A0E1 		mov	r3, r3, lsr #16
+ 1204 0df8 270053E3 		cmp	r3, #39
+ 1205 0dfc 0300008A 		bhi	.L130
+ 1206 0e00 18301BE5 		ldr	r3, [fp, #-24]
+ 1207 0e04 8030C3E3 		bic	r3, r3, #128
+ 1208 0e08 18300BE5 		str	r3, [fp, #-24]
+ 1209 0e0c 090000EA 		b	.L132
+ 1210              	.L130:
+ 196:buzzer.c      **** 		else buz_active&=~BU_WARNING_MAG_INC;
+ 1212              	.LM89:
+ 1213 0e10 18301BE5 		ldr	r3, [fp, #-24]
+ 1214 0e14 8030C3E3 		bic	r3, r3, #128
+ 1215 0e18 18300BE5 		str	r3, [fp, #-24]
+ 185:buzzer.c      **** 	if((LL_1khz_attitude_data.flightMode&FM_MAG_INCLINATION_ERROR)&&(SYSTEM_initialized)&&(error_cnt_m
+ 1217              	.LM90:
+ 1218 0e1c 050000EA 		b	.L132
+ 1219              	.L111:
+ 197:buzzer.c      **** 	}
+ 198:buzzer.c      **** 	else
+ 199:buzzer.c      **** 	{
+ 200:buzzer.c      **** 		buz_priority&=~BU_WARNING_MAG_INC;
+ 1221              	.LM91:
+ 1222 0e20 14301BE5 		ldr	r3, [fp, #-20]
+ 1223 0e24 8030C3E3 		bic	r3, r3, #128
+ 1224 0e28 14300BE5 		str	r3, [fp, #-20]
+ 201:buzzer.c      **** 		buz_active&=~BU_WARNING_MAG_INC;
+ 1226              	.LM92:
+ 1227 0e2c 18301BE5 		ldr	r3, [fp, #-24]
+ 1228 0e30 8030C3E3 		bic	r3, r3, #128
+ 1229 0e34 18300BE5 		str	r3, [fp, #-24]
+ 1230              	.L132:
+ 202:buzzer.c      **** 	}
+ 203:buzzer.c      **** 
+ 204:buzzer.c      **** 
+ 205:buzzer.c      **** #endif
+ 206:buzzer.c      **** 
+ 207:buzzer.c      **** #ifdef INIT_BEEP
+ 208:buzzer.c      **** 
+ 209:buzzer.c      **** 		if(!SYSTEM_initialized)
+ 1232              	.LM93:
+ 1233 0e38 C8319FE5 		ldr	r3, .L152+24
+ 1234 0e3c 0030D3E5 		ldrb	r3, [r3, #0]
+ 1235 0e40 FF3003E2 		and	r3, r3, #255
+ 1236 0e44 000053E3 		cmp	r3, #0
+ 1237 0e48 4200001A 		bne	.L133
+ 210:buzzer.c      **** 		{
+ 211:buzzer.c      **** 			buz_priority|=BU_INIT;
+ 1239              	.LM94:
+ 1240 0e4c 14301BE5 		ldr	r3, [fp, #-20]
+ 1241 0e50 013083E3 		orr	r3, r3, #1
+ 1242 0e54 14300BE5 		str	r3, [fp, #-20]
+ 212:buzzer.c      **** 			if(buz_cnt%100<5) buz_active|=BU_INIT;
+ 1244              	.LM95:
+ 1245 0e58 90319FE5 		ldr	r3, .L152
+ 1246 0e5c B010D3E1 		ldrh	r1, [r3, #0]
+ 1247 0e60 A8319FE5 		ldr	r3, .L152+32
+ 1248 0e64 912383E0 		umull	r2, r3, r1, r3
+ 1249 0e68 A322A0E1 		mov	r2, r3, lsr #5
+ 1250 0e6c 0230A0E1 		mov	r3, r2
+ 1251 0e70 0331A0E1 		mov	r3, r3, asl #2
+ 1252 0e74 023083E0 		add	r3, r3, r2
+ 1253 0e78 0321A0E1 		mov	r2, r3, asl #2
+ 1254 0e7c 023083E0 		add	r3, r3, r2
+ 1255 0e80 0331A0E1 		mov	r3, r3, asl #2
+ 1256 0e84 013063E0 		rsb	r3, r3, r1
+ 1257 0e88 0338A0E1 		mov	r3, r3, asl #16
+ 1258 0e8c 2338A0E1 		mov	r3, r3, lsr #16
+ 1259 0e90 040053E3 		cmp	r3, #4
+ 1260 0e94 0300008A 		bhi	.L135
+ 1261 0e98 18301BE5 		ldr	r3, [fp, #-24]
+ 1262 0e9c 013083E3 		orr	r3, r3, #1
+ 1263 0ea0 18300BE5 		str	r3, [fp, #-24]
+ 1264 0ea4 310000EA 		b	.L142
+ 1265              	.L135:
+ 213:buzzer.c      **** 			else if(buz_cnt%100<10) buz_active&=~BU_INIT;
+ 1267              	.LM96:
+ 1268 0ea8 40319FE5 		ldr	r3, .L152
+ 1269 0eac B010D3E1 		ldrh	r1, [r3, #0]
+ 1270 0eb0 58319FE5 		ldr	r3, .L152+32
+ 1271 0eb4 910383E0 		umull	r0, r3, r1, r3
+ 1272 0eb8 A322A0E1 		mov	r2, r3, lsr #5
+ 1273 0ebc 0230A0E1 		mov	r3, r2
+ 1274 0ec0 0331A0E1 		mov	r3, r3, asl #2
+ 1275 0ec4 023083E0 		add	r3, r3, r2
+ 1276 0ec8 0321A0E1 		mov	r2, r3, asl #2
+ 1277 0ecc 023083E0 		add	r3, r3, r2
+ 1278 0ed0 0331A0E1 		mov	r3, r3, asl #2
+ 1279 0ed4 013063E0 		rsb	r3, r3, r1
+ 1280 0ed8 0338A0E1 		mov	r3, r3, asl #16
+ 1281 0edc 2338A0E1 		mov	r3, r3, lsr #16
+ 1282 0ee0 090053E3 		cmp	r3, #9
+ 1283 0ee4 0300008A 		bhi	.L138
+ 1284 0ee8 18301BE5 		ldr	r3, [fp, #-24]
+ 1285 0eec 0130C3E3 		bic	r3, r3, #1
+ 1286 0ef0 18300BE5 		str	r3, [fp, #-24]
+ 1287 0ef4 1D0000EA 		b	.L142
+ 1288              	.L138:
+ 214:buzzer.c      **** 			else if(buz_cnt%100<15) buz_active|=BU_INIT;
+ 1290              	.LM97:
+ 1291 0ef8 F0309FE5 		ldr	r3, .L152
+ 1292 0efc B010D3E1 		ldrh	r1, [r3, #0]
+ 1293 0f00 08319FE5 		ldr	r3, .L152+32
+ 1294 0f04 912383E0 		umull	r2, r3, r1, r3
+ 1295 0f08 A322A0E1 		mov	r2, r3, lsr #5
+ 1296 0f0c 0230A0E1 		mov	r3, r2
+ 1297 0f10 0331A0E1 		mov	r3, r3, asl #2
+ 1298 0f14 023083E0 		add	r3, r3, r2
+ 1299 0f18 0321A0E1 		mov	r2, r3, asl #2
+ 1300 0f1c 023083E0 		add	r3, r3, r2
+ 1301 0f20 0331A0E1 		mov	r3, r3, asl #2
+ 1302 0f24 013063E0 		rsb	r3, r3, r1
+ 1303 0f28 0338A0E1 		mov	r3, r3, asl #16
+ 1304 0f2c 2338A0E1 		mov	r3, r3, lsr #16
+ 1305 0f30 0E0053E3 		cmp	r3, #14
+ 1306 0f34 0300008A 		bhi	.L140
+ 1307 0f38 18301BE5 		ldr	r3, [fp, #-24]
+ 1308 0f3c 013083E3 		orr	r3, r3, #1
+ 1309 0f40 18300BE5 		str	r3, [fp, #-24]
+ 1310 0f44 090000EA 		b	.L142
+ 1311              	.L140:
+ 215:buzzer.c      **** 			else buz_active&=~BU_INIT;
+ 1313              	.LM98:
+ 1314 0f48 18301BE5 		ldr	r3, [fp, #-24]
+ 1315 0f4c 0130C3E3 		bic	r3, r3, #1
+ 1316 0f50 18300BE5 		str	r3, [fp, #-24]
+ 1317 0f54 050000EA 		b	.L142
+ 1318              	.L133:
+ 216:buzzer.c      **** 		}
+ 217:buzzer.c      **** 		else
+ 218:buzzer.c      **** 		{
+ 219:buzzer.c      **** 			buz_active&=~BU_INIT;
+ 1320              	.LM99:
+ 1321 0f58 18301BE5 		ldr	r3, [fp, #-24]
+ 1322 0f5c 0130C3E3 		bic	r3, r3, #1
+ 1323 0f60 18300BE5 		str	r3, [fp, #-24]
+ 220:buzzer.c      **** 			buz_priority&=~BU_INIT;
+ 1325              	.LM100:
+ 1326 0f64 14301BE5 		ldr	r3, [fp, #-20]
+ 1327 0f68 0130C3E3 		bic	r3, r3, #1
+ 1328 0f6c 14300BE5 		str	r3, [fp, #-20]
+ 1329              	.L142:
+ 1330              	.LBB2:
+ 221:buzzer.c      **** 		}
+ 222:buzzer.c      **** #endif
+ 223:buzzer.c      **** 
+ 224:buzzer.c      **** 	//buzzer control
+ 225:buzzer.c      **** 	for(unsigned char i=0;i<BUZZ_NR_OF_WARNINGS; i++)
+ 1332              	.LM101:
+ 1333 0f70 0030A0E3 		mov	r3, #0
+ 1334 0f74 0D304BE5 		strb	r3, [fp, #-13]
+ 1335 0f78 130000EA 		b	.L143
+ 1336              	.L144:
+ 226:buzzer.c      **** 	{
+ 227:buzzer.c      **** 		if(buz_priority&(1<<i))
+ 1338              	.LM102:
+ 1339 0f7c 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 1340 0f80 0130A0E3 		mov	r3, #1
+ 1341 0f84 1332A0E1 		mov	r3, r3, asl r2
+ 1342 0f88 0320A0E1 		mov	r2, r3
+ 1343 0f8c 14301BE5 		ldr	r3, [fp, #-20]
+ 1344 0f90 033002E0 		and	r3, r2, r3
+ 1345 0f94 000053E3 		cmp	r3, #0
+ 1346 0f98 0800000A 		beq	.L145
+ 228:buzzer.c      **** 		{
+ 229:buzzer.c      **** 			buz_active&=(1<<i);
+ 1348              	.LM103:
+ 1349 0f9c 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 1350 0fa0 0130A0E3 		mov	r3, #1
+ 1351 0fa4 1332A0E1 		mov	r3, r3, asl r2
+ 1352 0fa8 0320A0E1 		mov	r2, r3
+ 1353 0fac 18301BE5 		ldr	r3, [fp, #-24]
+ 1354 0fb0 023003E0 		and	r3, r3, r2
+ 1355 0fb4 18300BE5 		str	r3, [fp, #-24]
+ 230:buzzer.c      **** 			i=BUZZ_NR_OF_WARNINGS;
+ 1357              	.LM104:
+ 1358 0fb8 0930A0E3 		mov	r3, #9
+ 1359 0fbc 0D304BE5 		strb	r3, [fp, #-13]
+ 1360              	.L145:
+ 225:buzzer.c      **** 	for(unsigned char i=0;i<BUZZ_NR_OF_WARNINGS; i++)
+ 1362              	.LM105:
+ 1363 0fc0 0D305BE5 		ldrb	r3, [fp, #-13]
+ 1364 0fc4 013083E2 		add	r3, r3, #1
+ 1365 0fc8 0D304BE5 		strb	r3, [fp, #-13]
+ 1366              	.L143:
+ 1367 0fcc 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1368 0fd0 080053E3 		cmp	r3, #8
+ 1369 0fd4 E8FFFF9A 		bls	.L144
+ 1370              	.LBE2:
+ 231:buzzer.c      **** 		}
+ 232:buzzer.c      **** 	}
+ 233:buzzer.c      **** 
+ 234:buzzer.c      **** 	if(buz_active) buzzer(ON);
+ 1372              	.LM106:
+ 1373 0fd8 18301BE5 		ldr	r3, [fp, #-24]
+ 1374 0fdc 000053E3 		cmp	r3, #0
+ 1375 0fe0 0D00000A 		beq	.L148
+ 1376 0fe4 0100A0E3 		mov	r0, #1
+ 1377 0fe8 FEFFFFEB 		bl	buzzer
+ 1378 0fec 0C0000EA 		b	.L151
+ 1379              	.L153:
+ 1380              		.align	2
+ 1381              	.L152:
+ 1382 0ff0 0C000000 		.word	buz_cnt.1424
+ 1383 0ff4 08000000 		.word	bat_cnt.1425
+ 1384 0ff8 04000000 		.word	bat_warning.1426
+ 1385 0ffc 00000000 		.word	bat_warning_enabled.1427
+ 1386 1000 ABAAAAAA 		.word	-1431655765
+ 1387 1004 00000000 		.word	LL_1khz_attitude_data
+ 1388 1008 00000000 		.word	SYSTEM_initialized
+ 1389 100c 0E000000 		.word	error_cnt_compass.1422
+ 1390 1010 1F85EB51 		.word	1374389535
+ 1391 1014 12000000 		.word	error_cnt_mag_fs.1420
+ 1392 1018 10000000 		.word	error_cnt_mag_inc.1421
+ 1393              	.L148:
+ 235:buzzer.c      **** 	else buzzer(OFF);
+ 1395              	.LM107:
+ 1396 101c 0000A0E3 		mov	r0, #0
+ 1397 1020 FEFFFFEB 		bl	buzzer
+ 1398              	.L151:
+ 236:buzzer.c      **** }
+ 1400              	.LM108:
+ 1401 1024 0CD04BE2 		sub	sp, fp, #12
+ 1402 1028 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1403 102c 1EFF2FE1 		bx	lr
+ 1419              	.Lscope0:
+ 1420              		.align	2
+ 1423              		.global	buzzer
+ 1425              	buzzer:
+ 237:buzzer.c      **** 
+ 238:buzzer.c      **** 
+ 239:buzzer.c      **** void buzzer(unsigned char offon)
+ 240:buzzer.c      **** {
+ 1427              	.LM109:
+ 1428              		@ Function supports interworking.
+ 1429              		@ args = 0, pretend = 0, frame = 4
+ 1430              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1431 1030 0DC0A0E1 		mov	ip, sp
+ 1432 1034 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1433 1038 04B04CE2 		sub	fp, ip, #4
+ 1434 103c 04D04DE2 		sub	sp, sp, #4
+ 1435 1040 0030A0E1 		mov	r3, r0
+ 1436 1044 10304BE5 		strb	r3, [fp, #-16]
+ 241:buzzer.c      **** 
+ 242:buzzer.c      **** 	if(offon)	//beeper on
+ 1438              	.LM110:
+ 1439 1048 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 1440 104c 000053E3 		cmp	r3, #0
+ 1441 1050 0500000A 		beq	.L155
+ 243:buzzer.c      **** 	{
+ 244:buzzer.c      **** 		IOSET1 = (1<<17);
+ 1443              	.LM111:
+ 1444 1054 0E32A0E3 		mov	r3, #-536870912
+ 1445 1058 0A3983E2 		add	r3, r3, #163840
+ 1446 105c 143083E2 		add	r3, r3, #20
+ 1447 1060 0228A0E3 		mov	r2, #131072
+ 1448 1064 002083E5 		str	r2, [r3, #0]
+ 1449 1068 040000EA 		b	.L158
+ 1450              	.L155:
+ 245:buzzer.c      **** 	}
+ 246:buzzer.c      **** 	else
+ 247:buzzer.c      **** 	{
+ 248:buzzer.c      **** 		IOCLR1 = (1<<17);
+ 1452              	.LM112:
+ 1453 106c 0E32A0E3 		mov	r3, #-536870912
+ 1454 1070 0A3983E2 		add	r3, r3, #163840
+ 1455 1074 1C3083E2 		add	r3, r3, #28
+ 1456 1078 0228A0E3 		mov	r2, #131072
+ 1457 107c 002083E5 		str	r2, [r3, #0]
+ 1458              	.L158:
+ 249:buzzer.c      **** 	}
+ 250:buzzer.c      **** }
+ 1460              	.LM113:
+ 1461 1080 0CD04BE2 		sub	sp, fp, #12
+ 1462 1084 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1463 1088 1EFF2FE1 		bx	lr
+ 1465              	.Lscope1:
+ 1466              		.comm	GPS_timeout,4,4
+ 1467              		.comm	SYSTEM_initialized,1,1
+ 1471              	.Letext0:
+ 1472              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 buzzer.c
+     /tmp/ccjfGHjZ.s:36     .bss:00000000 bat_warning_enabled.1427
+     /tmp/ccjfGHjZ.s:37     .bss:00000000 $d
+     /tmp/ccjfGHjZ.s:40     .bss:00000004 bat_warning.1426
+     /tmp/ccjfGHjZ.s:44     .bss:00000008 bat_cnt.1425
+     /tmp/ccjfGHjZ.s:48     .bss:0000000c buz_cnt.1424
+     /tmp/ccjfGHjZ.s:52     .bss:0000000e error_cnt_compass.1422
+     /tmp/ccjfGHjZ.s:56     .bss:00000010 error_cnt_mag_inc.1421
+     /tmp/ccjfGHjZ.s:60     .bss:00000012 error_cnt_mag_fs.1420
+     /tmp/ccjfGHjZ.s:64     .text:00000000 $a
+     /tmp/ccjfGHjZ.s:69     .text:00000000 buzzer_handler
+     /tmp/ccjfGHjZ.s:1425   .text:00001030 buzzer
+     /tmp/ccjfGHjZ.s:1382   .text:00000ff0 $d
+                            *COM*:00000001 SYSTEM_initialized
+     /tmp/ccjfGHjZ.s:1396   .text:0000101c $a
+                            *COM*:00000004 GPS_timeout
+
+UNDEFINED SYMBOLS
+LL_1khz_attitude_data

@@ -1,0 +1,473 @@
+   1              		.file	"syscalls.c"
+   3              		.text
+   4              	.Ltext0:
+ 151              		.align	2
+ 157              		.global	_read_r
+ 159              	_read_r:
+   1:syscalls.c    **** /***********************************************************************/
+   2:syscalls.c    **** /*                                                                     */
+   3:syscalls.c    **** /*  SYSCALLS.C:  System Calls Remapping                                */
+   4:syscalls.c    **** /*  most of this is from newlib-lpc and a Keil-demo                    */
+   5:syscalls.c    **** /*                                                                     */
+   6:syscalls.c    **** /*  these are "reentrant functions" as needed by                       */
+   7:syscalls.c    **** /*  the WinARM-newlib-config, see newlib-manual                        */
+   8:syscalls.c    **** /*  collected and modified by Martin Thomas                            */
+   9:syscalls.c    **** /*  some more work has to be done on this		                       */
+  10:syscalls.c    **** /***********************************************************************/
+  11:syscalls.c    **** 
+  12:syscalls.c    **** #include <stdlib.h>
+  13:syscalls.c    **** #include <reent.h>
+  14:syscalls.c    **** #include <sys/stat.h>
+  15:syscalls.c    **** #include "uart.h"
+  16:syscalls.c    **** 
+  17:syscalls.c    **** // new code for _read_r provided by Alexey Shusharin - Thanks
+  18:syscalls.c    **** _ssize_t _read_r(struct _reent *r, int file, void *ptr, size_t len)
+  19:syscalls.c    **** {
+ 161              	.LM0:
+ 162              		@ Function supports interworking.
+ 163              		@ args = 0, pretend = 0, frame = 32
+ 164              		@ frame_needed = 1, uses_anonymous_args = 0
+ 165 0000 0DC0A0E1 		mov	ip, sp
+ 166 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 167 0008 04B04CE2 		sub	fp, ip, #4
+ 168 000c 20D04DE2 		sub	sp, sp, #32
+ 169 0010 1C000BE5 		str	r0, [fp, #-28]
+ 170 0014 20100BE5 		str	r1, [fp, #-32]
+ 171 0018 24200BE5 		str	r2, [fp, #-36]
+ 172 001c 28300BE5 		str	r3, [fp, #-40]
+  20:syscalls.c    ****   char c;
+  21:syscalls.c    ****   int  i;
+  22:syscalls.c    ****   unsigned char *p;
+  23:syscalls.c    **** 
+  24:syscalls.c    ****   p = (unsigned char*)ptr;
+ 174              	.LM1:
+ 175 0020 24301BE5 		ldr	r3, [fp, #-36]
+ 176 0024 10300BE5 		str	r3, [fp, #-16]
+  25:syscalls.c    **** 
+  26:syscalls.c    ****   for (i = 0; i < len; i++)
+ 178              	.LM2:
+ 179 0028 0030A0E3 		mov	r3, #0
+ 180 002c 14300BE5 		str	r3, [fp, #-20]
+ 181 0030 1F0000EA 		b	.L2
+ 182              	.L3:
+  27:syscalls.c    ****   {
+  28:syscalls.c    ****     c = UARTReadChar();
+ 184              	.LM3:
+ 185 0034 FEFFFFEB 		bl	UARTReadChar
+ 186 0038 0030A0E1 		mov	r3, r0
+ 187 003c 15304BE5 		strb	r3, [fp, #-21]
+  29:syscalls.c    **** 
+  30:syscalls.c    ****     *p++ = c;
+ 189              	.LM4:
+ 190 0040 10201BE5 		ldr	r2, [fp, #-16]
+ 191 0044 15305BE5 		ldrb	r3, [fp, #-21]
+ 192 0048 0030C2E5 		strb	r3, [r2, #0]
+ 193 004c 10301BE5 		ldr	r3, [fp, #-16]
+ 194 0050 013083E2 		add	r3, r3, #1
+ 195 0054 10300BE5 		str	r3, [fp, #-16]
+  31:syscalls.c    ****     UARTWriteChar(c);
+ 197              	.LM5:
+ 198 0058 15305BE5 		ldrb	r3, [fp, #-21]	@ zero_extendqisi2
+ 199 005c 0300A0E1 		mov	r0, r3
+ 200 0060 FEFFFFEB 		bl	UARTWriteChar
+  32:syscalls.c    **** 
+  33:syscalls.c    ****     if (c == 0x0D && i <= (len - 2))
+ 202              	.LM6:
+ 203 0064 15305BE5 		ldrb	r3, [fp, #-21]	@ zero_extendqisi2
+ 204 0068 0D0053E3 		cmp	r3, #13
+ 205 006c 0D00001A 		bne	.L4
+ 206 0070 14301BE5 		ldr	r3, [fp, #-20]
+ 207 0074 28201BE5 		ldr	r2, [fp, #-40]
+ 208 0078 022042E2 		sub	r2, r2, #2
+ 209 007c 020053E1 		cmp	r3, r2
+ 210 0080 0800008A 		bhi	.L4
+  34:syscalls.c    ****     {
+  35:syscalls.c    ****       *p = 0x0A;
+ 212              	.LM7:
+ 213 0084 10201BE5 		ldr	r2, [fp, #-16]
+ 214 0088 0A30A0E3 		mov	r3, #10
+ 215 008c 0030C2E5 		strb	r3, [r2, #0]
+  36:syscalls.c    ****       UARTWriteChar(0x0A);
+ 217              	.LM8:
+ 218 0090 0A00A0E3 		mov	r0, #10
+ 219 0094 FEFFFFEB 		bl	UARTWriteChar
+  37:syscalls.c    ****       return i + 2;
+ 221              	.LM9:
+ 222 0098 14301BE5 		ldr	r3, [fp, #-20]
+ 223 009c 023083E2 		add	r3, r3, #2
+ 224 00a0 2C300BE5 		str	r3, [fp, #-44]
+ 225 00a4 080000EA 		b	.L7
+ 226              	.L4:
+  26:syscalls.c    ****   for (i = 0; i < len; i++)
+ 228              	.LM10:
+ 229 00a8 14301BE5 		ldr	r3, [fp, #-20]
+ 230 00ac 013083E2 		add	r3, r3, #1
+ 231 00b0 14300BE5 		str	r3, [fp, #-20]
+ 232              	.L2:
+ 233 00b4 14201BE5 		ldr	r2, [fp, #-20]
+ 234 00b8 28301BE5 		ldr	r3, [fp, #-40]
+ 235 00bc 030052E1 		cmp	r2, r3
+ 236 00c0 DBFFFF3A 		bcc	.L3
+  38:syscalls.c    ****     }
+  39:syscalls.c    ****   }
+  40:syscalls.c    ****   return i;
+ 238              	.LM11:
+ 239 00c4 14301BE5 		ldr	r3, [fp, #-20]
+ 240 00c8 2C300BE5 		str	r3, [fp, #-44]
+ 241              	.L7:
+ 242 00cc 2C301BE5 		ldr	r3, [fp, #-44]
+  41:syscalls.c    **** }
+ 244              	.LM12:
+ 245 00d0 0300A0E1 		mov	r0, r3
+ 246 00d4 0CD04BE2 		sub	sp, fp, #12
+ 247 00d8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 248 00dc 1EFF2FE1 		bx	lr
+ 255              	.Lscope0:
+ 256              		.align	2
+ 262              		.global	_write_r
+ 264              	_write_r:
+  42:syscalls.c    **** 
+  43:syscalls.c    **** 
+  44:syscalls.c    **** #if 0
+  45:syscalls.c    **** // old version - no longer in use
+  46:syscalls.c    **** _ssize_t _read_r(
+  47:syscalls.c    ****     struct _reent *r, 
+  48:syscalls.c    ****     int file, 
+  49:syscalls.c    ****     void *ptr, 
+  50:syscalls.c    ****     size_t len)
+  51:syscalls.c    **** {
+  52:syscalls.c    **** 	char c;
+  53:syscalls.c    **** 	int  i;
+  54:syscalls.c    **** 	unsigned char *p;
+  55:syscalls.c    **** 	
+  56:syscalls.c    **** 	p = (unsigned char*)ptr;
+  57:syscalls.c    **** 	
+  58:syscalls.c    **** 	for (i = 0; i < len; i++) {
+  59:syscalls.c    **** 		// c = uart0Getch();
+  60:syscalls.c    **** 		c = UARTReadChar();
+  61:syscalls.c    **** 		if (c == 0x0D) {
+  62:syscalls.c    **** 			*p='\0';
+  63:syscalls.c    **** 			break;
+  64:syscalls.c    **** 		}
+  65:syscalls.c    **** 		*p++ = c;
+  66:syscalls.c    **** 		UARTWriteChar(c);
+  67:syscalls.c    **** 	}
+  68:syscalls.c    **** 	return len - i;
+  69:syscalls.c    **** }
+  70:syscalls.c    **** #endif
+  71:syscalls.c    **** 
+  72:syscalls.c    **** _ssize_t _write_r (
+  73:syscalls.c    ****     struct _reent *r, 
+  74:syscalls.c    ****     int file, 
+  75:syscalls.c    ****     const void *ptr, 
+  76:syscalls.c    ****     size_t len)
+  77:syscalls.c    **** {
+ 266              	.LM13:
+ 267              		@ Function supports interworking.
+ 268              		@ args = 0, pretend = 0, frame = 24
+ 269              		@ frame_needed = 1, uses_anonymous_args = 0
+ 270 00e0 0DC0A0E1 		mov	ip, sp
+ 271 00e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 272 00e8 04B04CE2 		sub	fp, ip, #4
+ 273 00ec 18D04DE2 		sub	sp, sp, #24
+ 274 00f0 18000BE5 		str	r0, [fp, #-24]
+ 275 00f4 1C100BE5 		str	r1, [fp, #-28]
+ 276 00f8 20200BE5 		str	r2, [fp, #-32]
+ 277 00fc 24300BE5 		str	r3, [fp, #-36]
+  78:syscalls.c    **** 	int i;
+  79:syscalls.c    **** 	const unsigned char *p;
+  80:syscalls.c    **** 	
+  81:syscalls.c    **** 	p = (const unsigned char*) ptr;
+ 279              	.LM14:
+ 280 0100 20301BE5 		ldr	r3, [fp, #-32]
+ 281 0104 10300BE5 		str	r3, [fp, #-16]
+  82:syscalls.c    **** 	
+  83:syscalls.c    **** 	for (i = 0; i < len; i++) {
+ 283              	.LM15:
+ 284 0108 0030A0E3 		mov	r3, #0
+ 285 010c 14300BE5 		str	r3, [fp, #-20]
+ 286 0110 100000EA 		b	.L11
+ 287              	.L12:
+  84:syscalls.c    **** 		if (*p == '\n' ) UARTWriteChar('\r');
+ 289              	.LM16:
+ 290 0114 10301BE5 		ldr	r3, [fp, #-16]
+ 291 0118 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 292 011c 0A0053E3 		cmp	r3, #10
+ 293 0120 0100001A 		bne	.L13
+ 294 0124 0D00A0E3 		mov	r0, #13
+ 295 0128 FEFFFFEB 		bl	UARTWriteChar
+ 296              	.L13:
+  85:syscalls.c    **** 		UARTWriteChar(*p++);
+ 298              	.LM17:
+ 299 012c 10301BE5 		ldr	r3, [fp, #-16]
+ 300 0130 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 301 0134 0320A0E1 		mov	r2, r3
+ 302 0138 10301BE5 		ldr	r3, [fp, #-16]
+ 303 013c 013083E2 		add	r3, r3, #1
+ 304 0140 10300BE5 		str	r3, [fp, #-16]
+ 305 0144 0200A0E1 		mov	r0, r2
+ 306 0148 FEFFFFEB 		bl	UARTWriteChar
+  83:syscalls.c    **** 	for (i = 0; i < len; i++) {
+ 308              	.LM18:
+ 309 014c 14301BE5 		ldr	r3, [fp, #-20]
+ 310 0150 013083E2 		add	r3, r3, #1
+ 311 0154 14300BE5 		str	r3, [fp, #-20]
+ 312              	.L11:
+ 313 0158 14201BE5 		ldr	r2, [fp, #-20]
+ 314 015c 24301BE5 		ldr	r3, [fp, #-36]
+ 315 0160 030052E1 		cmp	r2, r3
+ 316 0164 EAFFFF3A 		bcc	.L12
+  86:syscalls.c    **** 	}
+  87:syscalls.c    **** 	
+  88:syscalls.c    **** 	return len;
+ 318              	.LM19:
+ 319 0168 24301BE5 		ldr	r3, [fp, #-36]
+  89:syscalls.c    **** }
+ 321              	.LM20:
+ 322 016c 0300A0E1 		mov	r0, r3
+ 323 0170 0CD04BE2 		sub	sp, fp, #12
+ 324 0174 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 325 0178 1EFF2FE1 		bx	lr
+ 331              	.Lscope1:
+ 332              		.align	2
+ 336              		.global	_close_r
+ 338              	_close_r:
+  90:syscalls.c    **** 
+  91:syscalls.c    **** int _close_r(
+  92:syscalls.c    ****     struct _reent *r, 
+  93:syscalls.c    ****     int file)
+  94:syscalls.c    **** {
+ 340              	.LM21:
+ 341              		@ Function supports interworking.
+ 342              		@ args = 0, pretend = 0, frame = 8
+ 343              		@ frame_needed = 1, uses_anonymous_args = 0
+ 344 017c 0DC0A0E1 		mov	ip, sp
+ 345 0180 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 346 0184 04B04CE2 		sub	fp, ip, #4
+ 347 0188 08D04DE2 		sub	sp, sp, #8
+ 348 018c 10000BE5 		str	r0, [fp, #-16]
+ 349 0190 14100BE5 		str	r1, [fp, #-20]
+  95:syscalls.c    **** 	return 0;
+ 351              	.LM22:
+ 352 0194 0030A0E3 		mov	r3, #0
+  96:syscalls.c    **** }
+ 354              	.LM23:
+ 355 0198 0300A0E1 		mov	r0, r3
+ 356 019c 0CD04BE2 		sub	sp, fp, #12
+ 357 01a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 358 01a4 1EFF2FE1 		bx	lr
+ 360              	.Lscope2:
+ 361              		.align	2
+ 367              		.global	_lseek_r
+ 369              	_lseek_r:
+  97:syscalls.c    **** 
+  98:syscalls.c    **** _off_t _lseek_r(
+  99:syscalls.c    ****     struct _reent *r, 
+ 100:syscalls.c    ****     int file, 
+ 101:syscalls.c    ****     _off_t ptr, 
+ 102:syscalls.c    ****     int dir)
+ 103:syscalls.c    **** {
+ 371              	.LM24:
+ 372              		@ Function supports interworking.
+ 373              		@ args = 0, pretend = 0, frame = 16
+ 374              		@ frame_needed = 1, uses_anonymous_args = 0
+ 375 01a8 0DC0A0E1 		mov	ip, sp
+ 376 01ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 377 01b0 04B04CE2 		sub	fp, ip, #4
+ 378 01b4 10D04DE2 		sub	sp, sp, #16
+ 379 01b8 10000BE5 		str	r0, [fp, #-16]
+ 380 01bc 14100BE5 		str	r1, [fp, #-20]
+ 381 01c0 18200BE5 		str	r2, [fp, #-24]
+ 382 01c4 1C300BE5 		str	r3, [fp, #-28]
+ 104:syscalls.c    **** 	return (_off_t)0;	/*  Always indicate we are at file beginning.	*/
+ 384              	.LM25:
+ 385 01c8 0030A0E3 		mov	r3, #0
+ 105:syscalls.c    **** }
+ 387              	.LM26:
+ 388 01cc 0300A0E1 		mov	r0, r3
+ 389 01d0 0CD04BE2 		sub	sp, fp, #12
+ 390 01d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 391 01d8 1EFF2FE1 		bx	lr
+ 393              	.Lscope3:
+ 394              		.align	2
+ 399              		.global	_fstat_r
+ 401              	_fstat_r:
+ 106:syscalls.c    **** 
+ 107:syscalls.c    **** 
+ 108:syscalls.c    **** int _fstat_r(
+ 109:syscalls.c    ****     struct _reent *r, 
+ 110:syscalls.c    ****     int file, 
+ 111:syscalls.c    ****     struct stat *st)
+ 112:syscalls.c    **** {
+ 403              	.LM27:
+ 404              		@ Function supports interworking.
+ 405              		@ args = 0, pretend = 0, frame = 12
+ 406              		@ frame_needed = 1, uses_anonymous_args = 0
+ 407 01dc 0DC0A0E1 		mov	ip, sp
+ 408 01e0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 409 01e4 04B04CE2 		sub	fp, ip, #4
+ 410 01e8 0CD04DE2 		sub	sp, sp, #12
+ 411 01ec 10000BE5 		str	r0, [fp, #-16]
+ 412 01f0 14100BE5 		str	r1, [fp, #-20]
+ 413 01f4 18200BE5 		str	r2, [fp, #-24]
+ 113:syscalls.c    **** 	/*  Always set as character device.				*/
+ 114:syscalls.c    **** 	st->st_mode = S_IFCHR;	
+ 415              	.LM28:
+ 416 01f8 18201BE5 		ldr	r2, [fp, #-24]
+ 417 01fc 023AA0E3 		mov	r3, #8192
+ 418 0200 043082E5 		str	r3, [r2, #4]
+ 115:syscalls.c    **** 		/* assigned to strong type with implicit 	*/
+ 116:syscalls.c    **** 		/* signed/unsigned conversion.  Required by 	*/
+ 117:syscalls.c    **** 		/* newlib.					*/
+ 118:syscalls.c    **** 
+ 119:syscalls.c    **** 	return 0;
+ 420              	.LM29:
+ 421 0204 0030A0E3 		mov	r3, #0
+ 120:syscalls.c    **** }
+ 423              	.LM30:
+ 424 0208 0300A0E1 		mov	r0, r3
+ 425 020c 0CD04BE2 		sub	sp, fp, #12
+ 426 0210 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 427 0214 1EFF2FE1 		bx	lr
+ 429              	.Lscope4:
+ 430              		.align	2
+ 433              		.global	isatty
+ 435              	isatty:
+ 121:syscalls.c    **** 
+ 122:syscalls.c    **** int isatty(int file); /* avoid warning */
+ 123:syscalls.c    **** 
+ 124:syscalls.c    **** int isatty(int file)
+ 125:syscalls.c    **** {
+ 437              	.LM31:
+ 438              		@ Function supports interworking.
+ 439              		@ args = 0, pretend = 0, frame = 4
+ 440              		@ frame_needed = 1, uses_anonymous_args = 0
+ 441 0218 0DC0A0E1 		mov	ip, sp
+ 442 021c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 443 0220 04B04CE2 		sub	fp, ip, #4
+ 444 0224 04D04DE2 		sub	sp, sp, #4
+ 445 0228 10000BE5 		str	r0, [fp, #-16]
+ 126:syscalls.c    **** 	return 1;
+ 447              	.LM32:
+ 448 022c 0130A0E3 		mov	r3, #1
+ 127:syscalls.c    **** }
+ 450              	.LM33:
+ 451 0230 0300A0E1 		mov	r0, r3
+ 452 0234 0CD04BE2 		sub	sp, fp, #12
+ 453 0238 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 454 023c 1EFF2FE1 		bx	lr
+ 456              	.Lscope5:
+ 457              		.align	2
+ 461              		.global	_sbrk_r
+ 463              	_sbrk_r:
+ 128:syscalls.c    **** 
+ 129:syscalls.c    **** #if 0
+ 130:syscalls.c    **** static void _exit (int n) {
+ 131:syscalls.c    **** label:  goto label; /* endless loop */
+ 132:syscalls.c    **** }
+ 133:syscalls.c    **** #endif 
+ 134:syscalls.c    **** 
+ 135:syscalls.c    **** /* "malloc clue function" */
+ 136:syscalls.c    **** 
+ 137:syscalls.c    **** 	/**** Locally used variables. ****/
+ 138:syscalls.c    **** extern char _end[];              /*  end is set in the linker command 	*/
+ 139:syscalls.c    **** 				/* file and is the end of statically 	*/
+ 140:syscalls.c    **** 				/* allocated data (thus start of heap).	*/
+ 141:syscalls.c    **** 
+ 142:syscalls.c    **** static char *heap_ptr;		/* Points to current end of the heap.	*/
+ 143:syscalls.c    **** 
+ 144:syscalls.c    **** /************************** _sbrk_r *************************************/
+ 145:syscalls.c    **** /*  Support function.  Adjusts end of heap to provide more memory to	*/
+ 146:syscalls.c    **** /* memory allocator. Simple and dumb with no sanity checks.		*/
+ 147:syscalls.c    **** /*  struct _reent *r	-- re-entrancy structure, used by newlib to 	*/
+ 148:syscalls.c    **** /*			support multiple threads of operation.		*/
+ 149:syscalls.c    **** /*  ptrdiff_t nbytes	-- number of bytes to add.			*/
+ 150:syscalls.c    **** /*  Returns pointer to start of new heap area.				*/
+ 151:syscalls.c    **** /*  Note:  This implementation is not thread safe (despite taking a	*/
+ 152:syscalls.c    **** /* _reent structure as a parameter).  					*/
+ 153:syscalls.c    **** /*  Since _s_r is not used in the current implementation, the following	*/
+ 154:syscalls.c    **** /* messages must be suppressed.						*/
+ 155:syscalls.c    **** 
+ 156:syscalls.c    **** void * _sbrk_r(
+ 157:syscalls.c    ****     struct _reent *_s_r, 
+ 158:syscalls.c    ****     ptrdiff_t nbytes)
+ 159:syscalls.c    **** {
+ 465              	.LM34:
+ 466              		@ Function supports interworking.
+ 467              		@ args = 0, pretend = 0, frame = 12
+ 468              		@ frame_needed = 1, uses_anonymous_args = 0
+ 469 0240 0DC0A0E1 		mov	ip, sp
+ 470 0244 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 471 0248 04B04CE2 		sub	fp, ip, #4
+ 472 024c 0CD04DE2 		sub	sp, sp, #12
+ 473 0250 14000BE5 		str	r0, [fp, #-20]
+ 474 0254 18100BE5 		str	r1, [fp, #-24]
+ 160:syscalls.c    **** 	char  *base;		/*  errno should be set to  ENOMEM on error	*/
+ 161:syscalls.c    **** 
+ 162:syscalls.c    **** 	if (!heap_ptr) {	/*  Initialize if first time through.		*/
+ 476              	.LM35:
+ 477 0258 4C309FE5 		ldr	r3, .L29
+ 478 025c 003093E5 		ldr	r3, [r3, #0]
+ 479 0260 000053E3 		cmp	r3, #0
+ 480 0264 0200001A 		bne	.L26
+ 163:syscalls.c    **** 		heap_ptr = _end;
+ 482              	.LM36:
+ 483 0268 3C209FE5 		ldr	r2, .L29
+ 484 026c 3C309FE5 		ldr	r3, .L29+4
+ 485 0270 003082E5 		str	r3, [r2, #0]
+ 486              	.L26:
+ 164:syscalls.c    **** 	}
+ 165:syscalls.c    **** 	base = heap_ptr;	/*  Point to end of heap.			*/
+ 488              	.LM37:
+ 489 0274 30309FE5 		ldr	r3, .L29
+ 490 0278 003093E5 		ldr	r3, [r3, #0]
+ 491 027c 10300BE5 		str	r3, [fp, #-16]
+ 166:syscalls.c    **** 	heap_ptr += nbytes;	/*  Increase heap.				*/
+ 493              	.LM38:
+ 494 0280 24309FE5 		ldr	r3, .L29
+ 495 0284 002093E5 		ldr	r2, [r3, #0]
+ 496 0288 18301BE5 		ldr	r3, [fp, #-24]
+ 497 028c 032082E0 		add	r2, r2, r3
+ 498 0290 14309FE5 		ldr	r3, .L29
+ 499 0294 002083E5 		str	r2, [r3, #0]
+ 167:syscalls.c    **** 	
+ 168:syscalls.c    **** 	return base;		/*  Return pointer to start of new heap area.	*/
+ 501              	.LM39:
+ 502 0298 10301BE5 		ldr	r3, [fp, #-16]
+ 169:syscalls.c    **** }
+ 504              	.LM40:
+ 505 029c 0300A0E1 		mov	r0, r3
+ 506 02a0 0CD04BE2 		sub	sp, fp, #12
+ 507 02a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 508 02a8 1EFF2FE1 		bx	lr
+ 509              	.L30:
+ 510              		.align	2
+ 511              	.L29:
+ 512 02ac 00000000 		.word	heap_ptr
+ 513 02b0 00000000 		.word	_end
+ 518              	.Lscope6:
+ 519              		.bss
+ 520              		.align	2
+ 521              	heap_ptr:
+ 522 0000 00000000 		.space	4
+ 524              		.text
+ 526              	.Letext0:
+ 527              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 syscalls.c
+     /tmp/ccoXzz0h.s:151    .text:00000000 $a
+     /tmp/ccoXzz0h.s:159    .text:00000000 _read_r
+     /tmp/ccoXzz0h.s:264    .text:000000e0 _write_r
+     /tmp/ccoXzz0h.s:338    .text:0000017c _close_r
+     /tmp/ccoXzz0h.s:369    .text:000001a8 _lseek_r
+     /tmp/ccoXzz0h.s:401    .text:000001dc _fstat_r
+     /tmp/ccoXzz0h.s:435    .text:00000218 isatty
+     /tmp/ccoXzz0h.s:463    .text:00000240 _sbrk_r
+     /tmp/ccoXzz0h.s:512    .text:000002ac $d
+     /tmp/ccoXzz0h.s:521    .bss:00000000 heap_ptr
+     /tmp/ccoXzz0h.s:520    .bss:00000000 $d
+
+UNDEFINED SYMBOLS
+UARTReadChar
+UARTWriteChar
+_end

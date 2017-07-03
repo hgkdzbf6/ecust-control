@@ -75,14 +75,18 @@ unsigned char stopstring[]={'<','#','<'};
 
 
 unsigned char my_buffer[256];
-extern MyViconData viconData;
+extern unsigned char allDataBuffer[256];
+extern MyViconData receivedViconData;
 extern ParamDebug sendParamDebug;
 extern ParamDebug receiveParamDebug;
+extern DebugData sendDebugData;
 extern int vicon_count;
 extern int receive_valid_data_flag;
 extern struct this_s this ;
 extern state_t my_state;
 extern int output_thrust;
+extern CmdData receiveCmdData;
+extern unsigned char pack_id;
 
 void uart1ISR(void) __irq
 {
@@ -124,8 +128,8 @@ void uart1ISR(void) __irq
 void uart0ISR(void) __irq
 {
   unsigned char t;
+  unsigned char receive_result;
   unsigned char UART_rxdata;
-
 
   // Read IIR to clear interrupt and find out the cause
   IENABLE;
@@ -158,13 +162,49 @@ void uart0ISR(void) __irq
         // RDA interrupt - put your HL_serial_0 receive state machine here!
         UART_rxdata = U0RBR;
 #ifdef DEBUG_DATA_MODE
-        if(my_receive(UART_rxdata,
-        		my_buffer,
-				&viconData,
-				1)){
-        	my_state.position.z=viconData.z;
-        	my_state.velocity.z=viconData.vz;
-        	vicon_count++;
+        receive_result=my_receive(UART_rxdata,my_buffer,
+				&allDataBuffer,&pack_id,1);
+		if(receive_result==RECEIVE_STATE_SUCCESS){
+			switch(pack_id){
+			case PACKAGE_DEFINE_STATUS:
+				break;
+			case PACKAGE_DEFINE_VICON:
+				memcpy(&receivedViconData,
+						&allDataBuffer,getPackageLength(pack_id));
+				my_state.position.z=receivedViconData.z;
+				my_state.velocity.z=receivedViconData.vz;
+				vicon_count++;
+				break;
+			case PACKAGE_DEFINE_SENSOR:
+				break;
+			case PACKAGE_DEFINE_FUSION:
+				break;
+			case PACKAGE_DEFINE_DEBUG:
+				break;
+			case PACKAGE_DEFINE_PARAM:
+				memcpy(&receiveParamDebug,
+						&allDataBuffer,getPackageLength(pack_id));
+	        	if(receive_valid_data_flag==1||receiveParamDebug.kp_p!=0){
+	        		receive_valid_data_flag=1;
+	        		this.pidZ.pid.kp=receiveParamDebug.kp_p;
+	        		this.pidZ.pid.ki=receiveParamDebug.ki_p;
+	        		this.pidVZ.pid.kp=receiveParamDebug.kp_v;
+	        		this.pidVZ.pid.ki=receiveParamDebug.ki_v;
+	        		my_setpoint.velocity.y=receiveParamDebug.set_velocity;
+	        		//output_thrust=receiveParamDebug.thrust;
+	        		//if(receiveParamDebug.thrust==555)buzzer(1);
+	        	}
+	    		my_state.position.z=receiveParamDebug.z;
+	    		my_state.velocity.z=receiveParamDebug.vz;
+	        	vicon_count++;
+				break;
+			case PACKAGE_DEFINE_CMD:
+				memcpy(&receiveCmdData,
+						&allDataBuffer,getPackageLength(pack_id));
+				break;
+			default:
+				break;
+			}
         }
 #endif
 

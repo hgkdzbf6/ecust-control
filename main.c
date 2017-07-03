@@ -96,9 +96,10 @@ PackageDefine pd3=PACKAGE_DEFINE_PARAM;
 unsigned char pl=VICON_DATA_LENGTH;
 unsigned char pl2=DEBUG_DATA_LENGTH;
 unsigned char pl3=PARAM_DEBUG_LENGTH;
-extern MyViconData viconData;
-extern DebugData debugData;
+extern MyViconData receivedViconData;
+extern DebugData sendDebugData;
 extern ParamDebug sendParamDebug;
+extern CmdData receiveCmdData;
 extern state_t my_setpoint;
 extern state_t my_state;
 extern int cpu_load;
@@ -265,17 +266,31 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 	if(uart_cnt++==ControllerCyclesPerSecond/DataOutputsPerSecond)
 	{
 		uart_cnt=0;
+		if(receiveCmdData.cmd==PACKAGE_DEFINE_DEBUG){
+			sendDebugData.timestamp=receivedViconData.timestamp;
+			sendDebugData.z=my_state.position.z;
+			sendDebugData.vz=my_state.position.z;
+			sendDebugData.battery=HL_Status.battery_voltage_1;
+			sendDebugData.cpu_load=mainloop_cnt;
+			sendDebugData.set_position=my_setpoint.position.z;
+			sendDebugData.set_velocity=my_setpoint.velocity.z;
+			sendDebugData.vicon_count=vicon_count;
+			sendDebugData.calc_thrust=calc_thrust;
+			my_send(1,PACKAGE_DEFINE_DEBUG,DEBUG_DATA_LENGTH,&sendDebugData,1);
+		}else if(receiveCmdData.cmd=PACKAGE_DEFINE_PARAM){
+			sendParamDebug.calc_thrust=calc_thrust;
+			sendParamDebug.ki_p=this.pidZ.pid.ki;
+			sendParamDebug.kp_p=this.pidZ.pid.kp;
+			sendParamDebug.ki_v=this.pidVZ.pid.ki;
+			sendParamDebug.kp_v=this.pidVZ.pid.kp;
+			sendParamDebug.set_velocity=my_setpoint.velocity.z;
+			sendParamDebug.vz=my_state.velocity.z;
+			sendParamDebug.z=my_state.position.z;
+			sendParamDebug.thrust=output_thrust;
+			my_send(1,PACKAGE_DEFINE_PARAM,PARAM_DEBUG_LENGTH,&sendParamDebug,1);
+		}
 #ifdef DEBUG_DATA_MODE
-		debugData.timestamp=viconData.timestamp;
-		debugData.z=my_state.position.z;
-		debugData.vz=my_state.position.z;
-		debugData.battery=HL_Status.battery_voltage_1;
-		debugData.cpu_load=mainloop_cnt;
-		debugData.set_position=my_setpoint.position.z;
-		debugData.set_velocity=my_setpoint.velocity.z;
-		debugData.vicon_count=vicon_count;
-		debugData.calc_thrust=calc_thrust;
-		my_send(1,pd2,pl2,&debugData,1);
+
 #endif
 #ifdef PARAM_DEBUG_MODE
 //		sendParamDebug.calc_thrust=calc_thrust;
@@ -289,15 +304,6 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 //		sendParamDebug.thrust=output_thrust;
 
 //		if(receive_valid_data_flag==0){
-		sendParamDebug.calc_thrust=calc_thrust;
-		sendParamDebug.ki_p=this.pidZ.pid.ki;
-		sendParamDebug.kp_p=this.pidZ.pid.kp;
-		sendParamDebug.ki_v=this.pidVZ.pid.ki;
-		sendParamDebug.kp_v=this.pidVZ.pid.kp;
-		sendParamDebug.set_velocity=my_setpoint.velocity.z;
-		sendParamDebug.vz=my_state.velocity.z;
-		sendParamDebug.z=my_state.position.z;
-		sendParamDebug.thrust=output_thrust;
 //		}else{
 //			sendParamDebug.calc_thrust=calc_thrust;
 //			sendParamDebug.ki_p=this.pidZ.pid.ki;
@@ -309,7 +315,6 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 //			sendParamDebug.z=state.position.z;
 //			sendParamDebug.thrust=(int)WO_CTRL_Input.thrust;
 //		}
-		my_send(1,pd3,pl3,&sendParamDebug,1);
 
 #endif
 	}

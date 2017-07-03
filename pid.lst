@@ -1,0 +1,940 @@
+   1              		.file	"pid.c"
+   3              		.text
+   4              	.Ltext0:
+  27              		.global	__gtsf2
+  28              		.align	2
+  33              		.global	constrain
+  35              	constrain:
+   1:pid.c         **** /**
+   2:pid.c         ****  *    ||          ____  _ __
+   3:pid.c         ****  * +------+      / __ )(_) /_______________ _____  ___
+   4:pid.c         ****  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
+   5:pid.c         ****  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
+   6:pid.c         ****  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
+   7:pid.c         ****  *
+   8:pid.c         ****  * Crazyflie control firmware
+   9:pid.c         ****  *
+  10:pid.c         ****  * Copyright (C) 2011-2012 Bitcraze AB
+  11:pid.c         ****  *
+  12:pid.c         ****  * This program is free software: you can redistribute it and/or modify
+  13:pid.c         ****  * it under the terms of the GNU General Public License as published by
+  14:pid.c         ****  * the Free Software Foundation, in version 3.
+  15:pid.c         ****  *
+  16:pid.c         ****  * This program is distributed in the hope that it will be useful,
+  17:pid.c         ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  18:pid.c         ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  19:pid.c         ****  * GNU General Public License for more details.
+  20:pid.c         ****  *
+  21:pid.c         ****  * You should have received a copy of the GNU General Public License
+  22:pid.c         ****  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  23:pid.c         ****  *
+  24:pid.c         ****  *
+  25:pid.c         ****  * pid.c - implementation of the PID regulator
+  26:pid.c         ****  */
+  27:pid.c         **** 
+  28:pid.c         **** #include "pid.h"
+  29:pid.c         **** 
+  30:pid.c         **** float constrain(float value, const float minVal, const float maxVal)
+  31:pid.c         **** {
+  37              	.LM0:
+  38              		@ Function supports interworking.
+  39              		@ args = 0, pretend = 0, frame = 24
+  40              		@ frame_needed = 1, uses_anonymous_args = 0
+  41 0000 0DC0A0E1 		mov	ip, sp
+  42 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+  43 0008 04B04CE2 		sub	fp, ip, #4
+  44 000c 18D04DE2 		sub	sp, sp, #24
+  45 0010 10000BE5 		str	r0, [fp, #-16]	@ float
+  46 0014 14100BE5 		str	r1, [fp, #-20]	@ float
+  47 0018 18200BE5 		str	r2, [fp, #-24]	@ float
+  32:pid.c         ****   return min(maxVal, max(minVal,value));
+  49              	.LM1:
+  50 001c 14001BE5 		ldr	r0, [fp, #-20]	@ float
+  51 0020 10101BE5 		ldr	r1, [fp, #-16]	@ float
+  52 0024 FEFFFFEB 		bl	__gtsf2
+  53 0028 0030A0E1 		mov	r3, r0
+  54 002c 000053E3 		cmp	r3, #0
+  55 0030 000000CA 		bgt	.L4
+  56 0034 020000EA 		b	.L2
+  57              	.L4:
+  58 0038 14301BE5 		ldr	r3, [fp, #-20]	@ float
+  59 003c 20300BE5 		str	r3, [fp, #-32]	@ float
+  60 0040 010000EA 		b	.L5
+  61              	.L2:
+  62 0044 10301BE5 		ldr	r3, [fp, #-16]	@ float
+  63 0048 20300BE5 		str	r3, [fp, #-32]	@ float
+  64              	.L5:
+  65 004c 20001BE5 		ldr	r0, [fp, #-32]	@ float
+  66 0050 18101BE5 		ldr	r1, [fp, #-24]	@ float
+  67 0054 FEFFFFEB 		bl	__gtsf2
+  68 0058 0030A0E1 		mov	r3, r0
+  69 005c 000053E3 		cmp	r3, #0
+  70 0060 000000CA 		bgt	.L8
+  71 0064 020000EA 		b	.L6
+  72              	.L8:
+  73 0068 18301BE5 		ldr	r3, [fp, #-24]	@ float
+  74 006c 24300BE5 		str	r3, [fp, #-36]	@ float
+  75 0070 0D0000EA 		b	.L9
+  76              	.L6:
+  77 0074 14001BE5 		ldr	r0, [fp, #-20]	@ float
+  78 0078 10101BE5 		ldr	r1, [fp, #-16]	@ float
+  79 007c FEFFFFEB 		bl	__gtsf2
+  80 0080 0030A0E1 		mov	r3, r0
+  81 0084 000053E3 		cmp	r3, #0
+  82 0088 000000CA 		bgt	.L12
+  83 008c 020000EA 		b	.L10
+  84              	.L12:
+  85 0090 14301BE5 		ldr	r3, [fp, #-20]	@ float
+  86 0094 1C300BE5 		str	r3, [fp, #-28]	@ float
+  87 0098 010000EA 		b	.L13
+  88              	.L10:
+  89 009c 10301BE5 		ldr	r3, [fp, #-16]	@ float
+  90 00a0 1C300BE5 		str	r3, [fp, #-28]	@ float
+  91              	.L13:
+  92 00a4 1C301BE5 		ldr	r3, [fp, #-28]	@ float
+  93 00a8 24300BE5 		str	r3, [fp, #-36]	@ float
+  94              	.L9:
+  95 00ac 24301BE5 		ldr	r3, [fp, #-36]	@ float
+  33:pid.c         **** }
+  97              	.LM2:
+  98 00b0 0300A0E1 		mov	r0, r3
+  99 00b4 0CD04BE2 		sub	sp, fp, #12
+ 100 00b8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 101 00bc 1EFF2FE1 		bx	lr
+ 103              	.Lscope0:
+ 104              		.global	__ltsf2
+ 105              		.global	__subsf3
+ 106              		.global	__addsf3
+ 107              		.align	2
+ 111              		.global	deadband
+ 113              	deadband:
+  34:pid.c         **** 
+  35:pid.c         **** float deadband(float value, const float threshold)
+  36:pid.c         **** {
+ 115              	.LM3:
+ 116              		@ Function supports interworking.
+ 117              		@ args = 0, pretend = 0, frame = 8
+ 118              		@ frame_needed = 1, uses_anonymous_args = 0
+ 119 00c0 0DC0A0E1 		mov	ip, sp
+ 120 00c4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 121 00c8 04B04CE2 		sub	fp, ip, #4
+ 122 00cc 08D04DE2 		sub	sp, sp, #8
+ 123 00d0 10000BE5 		str	r0, [fp, #-16]	@ float
+ 124 00d4 14100BE5 		str	r1, [fp, #-20]	@ float
+  37:pid.c         ****   if (fabsf(value) < threshold)
+ 126              	.LM4:
+ 127 00d8 10301BE5 		ldr	r3, [fp, #-16]
+ 128 00dc 0231C3E3 		bic	r3, r3, #-2147483648
+ 129 00e0 0300A0E1 		mov	r0, r3
+ 130 00e4 14101BE5 		ldr	r1, [fp, #-20]	@ float
+ 131 00e8 FEFFFFEB 		bl	__ltsf2
+ 132 00ec 0030A0E1 		mov	r3, r0
+ 133 00f0 000053E3 		cmp	r3, #0
+ 134 00f4 000000BA 		blt	.L18
+ 135 00f8 020000EA 		b	.L16
+ 136              	.L18:
+  38:pid.c         ****   {
+  39:pid.c         ****     value = 0;
+ 138              	.LM5:
+ 139 00fc 7C309FE5 		ldr	r3, .L26	@ float
+ 140 0100 10300BE5 		str	r3, [fp, #-16]	@ float
+ 141 0104 180000EA 		b	.L19
+ 142              	.L16:
+  40:pid.c         ****   }
+  41:pid.c         ****   else if (value > 0)
+ 144              	.LM6:
+ 145 0108 10001BE5 		ldr	r0, [fp, #-16]	@ float
+ 146 010c 6C109FE5 		ldr	r1, .L26	@ float
+ 147 0110 FEFFFFEB 		bl	__gtsf2
+ 148 0114 0030A0E1 		mov	r3, r0
+ 149 0118 000053E3 		cmp	r3, #0
+ 150 011c 000000CA 		bgt	.L22
+ 151 0120 050000EA 		b	.L20
+ 152              	.L22:
+  42:pid.c         ****   {
+  43:pid.c         ****     value -= threshold;
+ 154              	.LM7:
+ 155 0124 10001BE5 		ldr	r0, [fp, #-16]	@ float
+ 156 0128 14101BE5 		ldr	r1, [fp, #-20]	@ float
+ 157 012c FEFFFFEB 		bl	__subsf3
+ 158 0130 0030A0E1 		mov	r3, r0
+ 159 0134 10300BE5 		str	r3, [fp, #-16]	@ float
+ 160 0138 0B0000EA 		b	.L19
+ 161              	.L20:
+  44:pid.c         ****   }
+  45:pid.c         ****   else if (value < 0)
+ 163              	.LM8:
+ 164 013c 10001BE5 		ldr	r0, [fp, #-16]	@ float
+ 165 0140 38109FE5 		ldr	r1, .L26	@ float
+ 166 0144 FEFFFFEB 		bl	__ltsf2
+ 167 0148 0030A0E1 		mov	r3, r0
+ 168 014c 000053E3 		cmp	r3, #0
+ 169 0150 000000BA 		blt	.L24
+ 170 0154 040000EA 		b	.L19
+ 171              	.L24:
+  46:pid.c         ****   {
+  47:pid.c         ****     value += threshold;
+ 173              	.LM9:
+ 174 0158 10001BE5 		ldr	r0, [fp, #-16]	@ float
+ 175 015c 14101BE5 		ldr	r1, [fp, #-20]	@ float
+ 176 0160 FEFFFFEB 		bl	__addsf3
+ 177 0164 0030A0E1 		mov	r3, r0
+ 178 0168 10300BE5 		str	r3, [fp, #-16]	@ float
+ 179              	.L19:
+  48:pid.c         ****   }
+  49:pid.c         ****   return value;
+ 181              	.LM10:
+ 182 016c 10301BE5 		ldr	r3, [fp, #-16]	@ float
+  50:pid.c         **** }
+ 184              	.LM11:
+ 185 0170 0300A0E1 		mov	r0, r3
+ 186 0174 0CD04BE2 		sub	sp, fp, #12
+ 187 0178 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 188 017c 1EFF2FE1 		bx	lr
+ 189              	.L27:
+ 190              		.align	2
+ 191              	.L26:
+ 192 0180 00000000 		.word	0
+ 194              	.Lscope1:
+ 195              		.align	2
+ 203              		.global	pidInit
+ 205              	pidInit:
+  51:pid.c         **** void pidInit(PidObject* pid, const float desired, const float kp,
+  52:pid.c         ****              const float ki, const float kd, const float dt)
+  53:pid.c         **** {
+ 207              	.LM12:
+ 208              		@ Function supports interworking.
+ 209              		@ args = 8, pretend = 0, frame = 16
+ 210              		@ frame_needed = 1, uses_anonymous_args = 0
+ 211 0184 0DC0A0E1 		mov	ip, sp
+ 212 0188 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 213 018c 04B04CE2 		sub	fp, ip, #4
+ 214 0190 10D04DE2 		sub	sp, sp, #16
+ 215 0194 10000BE5 		str	r0, [fp, #-16]
+ 216 0198 14100BE5 		str	r1, [fp, #-20]	@ float
+ 217 019c 18200BE5 		str	r2, [fp, #-24]	@ float
+ 218 01a0 1C300BE5 		str	r3, [fp, #-28]	@ float
+  54:pid.c         ****   pid->error         = 0;
+ 220              	.LM13:
+ 221 01a4 10201BE5 		ldr	r2, [fp, #-16]
+ 222 01a8 84309FE5 		ldr	r3, .L30	@ float
+ 223 01ac 043082E5 		str	r3, [r2, #4]	@ float
+  55:pid.c         ****   pid->prevError     = 0;
+ 225              	.LM14:
+ 226 01b0 10201BE5 		ldr	r2, [fp, #-16]
+ 227 01b4 78309FE5 		ldr	r3, .L30	@ float
+ 228 01b8 083082E5 		str	r3, [r2, #8]	@ float
+  56:pid.c         ****   pid->integ         = 0;
+ 230              	.LM15:
+ 231 01bc 10201BE5 		ldr	r2, [fp, #-16]
+ 232 01c0 6C309FE5 		ldr	r3, .L30	@ float
+ 233 01c4 0C3082E5 		str	r3, [r2, #12]	@ float
+  57:pid.c         ****   pid->deriv         = 0;
+ 235              	.LM16:
+ 236 01c8 10201BE5 		ldr	r2, [fp, #-16]
+ 237 01cc 60309FE5 		ldr	r3, .L30	@ float
+ 238 01d0 103082E5 		str	r3, [r2, #16]	@ float
+  58:pid.c         ****   pid->desired       = desired;
+ 240              	.LM17:
+ 241 01d4 10201BE5 		ldr	r2, [fp, #-16]
+ 242 01d8 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 243 01dc 003082E5 		str	r3, [r2, #0]	@ float
+  59:pid.c         ****   pid->kp            = kp;
+ 245              	.LM18:
+ 246 01e0 10201BE5 		ldr	r2, [fp, #-16]
+ 247 01e4 18301BE5 		ldr	r3, [fp, #-24]	@ float
+ 248 01e8 143082E5 		str	r3, [r2, #20]	@ float
+  60:pid.c         ****   pid->ki            = ki;
+ 250              	.LM19:
+ 251 01ec 10201BE5 		ldr	r2, [fp, #-16]
+ 252 01f0 1C301BE5 		ldr	r3, [fp, #-28]	@ float
+ 253 01f4 183082E5 		str	r3, [r2, #24]	@ float
+  61:pid.c         ****   pid->kd            = kd;
+ 255              	.LM20:
+ 256 01f8 10201BE5 		ldr	r2, [fp, #-16]
+ 257 01fc 04309BE5 		ldr	r3, [fp, #4]	@ float
+ 258 0200 1C3082E5 		str	r3, [r2, #28]	@ float
+  62:pid.c         ****   pid->iLimit        = DEFAULT_PID_INTEGRATION_LIMIT;
+ 260              	.LM21:
+ 261 0204 10201BE5 		ldr	r2, [fp, #-16]
+ 262 0208 28309FE5 		ldr	r3, .L30+4	@ float
+ 263 020c 2C3082E5 		str	r3, [r2, #44]	@ float
+  63:pid.c         ****   pid->outputLimit   = DEFAULT_PID_OUTPUT_LIMIT;
+ 265              	.LM22:
+ 266 0210 10201BE5 		ldr	r2, [fp, #-16]
+ 267 0214 18309FE5 		ldr	r3, .L30	@ float
+ 268 0218 303082E5 		str	r3, [r2, #48]	@ float
+  64:pid.c         ****   pid->dt            = dt;
+ 270              	.LM23:
+ 271 021c 10201BE5 		ldr	r2, [fp, #-16]
+ 272 0220 08309BE5 		ldr	r3, [fp, #8]	@ float
+ 273 0224 343082E5 		str	r3, [r2, #52]	@ float
+  65:pid.c         **** }
+ 275              	.LM24:
+ 276 0228 0CD04BE2 		sub	sp, fp, #12
+ 277 022c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 278 0230 1EFF2FE1 		bx	lr
+ 279              	.L31:
+ 280              		.align	2
+ 281              	.L30:
+ 282 0234 00000000 		.word	0
+ 283 0238 0000FA43 		.word	1140457472
+ 285              	.Lscope2:
+ 286              		.global	__mulsf3
+ 287              		.global	__divsf3
+ 288              		.global	__nesf2
+ 289              		.align	2
+ 294              		.global	pidUpdate
+ 296              	pidUpdate:
+  66:pid.c         **** 
+  67:pid.c         **** float pidUpdate(PidObject* pid, const float measured, const unsigned char updateError)
+  68:pid.c         **** {
+ 298              	.LM25:
+ 299              		@ Function supports interworking.
+ 300              		@ args = 0, pretend = 0, frame = 20
+ 301              		@ frame_needed = 1, uses_anonymous_args = 0
+ 302 023c 0DC0A0E1 		mov	ip, sp
+ 303 0240 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 304 0244 04B04CE2 		sub	fp, ip, #4
+ 305 0248 14D04DE2 		sub	sp, sp, #20
+ 306 024c 1C000BE5 		str	r0, [fp, #-28]
+ 307 0250 20100BE5 		str	r1, [fp, #-32]	@ float
+ 308 0254 0230A0E1 		mov	r3, r2
+ 309 0258 24304BE5 		strb	r3, [fp, #-36]
+  69:pid.c         ****     float output = 0.0;
+ 311              	.LM26:
+ 312 025c A0329FE5 		ldr	r3, .L45	@ float
+ 313 0260 18300BE5 		str	r3, [fp, #-24]	@ float
+  70:pid.c         **** 
+  71:pid.c         ****     if (updateError)
+ 315              	.LM27:
+ 316 0264 24305BE5 		ldrb	r3, [fp, #-36]	@ zero_extendqisi2
+ 317 0268 000053E3 		cmp	r3, #0
+ 318 026c 0800000A 		beq	.L33
+  72:pid.c         ****     {
+  73:pid.c         ****         pid->error = pid->desired - measured;
+ 320              	.LM28:
+ 321 0270 1C301BE5 		ldr	r3, [fp, #-28]
+ 322 0274 003093E5 		ldr	r3, [r3, #0]	@ float
+ 323 0278 0300A0E1 		mov	r0, r3
+ 324 027c 20101BE5 		ldr	r1, [fp, #-32]	@ float
+ 325 0280 FEFFFFEB 		bl	__subsf3
+ 326 0284 0030A0E1 		mov	r3, r0
+ 327 0288 0320A0E1 		mov	r2, r3
+ 328 028c 1C301BE5 		ldr	r3, [fp, #-28]
+ 329 0290 042083E5 		str	r2, [r3, #4]	@ float
+ 330              	.L33:
+  74:pid.c         ****     }
+  75:pid.c         **** 
+  76:pid.c         ****     pid->outP = pid->kp * pid->error;
+ 332              	.LM29:
+ 333 0294 1C301BE5 		ldr	r3, [fp, #-28]
+ 334 0298 142093E5 		ldr	r2, [r3, #20]	@ float
+ 335 029c 1C301BE5 		ldr	r3, [fp, #-28]
+ 336 02a0 043093E5 		ldr	r3, [r3, #4]	@ float
+ 337 02a4 0200A0E1 		mov	r0, r2
+ 338 02a8 0310A0E1 		mov	r1, r3
+ 339 02ac FEFFFFEB 		bl	__mulsf3
+ 340 02b0 0030A0E1 		mov	r3, r0
+ 341 02b4 0320A0E1 		mov	r2, r3
+ 342 02b8 1C301BE5 		ldr	r3, [fp, #-28]
+ 343 02bc 202083E5 		str	r2, [r3, #32]	@ float
+  77:pid.c         ****     output += pid->outP;
+ 345              	.LM30:
+ 346 02c0 1C301BE5 		ldr	r3, [fp, #-28]
+ 347 02c4 203093E5 		ldr	r3, [r3, #32]	@ float
+ 348 02c8 18001BE5 		ldr	r0, [fp, #-24]	@ float
+ 349 02cc 0310A0E1 		mov	r1, r3
+ 350 02d0 FEFFFFEB 		bl	__addsf3
+ 351 02d4 0030A0E1 		mov	r3, r0
+ 352 02d8 18300BE5 		str	r3, [fp, #-24]	@ float
+  78:pid.c         **** 
+  79:pid.c         ****     float deriv = (pid->error - pid->prevError) / pid->dt;
+ 354              	.LM31:
+ 355 02dc 1C301BE5 		ldr	r3, [fp, #-28]
+ 356 02e0 042093E5 		ldr	r2, [r3, #4]	@ float
+ 357 02e4 1C301BE5 		ldr	r3, [fp, #-28]
+ 358 02e8 083093E5 		ldr	r3, [r3, #8]	@ float
+ 359 02ec 0200A0E1 		mov	r0, r2
+ 360 02f0 0310A0E1 		mov	r1, r3
+ 361 02f4 FEFFFFEB 		bl	__subsf3
+ 362 02f8 0030A0E1 		mov	r3, r0
+ 363 02fc 0320A0E1 		mov	r2, r3
+ 364 0300 1C301BE5 		ldr	r3, [fp, #-28]
+ 365 0304 343093E5 		ldr	r3, [r3, #52]	@ float
+ 366 0308 0200A0E1 		mov	r0, r2
+ 367 030c 0310A0E1 		mov	r1, r3
+ 368 0310 FEFFFFEB 		bl	__divsf3
+ 369 0314 0030A0E1 		mov	r3, r0
+ 370 0318 14300BE5 		str	r3, [fp, #-20]	@ float
+  80:pid.c         **** 
+  81:pid.c         ****     pid->deriv = deriv;
+ 372              	.LM32:
+ 373 031c 1C201BE5 		ldr	r2, [fp, #-28]
+ 374 0320 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 375 0324 103082E5 		str	r3, [r2, #16]	@ float
+  82:pid.c         ****     if (isnan(pid->deriv)) {
+ 377              	.LM33:
+ 378 0328 1C301BE5 		ldr	r3, [fp, #-28]
+ 379 032c 102093E5 		ldr	r2, [r3, #16]	@ float
+ 380 0330 1C301BE5 		ldr	r3, [fp, #-28]
+ 381 0334 103093E5 		ldr	r3, [r3, #16]	@ float
+ 382 0338 0200A0E1 		mov	r0, r2
+ 383 033c 0310A0E1 		mov	r1, r3
+ 384 0340 FEFFFFEB 		bl	__nesf2
+ 385 0344 0030A0E1 		mov	r3, r0
+ 386 0348 000053E3 		cmp	r3, #0
+ 387 034c 0000001A 		bne	.L37
+ 388 0350 020000EA 		b	.L35
+ 389              	.L37:
+  83:pid.c         ****       pid->deriv = 0;
+ 391              	.LM34:
+ 392 0354 1C201BE5 		ldr	r2, [fp, #-28]
+ 393 0358 A4319FE5 		ldr	r3, .L45	@ float
+ 394 035c 103082E5 		str	r3, [r2, #16]	@ float
+ 395              	.L35:
+  84:pid.c         ****     }
+  85:pid.c         ****     pid->outD = pid->kd * pid->deriv;
+ 397              	.LM35:
+ 398 0360 1C301BE5 		ldr	r3, [fp, #-28]
+ 399 0364 1C2093E5 		ldr	r2, [r3, #28]	@ float
+ 400 0368 1C301BE5 		ldr	r3, [fp, #-28]
+ 401 036c 103093E5 		ldr	r3, [r3, #16]	@ float
+ 402 0370 0200A0E1 		mov	r0, r2
+ 403 0374 0310A0E1 		mov	r1, r3
+ 404 0378 FEFFFFEB 		bl	__mulsf3
+ 405 037c 0030A0E1 		mov	r3, r0
+ 406 0380 0320A0E1 		mov	r2, r3
+ 407 0384 1C301BE5 		ldr	r3, [fp, #-28]
+ 408 0388 282083E5 		str	r2, [r3, #40]	@ float
+  86:pid.c         ****     output += pid->outD;
+ 410              	.LM36:
+ 411 038c 1C301BE5 		ldr	r3, [fp, #-28]
+ 412 0390 283093E5 		ldr	r3, [r3, #40]	@ float
+ 413 0394 18001BE5 		ldr	r0, [fp, #-24]	@ float
+ 414 0398 0310A0E1 		mov	r1, r3
+ 415 039c FEFFFFEB 		bl	__addsf3
+ 416 03a0 0030A0E1 		mov	r3, r0
+ 417 03a4 18300BE5 		str	r3, [fp, #-24]	@ float
+  87:pid.c         **** 
+  88:pid.c         ****     pid->integ += pid->error * pid->dt;
+ 419              	.LM37:
+ 420 03a8 1C301BE5 		ldr	r3, [fp, #-28]
+ 421 03ac 0C4093E5 		ldr	r4, [r3, #12]	@ float
+ 422 03b0 1C301BE5 		ldr	r3, [fp, #-28]
+ 423 03b4 042093E5 		ldr	r2, [r3, #4]	@ float
+ 424 03b8 1C301BE5 		ldr	r3, [fp, #-28]
+ 425 03bc 343093E5 		ldr	r3, [r3, #52]	@ float
+ 426 03c0 0200A0E1 		mov	r0, r2
+ 427 03c4 0310A0E1 		mov	r1, r3
+ 428 03c8 FEFFFFEB 		bl	__mulsf3
+ 429 03cc 0030A0E1 		mov	r3, r0
+ 430 03d0 0400A0E1 		mov	r0, r4
+ 431 03d4 0310A0E1 		mov	r1, r3
+ 432 03d8 FEFFFFEB 		bl	__addsf3
+ 433 03dc 0030A0E1 		mov	r3, r0
+ 434 03e0 0320A0E1 		mov	r2, r3
+ 435 03e4 1C301BE5 		ldr	r3, [fp, #-28]
+ 436 03e8 0C2083E5 		str	r2, [r3, #12]	@ float
+  89:pid.c         **** 
+  90:pid.c         ****     // Constrain the integral (unless the iLimit is zero)
+  91:pid.c         ****     if(pid->iLimit != 0)
+ 438              	.LM38:
+ 439 03ec 1C301BE5 		ldr	r3, [fp, #-28]
+ 440 03f0 2C3093E5 		ldr	r3, [r3, #44]	@ float
+ 441 03f4 0300A0E1 		mov	r0, r3
+ 442 03f8 04119FE5 		ldr	r1, .L45	@ float
+ 443 03fc FEFFFFEB 		bl	__nesf2
+ 444 0400 0030A0E1 		mov	r3, r0
+ 445 0404 000053E3 		cmp	r3, #0
+ 446 0408 0000001A 		bne	.L40
+ 447 040c 0D0000EA 		b	.L38
+ 448              	.L40:
+  92:pid.c         ****     {
+  93:pid.c         ****     	pid->integ = constrain(pid->integ, -pid->iLimit, pid->iLimit);
+ 450              	.LM39:
+ 451 0410 1C301BE5 		ldr	r3, [fp, #-28]
+ 452 0414 0C1093E5 		ldr	r1, [r3, #12]	@ float
+ 453 0418 1C301BE5 		ldr	r3, [fp, #-28]
+ 454 041c 2C3093E5 		ldr	r3, [r3, #44]	@ float
+ 455 0420 022123E2 		eor	r2, r3, #-2147483648
+ 456 0424 1C301BE5 		ldr	r3, [fp, #-28]
+ 457 0428 2C3093E5 		ldr	r3, [r3, #44]	@ float
+ 458 042c 0100A0E1 		mov	r0, r1
+ 459 0430 0210A0E1 		mov	r1, r2
+ 460 0434 0320A0E1 		mov	r2, r3
+ 461 0438 FEFFFFEB 		bl	constrain
+ 462 043c 0020A0E1 		mov	r2, r0
+ 463 0440 1C301BE5 		ldr	r3, [fp, #-28]
+ 464 0444 0C2083E5 		str	r2, [r3, #12]	@ float
+ 465              	.L38:
+  94:pid.c         ****     }
+  95:pid.c         **** 
+  96:pid.c         ****     pid->outI = pid->ki * pid->integ;
+ 467              	.LM40:
+ 468 0448 1C301BE5 		ldr	r3, [fp, #-28]
+ 469 044c 182093E5 		ldr	r2, [r3, #24]	@ float
+ 470 0450 1C301BE5 		ldr	r3, [fp, #-28]
+ 471 0454 0C3093E5 		ldr	r3, [r3, #12]	@ float
+ 472 0458 0200A0E1 		mov	r0, r2
+ 473 045c 0310A0E1 		mov	r1, r3
+ 474 0460 FEFFFFEB 		bl	__mulsf3
+ 475 0464 0030A0E1 		mov	r3, r0
+ 476 0468 0320A0E1 		mov	r2, r3
+ 477 046c 1C301BE5 		ldr	r3, [fp, #-28]
+ 478 0470 242083E5 		str	r2, [r3, #36]	@ float
+  97:pid.c         ****     output += pid->outI;
+ 480              	.LM41:
+ 481 0474 1C301BE5 		ldr	r3, [fp, #-28]
+ 482 0478 243093E5 		ldr	r3, [r3, #36]	@ float
+ 483 047c 18001BE5 		ldr	r0, [fp, #-24]	@ float
+ 484 0480 0310A0E1 		mov	r1, r3
+ 485 0484 FEFFFFEB 		bl	__addsf3
+ 486 0488 0030A0E1 		mov	r3, r0
+ 487 048c 18300BE5 		str	r3, [fp, #-24]	@ float
+  98:pid.c         **** 
+  99:pid.c         ****     // Constrain the total PID output (unless the outputLimit is zero)
+ 100:pid.c         ****     if(pid->outputLimit != 0)
+ 489              	.LM42:
+ 490 0490 1C301BE5 		ldr	r3, [fp, #-28]
+ 491 0494 303093E5 		ldr	r3, [r3, #48]	@ float
+ 492 0498 0300A0E1 		mov	r0, r3
+ 493 049c 60109FE5 		ldr	r1, .L45	@ float
+ 494 04a0 FEFFFFEB 		bl	__nesf2
+ 495 04a4 0030A0E1 		mov	r3, r0
+ 496 04a8 000053E3 		cmp	r3, #0
+ 497 04ac 0000001A 		bne	.L43
+ 498 04b0 0A0000EA 		b	.L41
+ 499              	.L43:
+ 101:pid.c         ****     {
+ 102:pid.c         ****       output = constrain(output, -pid->outputLimit, pid->outputLimit);
+ 501              	.LM43:
+ 502 04b4 1C301BE5 		ldr	r3, [fp, #-28]
+ 503 04b8 303093E5 		ldr	r3, [r3, #48]	@ float
+ 504 04bc 022123E2 		eor	r2, r3, #-2147483648
+ 505 04c0 1C301BE5 		ldr	r3, [fp, #-28]
+ 506 04c4 303093E5 		ldr	r3, [r3, #48]	@ float
+ 507 04c8 18001BE5 		ldr	r0, [fp, #-24]	@ float
+ 508 04cc 0210A0E1 		mov	r1, r2
+ 509 04d0 0320A0E1 		mov	r2, r3
+ 510 04d4 FEFFFFEB 		bl	constrain
+ 511 04d8 0030A0E1 		mov	r3, r0
+ 512 04dc 18300BE5 		str	r3, [fp, #-24]	@ float
+ 513              	.L41:
+ 103:pid.c         ****     }
+ 104:pid.c         **** 
+ 105:pid.c         **** 
+ 106:pid.c         ****     pid->prevError = pid->error;
+ 515              	.LM44:
+ 516 04e0 1C301BE5 		ldr	r3, [fp, #-28]
+ 517 04e4 042093E5 		ldr	r2, [r3, #4]	@ float
+ 518 04e8 1C301BE5 		ldr	r3, [fp, #-28]
+ 519 04ec 082083E5 		str	r2, [r3, #8]	@ float
+ 107:pid.c         **** 
+ 108:pid.c         ****     return output;
+ 521              	.LM45:
+ 522 04f0 18301BE5 		ldr	r3, [fp, #-24]	@ float
+ 109:pid.c         **** }
+ 524              	.LM46:
+ 525 04f4 0300A0E1 		mov	r0, r3
+ 526 04f8 10D04BE2 		sub	sp, fp, #16
+ 527 04fc 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 528 0500 1EFF2FE1 		bx	lr
+ 529              	.L46:
+ 530              		.align	2
+ 531              	.L45:
+ 532 0504 00000000 		.word	0
+ 538              	.Lscope3:
+ 539              		.align	2
+ 543              		.global	pidSetIntegralLimit
+ 545              	pidSetIntegralLimit:
+ 110:pid.c         **** 
+ 111:pid.c         **** void pidSetIntegralLimit(PidObject* pid, const float limit) {
+ 547              	.LM47:
+ 548              		@ Function supports interworking.
+ 549              		@ args = 0, pretend = 0, frame = 8
+ 550              		@ frame_needed = 1, uses_anonymous_args = 0
+ 551 0508 0DC0A0E1 		mov	ip, sp
+ 552 050c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 553 0510 04B04CE2 		sub	fp, ip, #4
+ 554 0514 08D04DE2 		sub	sp, sp, #8
+ 555 0518 10000BE5 		str	r0, [fp, #-16]
+ 556 051c 14100BE5 		str	r1, [fp, #-20]	@ float
+ 112:pid.c         ****     pid->iLimit = limit;
+ 558              	.LM48:
+ 559 0520 10201BE5 		ldr	r2, [fp, #-16]
+ 560 0524 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 561 0528 2C3082E5 		str	r3, [r2, #44]	@ float
+ 113:pid.c         **** }
+ 563              	.LM49:
+ 564 052c 0CD04BE2 		sub	sp, fp, #12
+ 565 0530 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 566 0534 1EFF2FE1 		bx	lr
+ 568              	.Lscope4:
+ 569              		.align	2
+ 572              		.global	pidReset
+ 574              	pidReset:
+ 114:pid.c         **** 
+ 115:pid.c         **** 
+ 116:pid.c         **** void pidReset(PidObject* pid)
+ 117:pid.c         **** {
+ 576              	.LM50:
+ 577              		@ Function supports interworking.
+ 578              		@ args = 0, pretend = 0, frame = 4
+ 579              		@ frame_needed = 1, uses_anonymous_args = 0
+ 580 0538 0DC0A0E1 		mov	ip, sp
+ 581 053c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 582 0540 04B04CE2 		sub	fp, ip, #4
+ 583 0544 04D04DE2 		sub	sp, sp, #4
+ 584 0548 10000BE5 		str	r0, [fp, #-16]
+ 118:pid.c         ****   pid->error     = 0;
+ 586              	.LM51:
+ 587 054c 10201BE5 		ldr	r2, [fp, #-16]
+ 588 0550 30309FE5 		ldr	r3, .L51	@ float
+ 589 0554 043082E5 		str	r3, [r2, #4]	@ float
+ 119:pid.c         ****   pid->prevError = 0;
+ 591              	.LM52:
+ 592 0558 10201BE5 		ldr	r2, [fp, #-16]
+ 593 055c 24309FE5 		ldr	r3, .L51	@ float
+ 594 0560 083082E5 		str	r3, [r2, #8]	@ float
+ 120:pid.c         ****   pid->integ     = 0;
+ 596              	.LM53:
+ 597 0564 10201BE5 		ldr	r2, [fp, #-16]
+ 598 0568 18309FE5 		ldr	r3, .L51	@ float
+ 599 056c 0C3082E5 		str	r3, [r2, #12]	@ float
+ 121:pid.c         ****   pid->deriv     = 0;
+ 601              	.LM54:
+ 602 0570 10201BE5 		ldr	r2, [fp, #-16]
+ 603 0574 0C309FE5 		ldr	r3, .L51	@ float
+ 604 0578 103082E5 		str	r3, [r2, #16]	@ float
+ 122:pid.c         **** }
+ 606              	.LM55:
+ 607 057c 0CD04BE2 		sub	sp, fp, #12
+ 608 0580 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 609 0584 1EFF2FE1 		bx	lr
+ 610              	.L52:
+ 611              		.align	2
+ 612              	.L51:
+ 613 0588 00000000 		.word	0
+ 615              	.Lscope5:
+ 616              		.align	2
+ 620              		.global	pidSetError
+ 622              	pidSetError:
+ 123:pid.c         **** 
+ 124:pid.c         **** void pidSetError(PidObject* pid, const float error)
+ 125:pid.c         **** {
+ 624              	.LM56:
+ 625              		@ Function supports interworking.
+ 626              		@ args = 0, pretend = 0, frame = 8
+ 627              		@ frame_needed = 1, uses_anonymous_args = 0
+ 628 058c 0DC0A0E1 		mov	ip, sp
+ 629 0590 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 630 0594 04B04CE2 		sub	fp, ip, #4
+ 631 0598 08D04DE2 		sub	sp, sp, #8
+ 632 059c 10000BE5 		str	r0, [fp, #-16]
+ 633 05a0 14100BE5 		str	r1, [fp, #-20]	@ float
+ 126:pid.c         ****   pid->error = error;
+ 635              	.LM57:
+ 636 05a4 10201BE5 		ldr	r2, [fp, #-16]
+ 637 05a8 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 638 05ac 043082E5 		str	r3, [r2, #4]	@ float
+ 127:pid.c         **** }
+ 640              	.LM58:
+ 641 05b0 0CD04BE2 		sub	sp, fp, #12
+ 642 05b4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 643 05b8 1EFF2FE1 		bx	lr
+ 645              	.Lscope6:
+ 646              		.align	2
+ 650              		.global	pidSetDesired
+ 652              	pidSetDesired:
+ 128:pid.c         **** 
+ 129:pid.c         **** void pidSetDesired(PidObject* pid, const float desired)
+ 130:pid.c         **** {
+ 654              	.LM59:
+ 655              		@ Function supports interworking.
+ 656              		@ args = 0, pretend = 0, frame = 8
+ 657              		@ frame_needed = 1, uses_anonymous_args = 0
+ 658 05bc 0DC0A0E1 		mov	ip, sp
+ 659 05c0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 660 05c4 04B04CE2 		sub	fp, ip, #4
+ 661 05c8 08D04DE2 		sub	sp, sp, #8
+ 662 05cc 10000BE5 		str	r0, [fp, #-16]
+ 663 05d0 14100BE5 		str	r1, [fp, #-20]	@ float
+ 131:pid.c         ****   pid->desired = desired;
+ 665              	.LM60:
+ 666 05d4 10201BE5 		ldr	r2, [fp, #-16]
+ 667 05d8 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 668 05dc 003082E5 		str	r3, [r2, #0]	@ float
+ 132:pid.c         **** }
+ 670              	.LM61:
+ 671 05e0 0CD04BE2 		sub	sp, fp, #12
+ 672 05e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 673 05e8 1EFF2FE1 		bx	lr
+ 675              	.Lscope7:
+ 676              		.align	2
+ 679              		.global	pidGetDesired
+ 681              	pidGetDesired:
+ 133:pid.c         **** 
+ 134:pid.c         **** float pidGetDesired(PidObject* pid)
+ 135:pid.c         **** {
+ 683              	.LM62:
+ 684              		@ Function supports interworking.
+ 685              		@ args = 0, pretend = 0, frame = 4
+ 686              		@ frame_needed = 1, uses_anonymous_args = 0
+ 687 05ec 0DC0A0E1 		mov	ip, sp
+ 688 05f0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 689 05f4 04B04CE2 		sub	fp, ip, #4
+ 690 05f8 04D04DE2 		sub	sp, sp, #4
+ 691 05fc 10000BE5 		str	r0, [fp, #-16]
+ 136:pid.c         ****   return pid->desired;
+ 693              	.LM63:
+ 694 0600 10301BE5 		ldr	r3, [fp, #-16]
+ 695 0604 003093E5 		ldr	r3, [r3, #0]	@ float
+ 137:pid.c         **** }
+ 697              	.LM64:
+ 698 0608 0300A0E1 		mov	r0, r3
+ 699 060c 0CD04BE2 		sub	sp, fp, #12
+ 700 0610 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 701 0614 1EFF2FE1 		bx	lr
+ 703              	.Lscope8:
+ 704              		.global	__extendsfdf2
+ 705              		.global	__ltdf2
+ 706              		.align	2
+ 709              		.global	pidIsActive
+ 711              	pidIsActive:
+ 138:pid.c         **** 
+ 139:pid.c         **** unsigned char pidIsActive(PidObject* pid)
+ 140:pid.c         **** {
+ 713              	.LM65:
+ 714              		@ Function supports interworking.
+ 715              		@ args = 0, pretend = 0, frame = 8
+ 716              		@ frame_needed = 1, uses_anonymous_args = 0
+ 717 0618 0DC0A0E1 		mov	ip, sp
+ 718 061c 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 719 0620 04B04CE2 		sub	fp, ip, #4
+ 720 0624 08D04DE2 		sub	sp, sp, #8
+ 721 0628 18000BE5 		str	r0, [fp, #-24]
+ 141:pid.c         **** 	unsigned char isActive = 1;
+ 723              	.LM66:
+ 724 062c 0130A0E3 		mov	r3, #1
+ 725 0630 11304BE5 		strb	r3, [fp, #-17]
+ 142:pid.c         **** 
+ 143:pid.c         ****   if (pid->kp < 0.0001&& pid->ki < 0.0001&& pid->kd < 0.0001)
+ 727              	.LM67:
+ 728 0634 18301BE5 		ldr	r3, [fp, #-24]
+ 729 0638 143093E5 		ldr	r3, [r3, #20]	@ float
+ 730 063c 0300A0E1 		mov	r0, r3
+ 731 0640 FEFFFFEB 		bl	__extendsfdf2
+ 732 0644 0030A0E1 		mov	r3, r0
+ 733 0648 0140A0E1 		mov	r4, r1
+ 734 064c 0300A0E1 		mov	r0, r3
+ 735 0650 0410A0E1 		mov	r1, r4
+ 736 0654 A8208FE2 		adr	r2, .L68
+ 737 0658 0C0092E8 		ldmia	r2, {r2-r3}
+ 738 065c FEFFFFEB 		bl	__ltdf2
+ 739 0660 0030A0E1 		mov	r3, r0
+ 740 0664 000053E3 		cmp	r3, #0
+ 741 0668 000000BA 		blt	.L62
+ 742 066c 1F0000EA 		b	.L60
+ 743              	.L62:
+ 744 0670 18301BE5 		ldr	r3, [fp, #-24]
+ 745 0674 183093E5 		ldr	r3, [r3, #24]	@ float
+ 746 0678 0300A0E1 		mov	r0, r3
+ 747 067c FEFFFFEB 		bl	__extendsfdf2
+ 748 0680 0030A0E1 		mov	r3, r0
+ 749 0684 0140A0E1 		mov	r4, r1
+ 750 0688 0300A0E1 		mov	r0, r3
+ 751 068c 0410A0E1 		mov	r1, r4
+ 752 0690 6C208FE2 		adr	r2, .L68
+ 753 0694 0C0092E8 		ldmia	r2, {r2-r3}
+ 754 0698 FEFFFFEB 		bl	__ltdf2
+ 755 069c 0030A0E1 		mov	r3, r0
+ 756 06a0 000053E3 		cmp	r3, #0
+ 757 06a4 000000BA 		blt	.L64
+ 758 06a8 100000EA 		b	.L60
+ 759              	.L64:
+ 760 06ac 18301BE5 		ldr	r3, [fp, #-24]
+ 761 06b0 1C3093E5 		ldr	r3, [r3, #28]	@ float
+ 762 06b4 0300A0E1 		mov	r0, r3
+ 763 06b8 FEFFFFEB 		bl	__extendsfdf2
+ 764 06bc 0030A0E1 		mov	r3, r0
+ 765 06c0 0140A0E1 		mov	r4, r1
+ 766 06c4 0300A0E1 		mov	r0, r3
+ 767 06c8 0410A0E1 		mov	r1, r4
+ 768 06cc 30208FE2 		adr	r2, .L68
+ 769 06d0 0C0092E8 		ldmia	r2, {r2-r3}
+ 770 06d4 FEFFFFEB 		bl	__ltdf2
+ 771 06d8 0030A0E1 		mov	r3, r0
+ 772 06dc 000053E3 		cmp	r3, #0
+ 773 06e0 000000BA 		blt	.L66
+ 774 06e4 010000EA 		b	.L60
+ 775              	.L66:
+ 144:pid.c         ****   {
+ 145:pid.c         ****     isActive = 0;
+ 777              	.LM68:
+ 778 06e8 0030A0E3 		mov	r3, #0
+ 779 06ec 11304BE5 		strb	r3, [fp, #-17]
+ 780              	.L60:
+ 146:pid.c         ****   }
+ 147:pid.c         **** 
+ 148:pid.c         ****   return isActive;
+ 782              	.LM69:
+ 783 06f0 11305BE5 		ldrb	r3, [fp, #-17]	@ zero_extendqisi2
+ 149:pid.c         **** }
+ 785              	.LM70:
+ 786 06f4 0300A0E1 		mov	r0, r3
+ 787 06f8 10D04BE2 		sub	sp, fp, #16
+ 788 06fc 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 789 0700 1EFF2FE1 		bx	lr
+ 790              	.L69:
+ 791              		.align	2
+ 792              	.L68:
+ 793 0704 E2361A3F 		.word	1058682594
+ 794 0708 2D431CEB 		.word	-350469331
+ 799              	.Lscope9:
+ 800              		.align	2
+ 804              		.global	pidSetKp
+ 806              	pidSetKp:
+ 150:pid.c         **** 
+ 151:pid.c         **** void pidSetKp(PidObject* pid, const float kp)
+ 152:pid.c         **** {
+ 808              	.LM71:
+ 809              		@ Function supports interworking.
+ 810              		@ args = 0, pretend = 0, frame = 8
+ 811              		@ frame_needed = 1, uses_anonymous_args = 0
+ 812 070c 0DC0A0E1 		mov	ip, sp
+ 813 0710 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 814 0714 04B04CE2 		sub	fp, ip, #4
+ 815 0718 08D04DE2 		sub	sp, sp, #8
+ 816 071c 10000BE5 		str	r0, [fp, #-16]
+ 817 0720 14100BE5 		str	r1, [fp, #-20]	@ float
+ 153:pid.c         ****   pid->kp = kp;
+ 819              	.LM72:
+ 820 0724 10201BE5 		ldr	r2, [fp, #-16]
+ 821 0728 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 822 072c 143082E5 		str	r3, [r2, #20]	@ float
+ 154:pid.c         **** }
+ 824              	.LM73:
+ 825 0730 0CD04BE2 		sub	sp, fp, #12
+ 826 0734 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 827 0738 1EFF2FE1 		bx	lr
+ 829              	.Lscope10:
+ 830              		.align	2
+ 834              		.global	pidSetKi
+ 836              	pidSetKi:
+ 155:pid.c         **** 
+ 156:pid.c         **** void pidSetKi(PidObject* pid, const float ki)
+ 157:pid.c         **** {
+ 838              	.LM74:
+ 839              		@ Function supports interworking.
+ 840              		@ args = 0, pretend = 0, frame = 8
+ 841              		@ frame_needed = 1, uses_anonymous_args = 0
+ 842 073c 0DC0A0E1 		mov	ip, sp
+ 843 0740 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 844 0744 04B04CE2 		sub	fp, ip, #4
+ 845 0748 08D04DE2 		sub	sp, sp, #8
+ 846 074c 10000BE5 		str	r0, [fp, #-16]
+ 847 0750 14100BE5 		str	r1, [fp, #-20]	@ float
+ 158:pid.c         ****   pid->ki = ki;
+ 849              	.LM75:
+ 850 0754 10201BE5 		ldr	r2, [fp, #-16]
+ 851 0758 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 852 075c 183082E5 		str	r3, [r2, #24]	@ float
+ 159:pid.c         **** }
+ 854              	.LM76:
+ 855 0760 0CD04BE2 		sub	sp, fp, #12
+ 856 0764 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 857 0768 1EFF2FE1 		bx	lr
+ 859              	.Lscope11:
+ 860              		.align	2
+ 864              		.global	pidSetKd
+ 866              	pidSetKd:
+ 160:pid.c         **** 
+ 161:pid.c         **** void pidSetKd(PidObject* pid, const float kd)
+ 162:pid.c         **** {
+ 868              	.LM77:
+ 869              		@ Function supports interworking.
+ 870              		@ args = 0, pretend = 0, frame = 8
+ 871              		@ frame_needed = 1, uses_anonymous_args = 0
+ 872 076c 0DC0A0E1 		mov	ip, sp
+ 873 0770 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 874 0774 04B04CE2 		sub	fp, ip, #4
+ 875 0778 08D04DE2 		sub	sp, sp, #8
+ 876 077c 10000BE5 		str	r0, [fp, #-16]
+ 877 0780 14100BE5 		str	r1, [fp, #-20]	@ float
+ 163:pid.c         ****   pid->kd = kd;
+ 879              	.LM78:
+ 880 0784 10201BE5 		ldr	r2, [fp, #-16]
+ 881 0788 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 882 078c 1C3082E5 		str	r3, [r2, #28]	@ float
+ 164:pid.c         **** }
+ 884              	.LM79:
+ 885 0790 0CD04BE2 		sub	sp, fp, #12
+ 886 0794 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 887 0798 1EFF2FE1 		bx	lr
+ 889              	.Lscope12:
+ 890              		.align	2
+ 894              		.global	pidSetDt
+ 896              	pidSetDt:
+ 165:pid.c         **** void pidSetDt(PidObject* pid, const float dt) {
+ 898              	.LM80:
+ 899              		@ Function supports interworking.
+ 900              		@ args = 0, pretend = 0, frame = 8
+ 901              		@ frame_needed = 1, uses_anonymous_args = 0
+ 902 079c 0DC0A0E1 		mov	ip, sp
+ 903 07a0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 904 07a4 04B04CE2 		sub	fp, ip, #4
+ 905 07a8 08D04DE2 		sub	sp, sp, #8
+ 906 07ac 10000BE5 		str	r0, [fp, #-16]
+ 907 07b0 14100BE5 		str	r1, [fp, #-20]	@ float
+ 166:pid.c         ****     pid->dt = dt;
+ 909              	.LM81:
+ 910 07b4 10201BE5 		ldr	r2, [fp, #-16]
+ 911 07b8 14301BE5 		ldr	r3, [fp, #-20]	@ float
+ 912 07bc 343082E5 		str	r3, [r2, #52]	@ float
+ 167:pid.c         **** }
+ 914              	.LM82:
+ 915 07c0 0CD04BE2 		sub	sp, fp, #12
+ 916 07c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 917 07c8 1EFF2FE1 		bx	lr
+ 919              	.Lscope13:
+ 921              	.Letext0:
+ 922              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 pid.c
+     /tmp/ccZ71RbX.s:28     .text:00000000 $a
+     /tmp/ccZ71RbX.s:35     .text:00000000 constrain
+     /tmp/ccZ71RbX.s:113    .text:000000c0 deadband
+     /tmp/ccZ71RbX.s:192    .text:00000180 $d
+     /tmp/ccZ71RbX.s:195    .text:00000184 $a
+     /tmp/ccZ71RbX.s:205    .text:00000184 pidInit
+     /tmp/ccZ71RbX.s:282    .text:00000234 $d
+     /tmp/ccZ71RbX.s:289    .text:0000023c $a
+     /tmp/ccZ71RbX.s:296    .text:0000023c pidUpdate
+     /tmp/ccZ71RbX.s:532    .text:00000504 $d
+     /tmp/ccZ71RbX.s:539    .text:00000508 $a
+     /tmp/ccZ71RbX.s:545    .text:00000508 pidSetIntegralLimit
+     /tmp/ccZ71RbX.s:574    .text:00000538 pidReset
+     /tmp/ccZ71RbX.s:613    .text:00000588 $d
+     /tmp/ccZ71RbX.s:616    .text:0000058c $a
+     /tmp/ccZ71RbX.s:622    .text:0000058c pidSetError
+     /tmp/ccZ71RbX.s:652    .text:000005bc pidSetDesired
+     /tmp/ccZ71RbX.s:681    .text:000005ec pidGetDesired
+     /tmp/ccZ71RbX.s:711    .text:00000618 pidIsActive
+     /tmp/ccZ71RbX.s:793    .text:00000704 $d
+     /tmp/ccZ71RbX.s:800    .text:0000070c $a
+     /tmp/ccZ71RbX.s:806    .text:0000070c pidSetKp
+     /tmp/ccZ71RbX.s:836    .text:0000073c pidSetKi
+     /tmp/ccZ71RbX.s:866    .text:0000076c pidSetKd
+     /tmp/ccZ71RbX.s:896    .text:0000079c pidSetDt
+
+UNDEFINED SYMBOLS
+__gtsf2
+__ltsf2
+__subsf3
+__addsf3
+__mulsf3
+__divsf3
+__nesf2
+__extendsfdf2
+__ltdf2

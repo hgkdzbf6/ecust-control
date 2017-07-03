@@ -1,0 +1,114 @@
+   1              		.file	"hardware.c"
+   3              		.text
+   4              	.Ltext0:
+  89              		.align	2
+  93              		.global	LED
+  95              	LED:
+   1:hardware.c    **** /*
+   2:hardware.c    **** 
+   3:hardware.c    **** Copyright (c) 2011, Ascending Technologies GmbH
+   4:hardware.c    **** All rights reserved.
+   5:hardware.c    **** 
+   6:hardware.c    **** Redistribution and use in source and binary forms, with or without
+   7:hardware.c    **** modification, are permitted provided that the following conditions are met:
+   8:hardware.c    **** 
+   9:hardware.c    ****  * Redistributions of source code must retain the above copyright notice,
+  10:hardware.c    ****    this list of conditions and the following disclaimer.
+  11:hardware.c    ****  * Redistributions in binary form must reproduce the above copyright
+  12:hardware.c    ****    notice, this list of conditions and the following disclaimer in the
+  13:hardware.c    ****    documentation and/or other materials provided with the distribution.
+  14:hardware.c    **** 
+  15:hardware.c    **** THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+  16:hardware.c    **** EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  17:hardware.c    **** WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  18:hardware.c    **** DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+  19:hardware.c    **** DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  20:hardware.c    **** (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  21:hardware.c    **** SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  22:hardware.c    **** CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  23:hardware.c    **** LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  24:hardware.c    **** OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  25:hardware.c    **** DAMAGE.
+  26:hardware.c    **** 
+  27:hardware.c    ****  */
+  28:hardware.c    **** 
+  29:hardware.c    **** #include "LPC214x.h"
+  30:hardware.c    **** #include "main.h"
+  31:hardware.c    **** #include "system.h"
+  32:hardware.c    **** #include "uart.h"
+  33:hardware.c    **** #include "hardware.h"
+  34:hardware.c    **** #include "irq.h"
+  35:hardware.c    **** 
+  36:hardware.c    **** 
+  37:hardware.c    **** void LED(unsigned char nr, unsigned char onoff) //set or reset LED 0..3
+  38:hardware.c    **** {
+  97              	.LM0:
+  98              		@ Function supports interworking.
+  99              		@ args = 0, pretend = 0, frame = 8
+ 100              		@ frame_needed = 1, uses_anonymous_args = 0
+ 101 0000 0DC0A0E1 		mov	ip, sp
+ 102 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 103 0008 04B04CE2 		sub	fp, ip, #4
+ 104 000c 08D04DE2 		sub	sp, sp, #8
+ 105 0010 0030A0E1 		mov	r3, r0
+ 106 0014 0120A0E1 		mov	r2, r1
+ 107 0018 10304BE5 		strb	r3, [fp, #-16]
+ 108 001c 0230A0E1 		mov	r3, r2
+ 109 0020 14304BE5 		strb	r3, [fp, #-20]
+  39:hardware.c    ****   if (nr>=2)
+ 111              	.LM1:
+ 112 0024 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 113 0028 010053E3 		cmp	r3, #1
+ 114 002c 1300008A 		bhi	.L6
+  40:hardware.c    ****   	return;
+  41:hardware.c    ****   if(onoff == OFF)
+ 116              	.LM2:
+ 117 0030 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 118 0034 000053E3 		cmp	r3, #0
+ 119 0038 0800001A 		bne	.L4
+  42:hardware.c    ****   {
+  43:hardware.c    ****     IOSET1 = (1<<(24+nr));
+ 121              	.LM3:
+ 122 003c 0E22A0E3 		mov	r2, #-536870912
+ 123 0040 0A2982E2 		add	r2, r2, #163840
+ 124 0044 142082E2 		add	r2, r2, #20
+ 125 0048 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 126 004c 181083E2 		add	r1, r3, #24
+ 127 0050 0130A0E3 		mov	r3, #1
+ 128 0054 1331A0E1 		mov	r3, r3, asl r1
+ 129 0058 003082E5 		str	r3, [r2, #0]
+ 130 005c 070000EA 		b	.L6
+ 131              	.L4:
+  44:hardware.c    ****   }
+  45:hardware.c    ****   else
+  46:hardware.c    ****   {
+  47:hardware.c    ****     IOCLR1 = (1<<(24+nr));
+ 133              	.LM4:
+ 134 0060 0E22A0E3 		mov	r2, #-536870912
+ 135 0064 0A2982E2 		add	r2, r2, #163840
+ 136 0068 1C2082E2 		add	r2, r2, #28
+ 137 006c 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 138 0070 181083E2 		add	r1, r3, #24
+ 139 0074 0130A0E3 		mov	r3, #1
+ 140 0078 1331A0E1 		mov	r3, r3, asl r1
+ 141 007c 003082E5 		str	r3, [r2, #0]
+ 142              	.L6:
+  48:hardware.c    ****   }
+  49:hardware.c    **** }
+ 144              	.LM5:
+ 145 0080 0CD04BE2 		sub	sp, fp, #12
+ 146 0084 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 147 0088 1EFF2FE1 		bx	lr
+ 149              	.Lscope0:
+ 150              		.comm	GPS_timeout,4,4
+ 151              		.comm	SYSTEM_initialized,1,1
+ 155              	.Letext0:
+ 156              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 hardware.c
+     /tmp/ccG4zA59.s:89     .text:00000000 $a
+     /tmp/ccG4zA59.s:95     .text:00000000 LED
+                            *COM*:00000004 GPS_timeout
+                            *COM*:00000001 SYSTEM_initialized
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,952 @@
+   1              		.file	"LPC2k_ee.c"
+   3              		.text
+   4              	.Ltext0:
+  26              		.align	2
+  30              		.global	ee_erase
+  32              	ee_erase:
+   1:LPC2k_ee.c    **** /****************************************************************************************/
+   2:LPC2k_ee.c    **** /*                                                                            			*/
+   3:LPC2k_ee.c    **** /*  LPC2k_ee.C:  basic LPC213x EEPROM routines (rev 1.1, Jan 27th, 2006.)				*/
+   4:LPC2k_ee.c    **** /*                                                                            			*/
+   5:LPC2k_ee.c    **** /* Functions provided here:																*/
+   6:LPC2k_ee.c    **** /*   	                                                    		                    */
+   7:LPC2k_ee.c    **** /* ee_erase(command_ee, result_ee[]):	erases all EEPROM								*/
+   8:LPC2k_ee.c    **** /* ee_write(command_ee, result_ee[]):	writes record of ee_data (defined in LPC2k_ee.h)*/
+   9:LPC2k_ee.c    **** /* ee_read(command_ee, result_ee[]) :	reads the last record added into EEPROM			*/
+  10:LPC2k_ee.c    **** /* ee_readn(command_ee, result_ee[]):	reads the n-th record in EEPROM					*/
+  11:LPC2k_ee.c    **** /* ee_count(command_ee, result_ee[]):	counts records of ee_data type in EEPROM		*/
+  12:LPC2k_ee.c    **** /*			   	                                                                        */
+  13:LPC2k_ee.c    **** /****************************************************************************************/
+  14:LPC2k_ee.c    **** 
+  15:LPC2k_ee.c    **** #include "LPC214x.h"
+  16:LPC2k_ee.c    **** #define _EEPROM_
+  17:LPC2k_ee.c    **** #include "LPC2k_ee.h"					/* LPC2000 EEPROM definitions */
+  18:LPC2k_ee.c    **** #undef _EEPROM_
+  19:LPC2k_ee.c    **** #define IAP_LOCATION 			0x7ffffff1
+  20:LPC2k_ee.c    **** 
+  21:LPC2k_ee.c    **** //const unsigned char eeprom[EE_SIZE] _at_ EE_ADDR_L;
+  22:LPC2k_ee.c    **** void ee_erase(unsigned int ,unsigned int[]);	//function erases EEPROM
+  23:LPC2k_ee.c    **** void ee_write(unsigned int ,unsigned int[]);	//function adds a record in EEPROM
+  24:LPC2k_ee.c    **** void ee_read (unsigned int ,unsigned int[]);	//function reads the latest valid record in EEPROM
+  25:LPC2k_ee.c    **** void ee_count(unsigned int ,unsigned int[]);	//function counts records in EEPROM
+  26:LPC2k_ee.c    **** void ee_readn(unsigned int ,unsigned int[]);	//function reads n-th record in EEPROM
+  27:LPC2k_ee.c    **** int ee_locate(void);							   	//function locates the next available location
+  28:LPC2k_ee.c    **** 
+  29:LPC2k_ee.c    **** typedef void (*IAP)(unsigned int [],unsigned int[]);
+  30:LPC2k_ee.c    **** IAP iap_entry;
+  31:LPC2k_ee.c    **** 
+  32:LPC2k_ee.c    **** /************************************************************************/
+  33:LPC2k_ee.c    **** /*                                                                    	*/
+  34:LPC2k_ee.c    **** /* function: 															*/
+  35:LPC2k_ee.c    **** /*  void ee_erase(unsigned int command_ee,unsigned int result_ee[])		*/
+  36:LPC2k_ee.c    **** /*                                                                     	*/
+  37:LPC2k_ee.c    **** /* type: void                                                          	*/
+  38:LPC2k_ee.c    **** /*                                                                     	*/
+  39:LPC2k_ee.c    **** /* parameters: 															*/
+  40:LPC2k_ee.c    **** /* 	command_ee   - Not used.  	                              			*/
+  41:LPC2k_ee.c    **** /*  result_ee[0] - Returns a response to the last IAP command used.		*/
+  42:LPC2k_ee.c    **** /*                 0 - EEPROM successfully erased.						*/
+  43:LPC2k_ee.c    **** /*                 For all other response values, see microcontroller 	*/
+  44:LPC2k_ee.c    **** /*				   User Manual, IAP Commands and Status Codes Summary.	*/
+  45:LPC2k_ee.c    **** /*  result_ee[1] - Not used.  	                              			*/
+  46:LPC2k_ee.c    **** /*                                                                     	*/
+  47:LPC2k_ee.c    **** /* version: 1.1 (01/27/2006)                                           	*/
+  48:LPC2k_ee.c    **** /*                                                                     	*/
+  49:LPC2k_ee.c    **** /* constants defined in LPC2k_ee.h used in this function:              	*/
+  50:LPC2k_ee.c    **** /*  EE_SEC_L 	 - microcontroller's Flash sector where EEPROM begins	*/
+  51:LPC2k_ee.c    **** /*  EE_SEC_H 	 - microcontroller's Flash sector where EEPROM ends		*/
+  52:LPC2k_ee.c    **** /*  EE_CCLK		 - microcontroller's system clock (cclk)                */
+  53:LPC2k_ee.c    **** /*                                                                     	*/
+  54:LPC2k_ee.c    **** /* description:															*/
+  55:LPC2k_ee.c    **** /*  This function erases LPC2000 on-chip Flash sectors selected to act 	*/
+  56:LPC2k_ee.c    **** /*  as an EEPROM. All Flash sectors between EE_SEC_L abd EE_SEC_H		*/
+  57:LPC2k_ee.c    **** /*  (including these sectors) will be erased using the In Application	*/
+  58:LPC2k_ee.c    **** /*  Programming (IAP) routines (see User Manual for more details). 		*/
+  59:LPC2k_ee.c    **** /*  Also, this function disables all interrupts while erasing the       */
+  60:LPC2k_ee.c    **** /*  EEPROM. If this is not needed, three lines of the ee_erase          */
+  61:LPC2k_ee.c    **** /*  subroutine can simply be commented-out without affecting the        */
+  62:LPC2k_ee.c    **** /*  routine performance at all.                                         */
+  63:LPC2k_ee.c    **** /*                                                                     	*/
+  64:LPC2k_ee.c    **** /* revision history:                                                   	*/
+  65:LPC2k_ee.c    **** /* - Rev. 1.1 adds interrupt disable feature.							*/
+  66:LPC2k_ee.c    **** /*                                                                     	*/
+  67:LPC2k_ee.c    **** /************************************************************************/
+  68:LPC2k_ee.c    **** void ee_erase(unsigned int command_ee,unsigned int result_ee[]){
+  34              	.LM0:
+  35              		@ Function supports interworking.
+  36              		@ args = 0, pretend = 0, frame = 44
+  37              		@ frame_needed = 1, uses_anonymous_args = 0
+  38 0000 0DC0A0E1 		mov	ip, sp
+  39 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+  40 0008 04B04CE2 		sub	fp, ip, #4
+  41 000c 2CD04DE2 		sub	sp, sp, #44
+  42 0010 34000BE5 		str	r0, [fp, #-52]
+  43 0014 38100BE5 		str	r1, [fp, #-56]
+  69:LPC2k_ee.c    **** 	unsigned int command_iap[5];
+  70:LPC2k_ee.c    **** 	unsigned int result_iap[3];
+  71:LPC2k_ee.c    **** 	unsigned long int enabled_interrupts;
+  72:LPC2k_ee.c    **** 
+  73:LPC2k_ee.c    **** 	enabled_interrupts = VICIntEnable;  //disable all interrupts
+  45              	.LM1:
+  46 0018 0030A0E3 		mov	r3, #0
+  47 001c FF3E43E2 		sub	r3, r3, #4080
+  48 0020 003093E5 		ldr	r3, [r3, #0]
+  49 0024 10300BE5 		str	r3, [fp, #-16]
+  74:LPC2k_ee.c    **** 	VICIntEnClr        = enabled_interrupts;
+  51              	.LM2:
+  52 0028 FE3EE0E3 		mvn	r3, #4064
+  53 002c 0B3043E2 		sub	r3, r3, #11
+  54 0030 10201BE5 		ldr	r2, [fp, #-16]
+  55 0034 002083E5 		str	r2, [r3, #0]
+  75:LPC2k_ee.c    **** 
+  76:LPC2k_ee.c    **** 	command_iap[0]=50;					//prepare sectors from EE_SEC_L to EE_SEC_H for erase
+  57              	.LM3:
+  58 0038 3230A0E3 		mov	r3, #50
+  59 003c 24300BE5 		str	r3, [fp, #-36]
+  77:LPC2k_ee.c    **** 	command_iap[1]=EE_SEC_L;
+  61              	.LM4:
+  62 0040 0E30A0E3 		mov	r3, #14
+  63 0044 20300BE5 		str	r3, [fp, #-32]
+  78:LPC2k_ee.c    **** 	command_iap[2]=EE_SEC_H;
+  65              	.LM5:
+  66 0048 0E30A0E3 		mov	r3, #14
+  67 004c 1C300BE5 		str	r3, [fp, #-28]
+  79:LPC2k_ee.c    **** 	iap_entry=(IAP) IAP_LOCATION;
+  69              	.LM6:
+  70 0050 E0209FE5 		ldr	r2, .L3
+  71 0054 3A31E0E3 		mvn	r3, #-2147483634
+  72 0058 003082E5 		str	r3, [r2, #0]
+  80:LPC2k_ee.c    **** 	iap_entry(command_iap,result_iap);
+  74              	.LM7:
+  75 005c D4309FE5 		ldr	r3, .L3
+  76 0060 00C093E5 		ldr	ip, [r3, #0]
+  77 0064 24304BE2 		sub	r3, fp, #36
+  78 0068 30204BE2 		sub	r2, fp, #48
+  79 006c 0300A0E1 		mov	r0, r3
+  80 0070 0210A0E1 		mov	r1, r2
+  81 0074 0FE0A0E1 		mov	lr, pc
+  82 0078 1CFF2FE1 		bx	ip
+  81:LPC2k_ee.c    **** 
+  82:LPC2k_ee.c    **** 	command_iap[0]=52;					//erase sectors from EE_SEC_L to EE_SEC_H
+  84              	.LM8:
+  85 007c 3430A0E3 		mov	r3, #52
+  86 0080 24300BE5 		str	r3, [fp, #-36]
+  83:LPC2k_ee.c    **** 	command_iap[1]=EE_SEC_L;
+  88              	.LM9:
+  89 0084 0E30A0E3 		mov	r3, #14
+  90 0088 20300BE5 		str	r3, [fp, #-32]
+  84:LPC2k_ee.c    **** 	command_iap[2]=EE_SEC_H;
+  92              	.LM10:
+  93 008c 0E30A0E3 		mov	r3, #14
+  94 0090 1C300BE5 		str	r3, [fp, #-28]
+  85:LPC2k_ee.c    **** 	command_iap[3]=EE_CCLK;
+  96              	.LM11:
+  97 0094 EA3CA0E3 		mov	r3, #59904
+  98 0098 603083E2 		add	r3, r3, #96
+  99 009c 18300BE5 		str	r3, [fp, #-24]
+  86:LPC2k_ee.c    **** 	iap_entry=(IAP) IAP_LOCATION;
+ 101              	.LM12:
+ 102 00a0 90209FE5 		ldr	r2, .L3
+ 103 00a4 3A31E0E3 		mvn	r3, #-2147483634
+ 104 00a8 003082E5 		str	r3, [r2, #0]
+  87:LPC2k_ee.c    **** 	iap_entry(command_iap,result_iap);
+ 106              	.LM13:
+ 107 00ac 84309FE5 		ldr	r3, .L3
+ 108 00b0 00C093E5 		ldr	ip, [r3, #0]
+ 109 00b4 24304BE2 		sub	r3, fp, #36
+ 110 00b8 30204BE2 		sub	r2, fp, #48
+ 111 00bc 0300A0E1 		mov	r0, r3
+ 112 00c0 0210A0E1 		mov	r1, r2
+ 113 00c4 0FE0A0E1 		mov	lr, pc
+ 114 00c8 1CFF2FE1 		bx	ip
+  88:LPC2k_ee.c    **** 
+  89:LPC2k_ee.c    **** 	command_iap[0]=53;					//blankcheck sectors from EE_SEC_L to EE_SEC_H
+ 116              	.LM14:
+ 117 00cc 3530A0E3 		mov	r3, #53
+ 118 00d0 24300BE5 		str	r3, [fp, #-36]
+  90:LPC2k_ee.c    **** 	command_iap[1]=EE_SEC_L;
+ 120              	.LM15:
+ 121 00d4 0E30A0E3 		mov	r3, #14
+ 122 00d8 20300BE5 		str	r3, [fp, #-32]
+  91:LPC2k_ee.c    **** 	command_iap[2]=EE_SEC_H;
+ 124              	.LM16:
+ 125 00dc 0E30A0E3 		mov	r3, #14
+ 126 00e0 1C300BE5 		str	r3, [fp, #-28]
+  92:LPC2k_ee.c    **** 	iap_entry=(IAP) IAP_LOCATION;
+ 128              	.LM17:
+ 129 00e4 4C209FE5 		ldr	r2, .L3
+ 130 00e8 3A31E0E3 		mvn	r3, #-2147483634
+ 131 00ec 003082E5 		str	r3, [r2, #0]
+  93:LPC2k_ee.c    **** 	iap_entry(command_iap,result_iap);
+ 133              	.LM18:
+ 134 00f0 40309FE5 		ldr	r3, .L3
+ 135 00f4 00C093E5 		ldr	ip, [r3, #0]
+ 136 00f8 24304BE2 		sub	r3, fp, #36
+ 137 00fc 30204BE2 		sub	r2, fp, #48
+ 138 0100 0300A0E1 		mov	r0, r3
+ 139 0104 0210A0E1 		mov	r1, r2
+ 140 0108 0FE0A0E1 		mov	lr, pc
+ 141 010c 1CFF2FE1 		bx	ip
+  94:LPC2k_ee.c    **** 
+  95:LPC2k_ee.c    **** 	VICIntEnable = enabled_interrupts;  //restore interrupt enable register
+ 143              	.LM19:
+ 144 0110 0030A0E3 		mov	r3, #0
+ 145 0114 FF3E43E2 		sub	r3, r3, #4080
+ 146 0118 10201BE5 		ldr	r2, [fp, #-16]
+ 147 011c 002083E5 		str	r2, [r3, #0]
+  96:LPC2k_ee.c    **** 
+  97:LPC2k_ee.c    **** 	result_ee[0]=result_iap[0];
+ 149              	.LM20:
+ 150 0120 30201BE5 		ldr	r2, [fp, #-48]
+ 151 0124 38301BE5 		ldr	r3, [fp, #-56]
+ 152 0128 002083E5 		str	r2, [r3, #0]
+  98:LPC2k_ee.c    **** 	return;
+  99:LPC2k_ee.c    **** }
+ 154              	.LM21:
+ 155 012c 0CD04BE2 		sub	sp, fp, #12
+ 156 0130 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 157 0134 1EFF2FE1 		bx	lr
+ 158              	.L4:
+ 159              		.align	2
+ 160              	.L3:
+ 161 0138 00000000 		.word	iap_entry
+ 168              	.Lscope0:
+ 169              		.align	2
+ 173              		.global	ee_write
+ 175              	ee_write:
+ 100:LPC2k_ee.c    **** 
+ 101:LPC2k_ee.c    **** /************************************************************************/
+ 102:LPC2k_ee.c    **** /*                                                                    	*/
+ 103:LPC2k_ee.c    **** /* function: 															*/
+ 104:LPC2k_ee.c    **** /*  void ee_write(unsigned int command_ee,unsigned int result_ee[])		*/
+ 105:LPC2k_ee.c    **** /*                                                                     	*/
+ 106:LPC2k_ee.c    **** /* type: void                                                          	*/
+ 107:LPC2k_ee.c    **** /*                                                                     	*/
+ 108:LPC2k_ee.c    **** /* parameters: 															*/
+ 109:LPC2k_ee.c    **** /* 	command_ee   - An address of a content of ee_data type that has		*/
+ 110:LPC2k_ee.c    **** /*                 to be programmed into EEPROM.                       	*/
+ 111:LPC2k_ee.c    **** /*  result_ee[0] - Returns a response to the last IAP command used.		*/
+ 112:LPC2k_ee.c    **** /*                 0 - data successfully programmed in EEPROM.			*/
+ 113:LPC2k_ee.c    **** /*               501 - no space in EEPROM to program data.             	*/
+ 114:LPC2k_ee.c    **** /*                 For all other response values, see microcontroller 	*/
+ 115:LPC2k_ee.c    **** /*				   User Manual, IAP Commands and Status Codes Summary.	*/
+ 116:LPC2k_ee.c    **** /*  result_ee[1] - Not used.  	                              			*/
+ 117:LPC2k_ee.c    **** /*                                                                     	*/
+ 118:LPC2k_ee.c    **** /* version: 1.1 (01/27/2006)                                           	*/
+ 119:LPC2k_ee.c    **** /*                                                                     	*/
+ 120:LPC2k_ee.c    **** /* constants defined in LPC2k_ee.h used in this function:              	*/
+ 121:LPC2k_ee.c    **** /*  EE_BUFFER_SIZE 	   - IAP buffer size; must be 256 or 512 			*/
+ 122:LPC2k_ee.c    **** /*  NO_SPACE_IN_EEPROM - EEPROM is full and no data can be programmed	*/
+ 123:LPC2k_ee.c    **** /*  EE_BUFFER_MASK	   - parameter used for interfacing with IAP		*/
+ 124:LPC2k_ee.c    **** /*  EE_REC_SIZE   	   - ee_data structure size in bytes        		*/
+ 125:LPC2k_ee.c    **** /*  EE_SEC_L 	 	   - micro's Flash sector where EEPROM begins		*/
+ 126:LPC2k_ee.c    **** /*  EE_SEC_H 	 	   - micro's Flash sector where EEPROM ends			*/
+ 127:LPC2k_ee.c    **** /*  EE_CCLK		 	   - micro's system clock (cclk)                	*/
+ 128:LPC2k_ee.c    **** /*                                                                     	*/
+ 129:LPC2k_ee.c    **** /* description:															*/
+ 130:LPC2k_ee.c    **** /*  This function writes a single structure of ee_data type into the	*/
+ 131:LPC2k_ee.c    **** /*  EEPROM using an In Application	Programming (IAP) routines (see 	*/
+ 132:LPC2k_ee.c    **** /*  User Manual for more details). command_ee contains an address of	*/
+ 133:LPC2k_ee.c    **** /*  this structure. EEPROM is scanned for the last (if any) record 		*/
+ 134:LPC2k_ee.c    **** /*  identifier (EE_REC_ID), and a new record is added next to it.      	*/
+ 135:LPC2k_ee.c    **** /*  Also, this function disables all interrupts while erasing the       */
+ 136:LPC2k_ee.c    **** /*  EEPROM. If this is not needed, three lines of the ee_write          */
+ 137:LPC2k_ee.c    **** /*  subroutine can simply be commented-out without affecting the        */
+ 138:LPC2k_ee.c    **** /*  routine performance at all.                                         */
+ 139:LPC2k_ee.c    **** /*                                                                     	*/
+ 140:LPC2k_ee.c    **** /* revision history:                                                   	*/
+ 141:LPC2k_ee.c    **** /* - Rev. 1.1 fixes a bug related to verifying a content written into	*/
+ 142:LPC2k_ee.c    **** /*   the EEPROM. 1.0 was reporting missmatch even when there were no	*/
+ 143:LPC2k_ee.c    **** /*   problems at all.													*/
+ 144:LPC2k_ee.c    **** /*   Rev. 1.1 adds interrupt disable feature.							*/
+ 145:LPC2k_ee.c    **** /*                                                                     	*/
+ 146:LPC2k_ee.c    **** /************************************************************************/
+ 147:LPC2k_ee.c    **** void ee_write(unsigned int command_ee,unsigned int result_ee[]){
+ 177              	.LM22:
+ 178              		@ Function supports interworking.
+ 179              		@ args = 0, pretend = 0, frame = 316
+ 180              		@ frame_needed = 1, uses_anonymous_args = 0
+ 181 013c 0DC0A0E1 		mov	ip, sp
+ 182 0140 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 183 0144 04B04CE2 		sub	fp, ip, #4
+ 184 0148 4FDF4DE2 		sub	sp, sp, #316
+ 185 014c 44010BE5 		str	r0, [fp, #-324]
+ 186 0150 48110BE5 		str	r1, [fp, #-328]
+ 148:LPC2k_ee.c    **** 	int location;
+ 149:LPC2k_ee.c    **** 	unsigned int *source, *destination, i;
+ 150:LPC2k_ee.c    **** 	unsigned char ee_buffer[EE_BUFFER_SIZE];
+ 151:LPC2k_ee.c    **** 	unsigned int command_iap[5], result_iap[3];
+ 152:LPC2k_ee.c    **** 	unsigned long int enabled_interrupts;
+ 153:LPC2k_ee.c    **** 
+ 154:LPC2k_ee.c    **** 	location = ee_locate();
+ 188              	.LM23:
+ 189 0154 FEFFFFEB 		bl	ee_locate
+ 190 0158 0030A0E1 		mov	r3, r0
+ 191 015c 20300BE5 		str	r3, [fp, #-32]
+ 155:LPC2k_ee.c    **** 	if (location == -1){
+ 193              	.LM24:
+ 194 0160 20301BE5 		ldr	r3, [fp, #-32]
+ 195 0164 010073E3 		cmn	r3, #1
+ 196 0168 0400001A 		bne	.L6
+ 156:LPC2k_ee.c    **** 		result_ee[0]=NO_SPACE_IN_EEPROM;
+ 198              	.LM25:
+ 199 016c 48211BE5 		ldr	r2, [fp, #-328]
+ 200 0170 7D3FA0E3 		mov	r3, #500
+ 201 0174 013083E2 		add	r3, r3, #1
+ 202 0178 003082E5 		str	r3, [r2, #0]
+ 203 017c 730000EA 		b	.L15
+ 204              	.L6:
+ 157:LPC2k_ee.c    **** 	}
+ 158:LPC2k_ee.c    **** 	else{
+ 159:LPC2k_ee.c    **** 		for (i=0;i<EE_BUFFER_SIZE;i++) ee_buffer[i]=0xFF;
+ 206              	.LM26:
+ 207 0180 0030A0E3 		mov	r3, #0
+ 208 0184 14300BE5 		str	r3, [fp, #-20]
+ 209 0188 0A0000EA 		b	.L9
+ 210              	.L10:
+ 211 018c 14201BE5 		ldr	r2, [fp, #-20]
+ 212 0190 BB34A0E3 		mov	r3, #-1157627904
+ 213 0194 433BA0E1 		mov	r3, r3, asr #22
+ 214 0198 0C104BE2 		sub	r1, fp, #12
+ 215 019c 022081E0 		add	r2, r1, r2
+ 216 01a0 032082E0 		add	r2, r2, r3
+ 217 01a4 0030E0E3 		mvn	r3, #0
+ 218 01a8 0030C2E5 		strb	r3, [r2, #0]
+ 219 01ac 14301BE5 		ldr	r3, [fp, #-20]
+ 220 01b0 013083E2 		add	r3, r3, #1
+ 221 01b4 14300BE5 		str	r3, [fp, #-20]
+ 222              	.L9:
+ 223 01b8 14301BE5 		ldr	r3, [fp, #-20]
+ 224 01bc FF0053E3 		cmp	r3, #255
+ 225 01c0 F1FFFF9A 		bls	.L10
+ 160:LPC2k_ee.c    **** 
+ 161:LPC2k_ee.c    **** 		destination = (unsigned int *) ((&ee_buffer[0])+((unsigned int)location & EE_BUFFER_MASK));
+ 227              	.LM27:
+ 228 01c4 123E4BE2 		sub	r3, fp, #288
+ 229 01c8 18300BE5 		str	r3, [fp, #-24]
+ 162:LPC2k_ee.c    **** 		source = (unsigned int *) command_ee;
+ 231              	.LM28:
+ 232 01cc 44311BE5 		ldr	r3, [fp, #-324]
+ 233 01d0 1C300BE5 		str	r3, [fp, #-28]
+ 163:LPC2k_ee.c    **** 		for(i=0;i!=EE_REC_SIZE/4;i++) *(destination+i) = *(source+i);
+ 235              	.LM29:
+ 236 01d4 0030A0E3 		mov	r3, #0
+ 237 01d8 14300BE5 		str	r3, [fp, #-20]
+ 238 01dc 0E0000EA 		b	.L12
+ 239              	.L13:
+ 240 01e0 14301BE5 		ldr	r3, [fp, #-20]
+ 241 01e4 0331A0E1 		mov	r3, r3, asl #2
+ 242 01e8 0320A0E1 		mov	r2, r3
+ 243 01ec 18301BE5 		ldr	r3, [fp, #-24]
+ 244 01f0 031082E0 		add	r1, r2, r3
+ 245 01f4 14301BE5 		ldr	r3, [fp, #-20]
+ 246 01f8 0331A0E1 		mov	r3, r3, asl #2
+ 247 01fc 0320A0E1 		mov	r2, r3
+ 248 0200 1C301BE5 		ldr	r3, [fp, #-28]
+ 249 0204 033082E0 		add	r3, r2, r3
+ 250 0208 003093E5 		ldr	r3, [r3, #0]
+ 251 020c 003081E5 		str	r3, [r1, #0]
+ 252 0210 14301BE5 		ldr	r3, [fp, #-20]
+ 253 0214 013083E2 		add	r3, r3, #1
+ 254 0218 14300BE5 		str	r3, [fp, #-20]
+ 255              	.L12:
+ 256 021c 14301BE5 		ldr	r3, [fp, #-20]
+ 257 0220 400053E3 		cmp	r3, #64
+ 258 0224 EDFFFF1A 		bne	.L13
+ 164:LPC2k_ee.c    **** 
+ 165:LPC2k_ee.c    **** 		enabled_interrupts = VICIntEnable;  //disable all interrupts
+ 260              	.LM30:
+ 261 0228 0030A0E3 		mov	r3, #0
+ 262 022c FF3E43E2 		sub	r3, r3, #4080
+ 263 0230 003093E5 		ldr	r3, [r3, #0]
+ 264 0234 10300BE5 		str	r3, [fp, #-16]
+ 166:LPC2k_ee.c    **** 		VICIntEnClr        = enabled_interrupts;
+ 266              	.LM31:
+ 267 0238 FE3EE0E3 		mvn	r3, #4064
+ 268 023c 0B3043E2 		sub	r3, r3, #11
+ 269 0240 10201BE5 		ldr	r2, [fp, #-16]
+ 270 0244 002083E5 		str	r2, [r3, #0]
+ 167:LPC2k_ee.c    **** 
+ 168:LPC2k_ee.c    **** 		command_iap[0]=50;					//prepare sectors from EE_SEC_L to EE_SEC_H for erase
+ 272              	.LM32:
+ 273 0248 3230A0E3 		mov	r3, #50
+ 274 024c 34310BE5 		str	r3, [fp, #-308]
+ 169:LPC2k_ee.c    **** 		command_iap[1]=EE_SEC_L;
+ 276              	.LM33:
+ 277 0250 0E30A0E3 		mov	r3, #14
+ 278 0254 30310BE5 		str	r3, [fp, #-304]
+ 170:LPC2k_ee.c    **** 		command_iap[2]=EE_SEC_H;
+ 280              	.LM34:
+ 281 0258 0E30A0E3 		mov	r3, #14
+ 282 025c 2C310BE5 		str	r3, [fp, #-300]
+ 171:LPC2k_ee.c    **** 		iap_entry=(IAP) IAP_LOCATION;
+ 284              	.LM35:
+ 285 0260 F4209FE5 		ldr	r2, .L16
+ 286 0264 3A31E0E3 		mvn	r3, #-2147483634
+ 287 0268 003082E5 		str	r3, [r2, #0]
+ 172:LPC2k_ee.c    **** 		iap_entry(command_iap,result_iap);
+ 289              	.LM36:
+ 290 026c E8309FE5 		ldr	r3, .L16
+ 291 0270 00C093E5 		ldr	ip, [r3, #0]
+ 292 0274 4D3F4BE2 		sub	r3, fp, #308
+ 293 0278 052D4BE2 		sub	r2, fp, #320
+ 294 027c 0300A0E1 		mov	r0, r3
+ 295 0280 0210A0E1 		mov	r1, r2
+ 296 0284 0FE0A0E1 		mov	lr, pc
+ 297 0288 1CFF2FE1 		bx	ip
+ 173:LPC2k_ee.c    **** 
+ 174:LPC2k_ee.c    **** 		command_iap[0]=51;					//copy RAM to flash/eeprom
+ 299              	.LM37:
+ 300 028c 3330A0E3 		mov	r3, #51
+ 301 0290 34310BE5 		str	r3, [fp, #-308]
+ 175:LPC2k_ee.c    **** 		command_iap[1]=(unsigned int) (location & EE_START_MASK);
+ 303              	.LM38:
+ 304 0294 20301BE5 		ldr	r3, [fp, #-32]
+ 305 0298 FF30C3E3 		bic	r3, r3, #255
+ 306 029c 30310BE5 		str	r3, [fp, #-304]
+ 176:LPC2k_ee.c    **** 		command_iap[2]=(unsigned int) (&ee_buffer[0]);
+ 308              	.LM39:
+ 309 02a0 123E4BE2 		sub	r3, fp, #288
+ 310 02a4 2C310BE5 		str	r3, [fp, #-300]
+ 177:LPC2k_ee.c    **** 		command_iap[3]=EE_BUFFER_SIZE;
+ 312              	.LM40:
+ 313 02a8 013CA0E3 		mov	r3, #256
+ 314 02ac 28310BE5 		str	r3, [fp, #-296]
+ 178:LPC2k_ee.c    **** 		command_iap[4]=EE_CCLK;
+ 316              	.LM41:
+ 317 02b0 EA3CA0E3 		mov	r3, #59904
+ 318 02b4 603083E2 		add	r3, r3, #96
+ 319 02b8 24310BE5 		str	r3, [fp, #-292]
+ 179:LPC2k_ee.c    **** 		iap_entry=(IAP) IAP_LOCATION;
+ 321              	.LM42:
+ 322 02bc 98209FE5 		ldr	r2, .L16
+ 323 02c0 3A31E0E3 		mvn	r3, #-2147483634
+ 324 02c4 003082E5 		str	r3, [r2, #0]
+ 180:LPC2k_ee.c    **** 		iap_entry(command_iap,result_iap);
+ 326              	.LM43:
+ 327 02c8 8C309FE5 		ldr	r3, .L16
+ 328 02cc 00C093E5 		ldr	ip, [r3, #0]
+ 329 02d0 4D3F4BE2 		sub	r3, fp, #308
+ 330 02d4 052D4BE2 		sub	r2, fp, #320
+ 331 02d8 0300A0E1 		mov	r0, r3
+ 332 02dc 0210A0E1 		mov	r1, r2
+ 333 02e0 0FE0A0E1 		mov	lr, pc
+ 334 02e4 1CFF2FE1 		bx	ip
+ 181:LPC2k_ee.c    **** 
+ 182:LPC2k_ee.c    **** 		command_iap[0]=56;					//compare RAM and flash/eeprom
+ 336              	.LM44:
+ 337 02e8 3830A0E3 		mov	r3, #56
+ 338 02ec 34310BE5 		str	r3, [fp, #-308]
+ 183:LPC2k_ee.c    **** 		command_iap[1]=(unsigned int) source;
+ 340              	.LM45:
+ 341 02f0 1C301BE5 		ldr	r3, [fp, #-28]
+ 342 02f4 30310BE5 		str	r3, [fp, #-304]
+ 184:LPC2k_ee.c    **** 		command_iap[2]=(unsigned int) location;
+ 344              	.LM46:
+ 345 02f8 20301BE5 		ldr	r3, [fp, #-32]
+ 346 02fc 2C310BE5 		str	r3, [fp, #-300]
+ 185:LPC2k_ee.c    **** 		command_iap[3]=EE_REC_SIZE;
+ 348              	.LM47:
+ 349 0300 013CA0E3 		mov	r3, #256
+ 350 0304 28310BE5 		str	r3, [fp, #-296]
+ 186:LPC2k_ee.c    **** 		iap_entry=(IAP) IAP_LOCATION;
+ 352              	.LM48:
+ 353 0308 4C209FE5 		ldr	r2, .L16
+ 354 030c 3A31E0E3 		mvn	r3, #-2147483634
+ 355 0310 003082E5 		str	r3, [r2, #0]
+ 187:LPC2k_ee.c    **** 		iap_entry(command_iap,result_iap);
+ 357              	.LM49:
+ 358 0314 40309FE5 		ldr	r3, .L16
+ 359 0318 00C093E5 		ldr	ip, [r3, #0]
+ 360 031c 4D3F4BE2 		sub	r3, fp, #308
+ 361 0320 052D4BE2 		sub	r2, fp, #320
+ 362 0324 0300A0E1 		mov	r0, r3
+ 363 0328 0210A0E1 		mov	r1, r2
+ 364 032c 0FE0A0E1 		mov	lr, pc
+ 365 0330 1CFF2FE1 		bx	ip
+ 188:LPC2k_ee.c    **** 
+ 189:LPC2k_ee.c    **** 		VICIntEnable = enabled_interrupts;  //restore interrupt enable register
+ 367              	.LM50:
+ 368 0334 0030A0E3 		mov	r3, #0
+ 369 0338 FF3E43E2 		sub	r3, r3, #4080
+ 370 033c 10201BE5 		ldr	r2, [fp, #-16]
+ 371 0340 002083E5 		str	r2, [r3, #0]
+ 190:LPC2k_ee.c    **** 
+ 191:LPC2k_ee.c    **** 		result_ee[0]=result_iap[0];
+ 373              	.LM51:
+ 374 0344 40211BE5 		ldr	r2, [fp, #-320]
+ 375 0348 48311BE5 		ldr	r3, [fp, #-328]
+ 376 034c 002083E5 		str	r2, [r3, #0]
+ 377              	.L15:
+ 192:LPC2k_ee.c    **** 	}
+ 193:LPC2k_ee.c    **** 	return;
+ 194:LPC2k_ee.c    **** }
+ 379              	.LM52:
+ 380 0350 0CD04BE2 		sub	sp, fp, #12
+ 381 0354 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 382 0358 1EFF2FE1 		bx	lr
+ 383              	.L17:
+ 384              		.align	2
+ 385              	.L16:
+ 386 035c 00000000 		.word	iap_entry
+ 398              	.Lscope1:
+ 399              		.align	2
+ 403              		.global	ee_read
+ 405              	ee_read:
+ 195:LPC2k_ee.c    **** 
+ 196:LPC2k_ee.c    **** /************************************************************************/
+ 197:LPC2k_ee.c    **** /*                                                                    	*/
+ 198:LPC2k_ee.c    **** /* function: 															*/
+ 199:LPC2k_ee.c    **** /*  void ee_read(unsigned int command_ee,unsigned int result_ee[])		*/
+ 200:LPC2k_ee.c    **** /*                                                                     	*/
+ 201:LPC2k_ee.c    **** /* type: void                                                          	*/
+ 202:LPC2k_ee.c    **** /*                                                                     	*/
+ 203:LPC2k_ee.c    **** /* parameters: 															*/
+ 204:LPC2k_ee.c    **** /* 	command_ee   - Not used.											*/
+ 205:LPC2k_ee.c    **** /*  result_ee[0] - Returns a response.									*/
+ 206:LPC2k_ee.c    **** /*                 0 - data successfully found in EEPROM.				*/
+ 207:LPC2k_ee.c    **** /*               500 - no data/records available in EEPROM.				*/
+ 208:LPC2k_ee.c    **** /*  result_ee[1] - an address of the last record of ee_data type		*/
+ 209:LPC2k_ee.c    **** /*				   in EEPROM.  	                              			*/
+ 210:LPC2k_ee.c    **** /*                                                                     	*/
+ 211:LPC2k_ee.c    **** /* version: 1.1 (01/27/2006)                                           	*/
+ 212:LPC2k_ee.c    **** /*                                                                     	*/
+ 213:LPC2k_ee.c    **** /* constants defined in LPC2k_ee.h used in this function:              	*/
+ 214:LPC2k_ee.c    **** /*  NO_RECORDS_AVAILABLE - EEPROM is empty/no records identifiable		*/
+ 215:LPC2k_ee.c    **** /*						   with a record identifier (EE_REC_ID) found	*/
+ 216:LPC2k_ee.c    **** /*  EE_ADR_L 	 	   - micro's Flash address from where EEPROM begins	*/
+ 217:LPC2k_ee.c    **** /*  EE_REC_SIZE 	   - size (in bytes) of a ee_data structure        	*/
+ 218:LPC2k_ee.c    **** /*                                                                     	*/
+ 219:LPC2k_ee.c    **** /* description:															*/
+ 220:LPC2k_ee.c    **** /*  This function scans an EEPROM content looking for the last record 	*/
+ 221:LPC2k_ee.c    **** /*  that can be identified with a record identifier (EE_REC_ID). When 	*/
+ 222:LPC2k_ee.c    **** /*  such data is found, its address is passed as result_ee[1].			*/
+ 223:LPC2k_ee.c    **** /*                                                                     	*/
+ 224:LPC2k_ee.c    **** /* revision history:                                                   	*/
+ 225:LPC2k_ee.c    **** /* - Rev. 1.0 had problems with accessing the last record in a fully	*/
+ 226:LPC2k_ee.c    **** /*   occupied EEPROM. Rev. 1.1 fixes this.								*/
+ 227:LPC2k_ee.c    **** /*                                                                     	*/
+ 228:LPC2k_ee.c    **** /************************************************************************/
+ 229:LPC2k_ee.c    **** void ee_read(unsigned int command_ee,unsigned int result_ee[]){
+ 407              	.LM53:
+ 408              		@ Function supports interworking.
+ 409              		@ args = 0, pretend = 0, frame = 12
+ 410              		@ frame_needed = 1, uses_anonymous_args = 0
+ 411 0360 0DC0A0E1 		mov	ip, sp
+ 412 0364 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 413 0368 04B04CE2 		sub	fp, ip, #4
+ 414 036c 0CD04DE2 		sub	sp, sp, #12
+ 415 0370 14000BE5 		str	r0, [fp, #-20]
+ 416 0374 18100BE5 		str	r1, [fp, #-24]
+ 230:LPC2k_ee.c    **** 	int location;
+ 231:LPC2k_ee.c    **** 
+ 232:LPC2k_ee.c    **** 	location = ee_locate();
+ 418              	.LM54:
+ 419 0378 FEFFFFEB 		bl	ee_locate
+ 420 037c 0030A0E1 		mov	r3, r0
+ 421 0380 10300BE5 		str	r3, [fp, #-16]
+ 233:LPC2k_ee.c    **** 	if (location == EE_ADDR_L){
+ 423              	.LM55:
+ 424 0384 10301BE5 		ldr	r3, [fp, #-16]
+ 425 0388 0E0953E3 		cmp	r3, #229376
+ 426 038c 0300001A 		bne	.L19
+ 234:LPC2k_ee.c    **** 		result_ee[0]=NO_RECORDS_AVAILABLE;
+ 428              	.LM56:
+ 429 0390 18201BE5 		ldr	r2, [fp, #-24]
+ 430 0394 7D3FA0E3 		mov	r3, #500
+ 431 0398 003082E5 		str	r3, [r2, #0]
+ 432 039c 100000EA 		b	.L24
+ 433              	.L19:
+ 235:LPC2k_ee.c    **** 	}
+ 236:LPC2k_ee.c    **** 	else{
+ 237:LPC2k_ee.c    **** 		result_ee[0]=0;
+ 435              	.LM57:
+ 436 03a0 18301BE5 		ldr	r3, [fp, #-24]
+ 437 03a4 0020A0E3 		mov	r2, #0
+ 438 03a8 002083E5 		str	r2, [r3, #0]
+ 238:LPC2k_ee.c    **** 		if (location == -1)
+ 440              	.LM58:
+ 441 03ac 10301BE5 		ldr	r3, [fp, #-16]
+ 442 03b0 010073E3 		cmn	r3, #1
+ 443 03b4 0500001A 		bne	.L22
+ 239:LPC2k_ee.c    **** 			result_ee[1]=(unsigned int)(EE_ADDR_H+1 - EE_REC_SIZE);
+ 445              	.LM59:
+ 446 03b8 18301BE5 		ldr	r3, [fp, #-24]
+ 447 03bc 042083E2 		add	r2, r3, #4
+ 448 03c0 FF3BA0E3 		mov	r3, #261120
+ 449 03c4 033C83E2 		add	r3, r3, #768
+ 450 03c8 003082E5 		str	r3, [r2, #0]
+ 451 03cc 040000EA 		b	.L24
+ 452              	.L22:
+ 240:LPC2k_ee.c    **** 		else
+ 241:LPC2k_ee.c    **** 			result_ee[1]=(unsigned int)(location - EE_REC_SIZE);
+ 454              	.LM60:
+ 455 03d0 18301BE5 		ldr	r3, [fp, #-24]
+ 456 03d4 042083E2 		add	r2, r3, #4
+ 457 03d8 10301BE5 		ldr	r3, [fp, #-16]
+ 458 03dc 013C43E2 		sub	r3, r3, #256
+ 459 03e0 003082E5 		str	r3, [r2, #0]
+ 460              	.L24:
+ 242:LPC2k_ee.c    **** 	}
+ 243:LPC2k_ee.c    **** 	return;
+ 244:LPC2k_ee.c    **** }
+ 462              	.LM61:
+ 463 03e4 0CD04BE2 		sub	sp, fp, #12
+ 464 03e8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 465 03ec 1EFF2FE1 		bx	lr
+ 470              	.Lscope2:
+ 471              		.align	2
+ 475              		.global	ee_readn
+ 477              	ee_readn:
+ 245:LPC2k_ee.c    **** 
+ 246:LPC2k_ee.c    **** /************************************************************************/
+ 247:LPC2k_ee.c    **** /*                                                                    	*/
+ 248:LPC2k_ee.c    **** /* function: 															*/
+ 249:LPC2k_ee.c    **** /*  void ee_readn(unsigned int command_ee,unsigned int result_ee[])		*/
+ 250:LPC2k_ee.c    **** /*                                                                     	*/
+ 251:LPC2k_ee.c    **** /* type: void                                                          	*/
+ 252:LPC2k_ee.c    **** /*                                                                     	*/
+ 253:LPC2k_ee.c    **** /* parameters: 															*/
+ 254:LPC2k_ee.c    **** /* 	command_ee   - An index of a record in EEPROM that should be read.	*/
+ 255:LPC2k_ee.c    **** /*  result_ee[0] - Returns a response.									*/
+ 256:LPC2k_ee.c    **** /*                 0 - data successfully found in EEPROM.				*/
+ 257:LPC2k_ee.c    **** /*               502 - requested index of record in EEPROM is out of 	*/
+ 258:LPC2k_ee.c    **** /*                     EEPROM's memory.                                	*/
+ 259:LPC2k_ee.c    **** /*  result_ee[1] - an address of the specified record of ee_data type	*/
+ 260:LPC2k_ee.c    **** /*				   in EEPROM.  	                              			*/
+ 261:LPC2k_ee.c    **** /*                                                                     	*/
+ 262:LPC2k_ee.c    **** /* version: 1.0 (initial release 05/13/2005)                           	*/
+ 263:LPC2k_ee.c    **** /*                                                                     	*/
+ 264:LPC2k_ee.c    **** /* constants defined in LPC2k_ee.h used in this function:              	*/
+ 265:LPC2k_ee.c    **** /*  INDEX_OUT_OF_RANGE - index of a record in EEPROM specified by 		*/
+ 266:LPC2k_ee.c    **** /*						 command_ee is out of EEPROM's range			*/
+ 267:LPC2k_ee.c    **** /*  EE_ADR_L 	 	   - micro's Flash address from where EEPROM begins	*/
+ 268:LPC2k_ee.c    **** /*  EE_ADR_H 	 	   - micro's Flash address where EEPROM ends		*/
+ 269:LPC2k_ee.c    **** /*  EE_REC_SIZE 	   - size (in bytes) of a ee_data structure        	*/
+ 270:LPC2k_ee.c    **** /*                                                                     	*/
+ 271:LPC2k_ee.c    **** /* description:															*/
+ 272:LPC2k_ee.c    **** /*  This function returns in result_ee[1] an address of an EEPROM 		*/
+ 273:LPC2k_ee.c    **** /*  record index specified in command_ee. Index can not be less than 0.	*/
+ 274:LPC2k_ee.c    **** /*                                                                     	*/
+ 275:LPC2k_ee.c    **** /************************************************************************/
+ 276:LPC2k_ee.c    **** void ee_readn(unsigned int command_ee,unsigned int result_ee[]){
+ 479              	.LM62:
+ 480              		@ Function supports interworking.
+ 481              		@ args = 0, pretend = 0, frame = 8
+ 482              		@ frame_needed = 1, uses_anonymous_args = 0
+ 483 03f0 0DC0A0E1 		mov	ip, sp
+ 484 03f4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 485 03f8 04B04CE2 		sub	fp, ip, #4
+ 486 03fc 08D04DE2 		sub	sp, sp, #8
+ 487 0400 10000BE5 		str	r0, [fp, #-16]
+ 488 0404 14100BE5 		str	r1, [fp, #-20]
+ 277:LPC2k_ee.c    **** 	if(command_ee>((EE_ADDR_H+1-EE_ADDR_L)/EE_REC_SIZE)){
+ 490              	.LM63:
+ 491 0408 10301BE5 		ldr	r3, [fp, #-16]
+ 492 040c 800053E3 		cmp	r3, #128
+ 493 0410 0400009A 		bls	.L26
+ 278:LPC2k_ee.c    **** 		result_ee[0]=INDEX_OUT_OF_RANGE;}
+ 495              	.LM64:
+ 496 0414 14201BE5 		ldr	r2, [fp, #-20]
+ 497 0418 7D3FA0E3 		mov	r3, #500
+ 498 041c 023083E2 		add	r3, r3, #2
+ 499 0420 003082E5 		str	r3, [r2, #0]
+ 500 0424 080000EA 		b	.L29
+ 501              	.L26:
+ 279:LPC2k_ee.c    **** 	else{
+ 280:LPC2k_ee.c    **** 		result_ee[0]=0;
+ 503              	.LM65:
+ 504 0428 14201BE5 		ldr	r2, [fp, #-20]
+ 505 042c 0030A0E3 		mov	r3, #0
+ 506 0430 003082E5 		str	r3, [r2, #0]
+ 281:LPC2k_ee.c    **** 		result_ee[1]=(unsigned int)(EE_ADDR_L+EE_REC_SIZE*command_ee);
+ 508              	.LM66:
+ 509 0434 14301BE5 		ldr	r3, [fp, #-20]
+ 510 0438 042083E2 		add	r2, r3, #4
+ 511 043c 10301BE5 		ldr	r3, [fp, #-16]
+ 512 0440 0334A0E1 		mov	r3, r3, asl #8
+ 513 0444 0E3983E2 		add	r3, r3, #229376
+ 514 0448 003082E5 		str	r3, [r2, #0]
+ 515              	.L29:
+ 282:LPC2k_ee.c    **** 	}
+ 283:LPC2k_ee.c    **** 	return;
+ 284:LPC2k_ee.c    **** }
+ 517              	.LM67:
+ 518 044c 0CD04BE2 		sub	sp, fp, #12
+ 519 0450 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 520 0454 1EFF2FE1 		bx	lr
+ 522              	.Lscope3:
+ 523              		.align	2
+ 527              		.global	ee_count
+ 529              	ee_count:
+ 285:LPC2k_ee.c    **** 
+ 286:LPC2k_ee.c    **** /************************************************************************/
+ 287:LPC2k_ee.c    **** /*                                                                    	*/
+ 288:LPC2k_ee.c    **** /* function: 															*/
+ 289:LPC2k_ee.c    **** /*  void ee_count(unsigned int command_ee,unsigned int result_ee[])		*/
+ 290:LPC2k_ee.c    **** /*                                                                     	*/
+ 291:LPC2k_ee.c    **** /* type: void                                                          	*/
+ 292:LPC2k_ee.c    **** /*                                                                     	*/
+ 293:LPC2k_ee.c    **** /* parameters: 															*/
+ 294:LPC2k_ee.c    **** /* 	command_ee   - Not used.											*/
+ 295:LPC2k_ee.c    **** /*  result_ee[0] - Returns a response. Always 0.						*/
+ 296:LPC2k_ee.c    **** /*  result_ee[1] - number of records of ee_data type in EEPROM.			*/
+ 297:LPC2k_ee.c    **** /*                                                                     	*/
+ 298:LPC2k_ee.c    **** /* version: 1.1 (01/27/2006)                                           	*/
+ 299:LPC2k_ee.c    **** /*                                                                     	*/
+ 300:LPC2k_ee.c    **** /* constants defined in LPC2k_ee.h used in this function:              	*/
+ 301:LPC2k_ee.c    **** /*  EE_ADR_L 	 	   - micro's Flash address from where EEPROM begins	*/
+ 302:LPC2k_ee.c    **** /*  EE_REC_SIZE 	   - size (in bytes) of a ee_data structure        	*/
+ 303:LPC2k_ee.c    **** /*                                                                     	*/
+ 304:LPC2k_ee.c    **** /* description:															*/
+ 305:LPC2k_ee.c    **** /*  This function returns number of records of ee_data type in EEPROM.	*/
+ 306:LPC2k_ee.c    **** /*                                                                     	*/
+ 307:LPC2k_ee.c    **** /* revision history:                                                   	*/
+ 308:LPC2k_ee.c    **** /* - Initial release (1.0) was not supplying the right feedback in case */
+ 309:LPC2k_ee.c    **** /*   of counting records in a full EEPROM. Rev. 1.1 fixes this.         */
+ 310:LPC2k_ee.c    **** /*                                                                     	*/
+ 311:LPC2k_ee.c    **** /************************************************************************/
+ 312:LPC2k_ee.c    **** void ee_count(unsigned int command_ee,unsigned int result_ee[]){
+ 531              	.LM68:
+ 532              		@ Function supports interworking.
+ 533              		@ args = 0, pretend = 0, frame = 12
+ 534              		@ frame_needed = 1, uses_anonymous_args = 0
+ 535 0458 0DC0A0E1 		mov	ip, sp
+ 536 045c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 537 0460 04B04CE2 		sub	fp, ip, #4
+ 538 0464 0CD04DE2 		sub	sp, sp, #12
+ 539 0468 14000BE5 		str	r0, [fp, #-20]
+ 540 046c 18100BE5 		str	r1, [fp, #-24]
+ 313:LPC2k_ee.c    **** 	int location;
+ 314:LPC2k_ee.c    **** 	result_ee[0]=0;
+ 542              	.LM69:
+ 543 0470 18201BE5 		ldr	r2, [fp, #-24]
+ 544 0474 0030A0E3 		mov	r3, #0
+ 545 0478 003082E5 		str	r3, [r2, #0]
+ 315:LPC2k_ee.c    **** 	location = ee_locate();
+ 547              	.LM70:
+ 548 047c FEFFFFEB 		bl	ee_locate
+ 549 0480 0030A0E1 		mov	r3, r0
+ 550 0484 10300BE5 		str	r3, [fp, #-16]
+ 316:LPC2k_ee.c    **** 	if (location == -1) location = EE_ADDR_H+1;
+ 552              	.LM71:
+ 553 0488 10301BE5 		ldr	r3, [fp, #-16]
+ 554 048c 010073E3 		cmn	r3, #1
+ 555 0490 0100001A 		bne	.L31
+ 556 0494 0137A0E3 		mov	r3, #262144
+ 557 0498 10300BE5 		str	r3, [fp, #-16]
+ 558              	.L31:
+ 317:LPC2k_ee.c    **** 	result_ee[1]=(unsigned int)((location-EE_ADDR_L)/EE_REC_SIZE);
+ 560              	.LM72:
+ 561 049c 18301BE5 		ldr	r3, [fp, #-24]
+ 562 04a0 041083E2 		add	r1, r3, #4
+ 563 04a4 10301BE5 		ldr	r3, [fp, #-16]
+ 564 04a8 0E3943E2 		sub	r3, r3, #229376
+ 565 04ac FF2083E2 		add	r2, r3, #255
+ 566 04b0 000053E3 		cmp	r3, #0
+ 567 04b4 0230A0B1 		movlt	r3, r2
+ 568 04b8 4334A0E1 		mov	r3, r3, asr #8
+ 569 04bc 003081E5 		str	r3, [r1, #0]
+ 318:LPC2k_ee.c    **** 	return;
+ 319:LPC2k_ee.c    **** }
+ 571              	.LM73:
+ 572 04c0 0CD04BE2 		sub	sp, fp, #12
+ 573 04c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 574 04c8 1EFF2FE1 		bx	lr
+ 579              	.Lscope4:
+ 580              		.align	2
+ 582              		.global	ee_locate
+ 584              	ee_locate:
+ 320:LPC2k_ee.c    **** 
+ 321:LPC2k_ee.c    **** /************************************************************************/
+ 322:LPC2k_ee.c    **** /*                                                                    	*/
+ 323:LPC2k_ee.c    **** /* function: 															*/
+ 324:LPC2k_ee.c    **** /*  void ee_locate()													*/
+ 325:LPC2k_ee.c    **** /*                                                                     	*/
+ 326:LPC2k_ee.c    **** /* type: int                                                          	*/
+ 327:LPC2k_ee.c    **** /*                                                                     	*/
+ 328:LPC2k_ee.c    **** /* parameters: none														*/
+ 329:LPC2k_ee.c    **** /*                                                                     	*/
+ 330:LPC2k_ee.c    **** /* version: 1.1 (01/27/2006)                                           	*/
+ 331:LPC2k_ee.c    **** /*                                                                     	*/
+ 332:LPC2k_ee.c    **** /* constants defined in LPC2k_ee.h used in this function:              	*/
+ 333:LPC2k_ee.c    **** /*  EE_ADR_L 	 	   - micro's Flash address from where EEPROM begins	*/
+ 334:LPC2k_ee.c    **** /*  EE_ADR_H 	 	   - micro's Flash address where EEPROM ends		*/
+ 335:LPC2k_ee.c    **** /*  EE_REC_ID 	 	   - a record indicator used to identify valid data	*/
+ 336:LPC2k_ee.c    **** /*  EE_REC_SIZE 	   - size (in bytes) of a ee_data structure        	*/
+ 337:LPC2k_ee.c    **** /*                                                                     	*/
+ 338:LPC2k_ee.c    **** /* description:															*/
+ 339:LPC2k_ee.c    **** /*  This function returns an address as of which new record can be 		*/
+ 340:LPC2k_ee.c    **** /*	added into Flash/EEPROM. In case of EEPROM being full, function     */
+ 341:LPC2k_ee.c    **** /*  returns -1. Searching is based on divide by two method that         */
+ 342:LPC2k_ee.c    **** /*  provides the fastest processing time.                               */
+ 343:LPC2k_ee.c    **** /*                                                                     	*/
+ 344:LPC2k_ee.c    **** /* revision history:                                                   	*/
+ 345:LPC2k_ee.c    **** /* - Rev. 1.1 fixes a bug related to identifying an unused byte of 		*/
+ 346:LPC2k_ee.c    **** /*   EEPROM in an EEPROM with size not equal to EE_REC_SIZE * 2^k (k>=0)*/
+ 347:LPC2k_ee.c    **** /*                                                                     	*/
+ 348:LPC2k_ee.c    **** /************************************************************************/
+ 349:LPC2k_ee.c    **** int ee_locate(void){
+ 586              	.LM74:
+ 587              		@ Function supports interworking.
+ 588              		@ args = 0, pretend = 0, frame = 24
+ 589              		@ frame_needed = 1, uses_anonymous_args = 0
+ 590 04cc 0DC0A0E1 		mov	ip, sp
+ 591 04d0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 592 04d4 04B04CE2 		sub	fp, ip, #4
+ 593 04d8 18D04DE2 		sub	sp, sp, #24
+ 350:LPC2k_ee.c    **** 	unsigned int addr_l, addr_m, addr_r, size, slice_limit;
+ 351:LPC2k_ee.c    **** 	addr_l = EE_ADDR_L;
+ 595              	.LM75:
+ 596 04dc 0E39A0E3 		mov	r3, #229376
+ 597 04e0 20300BE5 		str	r3, [fp, #-32]
+ 352:LPC2k_ee.c    **** 	if ((*((unsigned char *)addr_l))==0xFF) return(addr_l);
+ 599              	.LM76:
+ 600 04e4 20301BE5 		ldr	r3, [fp, #-32]
+ 601 04e8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 602 04ec FF0053E3 		cmp	r3, #255
+ 603 04f0 0200001A 		bne	.L35
+ 604 04f4 20301BE5 		ldr	r3, [fp, #-32]
+ 605 04f8 24300BE5 		str	r3, [fp, #-36]
+ 606 04fc 3F0000EA 		b	.L37
+ 607              	.L35:
+ 353:LPC2k_ee.c    **** 	addr_r = EE_ADDR_H+1;
+ 609              	.LM77:
+ 610 0500 0137A0E3 		mov	r3, #262144
+ 611 0504 18300BE5 		str	r3, [fp, #-24]
+ 354:LPC2k_ee.c    **** 	if ((*((unsigned char *)(addr_r-EE_REC_SIZE)))==EE_REC_ID) return(-1);
+ 613              	.LM78:
+ 614 0508 18301BE5 		ldr	r3, [fp, #-24]
+ 615 050c 013C43E2 		sub	r3, r3, #256
+ 616 0510 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 617 0514 AA0053E3 		cmp	r3, #170
+ 618 0518 0200001A 		bne	.L38
+ 619 051c 0030E0E3 		mvn	r3, #0
+ 620 0520 24300BE5 		str	r3, [fp, #-36]
+ 621 0524 350000EA 		b	.L37
+ 622              	.L38:
+ 355:LPC2k_ee.c    **** 	size = addr_r - addr_l;
+ 624              	.LM79:
+ 625 0528 18201BE5 		ldr	r2, [fp, #-24]
+ 626 052c 20301BE5 		ldr	r3, [fp, #-32]
+ 627 0530 023063E0 		rsb	r3, r3, r2
+ 628 0534 14300BE5 		str	r3, [fp, #-20]
+ 356:LPC2k_ee.c    **** 	slice_limit = EE_REC_SIZE - 1;
+ 630              	.LM80:
+ 631 0538 FF30A0E3 		mov	r3, #255
+ 632 053c 10300BE5 		str	r3, [fp, #-16]
+ 357:LPC2k_ee.c    **** 	while(size != EE_REC_SIZE){
+ 634              	.LM81:
+ 635 0540 290000EA 		b	.L40
+ 636              	.L41:
+ 358:LPC2k_ee.c    **** 		addr_m = (addr_r+addr_l)/2;
+ 638              	.LM82:
+ 639 0544 18201BE5 		ldr	r2, [fp, #-24]
+ 640 0548 20301BE5 		ldr	r3, [fp, #-32]
+ 641 054c 033082E0 		add	r3, r2, r3
+ 642 0550 A330A0E1 		mov	r3, r3, lsr #1
+ 643 0554 1C300BE5 		str	r3, [fp, #-28]
+ 359:LPC2k_ee.c    **** 		if ((addr_m & slice_limit)!=0x00000000){
+ 645              	.LM83:
+ 646 0558 1C201BE5 		ldr	r2, [fp, #-28]
+ 647 055c 10301BE5 		ldr	r3, [fp, #-16]
+ 648 0560 033002E0 		and	r3, r2, r3
+ 649 0564 000053E3 		cmp	r3, #0
+ 650 0568 1300000A 		beq	.L42
+ 360:LPC2k_ee.c    **** 			if ((*((unsigned char *)(addr_r - EE_REC_SIZE)))==0xFF) 
+ 652              	.LM84:
+ 653 056c 18301BE5 		ldr	r3, [fp, #-24]
+ 654 0570 013C43E2 		sub	r3, r3, #256
+ 655 0574 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 656 0578 FF0053E3 		cmp	r3, #255
+ 657 057c 0300001A 		bne	.L44
+ 361:LPC2k_ee.c    **** 				addr_r = addr_r - EE_REC_SIZE;
+ 659              	.LM85:
+ 660 0580 18301BE5 		ldr	r3, [fp, #-24]
+ 661 0584 013C43E2 		sub	r3, r3, #256
+ 662 0588 18300BE5 		str	r3, [fp, #-24]
+ 663 058c 020000EA 		b	.L46
+ 664              	.L44:
+ 362:LPC2k_ee.c    **** 			else
+ 363:LPC2k_ee.c    **** 				addr_l = addr_l + EE_REC_SIZE;
+ 666              	.LM86:
+ 667 0590 20301BE5 		ldr	r3, [fp, #-32]
+ 668 0594 013C83E2 		add	r3, r3, #256
+ 669 0598 20300BE5 		str	r3, [fp, #-32]
+ 670              	.L46:
+ 364:LPC2k_ee.c    **** 			addr_m = (addr_r+addr_l)/2;
+ 672              	.LM87:
+ 673 059c 18201BE5 		ldr	r2, [fp, #-24]
+ 674 05a0 20301BE5 		ldr	r3, [fp, #-32]
+ 675 05a4 033082E0 		add	r3, r2, r3
+ 676 05a8 A330A0E1 		mov	r3, r3, lsr #1
+ 677 05ac 1C300BE5 		str	r3, [fp, #-28]
+ 365:LPC2k_ee.c    **** 			size = size - EE_REC_SIZE;
+ 679              	.LM88:
+ 680 05b0 14301BE5 		ldr	r3, [fp, #-20]
+ 681 05b4 013C43E2 		sub	r3, r3, #256
+ 682 05b8 14300BE5 		str	r3, [fp, #-20]
+ 683              	.L42:
+ 366:LPC2k_ee.c    **** 		}
+ 367:LPC2k_ee.c    **** 		if ((*((unsigned char *)addr_m))==0xFF)
+ 685              	.LM89:
+ 686 05bc 1C301BE5 		ldr	r3, [fp, #-28]
+ 687 05c0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 688 05c4 FF0053E3 		cmp	r3, #255
+ 689 05c8 0200001A 		bne	.L47
+ 368:LPC2k_ee.c    **** 			addr_r = addr_m;
+ 691              	.LM90:
+ 692 05cc 1C301BE5 		ldr	r3, [fp, #-28]
+ 693 05d0 18300BE5 		str	r3, [fp, #-24]
+ 694 05d4 010000EA 		b	.L49
+ 695              	.L47:
+ 369:LPC2k_ee.c    **** 		else
+ 370:LPC2k_ee.c    **** 			addr_l = addr_m;
+ 697              	.LM91:
+ 698 05d8 1C301BE5 		ldr	r3, [fp, #-28]
+ 699 05dc 20300BE5 		str	r3, [fp, #-32]
+ 700              	.L49:
+ 371:LPC2k_ee.c    **** 		size = size/2;
+ 702              	.LM92:
+ 703 05e0 14301BE5 		ldr	r3, [fp, #-20]
+ 704 05e4 A330A0E1 		mov	r3, r3, lsr #1
+ 705 05e8 14300BE5 		str	r3, [fp, #-20]
+ 706              	.L40:
+ 357:LPC2k_ee.c    **** 	while(size != EE_REC_SIZE){
+ 708              	.LM93:
+ 709 05ec 14301BE5 		ldr	r3, [fp, #-20]
+ 710 05f0 010C53E3 		cmp	r3, #256
+ 711 05f4 D2FFFF1A 		bne	.L41
+ 372:LPC2k_ee.c    **** 	}
+ 373:LPC2k_ee.c    **** 	return(addr_r);
+ 713              	.LM94:
+ 714 05f8 18301BE5 		ldr	r3, [fp, #-24]
+ 715 05fc 24300BE5 		str	r3, [fp, #-36]
+ 716              	.L37:
+ 717 0600 24301BE5 		ldr	r3, [fp, #-36]
+ 374:LPC2k_ee.c    **** }
+ 719              	.LM95:
+ 720 0604 0300A0E1 		mov	r0, r3
+ 721 0608 0CD04BE2 		sub	sp, fp, #12
+ 722 060c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 723 0610 1EFF2FE1 		bx	lr
+ 732              	.Lscope5:
+ 733              		.comm	iap_entry,4,4
+ 736              	.Letext0:
+ 737              		.ident	"GCC: (GNU) 4.1.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 LPC2k_ee.c
+     /tmp/ccJASJu4.s:26     .text:00000000 $a
+     /tmp/ccJASJu4.s:32     .text:00000000 ee_erase
+     /tmp/ccJASJu4.s:161    .text:00000138 $d
+                            *COM*:00000004 iap_entry
+     /tmp/ccJASJu4.s:169    .text:0000013c $a
+     /tmp/ccJASJu4.s:175    .text:0000013c ee_write
+     /tmp/ccJASJu4.s:584    .text:000004cc ee_locate
+     /tmp/ccJASJu4.s:386    .text:0000035c $d
+     /tmp/ccJASJu4.s:399    .text:00000360 $a
+     /tmp/ccJASJu4.s:405    .text:00000360 ee_read
+     /tmp/ccJASJu4.s:477    .text:000003f0 ee_readn
+     /tmp/ccJASJu4.s:529    .text:00000458 ee_count
+
+NO UNDEFINED SYMBOLS
