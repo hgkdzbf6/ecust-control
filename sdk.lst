@@ -25,74 +25,90 @@
  130      00000000 
  130      00000000 
  130      00000000 
- 131              		.global	sendParamDebug
+ 131              		.global	receiveDebugData
  132              		.align	2
- 135              	sendParamDebug:
+ 135              	receiveDebugData:
  136 014c 00000000 		.space	36
  136      00000000 
  136      00000000 
  136      00000000 
  136      00000000 
- 137              		.global	receiveParamDebug
+ 137              		.global	sendParamDebug
  138              		.align	2
- 141              	receiveParamDebug:
+ 141              	sendParamDebug:
  142 0170 00000000 		.space	36
  142      00000000 
  142      00000000 
  142      00000000 
  142      00000000 
- 143              		.global	receiveCmdData
+ 143              		.global	receiveParamDebug
  144              		.align	2
- 147              	receiveCmdData:
- 148 0194 00000000 		.space	4
- 149              		.global	pack_id
- 152              	pack_id:
- 153 0198 00       		.space	1
- 154              		.global	vicon_count
- 155 0199 000000   		.align	2
- 158              	vicon_count:
- 159 019c 00000000 		.space	4
- 160              		.global	receive_valid_data_flag
- 161              		.align	2
- 164              	receive_valid_data_flag:
- 165 01a0 00000000 		.space	4
- 166              		.global	output_thrust
- 167              		.data
- 168              		.align	2
- 171              	output_thrust:
- 172 0000 3A070000 		.word	1850
- 173              		.global	my_state
- 174              		.bss
- 175              		.align	2
- 178              	my_state:
- 179 01a4 00000000 		.space	28
- 179      00000000 
- 179      00000000 
- 179      00000000 
- 179      00000000 
- 180              		.global	my_setpoint
- 181              		.data
- 182              		.align	2
- 185              	my_setpoint:
- 186 0004 00000000 		.word	0
- 187 0008 00000000 		.word	0
- 188 000c 00004844 		.word	1145569280
- 189 0010 00000000 		.word	0
- 190 0014 00000000 		.word	0
- 191 0018 00000000 		.word	0
- 192 001c 00000000 		.space	4
- 193              		.bss
- 194              		.align	2
- 195              	freq.1985:
- 196 01c0 00000000 		.space	4
- 198              		.data
- 199              		.align	2
- 202              	temp.1984:
- 203 0020 01000000 		.word	1
- 205              		.text
- 206              		.align	2
- 208              		.global	fake_gps3
- 210              	fake_gps3:
+ 147              	receiveParamDebug:
+ 148 0194 00000000 		.space	36
+ 148      00000000 
+ 148      00000000 
+ 148      00000000 
+ 148      00000000 
+ 149              		.global	receiveCmdData
+ 150              		.data
+ 151              		.align	2
+ 154              	receiveCmdData:
+ 155 0000 05000000 		.word	5
+ 156              		.global	pack_id
+ 157              		.bss
+ 158              		.align	2
+ 161              	pack_id:
+ 162 01b8 00000000 		.space	4
+ 163              		.global	vicon_count
+ 164              		.align	2
+ 167              	vicon_count:
+ 168 01bc 00000000 		.space	4
+ 169              		.global	vicon_tp
+ 170              		.align	2
+ 173              	vicon_tp:
+ 174 01c0 00000000 		.space	4
+ 175              		.global	receive_valid_data_flag
+ 176              		.align	2
+ 179              	receive_valid_data_flag:
+ 180 01c4 00000000 		.space	4
+ 181              		.global	output_thrust
+ 182              		.data
+ 183              		.align	2
+ 186              	output_thrust:
+ 187 0004 3A070000 		.word	1850
+ 188              		.global	my_state
+ 189              		.bss
+ 190              		.align	2
+ 193              	my_state:
+ 194 01c8 00000000 		.space	28
+ 194      00000000 
+ 194      00000000 
+ 194      00000000 
+ 194      00000000 
+ 195              		.global	my_setpoint
+ 196              		.data
+ 197              		.align	2
+ 200              	my_setpoint:
+ 201 0008 00000000 		.word	0
+ 202 000c 00000000 		.word	0
+ 203 0010 00004844 		.word	1145569280
+ 204 0014 00000000 		.word	0
+ 205 0018 00000000 		.word	0
+ 206 001c 00000000 		.word	0
+ 207 0020 00000000 		.space	4
+ 208              		.bss
+ 209              		.align	2
+ 210              	freq.1987:
+ 211 01e4 00000000 		.space	4
+ 213              		.data
+ 214              		.align	2
+ 217              	temp.1986:
+ 218 0024 01000000 		.word	1
+ 220              		.global	__fixsfsi
+ 221              		.text
+ 222              		.align	2
+ 224              		.global	fake_gps3
+ 226              	fake_gps3:
    1:sdk.c         **** /*
    2:sdk.c         **** 
    3:sdk.c         **** AscTec AutoPilot HL SDK v2.0
@@ -154,2116 +170,2114 @@
   59:sdk.c         **** unsigned char allDataBuffer[256]={0};
   60:sdk.c         **** MyViconData receivedViconData={0};
   61:sdk.c         **** DebugData sendDebugData={0};
-  62:sdk.c         **** ParamDebug sendParamDebug={0};
-  63:sdk.c         **** ParamDebug receiveParamDebug={0};
-  64:sdk.c         **** CmdData receiveCmdData={0};
-  65:sdk.c         **** unsigned char pack_id=0;
-  66:sdk.c         **** 
+  62:sdk.c         **** DebugData receiveDebugData={0};
+  63:sdk.c         **** ParamDebug sendParamDebug={0};
+  64:sdk.c         **** ParamDebug receiveParamDebug={0};
+  65:sdk.c         **** CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
+  66:sdk.c         **** int pack_id=0;
   67:sdk.c         **** 
-  68:sdk.c         **** //ParamDebug paramDebug={0};
-  69:sdk.c         **** int vicon_count=0;
-  70:sdk.c         **** float calc_thrust;
-  71:sdk.c         **** int receive_valid_data_flag=0;
-  72:sdk.c         **** volatile int output_thrust=1850;
-  73:sdk.c         **** 
-  74:sdk.c         **** state_t my_state={
-  75:sdk.c         **** 		.position={
-  76:sdk.c         **** 				.x=0,
-  77:sdk.c         **** 				.y=0,
-  78:sdk.c         **** 				.z=0,
-  79:sdk.c         **** 		},
-  80:sdk.c         **** 		.velocity={
-  81:sdk.c         **** 				.x=0,
-  82:sdk.c         **** 				.y=0,
-  83:sdk.c         **** 				.z=0
-  84:sdk.c         **** 		}
-  85:sdk.c         **** };
-  86:sdk.c         **** state_t my_setpoint={
-  87:sdk.c         **** 		.position={
-  88:sdk.c         **** 				.x=0,
-  89:sdk.c         **** 				.y=0,
-  90:sdk.c         **** 				.z=800,
-  91:sdk.c         **** 		},
-  92:sdk.c         **** 		.velocity={
-  93:sdk.c         **** 				.x=0,
-  94:sdk.c         **** 				.y=0,
-  95:sdk.c         **** 				.z=0,
-  96:sdk.c         **** 		}
-  97:sdk.c         **** };
-  98:sdk.c         **** void fake_gps3(void ){
- 212              	.LM0:
- 213              		@ Function supports interworking.
- 214              		@ args = 0, pretend = 0, frame = 0
- 215              		@ frame_needed = 1, uses_anonymous_args = 0
- 216 0000 0DC0A0E1 		mov	ip, sp
- 217 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 218 0008 04B04CE2 		sub	fp, ip, #4
-  99:sdk.c         **** 	static int temp=1;
- 100:sdk.c         **** 	static int freq=0;
- 101:sdk.c         **** 
- 102:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;
- 220              	.LM1:
- 221 000c A8209FE5 		ldr	r2, .L7
- 222 0010 0230A0E3 		mov	r3, #2
- 223 0014 0030C2E5 		strb	r3, [r2, #0]
- 103:sdk.c         **** 	WO_SDK.ctrl_enabled=1;
- 225              	.LM2:
- 226 0018 9C209FE5 		ldr	r2, .L7
- 227 001c 0130A0E3 		mov	r3, #1
- 228 0020 0130C2E5 		strb	r3, [r2, #1]
- 104:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0;
- 230              	.LM3:
- 231 0024 90209FE5 		ldr	r2, .L7
- 232 0028 0030A0E3 		mov	r3, #0
- 233 002c 0230C2E5 		strb	r3, [r2, #2]
- 105:sdk.c         **** 	WO_CTRL_Input.ctrl=0x08;
- 235              	.LM4:
- 236 0030 88209FE5 		ldr	r2, .L7+4
- 237 0034 0830A0E3 		mov	r3, #8
- 238 0038 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 106:sdk.c         **** 
- 107:sdk.c         **** 	if(temp==1){
- 240              	.LM5:
- 241 003c 80309FE5 		ldr	r3, .L7+8
- 242 0040 003093E5 		ldr	r3, [r3, #0]
- 243 0044 010053E3 		cmp	r3, #1
- 244 0048 0300001A 		bne	.L2
- 108:sdk.c         **** 		temp=0;
- 246              	.LM6:
- 247 004c 70209FE5 		ldr	r2, .L7+8
- 248 0050 0030A0E3 		mov	r3, #0
- 249 0054 003082E5 		str	r3, [r2, #0]
- 109:sdk.c         **** 		positionControllerInit();
- 251              	.LM7:
- 252 0058 FEFFFFEB 		bl	positionControllerInit
- 253              	.L2:
- 110:sdk.c         **** 	}
- 111:sdk.c         **** 	if(freq++==10){
- 255              	.LM8:
- 256 005c 64309FE5 		ldr	r3, .L7+12
- 257 0060 003093E5 		ldr	r3, [r3, #0]
- 258 0064 012083E2 		add	r2, r3, #1
- 259 0068 58309FE5 		ldr	r3, .L7+12
- 260 006c 002083E5 		str	r2, [r3, #0]
- 261 0070 50309FE5 		ldr	r3, .L7+12
- 262 0074 003093E5 		ldr	r3, [r3, #0]
- 263 0078 0B0053E3 		cmp	r3, #11
- 264 007c 0500001A 		bne	.L4
- 112:sdk.c         **** 		//unit is mm, degree
- 113:sdk.c         **** 		//vicon_readIn(position,rotation,0.01);
- 114:sdk.c         **** 		//state.position.z=viconData.z;//data_fusion(1,viconData.z,RO_ALL_Data.acc_z);
- 115:sdk.c         **** 		//state.pre_position.z=vicon_data.pre_position[0].z;
- 116:sdk.c         **** 		//state.velocity.z=viconData.vz;
- 117:sdk.c         **** 		freq=1;
- 266              	.LM9:
- 267 0080 40209FE5 		ldr	r2, .L7+12
- 268 0084 0130A0E3 		mov	r3, #1
- 269 0088 003082E5 		str	r3, [r2, #0]
- 118:sdk.c         **** 		//my_setpoint.velocity.z=RO_ALL_Data.vicon_vz;
- 119:sdk.c         **** 		positionController(&calc_thrust,&my_state);
- 271              	.LM10:
- 272 008c 38009FE5 		ldr	r0, .L7+16
- 273 0090 38109FE5 		ldr	r1, .L7+20
- 274 0094 FEFFFFEB 		bl	positionController
- 275              	.L4:
- 120:sdk.c         **** 
- 121:sdk.c         **** 		//my_setpoint.velocity.z=1234;
- 122:sdk.c         **** 		//my_setpoint.position.z=1234;
- 123:sdk.c         **** 		//my_setpoint.position.z=RO_ALL_Data.vicon_z;
- 124:sdk.c         **** 		//my_setpoint.velocity.z=RO_ALL_Data.vicon_vz;
- 125:sdk.c         **** 		//calc_thrust=1234.5678;
- 126:sdk.c         **** 	}
- 127:sdk.c         **** 
- 128:sdk.c         **** 	//output_thrust=(unsigned short)calc_thrust;
- 129:sdk.c         **** 
- 130:sdk.c         **** 	//output_thrust=1500;
- 131:sdk.c         **** 	WO_CTRL_Input.thrust=output_thrust;
- 277              	.LM11:
- 278 0098 34309FE5 		ldr	r3, .L7+24
- 279 009c 003093E5 		ldr	r3, [r3, #0]
- 280 00a0 0338A0E1 		mov	r3, r3, asl #16
- 281 00a4 2328A0E1 		mov	r2, r3, lsr #16
- 282 00a8 10309FE5 		ldr	r3, .L7+4
- 283 00ac B620C3E1 		strh	r2, [r3, #6]	@ movhi
- 132:sdk.c         **** 
- 133:sdk.c         **** }
- 285              	.LM12:
- 286 00b0 0CD04BE2 		sub	sp, fp, #12
- 287 00b4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 288 00b8 1EFF2FE1 		bx	lr
- 289              	.L8:
- 290              		.align	2
- 291              	.L7:
- 292 00bc 00000000 		.word	WO_SDK
- 293 00c0 00000000 		.word	WO_CTRL_Input
- 294 00c4 20000000 		.word	temp.1984
- 295 00c8 C0010000 		.word	freq.1985
- 296 00cc 00000000 		.word	calc_thrust
- 297 00d0 00000000 		.word	my_state
- 298 00d4 00000000 		.word	output_thrust
- 304              	.Lscope0:
- 305              		.align	2
- 307              		.global	SDK_mainloop
- 309              	SDK_mainloop:
- 134:sdk.c         **** /* SDK_mainloop(void) is triggered @ 1kHz.
- 135:sdk.c         ****  *
- 136:sdk.c         ****  * RO_(Read Only) data is updated before entering this function
- 137:sdk.c         ****  * and can be read to obtain information for supervision or control
+  68:sdk.c         **** 
+  69:sdk.c         **** //ParamDebug paramDebug={0};
+  70:sdk.c         **** int vicon_count=0;
+  71:sdk.c         **** int vicon_tp=0;
+  72:sdk.c         **** float calc_thrust;
+  73:sdk.c         **** int receive_valid_data_flag=0;
+  74:sdk.c         **** volatile int output_thrust=1850;
+  75:sdk.c         **** 
+  76:sdk.c         **** state_t my_state={
+  77:sdk.c         **** 		.position={
+  78:sdk.c         **** 				.x=0,
+  79:sdk.c         **** 				.y=0,
+  80:sdk.c         **** 				.z=0,
+  81:sdk.c         **** 		},
+  82:sdk.c         **** 		.velocity={
+  83:sdk.c         **** 				.x=0,
+  84:sdk.c         **** 				.y=0,
+  85:sdk.c         **** 				.z=0
+  86:sdk.c         **** 		}
+  87:sdk.c         **** };
+  88:sdk.c         **** state_t my_setpoint={
+  89:sdk.c         **** 		.position={
+  90:sdk.c         **** 				.x=0,
+  91:sdk.c         **** 				.y=0,
+  92:sdk.c         **** 				.z=800,
+  93:sdk.c         **** 		},
+  94:sdk.c         **** 		.velocity={
+  95:sdk.c         **** 				.x=0,
+  96:sdk.c         **** 				.y=0,
+  97:sdk.c         **** 				.z=0,
+  98:sdk.c         **** 		}
+  99:sdk.c         **** };
+ 100:sdk.c         **** void fake_gps3(void ){
+ 228              	.LM0:
+ 229              		@ Function supports interworking.
+ 230              		@ args = 0, pretend = 0, frame = 0
+ 231              		@ frame_needed = 1, uses_anonymous_args = 0
+ 232 0000 0DC0A0E1 		mov	ip, sp
+ 233 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 234 0008 04B04CE2 		sub	fp, ip, #4
+ 101:sdk.c         **** 	static int temp=1;
+ 102:sdk.c         **** 	static int freq=0;
+ 103:sdk.c         **** 
+ 104:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;
+ 236              	.LM1:
+ 237 000c C4209FE5 		ldr	r2, .L7
+ 238 0010 0230A0E3 		mov	r3, #2
+ 239 0014 0030C2E5 		strb	r3, [r2, #0]
+ 105:sdk.c         **** 	WO_SDK.ctrl_enabled=1;
+ 241              	.LM2:
+ 242 0018 B8209FE5 		ldr	r2, .L7
+ 243 001c 0130A0E3 		mov	r3, #1
+ 244 0020 0130C2E5 		strb	r3, [r2, #1]
+ 106:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0;
+ 246              	.LM3:
+ 247 0024 AC209FE5 		ldr	r2, .L7
+ 248 0028 0030A0E3 		mov	r3, #0
+ 249 002c 0230C2E5 		strb	r3, [r2, #2]
+ 107:sdk.c         **** 	WO_CTRL_Input.ctrl=0x08;
+ 251              	.LM4:
+ 252 0030 A4209FE5 		ldr	r2, .L7+4
+ 253 0034 0830A0E3 		mov	r3, #8
+ 254 0038 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 108:sdk.c         **** 
+ 109:sdk.c         **** 	if(temp==1){
+ 256              	.LM5:
+ 257 003c 9C309FE5 		ldr	r3, .L7+8
+ 258 0040 003093E5 		ldr	r3, [r3, #0]
+ 259 0044 010053E3 		cmp	r3, #1
+ 260 0048 0300001A 		bne	.L2
+ 110:sdk.c         **** 		temp=0;
+ 262              	.LM6:
+ 263 004c 8C209FE5 		ldr	r2, .L7+8
+ 264 0050 0030A0E3 		mov	r3, #0
+ 265 0054 003082E5 		str	r3, [r2, #0]
+ 111:sdk.c         **** 		positionControllerInit();
+ 267              	.LM7:
+ 268 0058 FEFFFFEB 		bl	positionControllerInit
+ 269              	.L2:
+ 112:sdk.c         **** 	}
+ 113:sdk.c         **** 	if(freq++==10){
+ 271              	.LM8:
+ 272 005c 80309FE5 		ldr	r3, .L7+12
+ 273 0060 003093E5 		ldr	r3, [r3, #0]
+ 274 0064 012083E2 		add	r2, r3, #1
+ 275 0068 74309FE5 		ldr	r3, .L7+12
+ 276 006c 002083E5 		str	r2, [r3, #0]
+ 277 0070 6C309FE5 		ldr	r3, .L7+12
+ 278 0074 003093E5 		ldr	r3, [r3, #0]
+ 279 0078 0B0053E3 		cmp	r3, #11
+ 280 007c 0500001A 		bne	.L4
+ 114:sdk.c         **** 		freq=1;
+ 282              	.LM9:
+ 283 0080 5C209FE5 		ldr	r2, .L7+12
+ 284 0084 0130A0E3 		mov	r3, #1
+ 285 0088 003082E5 		str	r3, [r2, #0]
+ 115:sdk.c         **** 		positionController(&calc_thrust,&my_state);
+ 287              	.LM10:
+ 288 008c 54009FE5 		ldr	r0, .L7+16
+ 289 0090 54109FE5 		ldr	r1, .L7+20
+ 290 0094 FEFFFFEB 		bl	positionController
+ 291              	.L4:
+ 116:sdk.c         **** 	}
+ 117:sdk.c         **** 	output_thrust=calc_thrust;
+ 293              	.LM11:
+ 294 0098 48309FE5 		ldr	r3, .L7+16
+ 295 009c 003093E5 		ldr	r3, [r3, #0]	@ float
+ 296 00a0 0300A0E1 		mov	r0, r3
+ 297 00a4 FEFFFFEB 		bl	__fixsfsi
+ 298 00a8 0020A0E1 		mov	r2, r0
+ 299 00ac 3C309FE5 		ldr	r3, .L7+24
+ 300 00b0 002083E5 		str	r2, [r3, #0]
+ 118:sdk.c         **** 	WO_CTRL_Input.thrust=output_thrust;
+ 302              	.LM12:
+ 303 00b4 34309FE5 		ldr	r3, .L7+24
+ 304 00b8 003093E5 		ldr	r3, [r3, #0]
+ 305 00bc 0338A0E1 		mov	r3, r3, asl #16
+ 306 00c0 2328A0E1 		mov	r2, r3, lsr #16
+ 307 00c4 10309FE5 		ldr	r3, .L7+4
+ 308 00c8 B620C3E1 		strh	r2, [r3, #6]	@ movhi
+ 119:sdk.c         **** 
+ 120:sdk.c         **** }
+ 310              	.LM13:
+ 311 00cc 0CD04BE2 		sub	sp, fp, #12
+ 312 00d0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 313 00d4 1EFF2FE1 		bx	lr
+ 314              	.L8:
+ 315              		.align	2
+ 316              	.L7:
+ 317 00d8 00000000 		.word	WO_SDK
+ 318 00dc 00000000 		.word	WO_CTRL_Input
+ 319 00e0 24000000 		.word	temp.1986
+ 320 00e4 E4010000 		.word	freq.1987
+ 321 00e8 00000000 		.word	calc_thrust
+ 322 00ec 00000000 		.word	my_state
+ 323 00f0 00000000 		.word	output_thrust
+ 329              	.Lscope0:
+ 330              		.align	2
+ 332              		.global	SDK_mainloop
+ 334              	SDK_mainloop:
+ 121:sdk.c         **** /* SDK_mainloop(void) is triggered @ 1kHz.
+ 122:sdk.c         ****  *
+ 123:sdk.c         ****  * RO_(Read Only) data is updated before entering this function
+ 124:sdk.c         ****  * and can be read to obtain information for supervision or control
+ 125:sdk.c         ****  *
+ 126:sdk.c         ****  * WO_(Write Only) data is written to the LL processor after
+ 127:sdk.c         ****  * execution of this function.
+ 128:sdk.c         ****  *
+ 129:sdk.c         ****  * WO_ and RO_ structs are defined in sdk.h
+ 130:sdk.c         ****  *
+ 131:sdk.c         ****  * The struct RO_ALL_Data (defined in sdk.h)
+ 132:sdk.c         ****  * is used to read all sensor data, results of the data fusion
+ 133:sdk.c         ****  * and R/C inputs transmitted from the LL-processor. This struct is
+ 134:sdk.c         ****  * automatically updated at 1 kHz.
+ 135:sdk.c         ****  * */
+ 136:sdk.c         **** 
+ 137:sdk.c         **** /* How to flash the high level processor
  138:sdk.c         ****  *
- 139:sdk.c         ****  * WO_(Write Only) data is written to the LL processor after
- 140:sdk.c         ****  * execution of this function.
- 141:sdk.c         ****  *
- 142:sdk.c         ****  * WO_ and RO_ structs are defined in sdk.h
- 143:sdk.c         ****  *
- 144:sdk.c         ****  * The struct RO_ALL_Data (defined in sdk.h)
- 145:sdk.c         ****  * is used to read all sensor data, results of the data fusion
- 146:sdk.c         ****  * and R/C inputs transmitted from the LL-processor. This struct is
- 147:sdk.c         ****  * automatically updated at 1 kHz.
- 148:sdk.c         ****  * */
- 149:sdk.c         **** 
- 150:sdk.c         **** /* How to flash the high level processor
- 151:sdk.c         ****  *
- 152:sdk.c         ****  * The easiest way to get your code on the high level processor is to use the JTAG-adapter.
- 153:sdk.c         ****  *
- 154:sdk.c         ****  * It needs three steps to get your code on the high level processor.
- 155:sdk.c         ****  * 1. Build your code ("Build Project")
- 156:sdk.c         ****  * 2. Connect your JTAG adapter and start the JTAG connection ("OpenOCD Asctec-JTAG")
- 157:sdk.c         ****  * 3. Flash the processor ("Asctec JTAG Debug")
- 158:sdk.c         ****  *
- 159:sdk.c         ****  * In the menu "Run -> External Tools -> External Tools Configuration..." you
- 160:sdk.c         ****  * will find "OpenOCD Asctec-JTAG". If the JTAG connection was activated
- 161:sdk.c         ****  * correctly, the console will show only the following line:
- 162:sdk.c         ****  * "Info:    openocd.c:92 main(): Open On-Chip Debugger (2007-08-10 22:30 CEST)"
+ 139:sdk.c         ****  * The easiest way to get your code on the high level processor is to use the JTAG-adapter.
+ 140:sdk.c         ****  *
+ 141:sdk.c         ****  * It needs three steps to get your code on the high level processor.
+ 142:sdk.c         ****  * 1. Build your code ("Build Project")
+ 143:sdk.c         ****  * 2. Connect your JTAG adapter and start the JTAG connection ("OpenOCD Asctec-JTAG")
+ 144:sdk.c         ****  * 3. Flash the processor ("Asctec JTAG Debug")
+ 145:sdk.c         ****  *
+ 146:sdk.c         ****  * In the menu "Run -> External Tools -> External Tools Configuration..." you
+ 147:sdk.c         ****  * will find "OpenOCD Asctec-JTAG". If the JTAG connection was activated
+ 148:sdk.c         ****  * correctly, the console will show only the following line:
+ 149:sdk.c         ****  * "Info:    openocd.c:92 main(): Open On-Chip Debugger (2007-08-10 22:30 CEST)"
+ 150:sdk.c         ****  *
+ 151:sdk.c         ****  * Do not launch more than ONE JTAG-connection at the same time!
+ 152:sdk.c         ****  *
+ 153:sdk.c         ****  * In the menu "Run -> Debug Configurations..." you will find "Asctec JTAG Debug"
+ 154:sdk.c         ****  * If the code was successfully flashed on the processor, the program will switch
+ 155:sdk.c         ****  * to the Debug window.
+ 156:sdk.c         ****  *************
+ 157:sdk.c         ****  * If you want to flash the high level processor using a serial interface (AscTec USB adapter)
+ 158:sdk.c         ****  * and bootloader software like "Flash Magic", you need to change
+ 159:sdk.c         ****  * the following in the "makefile" (line 113):
+ 160:sdk.c         ****  *
+ 161:sdk.c         ****  * FORMAT = ihex
+ 162:sdk.c         ****  * #FORMAT = binary
  163:sdk.c         ****  *
- 164:sdk.c         ****  * Do not launch more than ONE JTAG-connection at the same time!
- 165:sdk.c         ****  *
- 166:sdk.c         ****  * In the menu "Run -> Debug Configurations..." you will find "Asctec JTAG Debug"
- 167:sdk.c         ****  * If the code was successfully flashed on the processor, the program will switch
- 168:sdk.c         ****  * to the Debug window.
- 169:sdk.c         ****  *************
- 170:sdk.c         ****  * If you want to flash the high level processor using a serial interface (AscTec USB adapter)
- 171:sdk.c         ****  * and bootloader software like "Flash Magic", you need to change
- 172:sdk.c         ****  * the following in the "makefile" (line 113):
+ 164:sdk.c         ****  * After buidling your code you will find the main.hex in your workspace folder.
+ 165:sdk.c         ****  *************
+ 166:sdk.c         ****  * */
+ 167:sdk.c         **** 
+ 168:sdk.c         **** /* After flashing the HL, your code can be debugged online. The ARM7 supports ONE hardware breakpoi
+ 169:sdk.c         ****  * You can monitor the CPU-load by looking at HL_Status.cpu_load. As long as this value is 1000 you
+ 170:sdk.c         ****  * code in SDK_mainloop() is executed at 1 kHz.
+ 171:sdk.c         ****  *
+ 172:sdk.c         ****  * To activate the SDK controls, the serial interface switch on your R/C (channel 5) needs to be in
  173:sdk.c         ****  *
- 174:sdk.c         ****  * FORMAT = ihex
- 175:sdk.c         ****  * #FORMAT = binary
- 176:sdk.c         ****  *
- 177:sdk.c         ****  * After buidling your code you will find the main.hex in your workspace folder.
- 178:sdk.c         ****  *************
- 179:sdk.c         ****  * */
- 180:sdk.c         **** 
- 181:sdk.c         **** /* After flashing the HL, your code can be debugged online. The ARM7 supports ONE hardware breakpoi
- 182:sdk.c         ****  * You can monitor the CPU-load by looking at HL_Status.cpu_load. As long as this value is 1000 you
- 183:sdk.c         ****  * code in SDK_mainloop() is executed at 1 kHz.
- 184:sdk.c         ****  *
- 185:sdk.c         ****  * To activate the SDK controls, the serial interface switch on your R/C (channel 5) needs to be in
- 186:sdk.c         ****  *
- 187:sdk.c         ****  * If your project needs communication over a serial link, you find an example of how to do so in m
- 188:sdk.c         ****  * All sample functions for transmitting and receiving data over the UART (HL_serial_0) are in uart
- 189:sdk.c         ****  * these examples to code your own communication state machine.
- 190:sdk.c         ****  */
+ 174:sdk.c         ****  * If your project needs communication over a serial link, you find an example of how to do so in m
+ 175:sdk.c         ****  * All sample functions for transmitting and receiving data over the UART (HL_serial_0) are in uart
+ 176:sdk.c         ****  * these examples to code your own communication state machine.
+ 177:sdk.c         ****  */
+ 178:sdk.c         **** 
+ 179:sdk.c         **** 
+ 180:sdk.c         **** void SDK_mainloop(void) //write your own code within this function
+ 181:sdk.c         **** {
+ 336              	.LM14:
+ 337              		@ Function supports interworking.
+ 338              		@ args = 0, pretend = 0, frame = 0
+ 339              		@ frame_needed = 1, uses_anonymous_args = 0
+ 340 00f4 0DC0A0E1 		mov	ip, sp
+ 341 00f8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 342 00fc 04B04CE2 		sub	fp, ip, #4
+ 182:sdk.c         **** 
+ 183:sdk.c         **** 
+ 184:sdk.c         **** 	//you can select an example by using ONE of the functions below.
+ 185:sdk.c         **** 	//CAUTION! Read the code of the examples before you test them on your UAV!
+ 186:sdk.c         **** 
+ 187:sdk.c         **** 	//SDK_EXAMPLE_direct_individual_motor_commands();
+ 188:sdk.c         **** 	//SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping();
+ 189:sdk.c         **** 	//SDK_EXAMPLE_attitude_commands();
+ 190:sdk.c         **** 	//SDK_EXAMPLE_gps_waypoint_control();
  191:sdk.c         **** 
- 192:sdk.c         **** 
- 193:sdk.c         **** void SDK_mainloop(void) //write your own code within this function
- 194:sdk.c         **** {
- 311              	.LM13:
- 312              		@ Function supports interworking.
- 313              		@ args = 0, pretend = 0, frame = 0
- 314              		@ frame_needed = 1, uses_anonymous_args = 0
- 315 00d8 0DC0A0E1 		mov	ip, sp
- 316 00dc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 317 00e0 04B04CE2 		sub	fp, ip, #4
- 195:sdk.c         **** 
- 196:sdk.c         **** 
- 197:sdk.c         **** 	//you can select an example by using ONE of the functions below.
- 198:sdk.c         **** 	//CAUTION! Read the code of the examples before you test them on your UAV!
- 199:sdk.c         **** 
- 200:sdk.c         **** 	//SDK_EXAMPLE_direct_individual_motor_commands();
- 201:sdk.c         **** 	//SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping();
- 202:sdk.c         **** 	//SDK_EXAMPLE_attitude_commands();
- 203:sdk.c         **** 	//SDK_EXAMPLE_gps_waypoint_control();
- 204:sdk.c         **** 
- 205:sdk.c         **** 	//example to turn motors on and off every 2 seconds
- 206:sdk.c         **** 	/*
- 207:sdk.c         ****  	static int timer=0;
- 208:sdk.c         **** 	if(++timer<1000) SDK_EXAMPLE_turn_motors_on();
- 209:sdk.c         **** 	else if(timer<2000) SDK_EXAMPLE_turn_motors_off();
- 210:sdk.c         **** 	else timer=0;
- 211:sdk.c         **** 	*/
- 212:sdk.c         **** 	fake_gps3();
- 319              	.LM14:
- 320 00e4 FEFFFFEB 		bl	fake_gps3
- 213:sdk.c         **** }
- 322              	.LM15:
- 323 00e8 0CD04BE2 		sub	sp, fp, #12
- 324 00ec 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 325 00f0 1EFF2FE1 		bx	lr
- 327              	.Lscope1:
- 328              		.align	2
- 330              		.global	SDK_EXAMPLE_direct_individual_motor_commands
- 332              	SDK_EXAMPLE_direct_individual_motor_commands:
- 214:sdk.c         **** 
- 215:sdk.c         **** /* the following example shows the direct motor command usage by mapping the stick directly to the 
- 216:sdk.c         ****  *
- 217:sdk.c         ****  */
- 218:sdk.c         **** void SDK_EXAMPLE_direct_individual_motor_commands(void)
- 219:sdk.c         **** {
- 334              	.LM16:
- 335              		@ Function supports interworking.
- 336              		@ args = 0, pretend = 0, frame = 4
- 337              		@ frame_needed = 1, uses_anonymous_args = 0
- 338 00f4 0DC0A0E1 		mov	ip, sp
- 339 00f8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 340 00fc 04B04CE2 		sub	fp, ip, #4
- 341 0100 04D04DE2 		sub	sp, sp, #4
- 220:sdk.c         **** 
- 221:sdk.c         **** 	WO_SDK.ctrl_mode=0x00;	//0x00: direct individual motor control: individual commands for motors 0..
- 343              	.LM17:
- 344 0104 E0219FE5 		ldr	r2, .L20
- 345 0108 0030A0E3 		mov	r3, #0
- 346 010c 0030C2E5 		strb	r3, [r2, #0]
- 222:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
- 223:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
- 224:sdk.c         **** 							//0x03: GPS waypoint control
- 225:sdk.c         **** 
- 226:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
- 348              	.LM18:
- 349 0110 D4219FE5 		ldr	r2, .L20
- 350 0114 0130A0E3 		mov	r3, #1
- 351 0118 0130C2E5 		strb	r3, [r2, #1]
- 227:sdk.c         **** 							//1: enable control by HL processor
- 228:sdk.c         **** 
- 229:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0;
- 353              	.LM19:
- 354 011c C8219FE5 		ldr	r2, .L20
- 355 0120 0030A0E3 		mov	r3, #0
- 356 0124 0230C2E5 		strb	r3, [r2, #2]
- 230:sdk.c         **** 
- 231:sdk.c         **** 	unsigned int i;
- 232:sdk.c         **** 
- 233:sdk.c         **** 	//scale throttle stick to [0..200] and map it to all motors
- 234:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[0]=RO_ALL_Data.channel[2]/21;
- 358              	.LM20:
- 359 0128 C0319FE5 		ldr	r3, .L20+4
- 360 012c B420D3E1 		ldrh	r2, [r3, #4]
- 361 0130 BC319FE5 		ldr	r3, .L20+8
- 362 0134 930281E0 		umull	r0, r1, r3, r2
- 363 0138 023061E0 		rsb	r3, r1, r2
- 364 013c A330A0E1 		mov	r3, r3, lsr #1
- 365 0140 033081E0 		add	r3, r1, r3
- 366 0144 2332A0E1 		mov	r3, r3, lsr #4
- 367 0148 0338A0E1 		mov	r3, r3, asl #16
- 368 014c 2338A0E1 		mov	r3, r3, lsr #16
- 369 0150 FF3003E2 		and	r3, r3, #255
- 370 0154 9C219FE5 		ldr	r2, .L20+12
- 371 0158 0030C2E5 		strb	r3, [r2, #0]
- 235:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[1]=RO_ALL_Data.channel[2]/21;
- 373              	.LM21:
- 374 015c 8C319FE5 		ldr	r3, .L20+4
- 375 0160 B420D3E1 		ldrh	r2, [r3, #4]
- 376 0164 88319FE5 		ldr	r3, .L20+8
- 377 0168 930281E0 		umull	r0, r1, r3, r2
- 378 016c 023061E0 		rsb	r3, r1, r2
- 379 0170 A330A0E1 		mov	r3, r3, lsr #1
- 380 0174 033081E0 		add	r3, r1, r3
- 381 0178 2332A0E1 		mov	r3, r3, lsr #4
- 382 017c 0338A0E1 		mov	r3, r3, asl #16
- 383 0180 2338A0E1 		mov	r3, r3, lsr #16
- 384 0184 FF3003E2 		and	r3, r3, #255
- 385 0188 68219FE5 		ldr	r2, .L20+12
- 386 018c 0130C2E5 		strb	r3, [r2, #1]
- 236:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[2]=RO_ALL_Data.channel[2]/21;
- 388              	.LM22:
- 389 0190 58319FE5 		ldr	r3, .L20+4
- 390 0194 B420D3E1 		ldrh	r2, [r3, #4]
- 391 0198 54319FE5 		ldr	r3, .L20+8
- 392 019c 930281E0 		umull	r0, r1, r3, r2
- 393 01a0 023061E0 		rsb	r3, r1, r2
- 394 01a4 A330A0E1 		mov	r3, r3, lsr #1
- 395 01a8 033081E0 		add	r3, r1, r3
- 396 01ac 2332A0E1 		mov	r3, r3, lsr #4
- 397 01b0 0338A0E1 		mov	r3, r3, asl #16
- 398 01b4 2338A0E1 		mov	r3, r3, lsr #16
- 399 01b8 FF3003E2 		and	r3, r3, #255
- 400 01bc 34219FE5 		ldr	r2, .L20+12
- 401 01c0 0230C2E5 		strb	r3, [r2, #2]
- 237:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[3]=RO_ALL_Data.channel[2]/21;
- 403              	.LM23:
- 404 01c4 24319FE5 		ldr	r3, .L20+4
- 405 01c8 B420D3E1 		ldrh	r2, [r3, #4]
- 406 01cc 20319FE5 		ldr	r3, .L20+8
- 407 01d0 930281E0 		umull	r0, r1, r3, r2
- 408 01d4 023061E0 		rsb	r3, r1, r2
- 409 01d8 A330A0E1 		mov	r3, r3, lsr #1
- 410 01dc 033081E0 		add	r3, r1, r3
- 411 01e0 2332A0E1 		mov	r3, r3, lsr #4
- 412 01e4 0338A0E1 		mov	r3, r3, asl #16
- 413 01e8 2338A0E1 		mov	r3, r3, lsr #16
- 414 01ec FF3003E2 		and	r3, r3, #255
- 415 01f0 00219FE5 		ldr	r2, .L20+12
- 416 01f4 0330C2E5 		strb	r3, [r2, #3]
- 238:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[4]=RO_ALL_Data.channel[2]/21;
- 418              	.LM24:
- 419 01f8 F0309FE5 		ldr	r3, .L20+4
- 420 01fc B420D3E1 		ldrh	r2, [r3, #4]
- 421 0200 EC309FE5 		ldr	r3, .L20+8
- 422 0204 930281E0 		umull	r0, r1, r3, r2
- 423 0208 023061E0 		rsb	r3, r1, r2
- 424 020c A330A0E1 		mov	r3, r3, lsr #1
- 425 0210 033081E0 		add	r3, r1, r3
- 426 0214 2332A0E1 		mov	r3, r3, lsr #4
- 427 0218 0338A0E1 		mov	r3, r3, asl #16
- 428 021c 2338A0E1 		mov	r3, r3, lsr #16
- 429 0220 FF3003E2 		and	r3, r3, #255
- 430 0224 CC209FE5 		ldr	r2, .L20+12
- 431 0228 0430C2E5 		strb	r3, [r2, #4]
- 239:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[5]=RO_ALL_Data.channel[2]/21;
- 433              	.LM25:
- 434 022c BC309FE5 		ldr	r3, .L20+4
- 435 0230 B420D3E1 		ldrh	r2, [r3, #4]
- 436 0234 B8309FE5 		ldr	r3, .L20+8
- 437 0238 930281E0 		umull	r0, r1, r3, r2
- 438 023c 023061E0 		rsb	r3, r1, r2
- 439 0240 A330A0E1 		mov	r3, r3, lsr #1
- 440 0244 033081E0 		add	r3, r1, r3
- 441 0248 2332A0E1 		mov	r3, r3, lsr #4
- 442 024c 0338A0E1 		mov	r3, r3, asl #16
- 443 0250 2338A0E1 		mov	r3, r3, lsr #16
- 444 0254 FF3003E2 		and	r3, r3, #255
- 445 0258 98209FE5 		ldr	r2, .L20+12
- 446 025c 0530C2E5 		strb	r3, [r2, #5]
- 240:sdk.c         **** 
- 241:sdk.c         **** 	//make sure commands are never 0 so that motors will always keep spinning
- 242:sdk.c         ****     //also make sure that commands stay within range
- 243:sdk.c         ****     for(i=0;i<6;i++)
- 448              	.LM26:
- 449 0260 0030A0E3 		mov	r3, #0
- 450 0264 10300BE5 		str	r3, [fp, #-16]
- 451 0268 190000EA 		b	.L12
- 452              	.L13:
- 244:sdk.c         ****     {
- 245:sdk.c         ****     	if(!WO_Direct_Individual_Motor_Control.motor[i]) WO_Direct_Individual_Motor_Control.motor[i]=1
- 454              	.LM27:
- 455 026c 10201BE5 		ldr	r2, [fp, #-16]
- 456 0270 80309FE5 		ldr	r3, .L20+12
- 457 0274 023083E0 		add	r3, r3, r2
- 458 0278 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 459 027c 000053E3 		cmp	r3, #0
- 460 0280 0500001A 		bne	.L14
- 461 0284 10201BE5 		ldr	r2, [fp, #-16]
- 462 0288 68309FE5 		ldr	r3, .L20+12
- 463 028c 022083E0 		add	r2, r3, r2
- 464 0290 0130A0E3 		mov	r3, #1
- 465 0294 0030C2E5 		strb	r3, [r2, #0]
- 466 0298 0A0000EA 		b	.L16
- 467              	.L14:
- 246:sdk.c         ****     	else if (WO_Direct_Individual_Motor_Control.motor[i]>200) WO_Direct_Individual_Motor_Control.m
- 469              	.LM28:
- 470 029c 10201BE5 		ldr	r2, [fp, #-16]
- 471 02a0 50309FE5 		ldr	r3, .L20+12
- 472 02a4 023083E0 		add	r3, r3, r2
- 473 02a8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 474 02ac C80053E3 		cmp	r3, #200
- 475 02b0 0400009A 		bls	.L16
- 476 02b4 10201BE5 		ldr	r2, [fp, #-16]
- 477 02b8 38309FE5 		ldr	r3, .L20+12
- 478 02bc 022083E0 		add	r2, r3, r2
- 479 02c0 3730E0E3 		mvn	r3, #55
- 480 02c4 0030C2E5 		strb	r3, [r2, #0]
- 481              	.L16:
- 243:sdk.c         ****     for(i=0;i<6;i++)
- 483              	.LM29:
- 484 02c8 10301BE5 		ldr	r3, [fp, #-16]
- 485 02cc 013083E2 		add	r3, r3, #1
- 486 02d0 10300BE5 		str	r3, [fp, #-16]
- 487              	.L12:
- 488 02d4 10301BE5 		ldr	r3, [fp, #-16]
- 489 02d8 050053E3 		cmp	r3, #5
- 490 02dc E2FFFF9A 		bls	.L13
- 247:sdk.c         ****     }
- 248:sdk.c         **** }
- 492              	.LM30:
- 493 02e0 0CD04BE2 		sub	sp, fp, #12
- 494 02e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 495 02e8 1EFF2FE1 		bx	lr
- 496              	.L21:
- 497              		.align	2
- 498              	.L20:
- 499 02ec 00000000 		.word	WO_SDK
- 500 02f0 00000000 		.word	RO_ALL_Data
- 501 02f4 87611886 		.word	-2045222521
- 502 02f8 00000000 		.word	WO_Direct_Individual_Motor_Control
- 507              	.Lscope2:
- 508              		.align	2
- 510              		.global	SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping
- 512              	SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping:
- 249:sdk.c         **** 
- 250:sdk.c         **** 
- 251:sdk.c         **** void SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping(void)
- 252:sdk.c         **** {
- 514              	.LM31:
- 515              		@ Function supports interworking.
- 516              		@ args = 0, pretend = 0, frame = 0
- 517              		@ frame_needed = 1, uses_anonymous_args = 0
- 518 02fc 0DC0A0E1 		mov	ip, sp
- 519 0300 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 520 0304 04B04CE2 		sub	fp, ip, #4
- 253:sdk.c         **** 	WO_SDK.ctrl_mode=0x01;	//0x00: direct individual motor control: individual commands for motors 0..
- 522              	.LM32:
- 523 0308 F4209FE5 		ldr	r2, .L24
- 524 030c 0130A0E3 		mov	r3, #1
- 525 0310 0030C2E5 		strb	r3, [r2, #0]
- 254:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
- 255:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
- 256:sdk.c         **** 							//0x03: GPS waypoint control
- 257:sdk.c         **** 
- 258:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
- 527              	.LM33:
- 528 0314 E8209FE5 		ldr	r2, .L24
- 529 0318 0130A0E3 		mov	r3, #1
- 530 031c 0130C2E5 		strb	r3, [r2, #1]
- 259:sdk.c         **** 							//1: enable control by HL processor
- 260:sdk.c         **** 
- 261:sdk.c         **** 	/*
- 262:sdk.c         **** 	 *  Stick commands directly mapped to motors, NO attitude control! Do NOT try to fly!
- 263:sdk.c         **** 	 * */
- 264:sdk.c         **** 
- 265:sdk.c         **** 	WO_Direct_Motor_Control.pitch=(4095-RO_ALL_Data.channel[0])/21;
- 532              	.LM34:
- 533 0320 E0309FE5 		ldr	r3, .L24+4
- 534 0324 B030D3E1 		ldrh	r3, [r3, #0]
- 535 0328 FF2E63E2 		rsb	r2, r3, #4080
- 536 032c 0F2082E2 		add	r2, r2, #15
- 537 0330 C335A0E3 		mov	r3, #817889280
- 538 0334 C33B83E2 		add	r3, r3, #199680
- 539 0338 313083E2 		add	r3, r3, #49
- 540 033c 9203C3E0 		smull	r0, r3, r2, r3
- 541 0340 4311A0E1 		mov	r1, r3, asr #2
- 542 0344 C23FA0E1 		mov	r3, r2, asr #31
- 543 0348 013063E0 		rsb	r3, r3, r1
- 544 034c FF3003E2 		and	r3, r3, #255
- 545 0350 B4209FE5 		ldr	r2, .L24+8
- 546 0354 0030C2E5 		strb	r3, [r2, #0]
- 266:sdk.c         **** 	WO_Direct_Motor_Control.roll=RO_ALL_Data.channel[1]/21;
- 548              	.LM35:
- 549 0358 A8309FE5 		ldr	r3, .L24+4
- 550 035c B220D3E1 		ldrh	r2, [r3, #2]
- 551 0360 A8309FE5 		ldr	r3, .L24+12
- 552 0364 930281E0 		umull	r0, r1, r3, r2
- 553 0368 023061E0 		rsb	r3, r1, r2
- 554 036c A330A0E1 		mov	r3, r3, lsr #1
- 555 0370 033081E0 		add	r3, r1, r3
- 556 0374 2332A0E1 		mov	r3, r3, lsr #4
- 557 0378 0338A0E1 		mov	r3, r3, asl #16
- 558 037c 2338A0E1 		mov	r3, r3, lsr #16
- 559 0380 FF3003E2 		and	r3, r3, #255
- 560 0384 80209FE5 		ldr	r2, .L24+8
- 561 0388 0130C2E5 		strb	r3, [r2, #1]
- 267:sdk.c         **** 	WO_Direct_Motor_Control.thrust=RO_ALL_Data.channel[2]/21;
- 563              	.LM36:
- 564 038c 74309FE5 		ldr	r3, .L24+4
- 565 0390 B420D3E1 		ldrh	r2, [r3, #4]
- 566 0394 74309FE5 		ldr	r3, .L24+12
- 567 0398 930281E0 		umull	r0, r1, r3, r2
- 568 039c 023061E0 		rsb	r3, r1, r2
- 569 03a0 A330A0E1 		mov	r3, r3, lsr #1
- 570 03a4 033081E0 		add	r3, r1, r3
- 571 03a8 2332A0E1 		mov	r3, r3, lsr #4
- 572 03ac 0338A0E1 		mov	r3, r3, asl #16
- 573 03b0 2338A0E1 		mov	r3, r3, lsr #16
- 574 03b4 FF3003E2 		and	r3, r3, #255
- 575 03b8 4C209FE5 		ldr	r2, .L24+8
- 576 03bc 0330C2E5 		strb	r3, [r2, #3]
- 268:sdk.c         **** 	WO_Direct_Motor_Control.yaw=(4095-RO_ALL_Data.channel[3])/21;
- 578              	.LM37:
- 579 03c0 40309FE5 		ldr	r3, .L24+4
- 580 03c4 B630D3E1 		ldrh	r3, [r3, #6]
- 581 03c8 FF2E63E2 		rsb	r2, r3, #4080
- 582 03cc 0F2082E2 		add	r2, r2, #15
- 583 03d0 C335A0E3 		mov	r3, #817889280
- 584 03d4 C33B83E2 		add	r3, r3, #199680
- 585 03d8 313083E2 		add	r3, r3, #49
- 586 03dc 9213C3E0 		smull	r1, r3, r2, r3
- 587 03e0 4311A0E1 		mov	r1, r3, asr #2
- 588 03e4 C23FA0E1 		mov	r3, r2, asr #31
- 589 03e8 013063E0 		rsb	r3, r3, r1
- 590 03ec FF3003E2 		and	r3, r3, #255
- 591 03f0 14209FE5 		ldr	r2, .L24+8
- 592 03f4 0230C2E5 		strb	r3, [r2, #2]
+ 192:sdk.c         **** 	//example to turn motors on and off every 2 seconds
+ 193:sdk.c         **** 	/*
+ 194:sdk.c         ****  	static int timer=0;
+ 195:sdk.c         **** 	if(++timer<1000) SDK_EXAMPLE_turn_motors_on();
+ 196:sdk.c         **** 	else if(timer<2000) SDK_EXAMPLE_turn_motors_off();
+ 197:sdk.c         **** 	else timer=0;
+ 198:sdk.c         **** 	*/
+ 199:sdk.c         **** 	fake_gps3();
+ 344              	.LM15:
+ 345 0100 FEFFFFEB 		bl	fake_gps3
+ 200:sdk.c         **** }
+ 347              	.LM16:
+ 348 0104 0CD04BE2 		sub	sp, fp, #12
+ 349 0108 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 350 010c 1EFF2FE1 		bx	lr
+ 352              	.Lscope1:
+ 353              		.align	2
+ 355              		.global	SDK_EXAMPLE_direct_individual_motor_commands
+ 357              	SDK_EXAMPLE_direct_individual_motor_commands:
+ 201:sdk.c         **** 
+ 202:sdk.c         **** /* the following example shows the direct motor command usage by mapping the stick directly to the 
+ 203:sdk.c         ****  *
+ 204:sdk.c         ****  */
+ 205:sdk.c         **** void SDK_EXAMPLE_direct_individual_motor_commands(void)
+ 206:sdk.c         **** {
+ 359              	.LM17:
+ 360              		@ Function supports interworking.
+ 361              		@ args = 0, pretend = 0, frame = 4
+ 362              		@ frame_needed = 1, uses_anonymous_args = 0
+ 363 0110 0DC0A0E1 		mov	ip, sp
+ 364 0114 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 365 0118 04B04CE2 		sub	fp, ip, #4
+ 366 011c 04D04DE2 		sub	sp, sp, #4
+ 207:sdk.c         **** 
+ 208:sdk.c         **** 	WO_SDK.ctrl_mode=0x00;	//0x00: direct individual motor control: individual commands for motors 0..
+ 368              	.LM18:
+ 369 0120 E0219FE5 		ldr	r2, .L20
+ 370 0124 0030A0E3 		mov	r3, #0
+ 371 0128 0030C2E5 		strb	r3, [r2, #0]
+ 209:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
+ 210:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
+ 211:sdk.c         **** 							//0x03: GPS waypoint control
+ 212:sdk.c         **** 
+ 213:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
+ 373              	.LM19:
+ 374 012c D4219FE5 		ldr	r2, .L20
+ 375 0130 0130A0E3 		mov	r3, #1
+ 376 0134 0130C2E5 		strb	r3, [r2, #1]
+ 214:sdk.c         **** 							//1: enable control by HL processor
+ 215:sdk.c         **** 
+ 216:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0;
+ 378              	.LM20:
+ 379 0138 C8219FE5 		ldr	r2, .L20
+ 380 013c 0030A0E3 		mov	r3, #0
+ 381 0140 0230C2E5 		strb	r3, [r2, #2]
+ 217:sdk.c         **** 
+ 218:sdk.c         **** 	unsigned int i;
+ 219:sdk.c         **** 
+ 220:sdk.c         **** 	//scale throttle stick to [0..200] and map it to all motors
+ 221:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[0]=RO_ALL_Data.channel[2]/21;
+ 383              	.LM21:
+ 384 0144 C0319FE5 		ldr	r3, .L20+4
+ 385 0148 B420D3E1 		ldrh	r2, [r3, #4]
+ 386 014c BC319FE5 		ldr	r3, .L20+8
+ 387 0150 930281E0 		umull	r0, r1, r3, r2
+ 388 0154 023061E0 		rsb	r3, r1, r2
+ 389 0158 A330A0E1 		mov	r3, r3, lsr #1
+ 390 015c 033081E0 		add	r3, r1, r3
+ 391 0160 2332A0E1 		mov	r3, r3, lsr #4
+ 392 0164 0338A0E1 		mov	r3, r3, asl #16
+ 393 0168 2338A0E1 		mov	r3, r3, lsr #16
+ 394 016c FF3003E2 		and	r3, r3, #255
+ 395 0170 9C219FE5 		ldr	r2, .L20+12
+ 396 0174 0030C2E5 		strb	r3, [r2, #0]
+ 222:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[1]=RO_ALL_Data.channel[2]/21;
+ 398              	.LM22:
+ 399 0178 8C319FE5 		ldr	r3, .L20+4
+ 400 017c B420D3E1 		ldrh	r2, [r3, #4]
+ 401 0180 88319FE5 		ldr	r3, .L20+8
+ 402 0184 930281E0 		umull	r0, r1, r3, r2
+ 403 0188 023061E0 		rsb	r3, r1, r2
+ 404 018c A330A0E1 		mov	r3, r3, lsr #1
+ 405 0190 033081E0 		add	r3, r1, r3
+ 406 0194 2332A0E1 		mov	r3, r3, lsr #4
+ 407 0198 0338A0E1 		mov	r3, r3, asl #16
+ 408 019c 2338A0E1 		mov	r3, r3, lsr #16
+ 409 01a0 FF3003E2 		and	r3, r3, #255
+ 410 01a4 68219FE5 		ldr	r2, .L20+12
+ 411 01a8 0130C2E5 		strb	r3, [r2, #1]
+ 223:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[2]=RO_ALL_Data.channel[2]/21;
+ 413              	.LM23:
+ 414 01ac 58319FE5 		ldr	r3, .L20+4
+ 415 01b0 B420D3E1 		ldrh	r2, [r3, #4]
+ 416 01b4 54319FE5 		ldr	r3, .L20+8
+ 417 01b8 930281E0 		umull	r0, r1, r3, r2
+ 418 01bc 023061E0 		rsb	r3, r1, r2
+ 419 01c0 A330A0E1 		mov	r3, r3, lsr #1
+ 420 01c4 033081E0 		add	r3, r1, r3
+ 421 01c8 2332A0E1 		mov	r3, r3, lsr #4
+ 422 01cc 0338A0E1 		mov	r3, r3, asl #16
+ 423 01d0 2338A0E1 		mov	r3, r3, lsr #16
+ 424 01d4 FF3003E2 		and	r3, r3, #255
+ 425 01d8 34219FE5 		ldr	r2, .L20+12
+ 426 01dc 0230C2E5 		strb	r3, [r2, #2]
+ 224:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[3]=RO_ALL_Data.channel[2]/21;
+ 428              	.LM24:
+ 429 01e0 24319FE5 		ldr	r3, .L20+4
+ 430 01e4 B420D3E1 		ldrh	r2, [r3, #4]
+ 431 01e8 20319FE5 		ldr	r3, .L20+8
+ 432 01ec 930281E0 		umull	r0, r1, r3, r2
+ 433 01f0 023061E0 		rsb	r3, r1, r2
+ 434 01f4 A330A0E1 		mov	r3, r3, lsr #1
+ 435 01f8 033081E0 		add	r3, r1, r3
+ 436 01fc 2332A0E1 		mov	r3, r3, lsr #4
+ 437 0200 0338A0E1 		mov	r3, r3, asl #16
+ 438 0204 2338A0E1 		mov	r3, r3, lsr #16
+ 439 0208 FF3003E2 		and	r3, r3, #255
+ 440 020c 00219FE5 		ldr	r2, .L20+12
+ 441 0210 0330C2E5 		strb	r3, [r2, #3]
+ 225:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[4]=RO_ALL_Data.channel[2]/21;
+ 443              	.LM25:
+ 444 0214 F0309FE5 		ldr	r3, .L20+4
+ 445 0218 B420D3E1 		ldrh	r2, [r3, #4]
+ 446 021c EC309FE5 		ldr	r3, .L20+8
+ 447 0220 930281E0 		umull	r0, r1, r3, r2
+ 448 0224 023061E0 		rsb	r3, r1, r2
+ 449 0228 A330A0E1 		mov	r3, r3, lsr #1
+ 450 022c 033081E0 		add	r3, r1, r3
+ 451 0230 2332A0E1 		mov	r3, r3, lsr #4
+ 452 0234 0338A0E1 		mov	r3, r3, asl #16
+ 453 0238 2338A0E1 		mov	r3, r3, lsr #16
+ 454 023c FF3003E2 		and	r3, r3, #255
+ 455 0240 CC209FE5 		ldr	r2, .L20+12
+ 456 0244 0430C2E5 		strb	r3, [r2, #4]
+ 226:sdk.c         **** 	WO_Direct_Individual_Motor_Control.motor[5]=RO_ALL_Data.channel[2]/21;
+ 458              	.LM26:
+ 459 0248 BC309FE5 		ldr	r3, .L20+4
+ 460 024c B420D3E1 		ldrh	r2, [r3, #4]
+ 461 0250 B8309FE5 		ldr	r3, .L20+8
+ 462 0254 930281E0 		umull	r0, r1, r3, r2
+ 463 0258 023061E0 		rsb	r3, r1, r2
+ 464 025c A330A0E1 		mov	r3, r3, lsr #1
+ 465 0260 033081E0 		add	r3, r1, r3
+ 466 0264 2332A0E1 		mov	r3, r3, lsr #4
+ 467 0268 0338A0E1 		mov	r3, r3, asl #16
+ 468 026c 2338A0E1 		mov	r3, r3, lsr #16
+ 469 0270 FF3003E2 		and	r3, r3, #255
+ 470 0274 98209FE5 		ldr	r2, .L20+12
+ 471 0278 0530C2E5 		strb	r3, [r2, #5]
+ 227:sdk.c         **** 
+ 228:sdk.c         **** 	//make sure commands are never 0 so that motors will always keep spinning
+ 229:sdk.c         ****     //also make sure that commands stay within range
+ 230:sdk.c         ****     for(i=0;i<6;i++)
+ 473              	.LM27:
+ 474 027c 0030A0E3 		mov	r3, #0
+ 475 0280 10300BE5 		str	r3, [fp, #-16]
+ 476 0284 190000EA 		b	.L12
+ 477              	.L13:
+ 231:sdk.c         ****     {
+ 232:sdk.c         ****     	if(!WO_Direct_Individual_Motor_Control.motor[i]) WO_Direct_Individual_Motor_Control.motor[i]=1
+ 479              	.LM28:
+ 480 0288 10201BE5 		ldr	r2, [fp, #-16]
+ 481 028c 80309FE5 		ldr	r3, .L20+12
+ 482 0290 023083E0 		add	r3, r3, r2
+ 483 0294 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 484 0298 000053E3 		cmp	r3, #0
+ 485 029c 0500001A 		bne	.L14
+ 486 02a0 10201BE5 		ldr	r2, [fp, #-16]
+ 487 02a4 68309FE5 		ldr	r3, .L20+12
+ 488 02a8 022083E0 		add	r2, r3, r2
+ 489 02ac 0130A0E3 		mov	r3, #1
+ 490 02b0 0030C2E5 		strb	r3, [r2, #0]
+ 491 02b4 0A0000EA 		b	.L16
+ 492              	.L14:
+ 233:sdk.c         ****     	else if (WO_Direct_Individual_Motor_Control.motor[i]>200) WO_Direct_Individual_Motor_Control.m
+ 494              	.LM29:
+ 495 02b8 10201BE5 		ldr	r2, [fp, #-16]
+ 496 02bc 50309FE5 		ldr	r3, .L20+12
+ 497 02c0 023083E0 		add	r3, r3, r2
+ 498 02c4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 499 02c8 C80053E3 		cmp	r3, #200
+ 500 02cc 0400009A 		bls	.L16
+ 501 02d0 10201BE5 		ldr	r2, [fp, #-16]
+ 502 02d4 38309FE5 		ldr	r3, .L20+12
+ 503 02d8 022083E0 		add	r2, r3, r2
+ 504 02dc 3730E0E3 		mvn	r3, #55
+ 505 02e0 0030C2E5 		strb	r3, [r2, #0]
+ 506              	.L16:
+ 230:sdk.c         ****     for(i=0;i<6;i++)
+ 508              	.LM30:
+ 509 02e4 10301BE5 		ldr	r3, [fp, #-16]
+ 510 02e8 013083E2 		add	r3, r3, #1
+ 511 02ec 10300BE5 		str	r3, [fp, #-16]
+ 512              	.L12:
+ 513 02f0 10301BE5 		ldr	r3, [fp, #-16]
+ 514 02f4 050053E3 		cmp	r3, #5
+ 515 02f8 E2FFFF9A 		bls	.L13
+ 234:sdk.c         ****     }
+ 235:sdk.c         **** }
+ 517              	.LM31:
+ 518 02fc 0CD04BE2 		sub	sp, fp, #12
+ 519 0300 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 520 0304 1EFF2FE1 		bx	lr
+ 521              	.L21:
+ 522              		.align	2
+ 523              	.L20:
+ 524 0308 00000000 		.word	WO_SDK
+ 525 030c 00000000 		.word	RO_ALL_Data
+ 526 0310 87611886 		.word	-2045222521
+ 527 0314 00000000 		.word	WO_Direct_Individual_Motor_Control
+ 532              	.Lscope2:
+ 533              		.align	2
+ 535              		.global	SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping
+ 537              	SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping:
+ 236:sdk.c         **** 
+ 237:sdk.c         **** 
+ 238:sdk.c         **** void SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping(void)
+ 239:sdk.c         **** {
+ 539              	.LM32:
+ 540              		@ Function supports interworking.
+ 541              		@ args = 0, pretend = 0, frame = 0
+ 542              		@ frame_needed = 1, uses_anonymous_args = 0
+ 543 0318 0DC0A0E1 		mov	ip, sp
+ 544 031c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 545 0320 04B04CE2 		sub	fp, ip, #4
+ 240:sdk.c         **** 	WO_SDK.ctrl_mode=0x01;	//0x00: direct individual motor control: individual commands for motors 0..
+ 547              	.LM33:
+ 548 0324 F4209FE5 		ldr	r2, .L24
+ 549 0328 0130A0E3 		mov	r3, #1
+ 550 032c 0030C2E5 		strb	r3, [r2, #0]
+ 241:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
+ 242:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
+ 243:sdk.c         **** 							//0x03: GPS waypoint control
+ 244:sdk.c         **** 
+ 245:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
+ 552              	.LM34:
+ 553 0330 E8209FE5 		ldr	r2, .L24
+ 554 0334 0130A0E3 		mov	r3, #1
+ 555 0338 0130C2E5 		strb	r3, [r2, #1]
+ 246:sdk.c         **** 							//1: enable control by HL processor
+ 247:sdk.c         **** 
+ 248:sdk.c         **** 	/*
+ 249:sdk.c         **** 	 *  Stick commands directly mapped to motors, NO attitude control! Do NOT try to fly!
+ 250:sdk.c         **** 	 * */
+ 251:sdk.c         **** 
+ 252:sdk.c         **** 	WO_Direct_Motor_Control.pitch=(4095-RO_ALL_Data.channel[0])/21;
+ 557              	.LM35:
+ 558 033c E0309FE5 		ldr	r3, .L24+4
+ 559 0340 B030D3E1 		ldrh	r3, [r3, #0]
+ 560 0344 FF2E63E2 		rsb	r2, r3, #4080
+ 561 0348 0F2082E2 		add	r2, r2, #15
+ 562 034c C335A0E3 		mov	r3, #817889280
+ 563 0350 C33B83E2 		add	r3, r3, #199680
+ 564 0354 313083E2 		add	r3, r3, #49
+ 565 0358 9203C3E0 		smull	r0, r3, r2, r3
+ 566 035c 4311A0E1 		mov	r1, r3, asr #2
+ 567 0360 C23FA0E1 		mov	r3, r2, asr #31
+ 568 0364 013063E0 		rsb	r3, r3, r1
+ 569 0368 FF3003E2 		and	r3, r3, #255
+ 570 036c B4209FE5 		ldr	r2, .L24+8
+ 571 0370 0030C2E5 		strb	r3, [r2, #0]
+ 253:sdk.c         **** 	WO_Direct_Motor_Control.roll=RO_ALL_Data.channel[1]/21;
+ 573              	.LM36:
+ 574 0374 A8309FE5 		ldr	r3, .L24+4
+ 575 0378 B220D3E1 		ldrh	r2, [r3, #2]
+ 576 037c A8309FE5 		ldr	r3, .L24+12
+ 577 0380 930281E0 		umull	r0, r1, r3, r2
+ 578 0384 023061E0 		rsb	r3, r1, r2
+ 579 0388 A330A0E1 		mov	r3, r3, lsr #1
+ 580 038c 033081E0 		add	r3, r1, r3
+ 581 0390 2332A0E1 		mov	r3, r3, lsr #4
+ 582 0394 0338A0E1 		mov	r3, r3, asl #16
+ 583 0398 2338A0E1 		mov	r3, r3, lsr #16
+ 584 039c FF3003E2 		and	r3, r3, #255
+ 585 03a0 80209FE5 		ldr	r2, .L24+8
+ 586 03a4 0130C2E5 		strb	r3, [r2, #1]
+ 254:sdk.c         **** 	WO_Direct_Motor_Control.thrust=RO_ALL_Data.channel[2]/21;
+ 588              	.LM37:
+ 589 03a8 74309FE5 		ldr	r3, .L24+4
+ 590 03ac B420D3E1 		ldrh	r2, [r3, #4]
+ 591 03b0 74309FE5 		ldr	r3, .L24+12
+ 592 03b4 930281E0 		umull	r0, r1, r3, r2
+ 593 03b8 023061E0 		rsb	r3, r1, r2
+ 594 03bc A330A0E1 		mov	r3, r3, lsr #1
+ 595 03c0 033081E0 		add	r3, r1, r3
+ 596 03c4 2332A0E1 		mov	r3, r3, lsr #4
+ 597 03c8 0338A0E1 		mov	r3, r3, asl #16
+ 598 03cc 2338A0E1 		mov	r3, r3, lsr #16
+ 599 03d0 FF3003E2 		and	r3, r3, #255
+ 600 03d4 4C209FE5 		ldr	r2, .L24+8
+ 601 03d8 0330C2E5 		strb	r3, [r2, #3]
+ 255:sdk.c         **** 	WO_Direct_Motor_Control.yaw=(4095-RO_ALL_Data.channel[3])/21;
+ 603              	.LM38:
+ 604 03dc 40309FE5 		ldr	r3, .L24+4
+ 605 03e0 B630D3E1 		ldrh	r3, [r3, #6]
+ 606 03e4 FF2E63E2 		rsb	r2, r3, #4080
+ 607 03e8 0F2082E2 		add	r2, r2, #15
+ 608 03ec C335A0E3 		mov	r3, #817889280
+ 609 03f0 C33B83E2 		add	r3, r3, #199680
+ 610 03f4 313083E2 		add	r3, r3, #49
+ 611 03f8 9213C3E0 		smull	r1, r3, r2, r3
+ 612 03fc 4311A0E1 		mov	r1, r3, asr #2
+ 613 0400 C23FA0E1 		mov	r3, r2, asr #31
+ 614 0404 013063E0 		rsb	r3, r3, r1
+ 615 0408 FF3003E2 		and	r3, r3, #255
+ 616 040c 14209FE5 		ldr	r2, .L24+8
+ 617 0410 0230C2E5 		strb	r3, [r2, #2]
+ 256:sdk.c         **** 
+ 257:sdk.c         **** }
+ 619              	.LM39:
+ 620 0414 0CD04BE2 		sub	sp, fp, #12
+ 621 0418 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 622 041c 1EFF2FE1 		bx	lr
+ 623              	.L25:
+ 624              		.align	2
+ 625              	.L24:
+ 626 0420 00000000 		.word	WO_SDK
+ 627 0424 00000000 		.word	RO_ALL_Data
+ 628 0428 00000000 		.word	WO_Direct_Motor_Control
+ 629 042c 87611886 		.word	-2045222521
+ 631              	.Lscope3:
+ 632              		.align	2
+ 634              		.global	SDK_EXAMPLE_attitude_commands
+ 636              	SDK_EXAMPLE_attitude_commands:
+ 258:sdk.c         **** 
+ 259:sdk.c         **** 
+ 260:sdk.c         **** void SDK_EXAMPLE_attitude_commands(void)
+ 261:sdk.c         **** {
+ 638              	.LM40:
+ 639              		@ Function supports interworking.
+ 640              		@ args = 0, pretend = 0, frame = 0
+ 641              		@ frame_needed = 1, uses_anonymous_args = 0
+ 642 0430 0DC0A0E1 		mov	ip, sp
+ 643 0434 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 644 0438 04B04CE2 		sub	fp, ip, #4
+ 262:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;	//0x00: direct individual motor control: individual commands for motors 0..
+ 646              	.LM41:
+ 647 043c 34209FE5 		ldr	r2, .L28
+ 648 0440 0230A0E3 		mov	r3, #2
+ 649 0444 0030C2E5 		strb	r3, [r2, #0]
+ 263:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
+ 264:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
+ 265:sdk.c         **** 							//0x03: GPS waypoint control
+ 266:sdk.c         **** 
+ 267:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
+ 651              	.LM42:
+ 652 0448 28209FE5 		ldr	r2, .L28
+ 653 044c 0130A0E3 		mov	r3, #1
+ 654 0450 0130C2E5 		strb	r3, [r2, #1]
+ 268:sdk.c         **** 							//1: enable control by HL processor
  269:sdk.c         **** 
- 270:sdk.c         **** }
- 594              	.LM38:
- 595 03f8 0CD04BE2 		sub	sp, fp, #12
- 596 03fc 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 597 0400 1EFF2FE1 		bx	lr
- 598              	.L25:
- 599              		.align	2
- 600              	.L24:
- 601 0404 00000000 		.word	WO_SDK
- 602 0408 00000000 		.word	RO_ALL_Data
- 603 040c 00000000 		.word	WO_Direct_Motor_Control
- 604 0410 87611886 		.word	-2045222521
- 606              	.Lscope3:
- 607              		.align	2
- 609              		.global	SDK_EXAMPLE_attitude_commands
- 611              	SDK_EXAMPLE_attitude_commands:
- 271:sdk.c         **** 
- 272:sdk.c         **** 
- 273:sdk.c         **** void SDK_EXAMPLE_attitude_commands(void)
- 274:sdk.c         **** {
- 613              	.LM39:
- 614              		@ Function supports interworking.
- 615              		@ args = 0, pretend = 0, frame = 0
- 616              		@ frame_needed = 1, uses_anonymous_args = 0
- 617 0414 0DC0A0E1 		mov	ip, sp
- 618 0418 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 619 041c 04B04CE2 		sub	fp, ip, #4
- 275:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;	//0x00: direct individual motor control: individual commands for motors 0..
- 621              	.LM40:
- 622 0420 34209FE5 		ldr	r2, .L28
- 623 0424 0230A0E3 		mov	r3, #2
- 624 0428 0030C2E5 		strb	r3, [r2, #0]
- 276:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
- 277:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
- 278:sdk.c         **** 							//0x03: GPS waypoint control
+ 270:sdk.c         **** 	//with this example the UAV will go to ~10% throttle when SDK control is activated
+ 271:sdk.c         **** 	WO_CTRL_Input.ctrl=0x08;	//0x08: enable throttle control by HL. Height control and GPS are deactiv
+ 656              	.LM43:
+ 657 0454 20209FE5 		ldr	r2, .L28+4
+ 658 0458 0830A0E3 		mov	r3, #8
+ 659 045c B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 272:sdk.c         **** 								//pitch, roll and yaw are still commanded via the remote control
+ 273:sdk.c         **** 
+ 274:sdk.c         **** 	WO_CTRL_Input.thrust=400;	//10% throttle command
+ 661              	.LM44:
+ 662 0460 14209FE5 		ldr	r2, .L28+4
+ 663 0464 193EA0E3 		mov	r3, #400
+ 664 0468 B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 275:sdk.c         **** 
+ 276:sdk.c         **** 
+ 277:sdk.c         **** }
+ 666              	.LM45:
+ 667 046c 0CD04BE2 		sub	sp, fp, #12
+ 668 0470 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 669 0474 1EFF2FE1 		bx	lr
+ 670              	.L29:
+ 671              		.align	2
+ 672              	.L28:
+ 673 0478 00000000 		.word	WO_SDK
+ 674 047c 00000000 		.word	WO_CTRL_Input
+ 676              	.Lscope4:
+ 677              		.bss
+ 678              		.align	2
+ 679              	originLon.2065:
+ 680 01e8 00000000 		.space	8
+ 680      00000000 
+ 682              		.align	2
+ 683              	originLat.2064:
+ 684 01f0 00000000 		.space	8
+ 684      00000000 
+ 686              	wpExampleState.2063:
+ 687 01f8 00       		.space	1
+ 689              		.global	__floatsidf
+ 690              		.global	__divdf3
+ 691              		.global	__muldf3
+ 692              		.global	__fixdfsi
+ 693              		.text
+ 694              		.align	2
+ 696              		.global	SDK_EXAMPLE_gps_waypoint_control
+ 698              	SDK_EXAMPLE_gps_waypoint_control:
+ 278:sdk.c         **** 
  279:sdk.c         **** 
- 280:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
- 626              	.LM41:
- 627 042c 28209FE5 		ldr	r2, .L28
- 628 0430 0130A0E3 		mov	r3, #1
- 629 0434 0130C2E5 		strb	r3, [r2, #1]
- 281:sdk.c         **** 							//1: enable control by HL processor
- 282:sdk.c         **** 
- 283:sdk.c         **** 	//with this example the UAV will go to ~10% throttle when SDK control is activated
- 284:sdk.c         **** 	WO_CTRL_Input.ctrl=0x08;	//0x08: enable throttle control by HL. Height control and GPS are deactiv
- 631              	.LM42:
- 632 0438 20209FE5 		ldr	r2, .L28+4
- 633 043c 0830A0E3 		mov	r3, #8
- 634 0440 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 285:sdk.c         **** 								//pitch, roll and yaw are still commanded via the remote control
- 286:sdk.c         **** 
- 287:sdk.c         **** 	WO_CTRL_Input.thrust=400;	//10% throttle command
- 636              	.LM43:
- 637 0444 14209FE5 		ldr	r2, .L28+4
- 638 0448 193EA0E3 		mov	r3, #400
- 639 044c B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 288:sdk.c         **** 
- 289:sdk.c         **** 
- 290:sdk.c         **** }
- 641              	.LM44:
- 642 0450 0CD04BE2 		sub	sp, fp, #12
- 643 0454 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 644 0458 1EFF2FE1 		bx	lr
- 645              	.L29:
- 646              		.align	2
- 647              	.L28:
- 648 045c 00000000 		.word	WO_SDK
- 649 0460 00000000 		.word	WO_CTRL_Input
- 651              	.Lscope4:
- 652              		.bss
- 653              		.align	2
- 654              	originLon.2061:
- 655 01c4 00000000 		.space	8
- 655      00000000 
- 657              		.align	2
- 658              	originLat.2060:
- 659 01cc 00000000 		.space	8
- 659      00000000 
- 661              	wpExampleState.2059:
- 662 01d4 00       		.space	1
- 664              		.global	__floatsidf
- 665              		.global	__divdf3
- 666              		.global	__muldf3
- 667              		.global	__fixdfsi
- 668              		.text
- 669              		.align	2
- 671              		.global	SDK_EXAMPLE_gps_waypoint_control
- 673              	SDK_EXAMPLE_gps_waypoint_control:
- 291:sdk.c         **** 
- 292:sdk.c         **** 
- 293:sdk.c         **** 
- 294:sdk.c         **** /* This function demonstrates a simple waypoint command generation. Switch on Channel 7 is used
- 295:sdk.c         ****  * to activate a 15m by 15m square. Therefore a waypoint is calculated from the current position an
- 296:sdk.c         ****  * height and is transmitted to the low level processor. The waypoint status is monitored to switch
- 297:sdk.c         ****  * the next waypoint after the current one is reached.
- 298:sdk.c         ****  *
- 299:sdk.c         ****  * wpCtrlWpCmd is used to send a command to the low level processor. Different options like waypoin
- 300:sdk.c         ****  * are available. See LL_HL_comm.h for WP_CMD_* defines
- 301:sdk.c         ****  *
- 302:sdk.c         ****  * wpCtrlWpCmdUpdated has to be set to 1 to send the command. When the cmd is sent it is set back t
- 303:sdk.c         ****  *
- 304:sdk.c         ****  * wpCtrlAckTrigger is set to 1 when the LL accepts the waypoint
- 305:sdk.c         ****  *
- 306:sdk.c         ****  * wpCtrlNavStatus gives you a navigation status. See WP_NAVSTAT_* defines in SDK.h for options
- 307:sdk.c         ****  *
- 308:sdk.c         ****  * wpCtrlDistToWp gives you the current distance to the current waypoint in dm (= 10 cm)
- 309:sdk.c         ****  */
- 310:sdk.c         **** void SDK_EXAMPLE_gps_waypoint_control()
- 311:sdk.c         **** {
- 675              	.LM45:
- 676              		@ Function supports interworking.
- 677              		@ args = 0, pretend = 0, frame = 48
- 678              		@ frame_needed = 1, uses_anonymous_args = 0
- 679 0464 0DC0A0E1 		mov	ip, sp
- 680 0468 70D82DE9 		stmfd	sp!, {r4, r5, r6, fp, ip, lr, pc}
- 681 046c 04B04CE2 		sub	fp, ip, #4
- 682 0470 48D04DE2 		sub	sp, sp, #72
- 312:sdk.c         **** 	static unsigned char wpExampleState=0;
- 313:sdk.c         **** 	static double originLat,originLon;
- 314:sdk.c         **** 
+ 280:sdk.c         **** 
+ 281:sdk.c         **** /* This function demonstrates a simple waypoint command generation. Switch on Channel 7 is used
+ 282:sdk.c         ****  * to activate a 15m by 15m square. Therefore a waypoint is calculated from the current position an
+ 283:sdk.c         ****  * height and is transmitted to the low level processor. The waypoint status is monitored to switch
+ 284:sdk.c         ****  * the next waypoint after the current one is reached.
+ 285:sdk.c         ****  *
+ 286:sdk.c         ****  * wpCtrlWpCmd is used to send a command to the low level processor. Different options like waypoin
+ 287:sdk.c         ****  * are available. See LL_HL_comm.h for WP_CMD_* defines
+ 288:sdk.c         ****  *
+ 289:sdk.c         ****  * wpCtrlWpCmdUpdated has to be set to 1 to send the command. When the cmd is sent it is set back t
+ 290:sdk.c         ****  *
+ 291:sdk.c         ****  * wpCtrlAckTrigger is set to 1 when the LL accepts the waypoint
+ 292:sdk.c         ****  *
+ 293:sdk.c         ****  * wpCtrlNavStatus gives you a navigation status. See WP_NAVSTAT_* defines in SDK.h for options
+ 294:sdk.c         ****  *
+ 295:sdk.c         ****  * wpCtrlDistToWp gives you the current distance to the current waypoint in dm (= 10 cm)
+ 296:sdk.c         ****  */
+ 297:sdk.c         **** void SDK_EXAMPLE_gps_waypoint_control()
+ 298:sdk.c         **** {
+ 700              	.LM46:
+ 701              		@ Function supports interworking.
+ 702              		@ args = 0, pretend = 0, frame = 48
+ 703              		@ frame_needed = 1, uses_anonymous_args = 0
+ 704 0480 0DC0A0E1 		mov	ip, sp
+ 705 0484 70D82DE9 		stmfd	sp!, {r4, r5, r6, fp, ip, lr, pc}
+ 706 0488 04B04CE2 		sub	fp, ip, #4
+ 707 048c 48D04DE2 		sub	sp, sp, #72
+ 299:sdk.c         **** 	static unsigned char wpExampleState=0;
+ 300:sdk.c         **** 	static double originLat,originLon;
+ 301:sdk.c         **** 
+ 302:sdk.c         **** 
+ 303:sdk.c         **** 	WO_SDK.ctrl_mode=0x03;
+ 709              	.LM47:
+ 710 0490 34239FE5 		ldr	r2, .L68
+ 711 0494 0330A0E3 		mov	r3, #3
+ 712 0498 0030C2E5 		strb	r3, [r2, #0]
+ 304:sdk.c         **** 
+ 305:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
+ 714              	.LM48:
+ 715 049c 28239FE5 		ldr	r2, .L68
+ 716 04a0 0130A0E3 		mov	r3, #1
+ 717 04a4 0130C2E5 		strb	r3, [r2, #1]
+ 306:sdk.c         **** 							//1: enable control by HL processor
+ 307:sdk.c         **** 
+ 308:sdk.c         **** 	switch (wpExampleState)
+ 719              	.LM49:
+ 720 04a8 2C339FE5 		ldr	r3, .L68+16
+ 721 04ac 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 722 04b0 040053E3 		cmp	r3, #4
+ 723 04b4 03F19F97 		ldrls	pc, [pc, r3, asl #2]
+ 724 04b8 DC0200EA 		b	.L31
+ 725              		.align	2
+ 726              	.L37:
+ 727 04bc D0040000 		.word	.L32
+ 728 04c0 F8040000 		.word	.L33
+ 729 04c4 04080000 		.word	.L34
+ 730 04c8 CC0A0000 		.word	.L35
+ 731 04cc C00D0000 		.word	.L36
+ 732              	.L32:
+ 309:sdk.c         **** 	{
+ 310:sdk.c         **** 		//prior to start, the lever on channel 7 has to be in "OFF" position
+ 311:sdk.c         **** 		case 0:
+ 312:sdk.c         **** 		if (RO_RC_Data.channel[6]<1600)
+ 734              	.LM50:
+ 735 04d0 00339FE5 		ldr	r3, .L68+12
+ 736 04d4 BC20D3E1 		ldrh	r2, [r3, #12]
+ 737 04d8 633EA0E3 		mov	r3, #1584
+ 738 04dc 0F3083E2 		add	r3, r3, #15
+ 739 04e0 030052E1 		cmp	r2, r3
+ 740 04e4 D402008A 		bhi	.L67
+ 313:sdk.c         **** 			wpExampleState=1;
+ 742              	.LM51:
+ 743 04e8 EC329FE5 		ldr	r3, .L68+16
+ 744 04ec 0120A0E3 		mov	r2, #1
+ 745 04f0 0020C3E5 		strb	r2, [r3, #0]
+ 314:sdk.c         **** 		break;
+ 747              	.LM52:
+ 748 04f4 D00200EA 		b	.L67
+ 749              	.L33:
  315:sdk.c         **** 
- 316:sdk.c         **** 	WO_SDK.ctrl_mode=0x03;
- 684              	.LM46:
- 685 0474 34239FE5 		ldr	r2, .L68
- 686 0478 0330A0E3 		mov	r3, #3
- 687 047c 0030C2E5 		strb	r3, [r2, #0]
- 317:sdk.c         **** 
- 318:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
- 689              	.LM47:
- 690 0480 28239FE5 		ldr	r2, .L68
- 691 0484 0130A0E3 		mov	r3, #1
- 692 0488 0130C2E5 		strb	r3, [r2, #1]
- 319:sdk.c         **** 							//1: enable control by HL processor
- 320:sdk.c         **** 
- 321:sdk.c         **** 	switch (wpExampleState)
- 694              	.LM48:
- 695 048c 2C339FE5 		ldr	r3, .L68+16
- 696 0490 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 697 0494 040053E3 		cmp	r3, #4
- 698 0498 03F19F97 		ldrls	pc, [pc, r3, asl #2]
- 699 049c DC0200EA 		b	.L31
- 700              		.align	2
- 701              	.L37:
- 702 04a0 B4040000 		.word	.L32
- 703 04a4 DC040000 		.word	.L33
- 704 04a8 E8070000 		.word	.L34
- 705 04ac B00A0000 		.word	.L35
- 706 04b0 A40D0000 		.word	.L36
- 707              	.L32:
- 322:sdk.c         **** 	{
- 323:sdk.c         **** 		//prior to start, the lever on channel 7 has to be in "OFF" position
- 324:sdk.c         **** 		case 0:
- 325:sdk.c         **** 		if (RO_RC_Data.channel[6]<1600)
- 709              	.LM49:
- 710 04b4 00339FE5 		ldr	r3, .L68+12
- 711 04b8 BC20D3E1 		ldrh	r2, [r3, #12]
- 712 04bc 633EA0E3 		mov	r3, #1584
- 713 04c0 0F3083E2 		add	r3, r3, #15
- 714 04c4 030052E1 		cmp	r2, r3
- 715 04c8 D402008A 		bhi	.L67
- 326:sdk.c         **** 			wpExampleState=1;
- 717              	.LM50:
- 718 04cc EC329FE5 		ldr	r3, .L68+16
- 719 04d0 0120A0E3 		mov	r2, #1
- 720 04d4 0020C3E5 		strb	r2, [r3, #0]
- 327:sdk.c         **** 		break;
- 722              	.LM51:
- 723 04d8 D00200EA 		b	.L67
- 724              	.L33:
- 328:sdk.c         **** 
- 329:sdk.c         **** 		case 1:
- 330:sdk.c         **** 		if (RO_RC_Data.channel[6]>2400)
- 726              	.LM52:
- 727 04dc D8329FE5 		ldr	r3, .L68+12
- 728 04e0 BC30D3E1 		ldrh	r3, [r3, #12]
- 729 04e4 960E53E3 		cmp	r3, #2400
- 730 04e8 CC02009A 		bls	.L67
- 731              	.LBB2:
- 331:sdk.c         **** 		{
- 332:sdk.c         **** 			double lat,lon;
- 333:sdk.c         **** 			//lever was set to "ON" state -> calculate and send first waypoint and switch state
+ 316:sdk.c         **** 		case 1:
+ 317:sdk.c         **** 		if (RO_RC_Data.channel[6]>2400)
+ 751              	.LM53:
+ 752 04f8 D8329FE5 		ldr	r3, .L68+12
+ 753 04fc BC30D3E1 		ldrh	r3, [r3, #12]
+ 754 0500 960E53E3 		cmp	r3, #2400
+ 755 0504 CC02009A 		bls	.L67
+ 756              	.LBB2:
+ 318:sdk.c         **** 		{
+ 319:sdk.c         **** 			double lat,lon;
+ 320:sdk.c         **** 			//lever was set to "ON" state -> calculate and send first waypoint and switch state
+ 321:sdk.c         **** 
+ 322:sdk.c         **** 			//fill waypoint structure
+ 323:sdk.c         **** 			wpToLL.max_speed=100;
+ 758              	.LM54:
+ 759 0508 E0229FE5 		ldr	r2, .L68+36
+ 760 050c 6430A0E3 		mov	r3, #100
+ 761 0510 0530C2E5 		strb	r3, [r2, #5]
+ 324:sdk.c         **** 			wpToLL.pos_acc=3000; 	//3m accuracy
+ 763              	.LM55:
+ 764 0514 D4229FE5 		ldr	r2, .L68+36
+ 765 0518 BB3EA0E3 		mov	r3, #2992
+ 766 051c 083083E2 		add	r3, r3, #8
+ 767 0520 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 325:sdk.c         **** 			wpToLL.time=400; 		//4 seconds waiting time at each waypoint
+ 769              	.LM56:
+ 770 0524 C4229FE5 		ldr	r2, .L68+36
+ 771 0528 193EA0E3 		mov	r3, #400
+ 772 052c B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 326:sdk.c         **** 			wpToLL.wp_activated=1;
+ 774              	.LM57:
+ 775 0530 B8229FE5 		ldr	r2, .L68+36
+ 776 0534 0130A0E3 		mov	r3, #1
+ 777 0538 003082E5 		str	r3, [r2, #0]
+ 327:sdk.c         **** 
+ 328:sdk.c         **** 			//see LL_HL_comm.h for WPPROP defines
+ 329:sdk.c         **** 			wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED;
+ 779              	.LM58:
+ 780 053c AC229FE5 		ldr	r2, .L68+36
+ 781 0540 1730A0E3 		mov	r3, #23
+ 782 0544 0430C2E5 		strb	r3, [r2, #4]
+ 330:sdk.c         **** 
+ 331:sdk.c         **** 			//use current height and yaw
+ 332:sdk.c         **** 			wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
+ 784              	.LM59:
+ 785 0548 9C329FE5 		ldr	r3, .L68+32
+ 786 054c 082093E5 		ldr	r2, [r3, #8]
+ 787 0550 98329FE5 		ldr	r3, .L68+36
+ 788 0554 142083E5 		str	r2, [r3, #20]
+ 333:sdk.c         **** 			wpToLL.height=IMU_CalcData.height; //use current height
+ 790              	.LM60:
+ 791 0558 8C329FE5 		ldr	r3, .L68+32
+ 792 055c 4C2093E5 		ldr	r2, [r3, #76]
+ 793 0560 88329FE5 		ldr	r3, .L68+36
+ 794 0564 182083E5 		str	r2, [r3, #24]
  334:sdk.c         **** 
- 335:sdk.c         **** 			//fill waypoint structure
- 336:sdk.c         **** 			wpToLL.max_speed=100;
- 733              	.LM53:
- 734 04ec E0229FE5 		ldr	r2, .L68+36
- 735 04f0 6430A0E3 		mov	r3, #100
- 736 04f4 0530C2E5 		strb	r3, [r2, #5]
- 337:sdk.c         **** 			wpToLL.pos_acc=3000; 	//3m accuracy
- 738              	.LM54:
- 739 04f8 D4229FE5 		ldr	r2, .L68+36
- 740 04fc BB3EA0E3 		mov	r3, #2992
- 741 0500 083083E2 		add	r3, r3, #8
- 742 0504 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 338:sdk.c         **** 			wpToLL.time=400; 		//4 seconds waiting time at each waypoint
- 744              	.LM55:
- 745 0508 C4229FE5 		ldr	r2, .L68+36
- 746 050c 193EA0E3 		mov	r3, #400
- 747 0510 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 339:sdk.c         **** 			wpToLL.wp_activated=1;
- 749              	.LM56:
- 750 0514 B8229FE5 		ldr	r2, .L68+36
- 751 0518 0130A0E3 		mov	r3, #1
- 752 051c 003082E5 		str	r3, [r2, #0]
+ 335:sdk.c         **** 			originLat=(double)GPS_Data.latitude/10000000.0;
+ 796              	.LM61:
+ 797 0568 60329FE5 		ldr	r3, .L68+4
+ 798 056c 003093E5 		ldr	r3, [r3, #0]
+ 799 0570 0300A0E1 		mov	r0, r3
+ 800 0574 FEFFFFEB 		bl	__floatsidf
+ 801 0578 0030A0E1 		mov	r3, r0
+ 802 057c 0140A0E1 		mov	r4, r1
+ 803 0580 0300A0E1 		mov	r0, r3
+ 804 0584 0410A0E1 		mov	r1, r4
+ 805 0588 9B2F8FE2 		adr	r2, .L68+48
+ 806 058c 0C0092E8 		ldmia	r2, {r2-r3}
+ 807 0590 FEFFFFEB 		bl	__divdf3
+ 808 0594 0030A0E1 		mov	r3, r0
+ 809 0598 0140A0E1 		mov	r4, r1
+ 810 059c 50229FE5 		ldr	r2, .L68+40
+ 811 05a0 180082E8 		stmia	r2, {r3-r4}
+ 336:sdk.c         **** 			originLon=(double)GPS_Data.longitude/10000000.0;
+ 813              	.LM62:
+ 814 05a4 24329FE5 		ldr	r3, .L68+4
+ 815 05a8 043093E5 		ldr	r3, [r3, #4]
+ 816 05ac 0300A0E1 		mov	r0, r3
+ 817 05b0 FEFFFFEB 		bl	__floatsidf
+ 818 05b4 0030A0E1 		mov	r3, r0
+ 819 05b8 0140A0E1 		mov	r4, r1
+ 820 05bc 0300A0E1 		mov	r0, r3
+ 821 05c0 0410A0E1 		mov	r1, r4
+ 822 05c4 232E8FE2 		adr	r2, .L68+48
+ 823 05c8 0C0092E8 		ldmia	r2, {r2-r3}
+ 824 05cc FEFFFFEB 		bl	__divdf3
+ 825 05d0 0030A0E1 		mov	r3, r0
+ 826 05d4 0140A0E1 		mov	r4, r1
+ 827 05d8 18229FE5 		ldr	r2, .L68+44
+ 828 05dc 180082E8 		stmia	r2, {r3-r4}
+ 337:sdk.c         **** 
+ 338:sdk.c         **** 			//calculate a position 15m north of us
+ 339:sdk.c         **** 			xy2latlon(originLat,originLon,0.0,15.0,&lat,&lon);
+ 830              	.LM63:
+ 831 05e0 0C329FE5 		ldr	r3, .L68+40
+ 832 05e4 060093E8 		ldmia	r3, {r1-r2}
+ 833 05e8 08329FE5 		ldr	r3, .L68+44
+ 834 05ec 600093E8 		ldmia	r3, {r5-r6}
+ 835 05f0 0030A0E3 		mov	r3, #0
+ 836 05f4 0040A0E3 		mov	r4, #0
+ 837 05f8 18008DE8 		stmia	sp, {r3-r4}
+ 838 05fc 0131A0E3 		mov	r3, #1073741824
+ 839 0600 2E3883E2 		add	r3, r3, #3014656
+ 840 0604 0040A0E3 		mov	r4, #0
+ 841 0608 08308DE5 		str	r3, [sp, #8]
+ 842 060c 0C408DE5 		str	r4, [sp, #12]
+ 843 0610 20304BE2 		sub	r3, fp, #32
+ 844 0614 10308DE5 		str	r3, [sp, #16]
+ 845 0618 28304BE2 		sub	r3, fp, #40
+ 846 061c 14308DE5 		str	r3, [sp, #20]
+ 847 0620 0100A0E1 		mov	r0, r1
+ 848 0624 0210A0E1 		mov	r1, r2
+ 849 0628 0520A0E1 		mov	r2, r5
+ 850 062c 0630A0E1 		mov	r3, r6
+ 851 0630 FEFFFFEB 		bl	xy2latlon
  340:sdk.c         **** 
- 341:sdk.c         **** 			//see LL_HL_comm.h for WPPROP defines
- 342:sdk.c         **** 			wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED;
- 754              	.LM57:
- 755 0520 AC229FE5 		ldr	r2, .L68+36
- 756 0524 1730A0E3 		mov	r3, #23
- 757 0528 0430C2E5 		strb	r3, [r2, #4]
+ 341:sdk.c         **** 			wpToLL.X=lon*10000000;
+ 853              	.LM64:
+ 854 0634 28304BE2 		sub	r3, fp, #40
+ 855 0638 180093E8 		ldmia	r3, {r3-r4}
+ 856 063c 0300A0E1 		mov	r0, r3
+ 857 0640 0410A0E1 		mov	r1, r4
+ 858 0644 1B2E8FE2 		adr	r2, .L68+48
+ 859 0648 0C0092E8 		ldmia	r2, {r2-r3}
+ 860 064c FEFFFFEB 		bl	__muldf3
+ 861 0650 0030A0E1 		mov	r3, r0
+ 862 0654 0140A0E1 		mov	r4, r1
+ 863 0658 0300A0E1 		mov	r0, r3
+ 864 065c 0410A0E1 		mov	r1, r4
+ 865 0660 FEFFFFEB 		bl	__fixdfsi
+ 866 0664 0020A0E1 		mov	r2, r0
+ 867 0668 80319FE5 		ldr	r3, .L68+36
+ 868 066c 0C2083E5 		str	r2, [r3, #12]
+ 342:sdk.c         **** 			wpToLL.Y=lat*10000000;
+ 870              	.LM65:
+ 871 0670 20304BE2 		sub	r3, fp, #32
+ 872 0674 180093E8 		ldmia	r3, {r3-r4}
+ 873 0678 0300A0E1 		mov	r0, r3
+ 874 067c 0410A0E1 		mov	r1, r4
+ 875 0680 5D2F8FE2 		adr	r2, .L68+48
+ 876 0684 0C0092E8 		ldmia	r2, {r2-r3}
+ 877 0688 FEFFFFEB 		bl	__muldf3
+ 878 068c 0030A0E1 		mov	r3, r0
+ 879 0690 0140A0E1 		mov	r4, r1
+ 880 0694 0300A0E1 		mov	r0, r3
+ 881 0698 0410A0E1 		mov	r1, r4
+ 882 069c FEFFFFEB 		bl	__fixdfsi
+ 883 06a0 0020A0E1 		mov	r2, r0
+ 884 06a4 44319FE5 		ldr	r3, .L68+36
+ 885 06a8 102083E5 		str	r2, [r3, #16]
  343:sdk.c         **** 
- 344:sdk.c         **** 			//use current height and yaw
- 345:sdk.c         **** 			wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
- 759              	.LM58:
- 760 052c 9C329FE5 		ldr	r3, .L68+32
- 761 0530 082093E5 		ldr	r2, [r3, #8]
- 762 0534 98329FE5 		ldr	r3, .L68+36
- 763 0538 142083E5 		str	r2, [r3, #20]
- 346:sdk.c         **** 			wpToLL.height=IMU_CalcData.height; //use current height
- 765              	.LM59:
- 766 053c 8C329FE5 		ldr	r3, .L68+32
- 767 0540 4C2093E5 		ldr	r2, [r3, #76]
- 768 0544 88329FE5 		ldr	r3, .L68+36
- 769 0548 182083E5 		str	r2, [r3, #24]
- 347:sdk.c         **** 
- 348:sdk.c         **** 			originLat=(double)GPS_Data.latitude/10000000.0;
- 771              	.LM60:
- 772 054c 60329FE5 		ldr	r3, .L68+4
- 773 0550 003093E5 		ldr	r3, [r3, #0]
- 774 0554 0300A0E1 		mov	r0, r3
- 775 0558 FEFFFFEB 		bl	__floatsidf
- 776 055c 0030A0E1 		mov	r3, r0
- 777 0560 0140A0E1 		mov	r4, r1
- 778 0564 0300A0E1 		mov	r0, r3
- 779 0568 0410A0E1 		mov	r1, r4
- 780 056c 9B2F8FE2 		adr	r2, .L68+48
- 781 0570 0C0092E8 		ldmia	r2, {r2-r3}
- 782 0574 FEFFFFEB 		bl	__divdf3
- 783 0578 0030A0E1 		mov	r3, r0
- 784 057c 0140A0E1 		mov	r4, r1
- 785 0580 50229FE5 		ldr	r2, .L68+40
- 786 0584 180082E8 		stmia	r2, {r3-r4}
- 349:sdk.c         **** 			originLon=(double)GPS_Data.longitude/10000000.0;
- 788              	.LM61:
- 789 0588 24329FE5 		ldr	r3, .L68+4
- 790 058c 043093E5 		ldr	r3, [r3, #4]
- 791 0590 0300A0E1 		mov	r0, r3
- 792 0594 FEFFFFEB 		bl	__floatsidf
- 793 0598 0030A0E1 		mov	r3, r0
- 794 059c 0140A0E1 		mov	r4, r1
- 795 05a0 0300A0E1 		mov	r0, r3
- 796 05a4 0410A0E1 		mov	r1, r4
- 797 05a8 232E8FE2 		adr	r2, .L68+48
- 798 05ac 0C0092E8 		ldmia	r2, {r2-r3}
- 799 05b0 FEFFFFEB 		bl	__divdf3
- 800 05b4 0030A0E1 		mov	r3, r0
- 801 05b8 0140A0E1 		mov	r4, r1
- 802 05bc 18229FE5 		ldr	r2, .L68+44
- 803 05c0 180082E8 		stmia	r2, {r3-r4}
- 350:sdk.c         **** 
- 351:sdk.c         **** 			//calculate a position 15m north of us
- 352:sdk.c         **** 			xy2latlon(originLat,originLon,0.0,15.0,&lat,&lon);
- 805              	.LM62:
- 806 05c4 0C329FE5 		ldr	r3, .L68+40
- 807 05c8 060093E8 		ldmia	r3, {r1-r2}
- 808 05cc 08329FE5 		ldr	r3, .L68+44
- 809 05d0 600093E8 		ldmia	r3, {r5-r6}
- 810 05d4 0030A0E3 		mov	r3, #0
- 811 05d8 0040A0E3 		mov	r4, #0
- 812 05dc 18008DE8 		stmia	sp, {r3-r4}
- 813 05e0 0131A0E3 		mov	r3, #1073741824
- 814 05e4 2E3883E2 		add	r3, r3, #3014656
- 815 05e8 0040A0E3 		mov	r4, #0
- 816 05ec 08308DE5 		str	r3, [sp, #8]
- 817 05f0 0C408DE5 		str	r4, [sp, #12]
- 818 05f4 20304BE2 		sub	r3, fp, #32
- 819 05f8 10308DE5 		str	r3, [sp, #16]
- 820 05fc 28304BE2 		sub	r3, fp, #40
- 821 0600 14308DE5 		str	r3, [sp, #20]
- 822 0604 0100A0E1 		mov	r0, r1
- 823 0608 0210A0E1 		mov	r1, r2
- 824 060c 0520A0E1 		mov	r2, r5
- 825 0610 0630A0E1 		mov	r3, r6
- 826 0614 FEFFFFEB 		bl	xy2latlon
- 353:sdk.c         **** 
- 354:sdk.c         **** 			wpToLL.X=lon*10000000;
- 828              	.LM63:
- 829 0618 28304BE2 		sub	r3, fp, #40
- 830 061c 180093E8 		ldmia	r3, {r3-r4}
- 831 0620 0300A0E1 		mov	r0, r3
- 832 0624 0410A0E1 		mov	r1, r4
- 833 0628 1B2E8FE2 		adr	r2, .L68+48
- 834 062c 0C0092E8 		ldmia	r2, {r2-r3}
- 835 0630 FEFFFFEB 		bl	__muldf3
- 836 0634 0030A0E1 		mov	r3, r0
- 837 0638 0140A0E1 		mov	r4, r1
- 838 063c 0300A0E1 		mov	r0, r3
- 839 0640 0410A0E1 		mov	r1, r4
- 840 0644 FEFFFFEB 		bl	__fixdfsi
- 841 0648 0020A0E1 		mov	r2, r0
- 842 064c 80319FE5 		ldr	r3, .L68+36
- 843 0650 0C2083E5 		str	r2, [r3, #12]
- 355:sdk.c         **** 			wpToLL.Y=lat*10000000;
- 845              	.LM64:
- 846 0654 20304BE2 		sub	r3, fp, #32
- 847 0658 180093E8 		ldmia	r3, {r3-r4}
- 848 065c 0300A0E1 		mov	r0, r3
- 849 0660 0410A0E1 		mov	r1, r4
- 850 0664 5D2F8FE2 		adr	r2, .L68+48
- 851 0668 0C0092E8 		ldmia	r2, {r2-r3}
- 852 066c FEFFFFEB 		bl	__muldf3
- 853 0670 0030A0E1 		mov	r3, r0
- 854 0674 0140A0E1 		mov	r4, r1
- 855 0678 0300A0E1 		mov	r0, r3
- 856 067c 0410A0E1 		mov	r1, r4
- 857 0680 FEFFFFEB 		bl	__fixdfsi
- 858 0684 0020A0E1 		mov	r2, r0
- 859 0688 44319FE5 		ldr	r3, .L68+36
- 860 068c 102083E5 		str	r2, [r3, #16]
- 356:sdk.c         **** 
- 357:sdk.c         **** 			//calc chksum
- 358:sdk.c         **** 			wpToLL.chksum = 0xAAAA
- 862              	.LM65:
- 863 0690 3C319FE5 		ldr	r3, .L68+36
- 864 0694 143093E5 		ldr	r3, [r3, #20]
- 865 0698 0338A0E1 		mov	r3, r3, asl #16
- 866 069c 2328A0E1 		mov	r2, r3, lsr #16
- 867 06a0 2C319FE5 		ldr	r3, .L68+36
- 868 06a4 183093E5 		ldr	r3, [r3, #24]
- 869 06a8 0338A0E1 		mov	r3, r3, asl #16
- 870 06ac 2338A0E1 		mov	r3, r3, lsr #16
- 871 06b0 033082E0 		add	r3, r2, r3
- 872 06b4 0338A0E1 		mov	r3, r3, asl #16
- 873 06b8 2328A0E1 		mov	r2, r3, lsr #16
- 874 06bc 10319FE5 		ldr	r3, .L68+36
- 875 06c0 B630D3E1 		ldrh	r3, [r3, #6]
- 876 06c4 033082E0 		add	r3, r2, r3
- 877 06c8 0338A0E1 		mov	r3, r3, asl #16
- 878 06cc 2328A0E1 		mov	r2, r3, lsr #16
- 879 06d0 FC309FE5 		ldr	r3, .L68+36
- 880 06d4 0C3093E5 		ldr	r3, [r3, #12]
- 881 06d8 0338A0E1 		mov	r3, r3, asl #16
- 882 06dc 2338A0E1 		mov	r3, r3, lsr #16
- 883 06e0 033082E0 		add	r3, r2, r3
- 884 06e4 0338A0E1 		mov	r3, r3, asl #16
- 885 06e8 2328A0E1 		mov	r2, r3, lsr #16
- 886 06ec E0309FE5 		ldr	r3, .L68+36
- 887 06f0 103093E5 		ldr	r3, [r3, #16]
- 888 06f4 0338A0E1 		mov	r3, r3, asl #16
- 889 06f8 2338A0E1 		mov	r3, r3, lsr #16
- 890 06fc 033082E0 		add	r3, r2, r3
- 891 0700 0338A0E1 		mov	r3, r3, asl #16
- 892 0704 2328A0E1 		mov	r2, r3, lsr #16
- 893 0708 C4309FE5 		ldr	r3, .L68+36
- 894 070c 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
- 895 0710 033082E0 		add	r3, r2, r3
- 896 0714 0338A0E1 		mov	r3, r3, asl #16
- 897 0718 2328A0E1 		mov	r2, r3, lsr #16
- 898 071c B0309FE5 		ldr	r3, .L68+36
- 899 0720 B830D3E1 		ldrh	r3, [r3, #8]
- 900 0724 033082E0 		add	r3, r2, r3
- 901 0728 0338A0E1 		mov	r3, r3, asl #16
- 902 072c 2328A0E1 		mov	r2, r3, lsr #16
- 903 0730 9C309FE5 		ldr	r3, .L68+36
- 904 0734 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 905 0738 033082E0 		add	r3, r2, r3
- 906 073c 0338A0E1 		mov	r3, r3, asl #16
- 907 0740 2328A0E1 		mov	r2, r3, lsr #16
- 908 0744 88309FE5 		ldr	r3, .L68+36
- 909 0748 003093E5 		ldr	r3, [r3, #0]
- 910 074c 0338A0E1 		mov	r3, r3, asl #16
- 911 0750 2338A0E1 		mov	r3, r3, lsr #16
- 912 0754 033082E0 		add	r3, r2, r3
- 913 0758 0338A0E1 		mov	r3, r3, asl #16
- 914 075c 2338A0E1 		mov	r3, r3, lsr #16
- 915 0760 553C43E2 		sub	r3, r3, #21760
- 916 0764 563043E2 		sub	r3, r3, #86
- 917 0768 0338A0E1 		mov	r3, r3, asl #16
- 918 076c 2338A0E1 		mov	r3, r3, lsr #16
- 919 0770 0320A0E1 		mov	r2, r3
- 920 0774 58309FE5 		ldr	r3, .L68+36
- 921 0778 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
- 359:sdk.c         **** 									+ wpToLL.yaw
- 360:sdk.c         **** 									+ wpToLL.height
- 361:sdk.c         **** 									+ wpToLL.time
- 362:sdk.c         **** 									+ wpToLL.X
- 363:sdk.c         **** 									+ wpToLL.Y
- 364:sdk.c         **** 									+ wpToLL.max_speed
- 365:sdk.c         **** 									+ wpToLL.pos_acc
- 366:sdk.c         **** 									+ wpToLL.properties
- 367:sdk.c         **** 									+ wpToLL.wp_activated;
- 368:sdk.c         **** 
- 369:sdk.c         **** 			//send waypoint
- 370:sdk.c         **** 			wpCtrlAckTrigger=0;
- 923              	.LM66:
- 924 077c 44209FE5 		ldr	r2, .L68+24
- 925 0780 0030A0E3 		mov	r3, #0
- 926 0784 0030C2E5 		strb	r3, [r2, #0]
- 371:sdk.c         **** 			wpCtrlWpCmd=WP_CMD_SINGLE_WP;
- 928              	.LM67:
- 929 0788 28209FE5 		ldr	r2, .L68+8
- 930 078c 0130A0E3 		mov	r3, #1
- 931 0790 0030C2E5 		strb	r3, [r2, #0]
- 372:sdk.c         **** 			wpCtrlWpCmdUpdated=1;
- 933              	.LM68:
- 934 0794 28209FE5 		ldr	r2, .L68+20
- 935 0798 0130A0E3 		mov	r3, #1
- 936 079c 0030C2E5 		strb	r3, [r2, #0]
- 373:sdk.c         **** 
- 374:sdk.c         **** 			wpExampleState=2;
- 938              	.LM69:
- 939 07a0 18209FE5 		ldr	r2, .L68+16
- 940 07a4 0230A0E3 		mov	r3, #2
- 941 07a8 0030C2E5 		strb	r3, [r2, #0]
+ 344:sdk.c         **** 			//calc chksum
+ 345:sdk.c         **** 			wpToLL.chksum = 0xAAAA
+ 887              	.LM66:
+ 888 06ac 3C319FE5 		ldr	r3, .L68+36
+ 889 06b0 143093E5 		ldr	r3, [r3, #20]
+ 890 06b4 0338A0E1 		mov	r3, r3, asl #16
+ 891 06b8 2328A0E1 		mov	r2, r3, lsr #16
+ 892 06bc 2C319FE5 		ldr	r3, .L68+36
+ 893 06c0 183093E5 		ldr	r3, [r3, #24]
+ 894 06c4 0338A0E1 		mov	r3, r3, asl #16
+ 895 06c8 2338A0E1 		mov	r3, r3, lsr #16
+ 896 06cc 033082E0 		add	r3, r2, r3
+ 897 06d0 0338A0E1 		mov	r3, r3, asl #16
+ 898 06d4 2328A0E1 		mov	r2, r3, lsr #16
+ 899 06d8 10319FE5 		ldr	r3, .L68+36
+ 900 06dc B630D3E1 		ldrh	r3, [r3, #6]
+ 901 06e0 033082E0 		add	r3, r2, r3
+ 902 06e4 0338A0E1 		mov	r3, r3, asl #16
+ 903 06e8 2328A0E1 		mov	r2, r3, lsr #16
+ 904 06ec FC309FE5 		ldr	r3, .L68+36
+ 905 06f0 0C3093E5 		ldr	r3, [r3, #12]
+ 906 06f4 0338A0E1 		mov	r3, r3, asl #16
+ 907 06f8 2338A0E1 		mov	r3, r3, lsr #16
+ 908 06fc 033082E0 		add	r3, r2, r3
+ 909 0700 0338A0E1 		mov	r3, r3, asl #16
+ 910 0704 2328A0E1 		mov	r2, r3, lsr #16
+ 911 0708 E0309FE5 		ldr	r3, .L68+36
+ 912 070c 103093E5 		ldr	r3, [r3, #16]
+ 913 0710 0338A0E1 		mov	r3, r3, asl #16
+ 914 0714 2338A0E1 		mov	r3, r3, lsr #16
+ 915 0718 033082E0 		add	r3, r2, r3
+ 916 071c 0338A0E1 		mov	r3, r3, asl #16
+ 917 0720 2328A0E1 		mov	r2, r3, lsr #16
+ 918 0724 C4309FE5 		ldr	r3, .L68+36
+ 919 0728 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 920 072c 033082E0 		add	r3, r2, r3
+ 921 0730 0338A0E1 		mov	r3, r3, asl #16
+ 922 0734 2328A0E1 		mov	r2, r3, lsr #16
+ 923 0738 B0309FE5 		ldr	r3, .L68+36
+ 924 073c B830D3E1 		ldrh	r3, [r3, #8]
+ 925 0740 033082E0 		add	r3, r2, r3
+ 926 0744 0338A0E1 		mov	r3, r3, asl #16
+ 927 0748 2328A0E1 		mov	r2, r3, lsr #16
+ 928 074c 9C309FE5 		ldr	r3, .L68+36
+ 929 0750 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 930 0754 033082E0 		add	r3, r2, r3
+ 931 0758 0338A0E1 		mov	r3, r3, asl #16
+ 932 075c 2328A0E1 		mov	r2, r3, lsr #16
+ 933 0760 88309FE5 		ldr	r3, .L68+36
+ 934 0764 003093E5 		ldr	r3, [r3, #0]
+ 935 0768 0338A0E1 		mov	r3, r3, asl #16
+ 936 076c 2338A0E1 		mov	r3, r3, lsr #16
+ 937 0770 033082E0 		add	r3, r2, r3
+ 938 0774 0338A0E1 		mov	r3, r3, asl #16
+ 939 0778 2338A0E1 		mov	r3, r3, lsr #16
+ 940 077c 553C43E2 		sub	r3, r3, #21760
+ 941 0780 563043E2 		sub	r3, r3, #86
+ 942 0784 0338A0E1 		mov	r3, r3, asl #16
+ 943 0788 2338A0E1 		mov	r3, r3, lsr #16
+ 944 078c 0320A0E1 		mov	r2, r3
+ 945 0790 58309FE5 		ldr	r3, .L68+36
+ 946 0794 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 346:sdk.c         **** 									+ wpToLL.yaw
+ 347:sdk.c         **** 									+ wpToLL.height
+ 348:sdk.c         **** 									+ wpToLL.time
+ 349:sdk.c         **** 									+ wpToLL.X
+ 350:sdk.c         **** 									+ wpToLL.Y
+ 351:sdk.c         **** 									+ wpToLL.max_speed
+ 352:sdk.c         **** 									+ wpToLL.pos_acc
+ 353:sdk.c         **** 									+ wpToLL.properties
+ 354:sdk.c         **** 									+ wpToLL.wp_activated;
+ 355:sdk.c         **** 
+ 356:sdk.c         **** 			//send waypoint
+ 357:sdk.c         **** 			wpCtrlAckTrigger=0;
+ 948              	.LM67:
+ 949 0798 44209FE5 		ldr	r2, .L68+24
+ 950 079c 0030A0E3 		mov	r3, #0
+ 951 07a0 0030C2E5 		strb	r3, [r2, #0]
+ 358:sdk.c         **** 			wpCtrlWpCmd=WP_CMD_SINGLE_WP;
+ 953              	.LM68:
+ 954 07a4 28209FE5 		ldr	r2, .L68+8
+ 955 07a8 0130A0E3 		mov	r3, #1
+ 956 07ac 0030C2E5 		strb	r3, [r2, #0]
+ 359:sdk.c         **** 			wpCtrlWpCmdUpdated=1;
+ 958              	.LM69:
+ 959 07b0 28209FE5 		ldr	r2, .L68+20
+ 960 07b4 0130A0E3 		mov	r3, #1
+ 961 07b8 0030C2E5 		strb	r3, [r2, #0]
+ 360:sdk.c         **** 
+ 361:sdk.c         **** 			wpExampleState=2;
+ 963              	.LM70:
+ 964 07bc 18209FE5 		ldr	r2, .L68+16
+ 965 07c0 0230A0E3 		mov	r3, #2
+ 966 07c4 0030C2E5 		strb	r3, [r2, #0]
+ 362:sdk.c         **** 
+ 363:sdk.c         **** 		}
+ 364:sdk.c         **** 		break;
+ 968              	.LM71:
+ 969 07c8 1B0200EA 		b	.L67
+ 970              	.L69:
+ 971              		.align	2
+ 972              	.L68:
+ 973 07cc 00000000 		.word	WO_SDK
+ 974 07d0 00000000 		.word	GPS_Data
+ 975 07d4 00000000 		.word	wpCtrlWpCmd
+ 976 07d8 00000000 		.word	RO_RC_Data
+ 977 07dc F8010000 		.word	wpExampleState.2063
+ 978 07e0 00000000 		.word	wpCtrlWpCmdUpdated
+ 979 07e4 00000000 		.word	wpCtrlAckTrigger
+ 980 07e8 00000000 		.word	wpCtrlNavStatus
+ 981 07ec 00000000 		.word	IMU_CalcData
+ 982 07f0 00000000 		.word	wpToLL
+ 983 07f4 F0010000 		.word	originLat.2064
+ 984 07f8 E8010000 		.word	originLon.2065
+ 985 07fc D0126341 		.word	1097011920
+ 986 0800 00000000 		.word	0
+ 987              	.L34:
+ 988              	.LBE2:
+ 365:sdk.c         **** 
+ 366:sdk.c         **** 		case 2:
+ 367:sdk.c         **** 			//wait until cmd is processed and sent to LL processor
+ 368:sdk.c         **** 			if ((wpCtrlWpCmdUpdated==0) && (wpCtrlAckTrigger))
+ 990              	.LM72:
+ 991 0804 2C301FE5 		ldr	r3, .L68+20
+ 992 0808 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 993 080c 000053E3 		cmp	r3, #0
+ 994 0810 A300001A 		bne	.L43
+ 995 0814 38301FE5 		ldr	r3, .L68+24
+ 996 0818 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 997 081c 000053E3 		cmp	r3, #0
+ 998 0820 9F00000A 		beq	.L43
+ 369:sdk.c         **** 			{
+ 370:sdk.c         **** 				//check if waypoint was reached and wait time is over
+ 371:sdk.c         **** 				if (wpCtrlNavStatus&(WP_NAVSTAT_REACHED_POS_TIME))
+ 1000              	.LM73:
+ 1001 0824 44301FE5 		ldr	r3, .L68+28
+ 1002 0828 B030D3E1 		ldrh	r3, [r3, #0]
+ 1003 082c 023003E2 		and	r3, r3, #2
+ 1004 0830 000053E3 		cmp	r3, #0
+ 1005 0834 9200000A 		beq	.L46
+ 1006              	.LBB3:
+ 372:sdk.c         **** 				{
+ 373:sdk.c         **** 					//new waypoint
+ 374:sdk.c         **** 					double lat,lon;
  375:sdk.c         **** 
- 376:sdk.c         **** 		}
- 377:sdk.c         **** 		break;
- 943              	.LM70:
- 944 07ac 1B0200EA 		b	.L67
- 945              	.L69:
- 946              		.align	2
- 947              	.L68:
- 948 07b0 00000000 		.word	WO_SDK
- 949 07b4 00000000 		.word	GPS_Data
- 950 07b8 00000000 		.word	wpCtrlWpCmd
- 951 07bc 00000000 		.word	RO_RC_Data
- 952 07c0 D4010000 		.word	wpExampleState.2059
- 953 07c4 00000000 		.word	wpCtrlWpCmdUpdated
- 954 07c8 00000000 		.word	wpCtrlAckTrigger
- 955 07cc 00000000 		.word	wpCtrlNavStatus
- 956 07d0 00000000 		.word	IMU_CalcData
- 957 07d4 00000000 		.word	wpToLL
- 958 07d8 CC010000 		.word	originLat.2060
- 959 07dc C4010000 		.word	originLon.2061
- 960 07e0 D0126341 		.word	1097011920
- 961 07e4 00000000 		.word	0
- 962              	.L34:
- 963              	.LBE2:
- 378:sdk.c         **** 
- 379:sdk.c         **** 		case 2:
- 380:sdk.c         **** 			//wait until cmd is processed and sent to LL processor
- 381:sdk.c         **** 			if ((wpCtrlWpCmdUpdated==0) && (wpCtrlAckTrigger))
- 965              	.LM71:
- 966 07e8 2C301FE5 		ldr	r3, .L68+20
- 967 07ec 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 968 07f0 000053E3 		cmp	r3, #0
- 969 07f4 A300001A 		bne	.L43
- 970 07f8 38301FE5 		ldr	r3, .L68+24
- 971 07fc 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 972 0800 000053E3 		cmp	r3, #0
- 973 0804 9F00000A 		beq	.L43
- 382:sdk.c         **** 			{
- 383:sdk.c         **** 				//check if waypoint was reached and wait time is over
- 384:sdk.c         **** 				if (wpCtrlNavStatus&(WP_NAVSTAT_REACHED_POS_TIME))
- 975              	.LM72:
- 976 0808 44301FE5 		ldr	r3, .L68+28
- 977 080c B030D3E1 		ldrh	r3, [r3, #0]
- 978 0810 023003E2 		and	r3, r3, #2
- 979 0814 000053E3 		cmp	r3, #0
- 980 0818 9200000A 		beq	.L46
- 981              	.LBB3:
- 385:sdk.c         **** 				{
- 386:sdk.c         **** 					//new waypoint
- 387:sdk.c         **** 					double lat,lon;
+ 376:sdk.c         **** 					//fill waypoint structure
+ 377:sdk.c         **** 					wpToLL.max_speed=100;
+ 1008              	.LM74:
+ 1009 0838 50201FE5 		ldr	r2, .L68+36
+ 1010 083c 6430A0E3 		mov	r3, #100
+ 1011 0840 0530C2E5 		strb	r3, [r2, #5]
+ 378:sdk.c         **** 					wpToLL.pos_acc=3000; //3m accuracy
+ 1013              	.LM75:
+ 1014 0844 5C201FE5 		ldr	r2, .L68+36
+ 1015 0848 BB3EA0E3 		mov	r3, #2992
+ 1016 084c 083083E2 		add	r3, r3, #8
+ 1017 0850 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 379:sdk.c         **** 					wpToLL.time=400; //4 seconds wait time
+ 1019              	.LM76:
+ 1020 0854 6C201FE5 		ldr	r2, .L68+36
+ 1021 0858 193EA0E3 		mov	r3, #400
+ 1022 085c B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 380:sdk.c         **** 					wpToLL.wp_activated=1;
+ 1024              	.LM77:
+ 1025 0860 78201FE5 		ldr	r2, .L68+36
+ 1026 0864 0130A0E3 		mov	r3, #1
+ 1027 0868 003082E5 		str	r3, [r2, #0]
+ 381:sdk.c         **** 
+ 382:sdk.c         **** 					//see LL_HL_comm.h for WPPROP defines
+ 383:sdk.c         **** 					wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED
+ 1029              	.LM78:
+ 1030 086c 84201FE5 		ldr	r2, .L68+36
+ 1031 0870 1730A0E3 		mov	r3, #23
+ 1032 0874 0430C2E5 		strb	r3, [r2, #4]
+ 384:sdk.c         **** 
+ 385:sdk.c         **** 					//use current height and yaw
+ 386:sdk.c         **** 					wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
+ 1034              	.LM79:
+ 1035 0878 94301FE5 		ldr	r3, .L68+32
+ 1036 087c 082093E5 		ldr	r2, [r3, #8]
+ 1037 0880 98301FE5 		ldr	r3, .L68+36
+ 1038 0884 142083E5 		str	r2, [r3, #20]
+ 387:sdk.c         **** 					wpToLL.height=IMU_CalcData.height; //use current height
+ 1040              	.LM80:
+ 1041 0888 A4301FE5 		ldr	r3, .L68+32
+ 1042 088c 4C2093E5 		ldr	r2, [r3, #76]
+ 1043 0890 A8301FE5 		ldr	r3, .L68+36
+ 1044 0894 182083E5 		str	r2, [r3, #24]
  388:sdk.c         **** 
- 389:sdk.c         **** 					//fill waypoint structure
- 390:sdk.c         **** 					wpToLL.max_speed=100;
- 983              	.LM73:
- 984 081c 50201FE5 		ldr	r2, .L68+36
- 985 0820 6430A0E3 		mov	r3, #100
- 986 0824 0530C2E5 		strb	r3, [r2, #5]
- 391:sdk.c         **** 					wpToLL.pos_acc=3000; //3m accuracy
- 988              	.LM74:
- 989 0828 5C201FE5 		ldr	r2, .L68+36
- 990 082c BB3EA0E3 		mov	r3, #2992
- 991 0830 083083E2 		add	r3, r3, #8
- 992 0834 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 392:sdk.c         **** 					wpToLL.time=400; //4 seconds wait time
- 994              	.LM75:
- 995 0838 6C201FE5 		ldr	r2, .L68+36
- 996 083c 193EA0E3 		mov	r3, #400
- 997 0840 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 393:sdk.c         **** 					wpToLL.wp_activated=1;
- 999              	.LM76:
- 1000 0844 78201FE5 		ldr	r2, .L68+36
- 1001 0848 0130A0E3 		mov	r3, #1
- 1002 084c 003082E5 		str	r3, [r2, #0]
+ 389:sdk.c         **** 					//calculate a position 15m north and 15m east of origin
+ 390:sdk.c         **** 					xy2latlon(originLat,originLon,15.0,15.0,&lat,&lon);
+ 1046              	.LM81:
+ 1047 0898 AC301FE5 		ldr	r3, .L68+40
+ 1048 089c 060093E8 		ldmia	r3, {r1-r2}
+ 1049 08a0 B0301FE5 		ldr	r3, .L68+44
+ 1050 08a4 600093E8 		ldmia	r3, {r5-r6}
+ 1051 08a8 0131A0E3 		mov	r3, #1073741824
+ 1052 08ac 2E3883E2 		add	r3, r3, #3014656
+ 1053 08b0 0040A0E3 		mov	r4, #0
+ 1054 08b4 18008DE8 		stmia	sp, {r3-r4}
+ 1055 08b8 0131A0E3 		mov	r3, #1073741824
+ 1056 08bc 2E3883E2 		add	r3, r3, #3014656
+ 1057 08c0 0040A0E3 		mov	r4, #0
+ 1058 08c4 08308DE5 		str	r3, [sp, #8]
+ 1059 08c8 0C408DE5 		str	r4, [sp, #12]
+ 1060 08cc 30304BE2 		sub	r3, fp, #48
+ 1061 08d0 10308DE5 		str	r3, [sp, #16]
+ 1062 08d4 38304BE2 		sub	r3, fp, #56
+ 1063 08d8 14308DE5 		str	r3, [sp, #20]
+ 1064 08dc 0100A0E1 		mov	r0, r1
+ 1065 08e0 0210A0E1 		mov	r1, r2
+ 1066 08e4 0520A0E1 		mov	r2, r5
+ 1067 08e8 0630A0E1 		mov	r3, r6
+ 1068 08ec FEFFFFEB 		bl	xy2latlon
+ 391:sdk.c         **** 
+ 392:sdk.c         **** 					wpToLL.X=lon*10000000;
+ 1070              	.LM82:
+ 1071 08f0 38304BE2 		sub	r3, fp, #56
+ 1072 08f4 180093E8 		ldmia	r3, {r3-r4}
+ 1073 08f8 0300A0E1 		mov	r0, r3
+ 1074 08fc 0410A0E1 		mov	r1, r4
+ 1075 0900 432F4FE2 		adr	r2, .L68+48
+ 1076 0904 0C0092E8 		ldmia	r2, {r2-r3}
+ 1077 0908 FEFFFFEB 		bl	__muldf3
+ 1078 090c 0030A0E1 		mov	r3, r0
+ 1079 0910 0140A0E1 		mov	r4, r1
+ 1080 0914 0300A0E1 		mov	r0, r3
+ 1081 0918 0410A0E1 		mov	r1, r4
+ 1082 091c FEFFFFEB 		bl	__fixdfsi
+ 1083 0920 0020A0E1 		mov	r2, r0
+ 1084 0924 3C311FE5 		ldr	r3, .L68+36
+ 1085 0928 0C2083E5 		str	r2, [r3, #12]
+ 393:sdk.c         **** 					wpToLL.Y=lat*10000000;
+ 1087              	.LM83:
+ 1088 092c 30304BE2 		sub	r3, fp, #48
+ 1089 0930 180093E8 		ldmia	r3, {r3-r4}
+ 1090 0934 0300A0E1 		mov	r0, r3
+ 1091 0938 0410A0E1 		mov	r1, r4
+ 1092 093c 522F4FE2 		adr	r2, .L68+48
+ 1093 0940 0C0092E8 		ldmia	r2, {r2-r3}
+ 1094 0944 FEFFFFEB 		bl	__muldf3
+ 1095 0948 0030A0E1 		mov	r3, r0
+ 1096 094c 0140A0E1 		mov	r4, r1
+ 1097 0950 0300A0E1 		mov	r0, r3
+ 1098 0954 0410A0E1 		mov	r1, r4
+ 1099 0958 FEFFFFEB 		bl	__fixdfsi
+ 1100 095c 0020A0E1 		mov	r2, r0
+ 1101 0960 78311FE5 		ldr	r3, .L68+36
+ 1102 0964 102083E5 		str	r2, [r3, #16]
  394:sdk.c         **** 
- 395:sdk.c         **** 					//see LL_HL_comm.h for WPPROP defines
- 396:sdk.c         **** 					wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED
- 1004              	.LM77:
- 1005 0850 84201FE5 		ldr	r2, .L68+36
- 1006 0854 1730A0E3 		mov	r3, #23
- 1007 0858 0430C2E5 		strb	r3, [r2, #4]
- 397:sdk.c         **** 
- 398:sdk.c         **** 					//use current height and yaw
- 399:sdk.c         **** 					wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
- 1009              	.LM78:
- 1010 085c 94301FE5 		ldr	r3, .L68+32
- 1011 0860 082093E5 		ldr	r2, [r3, #8]
- 1012 0864 98301FE5 		ldr	r3, .L68+36
- 1013 0868 142083E5 		str	r2, [r3, #20]
- 400:sdk.c         **** 					wpToLL.height=IMU_CalcData.height; //use current height
- 1015              	.LM79:
- 1016 086c A4301FE5 		ldr	r3, .L68+32
- 1017 0870 4C2093E5 		ldr	r2, [r3, #76]
- 1018 0874 A8301FE5 		ldr	r3, .L68+36
- 1019 0878 182083E5 		str	r2, [r3, #24]
- 401:sdk.c         **** 
- 402:sdk.c         **** 					//calculate a position 15m north and 15m east of origin
- 403:sdk.c         **** 					xy2latlon(originLat,originLon,15.0,15.0,&lat,&lon);
- 1021              	.LM80:
- 1022 087c AC301FE5 		ldr	r3, .L68+40
- 1023 0880 060093E8 		ldmia	r3, {r1-r2}
- 1024 0884 B0301FE5 		ldr	r3, .L68+44
- 1025 0888 600093E8 		ldmia	r3, {r5-r6}
- 1026 088c 0131A0E3 		mov	r3, #1073741824
- 1027 0890 2E3883E2 		add	r3, r3, #3014656
- 1028 0894 0040A0E3 		mov	r4, #0
- 1029 0898 18008DE8 		stmia	sp, {r3-r4}
- 1030 089c 0131A0E3 		mov	r3, #1073741824
- 1031 08a0 2E3883E2 		add	r3, r3, #3014656
- 1032 08a4 0040A0E3 		mov	r4, #0
- 1033 08a8 08308DE5 		str	r3, [sp, #8]
- 1034 08ac 0C408DE5 		str	r4, [sp, #12]
- 1035 08b0 30304BE2 		sub	r3, fp, #48
- 1036 08b4 10308DE5 		str	r3, [sp, #16]
- 1037 08b8 38304BE2 		sub	r3, fp, #56
- 1038 08bc 14308DE5 		str	r3, [sp, #20]
- 1039 08c0 0100A0E1 		mov	r0, r1
- 1040 08c4 0210A0E1 		mov	r1, r2
- 1041 08c8 0520A0E1 		mov	r2, r5
- 1042 08cc 0630A0E1 		mov	r3, r6
- 1043 08d0 FEFFFFEB 		bl	xy2latlon
- 404:sdk.c         **** 
- 405:sdk.c         **** 					wpToLL.X=lon*10000000;
- 1045              	.LM81:
- 1046 08d4 38304BE2 		sub	r3, fp, #56
- 1047 08d8 180093E8 		ldmia	r3, {r3-r4}
- 1048 08dc 0300A0E1 		mov	r0, r3
- 1049 08e0 0410A0E1 		mov	r1, r4
- 1050 08e4 432F4FE2 		adr	r2, .L68+48
- 1051 08e8 0C0092E8 		ldmia	r2, {r2-r3}
- 1052 08ec FEFFFFEB 		bl	__muldf3
- 1053 08f0 0030A0E1 		mov	r3, r0
- 1054 08f4 0140A0E1 		mov	r4, r1
- 1055 08f8 0300A0E1 		mov	r0, r3
- 1056 08fc 0410A0E1 		mov	r1, r4
- 1057 0900 FEFFFFEB 		bl	__fixdfsi
- 1058 0904 0020A0E1 		mov	r2, r0
- 1059 0908 3C311FE5 		ldr	r3, .L68+36
- 1060 090c 0C2083E5 		str	r2, [r3, #12]
- 406:sdk.c         **** 					wpToLL.Y=lat*10000000;
- 1062              	.LM82:
- 1063 0910 30304BE2 		sub	r3, fp, #48
- 1064 0914 180093E8 		ldmia	r3, {r3-r4}
- 1065 0918 0300A0E1 		mov	r0, r3
- 1066 091c 0410A0E1 		mov	r1, r4
- 1067 0920 522F4FE2 		adr	r2, .L68+48
- 1068 0924 0C0092E8 		ldmia	r2, {r2-r3}
- 1069 0928 FEFFFFEB 		bl	__muldf3
- 1070 092c 0030A0E1 		mov	r3, r0
- 1071 0930 0140A0E1 		mov	r4, r1
- 1072 0934 0300A0E1 		mov	r0, r3
- 1073 0938 0410A0E1 		mov	r1, r4
- 1074 093c FEFFFFEB 		bl	__fixdfsi
- 1075 0940 0020A0E1 		mov	r2, r0
- 1076 0944 78311FE5 		ldr	r3, .L68+36
- 1077 0948 102083E5 		str	r2, [r3, #16]
- 407:sdk.c         **** 
- 408:sdk.c         **** 					//calc chksum
- 409:sdk.c         **** 					wpToLL.chksum = 0xAAAA
- 1079              	.LM83:
- 1080 094c 80311FE5 		ldr	r3, .L68+36
- 1081 0950 143093E5 		ldr	r3, [r3, #20]
- 1082 0954 0338A0E1 		mov	r3, r3, asl #16
- 1083 0958 2328A0E1 		mov	r2, r3, lsr #16
- 1084 095c 90311FE5 		ldr	r3, .L68+36
- 1085 0960 183093E5 		ldr	r3, [r3, #24]
- 1086 0964 0338A0E1 		mov	r3, r3, asl #16
- 1087 0968 2338A0E1 		mov	r3, r3, lsr #16
- 1088 096c 033082E0 		add	r3, r2, r3
- 1089 0970 0338A0E1 		mov	r3, r3, asl #16
- 1090 0974 2328A0E1 		mov	r2, r3, lsr #16
- 1091 0978 AC311FE5 		ldr	r3, .L68+36
- 1092 097c B630D3E1 		ldrh	r3, [r3, #6]
- 1093 0980 033082E0 		add	r3, r2, r3
- 1094 0984 0338A0E1 		mov	r3, r3, asl #16
- 1095 0988 2328A0E1 		mov	r2, r3, lsr #16
- 1096 098c C0311FE5 		ldr	r3, .L68+36
- 1097 0990 0C3093E5 		ldr	r3, [r3, #12]
- 1098 0994 0338A0E1 		mov	r3, r3, asl #16
- 1099 0998 2338A0E1 		mov	r3, r3, lsr #16
- 1100 099c 033082E0 		add	r3, r2, r3
- 1101 09a0 0338A0E1 		mov	r3, r3, asl #16
- 1102 09a4 2328A0E1 		mov	r2, r3, lsr #16
- 1103 09a8 DC311FE5 		ldr	r3, .L68+36
- 1104 09ac 103093E5 		ldr	r3, [r3, #16]
- 1105 09b0 0338A0E1 		mov	r3, r3, asl #16
- 1106 09b4 2338A0E1 		mov	r3, r3, lsr #16
- 1107 09b8 033082E0 		add	r3, r2, r3
- 1108 09bc 0338A0E1 		mov	r3, r3, asl #16
- 1109 09c0 2328A0E1 		mov	r2, r3, lsr #16
- 1110 09c4 F8311FE5 		ldr	r3, .L68+36
- 1111 09c8 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
- 1112 09cc 033082E0 		add	r3, r2, r3
- 1113 09d0 0338A0E1 		mov	r3, r3, asl #16
- 1114 09d4 2328A0E1 		mov	r2, r3, lsr #16
- 1115 09d8 0C321FE5 		ldr	r3, .L68+36
- 1116 09dc B830D3E1 		ldrh	r3, [r3, #8]
- 1117 09e0 033082E0 		add	r3, r2, r3
- 1118 09e4 0338A0E1 		mov	r3, r3, asl #16
- 1119 09e8 2328A0E1 		mov	r2, r3, lsr #16
- 1120 09ec 20321FE5 		ldr	r3, .L68+36
- 1121 09f0 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 1122 09f4 033082E0 		add	r3, r2, r3
- 1123 09f8 0338A0E1 		mov	r3, r3, asl #16
- 1124 09fc 2328A0E1 		mov	r2, r3, lsr #16
- 1125 0a00 34321FE5 		ldr	r3, .L68+36
- 1126 0a04 003093E5 		ldr	r3, [r3, #0]
- 1127 0a08 0338A0E1 		mov	r3, r3, asl #16
- 1128 0a0c 2338A0E1 		mov	r3, r3, lsr #16
- 1129 0a10 033082E0 		add	r3, r2, r3
- 1130 0a14 0338A0E1 		mov	r3, r3, asl #16
- 1131 0a18 2338A0E1 		mov	r3, r3, lsr #16
- 1132 0a1c 553C43E2 		sub	r3, r3, #21760
- 1133 0a20 563043E2 		sub	r3, r3, #86
- 1134 0a24 0338A0E1 		mov	r3, r3, asl #16
- 1135 0a28 2338A0E1 		mov	r3, r3, lsr #16
- 1136 0a2c 0320A0E1 		mov	r2, r3
- 1137 0a30 64321FE5 		ldr	r3, .L68+36
- 1138 0a34 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
- 410:sdk.c         **** 											+ wpToLL.yaw
- 411:sdk.c         **** 											+ wpToLL.height
- 412:sdk.c         **** 											+ wpToLL.time
- 413:sdk.c         **** 											+ wpToLL.X
- 414:sdk.c         **** 											+ wpToLL.Y
- 415:sdk.c         **** 											+ wpToLL.max_speed
- 416:sdk.c         **** 											+ wpToLL.pos_acc
- 417:sdk.c         **** 											+ wpToLL.properties
- 418:sdk.c         **** 											+ wpToLL.wp_activated;
- 419:sdk.c         **** 					//send waypoint
- 420:sdk.c         **** 					wpCtrlAckTrigger=0;
- 1140              	.LM84:
- 1141 0a38 78221FE5 		ldr	r2, .L68+24
- 1142 0a3c 0030A0E3 		mov	r3, #0
- 1143 0a40 0030C2E5 		strb	r3, [r2, #0]
- 421:sdk.c         **** 					wpCtrlWpCmd=WP_CMD_SINGLE_WP;
- 1145              	.LM85:
- 1146 0a44 94221FE5 		ldr	r2, .L68+8
- 1147 0a48 0130A0E3 		mov	r3, #1
- 1148 0a4c 0030C2E5 		strb	r3, [r2, #0]
- 422:sdk.c         **** 					wpCtrlWpCmdUpdated=1;
- 1150              	.LM86:
- 1151 0a50 94221FE5 		ldr	r2, .L68+20
- 1152 0a54 0130A0E3 		mov	r3, #1
- 1153 0a58 0030C2E5 		strb	r3, [r2, #0]
- 423:sdk.c         **** 
- 424:sdk.c         **** 					wpExampleState=3;
- 1155              	.LM87:
- 1156 0a5c A4221FE5 		ldr	r2, .L68+16
- 1157 0a60 0330A0E3 		mov	r3, #3
- 1158 0a64 0030C2E5 		strb	r3, [r2, #0]
- 1159              	.L46:
- 1160              	.LBE3:
- 425:sdk.c         **** 				}
- 426:sdk.c         **** 
- 427:sdk.c         **** 				if (wpCtrlNavStatus&WP_NAVSTAT_PILOT_ABORT)
- 1162              	.LM88:
- 1163 0a68 A4321FE5 		ldr	r3, .L68+28
- 1164 0a6c B030D3E1 		ldrh	r3, [r3, #0]
- 1165 0a70 083003E2 		and	r3, r3, #8
- 1166 0a74 000053E3 		cmp	r3, #0
- 1167 0a78 0200000A 		beq	.L43
- 428:sdk.c         **** 					wpExampleState=0;
- 1169              	.LM89:
- 1170 0a7c C4321FE5 		ldr	r3, .L68+16
- 1171 0a80 0020A0E3 		mov	r2, #0
- 1172 0a84 0020C3E5 		strb	r2, [r3, #0]
- 1173              	.L43:
- 429:sdk.c         **** 
- 430:sdk.c         **** 
- 431:sdk.c         **** 			}
- 432:sdk.c         **** 			if (RO_RC_Data.channel[6]<1600)
- 1175              	.LM90:
- 1176 0a88 D4321FE5 		ldr	r3, .L68+12
- 1177 0a8c BC20D3E1 		ldrh	r2, [r3, #12]
- 1178 0a90 633EA0E3 		mov	r3, #1584
- 1179 0a94 0F3083E2 		add	r3, r3, #15
- 1180 0a98 030052E1 		cmp	r2, r3
- 1181 0a9c 5F01008A 		bhi	.L67
- 433:sdk.c         **** 						wpExampleState=0;
- 1183              	.LM91:
- 1184 0aa0 E8321FE5 		ldr	r3, .L68+16
- 1185 0aa4 0020A0E3 		mov	r2, #0
- 1186 0aa8 0020C3E5 		strb	r2, [r3, #0]
- 434:sdk.c         **** 		break;
- 1188              	.LM92:
- 1189 0aac 5B0100EA 		b	.L67
- 1190              	.L35:
- 435:sdk.c         **** 
- 436:sdk.c         **** 		case 3:
- 437:sdk.c         **** 			//wait until cmd is processed and sent to LL processor
- 438:sdk.c         **** 			if ((wpCtrlWpCmdUpdated==0) && (wpCtrlAckTrigger))
- 1192              	.LM93:
- 1193 0ab0 F4321FE5 		ldr	r3, .L68+20
- 1194 0ab4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1195 0ab8 000053E3 		cmp	r3, #0
- 1196 0abc A200001A 		bne	.L51
- 1197 0ac0 00331FE5 		ldr	r3, .L68+24
- 1198 0ac4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1199 0ac8 000053E3 		cmp	r3, #0
- 1200 0acc 9E00000A 		beq	.L51
- 439:sdk.c         **** 			{
- 440:sdk.c         **** 				//check if waypoint was reached and wait time is over
- 441:sdk.c         **** 				if (wpCtrlNavStatus&(WP_NAVSTAT_REACHED_POS_TIME))
- 1202              	.LM94:
- 1203 0ad0 0C331FE5 		ldr	r3, .L68+28
- 1204 0ad4 B030D3E1 		ldrh	r3, [r3, #0]
- 1205 0ad8 023003E2 		and	r3, r3, #2
- 1206 0adc 000053E3 		cmp	r3, #0
- 1207 0ae0 9100000A 		beq	.L54
- 1208              	.LBB4:
- 442:sdk.c         **** 				{
- 443:sdk.c         **** 					//new waypoint
- 444:sdk.c         **** 					double lat,lon;
+ 395:sdk.c         **** 					//calc chksum
+ 396:sdk.c         **** 					wpToLL.chksum = 0xAAAA
+ 1104              	.LM84:
+ 1105 0968 80311FE5 		ldr	r3, .L68+36
+ 1106 096c 143093E5 		ldr	r3, [r3, #20]
+ 1107 0970 0338A0E1 		mov	r3, r3, asl #16
+ 1108 0974 2328A0E1 		mov	r2, r3, lsr #16
+ 1109 0978 90311FE5 		ldr	r3, .L68+36
+ 1110 097c 183093E5 		ldr	r3, [r3, #24]
+ 1111 0980 0338A0E1 		mov	r3, r3, asl #16
+ 1112 0984 2338A0E1 		mov	r3, r3, lsr #16
+ 1113 0988 033082E0 		add	r3, r2, r3
+ 1114 098c 0338A0E1 		mov	r3, r3, asl #16
+ 1115 0990 2328A0E1 		mov	r2, r3, lsr #16
+ 1116 0994 AC311FE5 		ldr	r3, .L68+36
+ 1117 0998 B630D3E1 		ldrh	r3, [r3, #6]
+ 1118 099c 033082E0 		add	r3, r2, r3
+ 1119 09a0 0338A0E1 		mov	r3, r3, asl #16
+ 1120 09a4 2328A0E1 		mov	r2, r3, lsr #16
+ 1121 09a8 C0311FE5 		ldr	r3, .L68+36
+ 1122 09ac 0C3093E5 		ldr	r3, [r3, #12]
+ 1123 09b0 0338A0E1 		mov	r3, r3, asl #16
+ 1124 09b4 2338A0E1 		mov	r3, r3, lsr #16
+ 1125 09b8 033082E0 		add	r3, r2, r3
+ 1126 09bc 0338A0E1 		mov	r3, r3, asl #16
+ 1127 09c0 2328A0E1 		mov	r2, r3, lsr #16
+ 1128 09c4 DC311FE5 		ldr	r3, .L68+36
+ 1129 09c8 103093E5 		ldr	r3, [r3, #16]
+ 1130 09cc 0338A0E1 		mov	r3, r3, asl #16
+ 1131 09d0 2338A0E1 		mov	r3, r3, lsr #16
+ 1132 09d4 033082E0 		add	r3, r2, r3
+ 1133 09d8 0338A0E1 		mov	r3, r3, asl #16
+ 1134 09dc 2328A0E1 		mov	r2, r3, lsr #16
+ 1135 09e0 F8311FE5 		ldr	r3, .L68+36
+ 1136 09e4 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 1137 09e8 033082E0 		add	r3, r2, r3
+ 1138 09ec 0338A0E1 		mov	r3, r3, asl #16
+ 1139 09f0 2328A0E1 		mov	r2, r3, lsr #16
+ 1140 09f4 0C321FE5 		ldr	r3, .L68+36
+ 1141 09f8 B830D3E1 		ldrh	r3, [r3, #8]
+ 1142 09fc 033082E0 		add	r3, r2, r3
+ 1143 0a00 0338A0E1 		mov	r3, r3, asl #16
+ 1144 0a04 2328A0E1 		mov	r2, r3, lsr #16
+ 1145 0a08 20321FE5 		ldr	r3, .L68+36
+ 1146 0a0c 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 1147 0a10 033082E0 		add	r3, r2, r3
+ 1148 0a14 0338A0E1 		mov	r3, r3, asl #16
+ 1149 0a18 2328A0E1 		mov	r2, r3, lsr #16
+ 1150 0a1c 34321FE5 		ldr	r3, .L68+36
+ 1151 0a20 003093E5 		ldr	r3, [r3, #0]
+ 1152 0a24 0338A0E1 		mov	r3, r3, asl #16
+ 1153 0a28 2338A0E1 		mov	r3, r3, lsr #16
+ 1154 0a2c 033082E0 		add	r3, r2, r3
+ 1155 0a30 0338A0E1 		mov	r3, r3, asl #16
+ 1156 0a34 2338A0E1 		mov	r3, r3, lsr #16
+ 1157 0a38 553C43E2 		sub	r3, r3, #21760
+ 1158 0a3c 563043E2 		sub	r3, r3, #86
+ 1159 0a40 0338A0E1 		mov	r3, r3, asl #16
+ 1160 0a44 2338A0E1 		mov	r3, r3, lsr #16
+ 1161 0a48 0320A0E1 		mov	r2, r3
+ 1162 0a4c 64321FE5 		ldr	r3, .L68+36
+ 1163 0a50 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 397:sdk.c         **** 											+ wpToLL.yaw
+ 398:sdk.c         **** 											+ wpToLL.height
+ 399:sdk.c         **** 											+ wpToLL.time
+ 400:sdk.c         **** 											+ wpToLL.X
+ 401:sdk.c         **** 											+ wpToLL.Y
+ 402:sdk.c         **** 											+ wpToLL.max_speed
+ 403:sdk.c         **** 											+ wpToLL.pos_acc
+ 404:sdk.c         **** 											+ wpToLL.properties
+ 405:sdk.c         **** 											+ wpToLL.wp_activated;
+ 406:sdk.c         **** 					//send waypoint
+ 407:sdk.c         **** 					wpCtrlAckTrigger=0;
+ 1165              	.LM85:
+ 1166 0a54 78221FE5 		ldr	r2, .L68+24
+ 1167 0a58 0030A0E3 		mov	r3, #0
+ 1168 0a5c 0030C2E5 		strb	r3, [r2, #0]
+ 408:sdk.c         **** 					wpCtrlWpCmd=WP_CMD_SINGLE_WP;
+ 1170              	.LM86:
+ 1171 0a60 94221FE5 		ldr	r2, .L68+8
+ 1172 0a64 0130A0E3 		mov	r3, #1
+ 1173 0a68 0030C2E5 		strb	r3, [r2, #0]
+ 409:sdk.c         **** 					wpCtrlWpCmdUpdated=1;
+ 1175              	.LM87:
+ 1176 0a6c 94221FE5 		ldr	r2, .L68+20
+ 1177 0a70 0130A0E3 		mov	r3, #1
+ 1178 0a74 0030C2E5 		strb	r3, [r2, #0]
+ 410:sdk.c         **** 
+ 411:sdk.c         **** 					wpExampleState=3;
+ 1180              	.LM88:
+ 1181 0a78 A4221FE5 		ldr	r2, .L68+16
+ 1182 0a7c 0330A0E3 		mov	r3, #3
+ 1183 0a80 0030C2E5 		strb	r3, [r2, #0]
+ 1184              	.L46:
+ 1185              	.LBE3:
+ 412:sdk.c         **** 				}
+ 413:sdk.c         **** 
+ 414:sdk.c         **** 				if (wpCtrlNavStatus&WP_NAVSTAT_PILOT_ABORT)
+ 1187              	.LM89:
+ 1188 0a84 A4321FE5 		ldr	r3, .L68+28
+ 1189 0a88 B030D3E1 		ldrh	r3, [r3, #0]
+ 1190 0a8c 083003E2 		and	r3, r3, #8
+ 1191 0a90 000053E3 		cmp	r3, #0
+ 1192 0a94 0200000A 		beq	.L43
+ 415:sdk.c         **** 					wpExampleState=0;
+ 1194              	.LM90:
+ 1195 0a98 C4321FE5 		ldr	r3, .L68+16
+ 1196 0a9c 0020A0E3 		mov	r2, #0
+ 1197 0aa0 0020C3E5 		strb	r2, [r3, #0]
+ 1198              	.L43:
+ 416:sdk.c         **** 
+ 417:sdk.c         **** 
+ 418:sdk.c         **** 			}
+ 419:sdk.c         **** 			if (RO_RC_Data.channel[6]<1600)
+ 1200              	.LM91:
+ 1201 0aa4 D4321FE5 		ldr	r3, .L68+12
+ 1202 0aa8 BC20D3E1 		ldrh	r2, [r3, #12]
+ 1203 0aac 633EA0E3 		mov	r3, #1584
+ 1204 0ab0 0F3083E2 		add	r3, r3, #15
+ 1205 0ab4 030052E1 		cmp	r2, r3
+ 1206 0ab8 5F01008A 		bhi	.L67
+ 420:sdk.c         **** 						wpExampleState=0;
+ 1208              	.LM92:
+ 1209 0abc E8321FE5 		ldr	r3, .L68+16
+ 1210 0ac0 0020A0E3 		mov	r2, #0
+ 1211 0ac4 0020C3E5 		strb	r2, [r3, #0]
+ 421:sdk.c         **** 		break;
+ 1213              	.LM93:
+ 1214 0ac8 5B0100EA 		b	.L67
+ 1215              	.L35:
+ 422:sdk.c         **** 
+ 423:sdk.c         **** 		case 3:
+ 424:sdk.c         **** 			//wait until cmd is processed and sent to LL processor
+ 425:sdk.c         **** 			if ((wpCtrlWpCmdUpdated==0) && (wpCtrlAckTrigger))
+ 1217              	.LM94:
+ 1218 0acc F4321FE5 		ldr	r3, .L68+20
+ 1219 0ad0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1220 0ad4 000053E3 		cmp	r3, #0
+ 1221 0ad8 A200001A 		bne	.L51
+ 1222 0adc 00331FE5 		ldr	r3, .L68+24
+ 1223 0ae0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1224 0ae4 000053E3 		cmp	r3, #0
+ 1225 0ae8 9E00000A 		beq	.L51
+ 426:sdk.c         **** 			{
+ 427:sdk.c         **** 				//check if waypoint was reached and wait time is over
+ 428:sdk.c         **** 				if (wpCtrlNavStatus&(WP_NAVSTAT_REACHED_POS_TIME))
+ 1227              	.LM95:
+ 1228 0aec 0C331FE5 		ldr	r3, .L68+28
+ 1229 0af0 B030D3E1 		ldrh	r3, [r3, #0]
+ 1230 0af4 023003E2 		and	r3, r3, #2
+ 1231 0af8 000053E3 		cmp	r3, #0
+ 1232 0afc 9100000A 		beq	.L54
+ 1233              	.LBB4:
+ 429:sdk.c         **** 				{
+ 430:sdk.c         **** 					//new waypoint
+ 431:sdk.c         **** 					double lat,lon;
+ 432:sdk.c         **** 
+ 433:sdk.c         **** 					//fill waypoint structure
+ 434:sdk.c         **** 					wpToLL.max_speed=100;
+ 1235              	.LM96:
+ 1236 0b00 18231FE5 		ldr	r2, .L68+36
+ 1237 0b04 6430A0E3 		mov	r3, #100
+ 1238 0b08 0530C2E5 		strb	r3, [r2, #5]
+ 435:sdk.c         **** 					wpToLL.pos_acc=3000; //3m accuracy
+ 1240              	.LM97:
+ 1241 0b0c 24231FE5 		ldr	r2, .L68+36
+ 1242 0b10 BB3EA0E3 		mov	r3, #2992
+ 1243 0b14 083083E2 		add	r3, r3, #8
+ 1244 0b18 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 436:sdk.c         **** 					wpToLL.time=400; //4 seconds wait time
+ 1246              	.LM98:
+ 1247 0b1c 34231FE5 		ldr	r2, .L68+36
+ 1248 0b20 193EA0E3 		mov	r3, #400
+ 1249 0b24 B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 437:sdk.c         **** 					wpToLL.wp_activated=1;
+ 1251              	.LM99:
+ 1252 0b28 40231FE5 		ldr	r2, .L68+36
+ 1253 0b2c 0130A0E3 		mov	r3, #1
+ 1254 0b30 003082E5 		str	r3, [r2, #0]
+ 438:sdk.c         **** 
+ 439:sdk.c         **** 					//see LL_HL_comm.h for WPPROP defines
+ 440:sdk.c         **** 					wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED
+ 1256              	.LM100:
+ 1257 0b34 4C231FE5 		ldr	r2, .L68+36
+ 1258 0b38 1730A0E3 		mov	r3, #23
+ 1259 0b3c 0430C2E5 		strb	r3, [r2, #4]
+ 441:sdk.c         **** 
+ 442:sdk.c         **** 					//use current height and yaw
+ 443:sdk.c         **** 					wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
+ 1261              	.LM101:
+ 1262 0b40 5C331FE5 		ldr	r3, .L68+32
+ 1263 0b44 082093E5 		ldr	r2, [r3, #8]
+ 1264 0b48 60331FE5 		ldr	r3, .L68+36
+ 1265 0b4c 142083E5 		str	r2, [r3, #20]
+ 444:sdk.c         **** 					wpToLL.height=IMU_CalcData.height; //use current height
+ 1267              	.LM102:
+ 1268 0b50 6C331FE5 		ldr	r3, .L68+32
+ 1269 0b54 4C2093E5 		ldr	r2, [r3, #76]
+ 1270 0b58 70331FE5 		ldr	r3, .L68+36
+ 1271 0b5c 182083E5 		str	r2, [r3, #24]
  445:sdk.c         **** 
- 446:sdk.c         **** 					//fill waypoint structure
- 447:sdk.c         **** 					wpToLL.max_speed=100;
- 1210              	.LM95:
- 1211 0ae4 18231FE5 		ldr	r2, .L68+36
- 1212 0ae8 6430A0E3 		mov	r3, #100
- 1213 0aec 0530C2E5 		strb	r3, [r2, #5]
- 448:sdk.c         **** 					wpToLL.pos_acc=3000; //3m accuracy
- 1215              	.LM96:
- 1216 0af0 24231FE5 		ldr	r2, .L68+36
- 1217 0af4 BB3EA0E3 		mov	r3, #2992
- 1218 0af8 083083E2 		add	r3, r3, #8
- 1219 0afc B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 449:sdk.c         **** 					wpToLL.time=400; //4 seconds wait time
- 1221              	.LM97:
- 1222 0b00 34231FE5 		ldr	r2, .L68+36
- 1223 0b04 193EA0E3 		mov	r3, #400
- 1224 0b08 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 450:sdk.c         **** 					wpToLL.wp_activated=1;
- 1226              	.LM98:
- 1227 0b0c 40231FE5 		ldr	r2, .L68+36
- 1228 0b10 0130A0E3 		mov	r3, #1
- 1229 0b14 003082E5 		str	r3, [r2, #0]
+ 446:sdk.c         **** 					//calculate a position 15m east of origin
+ 447:sdk.c         **** 					xy2latlon(originLat,originLon,15.0,0.0,&lat,&lon);
+ 1273              	.LM103:
+ 1274 0b60 74331FE5 		ldr	r3, .L68+40
+ 1275 0b64 060093E8 		ldmia	r3, {r1-r2}
+ 1276 0b68 78331FE5 		ldr	r3, .L68+44
+ 1277 0b6c 600093E8 		ldmia	r3, {r5-r6}
+ 1278 0b70 0131A0E3 		mov	r3, #1073741824
+ 1279 0b74 2E3883E2 		add	r3, r3, #3014656
+ 1280 0b78 0040A0E3 		mov	r4, #0
+ 1281 0b7c 18008DE8 		stmia	sp, {r3-r4}
+ 1282 0b80 0030A0E3 		mov	r3, #0
+ 1283 0b84 0040A0E3 		mov	r4, #0
+ 1284 0b88 08308DE5 		str	r3, [sp, #8]
+ 1285 0b8c 0C408DE5 		str	r4, [sp, #12]
+ 1286 0b90 40304BE2 		sub	r3, fp, #64
+ 1287 0b94 10308DE5 		str	r3, [sp, #16]
+ 1288 0b98 48304BE2 		sub	r3, fp, #72
+ 1289 0b9c 14308DE5 		str	r3, [sp, #20]
+ 1290 0ba0 0100A0E1 		mov	r0, r1
+ 1291 0ba4 0210A0E1 		mov	r1, r2
+ 1292 0ba8 0520A0E1 		mov	r2, r5
+ 1293 0bac 0630A0E1 		mov	r3, r6
+ 1294 0bb0 FEFFFFEB 		bl	xy2latlon
+ 448:sdk.c         **** 
+ 449:sdk.c         **** 					wpToLL.X=lon*10000000;
+ 1296              	.LM104:
+ 1297 0bb4 48304BE2 		sub	r3, fp, #72
+ 1298 0bb8 180093E8 		ldmia	r3, {r3-r4}
+ 1299 0bbc 0300A0E1 		mov	r0, r3
+ 1300 0bc0 0410A0E1 		mov	r1, r4
+ 1301 0bc4 7B2F8FE2 		adr	r2, .L70+40
+ 1302 0bc8 0C0092E8 		ldmia	r2, {r2-r3}
+ 1303 0bcc FEFFFFEB 		bl	__muldf3
+ 1304 0bd0 0030A0E1 		mov	r3, r0
+ 1305 0bd4 0140A0E1 		mov	r4, r1
+ 1306 0bd8 0300A0E1 		mov	r0, r3
+ 1307 0bdc 0410A0E1 		mov	r1, r4
+ 1308 0be0 FEFFFFEB 		bl	__fixdfsi
+ 1309 0be4 0020A0E1 		mov	r2, r0
+ 1310 0be8 AC319FE5 		ldr	r3, .L70+12
+ 1311 0bec 0C2083E5 		str	r2, [r3, #12]
+ 450:sdk.c         **** 					wpToLL.Y=lat*10000000;
+ 1313              	.LM105:
+ 1314 0bf0 40304BE2 		sub	r3, fp, #64
+ 1315 0bf4 180093E8 		ldmia	r3, {r3-r4}
+ 1316 0bf8 0300A0E1 		mov	r0, r3
+ 1317 0bfc 0410A0E1 		mov	r1, r4
+ 1318 0c00 1B2E8FE2 		adr	r2, .L70+40
+ 1319 0c04 0C0092E8 		ldmia	r2, {r2-r3}
+ 1320 0c08 FEFFFFEB 		bl	__muldf3
+ 1321 0c0c 0030A0E1 		mov	r3, r0
+ 1322 0c10 0140A0E1 		mov	r4, r1
+ 1323 0c14 0300A0E1 		mov	r0, r3
+ 1324 0c18 0410A0E1 		mov	r1, r4
+ 1325 0c1c FEFFFFEB 		bl	__fixdfsi
+ 1326 0c20 0020A0E1 		mov	r2, r0
+ 1327 0c24 70319FE5 		ldr	r3, .L70+12
+ 1328 0c28 102083E5 		str	r2, [r3, #16]
  451:sdk.c         **** 
- 452:sdk.c         **** 					//see LL_HL_comm.h for WPPROP defines
- 453:sdk.c         **** 					wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED
- 1231              	.LM99:
- 1232 0b18 4C231FE5 		ldr	r2, .L68+36
- 1233 0b1c 1730A0E3 		mov	r3, #23
- 1234 0b20 0430C2E5 		strb	r3, [r2, #4]
- 454:sdk.c         **** 
- 455:sdk.c         **** 					//use current height and yaw
- 456:sdk.c         **** 					wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
- 1236              	.LM100:
- 1237 0b24 5C331FE5 		ldr	r3, .L68+32
- 1238 0b28 082093E5 		ldr	r2, [r3, #8]
- 1239 0b2c 60331FE5 		ldr	r3, .L68+36
- 1240 0b30 142083E5 		str	r2, [r3, #20]
- 457:sdk.c         **** 					wpToLL.height=IMU_CalcData.height; //use current height
- 1242              	.LM101:
- 1243 0b34 6C331FE5 		ldr	r3, .L68+32
- 1244 0b38 4C2093E5 		ldr	r2, [r3, #76]
- 1245 0b3c 70331FE5 		ldr	r3, .L68+36
- 1246 0b40 182083E5 		str	r2, [r3, #24]
- 458:sdk.c         **** 
- 459:sdk.c         **** 					//calculate a position 15m east of origin
- 460:sdk.c         **** 					xy2latlon(originLat,originLon,15.0,0.0,&lat,&lon);
- 1248              	.LM102:
- 1249 0b44 74331FE5 		ldr	r3, .L68+40
- 1250 0b48 060093E8 		ldmia	r3, {r1-r2}
- 1251 0b4c 78331FE5 		ldr	r3, .L68+44
- 1252 0b50 600093E8 		ldmia	r3, {r5-r6}
- 1253 0b54 0131A0E3 		mov	r3, #1073741824
- 1254 0b58 2E3883E2 		add	r3, r3, #3014656
- 1255 0b5c 0040A0E3 		mov	r4, #0
- 1256 0b60 18008DE8 		stmia	sp, {r3-r4}
- 1257 0b64 0030A0E3 		mov	r3, #0
- 1258 0b68 0040A0E3 		mov	r4, #0
- 1259 0b6c 08308DE5 		str	r3, [sp, #8]
- 1260 0b70 0C408DE5 		str	r4, [sp, #12]
- 1261 0b74 40304BE2 		sub	r3, fp, #64
- 1262 0b78 10308DE5 		str	r3, [sp, #16]
- 1263 0b7c 48304BE2 		sub	r3, fp, #72
- 1264 0b80 14308DE5 		str	r3, [sp, #20]
- 1265 0b84 0100A0E1 		mov	r0, r1
- 1266 0b88 0210A0E1 		mov	r1, r2
- 1267 0b8c 0520A0E1 		mov	r2, r5
- 1268 0b90 0630A0E1 		mov	r3, r6
- 1269 0b94 FEFFFFEB 		bl	xy2latlon
- 461:sdk.c         **** 
- 462:sdk.c         **** 					wpToLL.X=lon*10000000;
- 1271              	.LM103:
- 1272 0b98 48304BE2 		sub	r3, fp, #72
- 1273 0b9c 180093E8 		ldmia	r3, {r3-r4}
- 1274 0ba0 0300A0E1 		mov	r0, r3
- 1275 0ba4 0410A0E1 		mov	r1, r4
- 1276 0ba8 7B2F8FE2 		adr	r2, .L70+40
- 1277 0bac 0C0092E8 		ldmia	r2, {r2-r3}
- 1278 0bb0 FEFFFFEB 		bl	__muldf3
- 1279 0bb4 0030A0E1 		mov	r3, r0
- 1280 0bb8 0140A0E1 		mov	r4, r1
- 1281 0bbc 0300A0E1 		mov	r0, r3
- 1282 0bc0 0410A0E1 		mov	r1, r4
- 1283 0bc4 FEFFFFEB 		bl	__fixdfsi
- 1284 0bc8 0020A0E1 		mov	r2, r0
- 1285 0bcc AC319FE5 		ldr	r3, .L70+12
- 1286 0bd0 0C2083E5 		str	r2, [r3, #12]
- 463:sdk.c         **** 					wpToLL.Y=lat*10000000;
- 1288              	.LM104:
- 1289 0bd4 40304BE2 		sub	r3, fp, #64
- 1290 0bd8 180093E8 		ldmia	r3, {r3-r4}
- 1291 0bdc 0300A0E1 		mov	r0, r3
- 1292 0be0 0410A0E1 		mov	r1, r4
- 1293 0be4 1B2E8FE2 		adr	r2, .L70+40
- 1294 0be8 0C0092E8 		ldmia	r2, {r2-r3}
- 1295 0bec FEFFFFEB 		bl	__muldf3
- 1296 0bf0 0030A0E1 		mov	r3, r0
- 1297 0bf4 0140A0E1 		mov	r4, r1
- 1298 0bf8 0300A0E1 		mov	r0, r3
- 1299 0bfc 0410A0E1 		mov	r1, r4
- 1300 0c00 FEFFFFEB 		bl	__fixdfsi
- 1301 0c04 0020A0E1 		mov	r2, r0
- 1302 0c08 70319FE5 		ldr	r3, .L70+12
- 1303 0c0c 102083E5 		str	r2, [r3, #16]
- 464:sdk.c         **** 
- 465:sdk.c         **** 					//calc chksum
- 466:sdk.c         **** 					wpToLL.chksum = 0xAAAA
- 1305              	.LM105:
- 1306 0c10 68319FE5 		ldr	r3, .L70+12
- 1307 0c14 143093E5 		ldr	r3, [r3, #20]
- 1308 0c18 0338A0E1 		mov	r3, r3, asl #16
- 1309 0c1c 2328A0E1 		mov	r2, r3, lsr #16
- 1310 0c20 58319FE5 		ldr	r3, .L70+12
- 1311 0c24 183093E5 		ldr	r3, [r3, #24]
- 1312 0c28 0338A0E1 		mov	r3, r3, asl #16
- 1313 0c2c 2338A0E1 		mov	r3, r3, lsr #16
- 1314 0c30 033082E0 		add	r3, r2, r3
- 1315 0c34 0338A0E1 		mov	r3, r3, asl #16
- 1316 0c38 2328A0E1 		mov	r2, r3, lsr #16
- 1317 0c3c 3C319FE5 		ldr	r3, .L70+12
- 1318 0c40 B630D3E1 		ldrh	r3, [r3, #6]
- 1319 0c44 033082E0 		add	r3, r2, r3
- 1320 0c48 0338A0E1 		mov	r3, r3, asl #16
- 1321 0c4c 2328A0E1 		mov	r2, r3, lsr #16
- 1322 0c50 28319FE5 		ldr	r3, .L70+12
- 1323 0c54 0C3093E5 		ldr	r3, [r3, #12]
- 1324 0c58 0338A0E1 		mov	r3, r3, asl #16
- 1325 0c5c 2338A0E1 		mov	r3, r3, lsr #16
- 1326 0c60 033082E0 		add	r3, r2, r3
- 1327 0c64 0338A0E1 		mov	r3, r3, asl #16
- 1328 0c68 2328A0E1 		mov	r2, r3, lsr #16
- 1329 0c6c 0C319FE5 		ldr	r3, .L70+12
- 1330 0c70 103093E5 		ldr	r3, [r3, #16]
- 1331 0c74 0338A0E1 		mov	r3, r3, asl #16
- 1332 0c78 2338A0E1 		mov	r3, r3, lsr #16
- 1333 0c7c 033082E0 		add	r3, r2, r3
- 1334 0c80 0338A0E1 		mov	r3, r3, asl #16
- 1335 0c84 2328A0E1 		mov	r2, r3, lsr #16
- 1336 0c88 F0309FE5 		ldr	r3, .L70+12
- 1337 0c8c 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
- 1338 0c90 033082E0 		add	r3, r2, r3
- 1339 0c94 0338A0E1 		mov	r3, r3, asl #16
- 1340 0c98 2328A0E1 		mov	r2, r3, lsr #16
- 1341 0c9c DC309FE5 		ldr	r3, .L70+12
- 1342 0ca0 B830D3E1 		ldrh	r3, [r3, #8]
- 1343 0ca4 033082E0 		add	r3, r2, r3
- 1344 0ca8 0338A0E1 		mov	r3, r3, asl #16
- 1345 0cac 2328A0E1 		mov	r2, r3, lsr #16
- 1346 0cb0 C8309FE5 		ldr	r3, .L70+12
- 1347 0cb4 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 1348 0cb8 033082E0 		add	r3, r2, r3
- 1349 0cbc 0338A0E1 		mov	r3, r3, asl #16
- 1350 0cc0 2328A0E1 		mov	r2, r3, lsr #16
- 1351 0cc4 B4309FE5 		ldr	r3, .L70+12
- 1352 0cc8 003093E5 		ldr	r3, [r3, #0]
- 1353 0ccc 0338A0E1 		mov	r3, r3, asl #16
- 1354 0cd0 2338A0E1 		mov	r3, r3, lsr #16
- 1355 0cd4 033082E0 		add	r3, r2, r3
- 1356 0cd8 0338A0E1 		mov	r3, r3, asl #16
- 1357 0cdc 2338A0E1 		mov	r3, r3, lsr #16
- 1358 0ce0 553C43E2 		sub	r3, r3, #21760
- 1359 0ce4 563043E2 		sub	r3, r3, #86
- 1360 0ce8 0338A0E1 		mov	r3, r3, asl #16
- 1361 0cec 2338A0E1 		mov	r3, r3, lsr #16
- 1362 0cf0 0320A0E1 		mov	r2, r3
- 1363 0cf4 84309FE5 		ldr	r3, .L70+12
- 1364 0cf8 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
- 467:sdk.c         **** 											+ wpToLL.yaw
- 468:sdk.c         **** 											+ wpToLL.height
- 469:sdk.c         **** 											+ wpToLL.time
- 470:sdk.c         **** 											+ wpToLL.X
- 471:sdk.c         **** 											+ wpToLL.Y
- 472:sdk.c         **** 											+ wpToLL.max_speed
- 473:sdk.c         **** 											+ wpToLL.pos_acc
- 474:sdk.c         **** 											+ wpToLL.properties
- 475:sdk.c         **** 											+ wpToLL.wp_activated;
- 476:sdk.c         **** 
- 477:sdk.c         **** 					//send waypoint
- 478:sdk.c         **** 					wpCtrlAckTrigger=0;
- 1366              	.LM106:
- 1367 0cfc 80209FE5 		ldr	r2, .L70+16
- 1368 0d00 0030A0E3 		mov	r3, #0
- 1369 0d04 0030C2E5 		strb	r3, [r2, #0]
- 479:sdk.c         **** 					wpCtrlWpCmd=WP_CMD_SINGLE_WP;
- 1371              	.LM107:
- 1372 0d08 78209FE5 		ldr	r2, .L70+20
- 1373 0d0c 0130A0E3 		mov	r3, #1
- 1374 0d10 0030C2E5 		strb	r3, [r2, #0]
- 480:sdk.c         **** 					wpCtrlWpCmdUpdated=1;
- 1376              	.LM108:
- 1377 0d14 70209FE5 		ldr	r2, .L70+24
- 1378 0d18 0130A0E3 		mov	r3, #1
- 1379 0d1c 0030C2E5 		strb	r3, [r2, #0]
- 481:sdk.c         **** 
- 482:sdk.c         **** 					wpExampleState=4;
- 1381              	.LM109:
- 1382 0d20 70209FE5 		ldr	r2, .L70+36
- 1383 0d24 0430A0E3 		mov	r3, #4
- 1384 0d28 0030C2E5 		strb	r3, [r2, #0]
- 1385              	.L54:
- 1386              	.LBE4:
- 483:sdk.c         **** 				}
- 484:sdk.c         **** 
- 485:sdk.c         **** 				if (wpCtrlNavStatus&WP_NAVSTAT_PILOT_ABORT)
- 1388              	.LM110:
- 1389 0d2c 5C309FE5 		ldr	r3, .L70+28
- 1390 0d30 B030D3E1 		ldrh	r3, [r3, #0]
- 1391 0d34 083003E2 		and	r3, r3, #8
- 1392 0d38 000053E3 		cmp	r3, #0
- 1393 0d3c 0200000A 		beq	.L51
- 486:sdk.c         **** 					wpExampleState=0;
- 1395              	.LM111:
- 1396 0d40 50309FE5 		ldr	r3, .L70+36
- 1397 0d44 0020A0E3 		mov	r2, #0
- 1398 0d48 0020C3E5 		strb	r2, [r3, #0]
- 1399              	.L51:
- 487:sdk.c         **** 
+ 452:sdk.c         **** 					//calc chksum
+ 453:sdk.c         **** 					wpToLL.chksum = 0xAAAA
+ 1330              	.LM106:
+ 1331 0c2c 68319FE5 		ldr	r3, .L70+12
+ 1332 0c30 143093E5 		ldr	r3, [r3, #20]
+ 1333 0c34 0338A0E1 		mov	r3, r3, asl #16
+ 1334 0c38 2328A0E1 		mov	r2, r3, lsr #16
+ 1335 0c3c 58319FE5 		ldr	r3, .L70+12
+ 1336 0c40 183093E5 		ldr	r3, [r3, #24]
+ 1337 0c44 0338A0E1 		mov	r3, r3, asl #16
+ 1338 0c48 2338A0E1 		mov	r3, r3, lsr #16
+ 1339 0c4c 033082E0 		add	r3, r2, r3
+ 1340 0c50 0338A0E1 		mov	r3, r3, asl #16
+ 1341 0c54 2328A0E1 		mov	r2, r3, lsr #16
+ 1342 0c58 3C319FE5 		ldr	r3, .L70+12
+ 1343 0c5c B630D3E1 		ldrh	r3, [r3, #6]
+ 1344 0c60 033082E0 		add	r3, r2, r3
+ 1345 0c64 0338A0E1 		mov	r3, r3, asl #16
+ 1346 0c68 2328A0E1 		mov	r2, r3, lsr #16
+ 1347 0c6c 28319FE5 		ldr	r3, .L70+12
+ 1348 0c70 0C3093E5 		ldr	r3, [r3, #12]
+ 1349 0c74 0338A0E1 		mov	r3, r3, asl #16
+ 1350 0c78 2338A0E1 		mov	r3, r3, lsr #16
+ 1351 0c7c 033082E0 		add	r3, r2, r3
+ 1352 0c80 0338A0E1 		mov	r3, r3, asl #16
+ 1353 0c84 2328A0E1 		mov	r2, r3, lsr #16
+ 1354 0c88 0C319FE5 		ldr	r3, .L70+12
+ 1355 0c8c 103093E5 		ldr	r3, [r3, #16]
+ 1356 0c90 0338A0E1 		mov	r3, r3, asl #16
+ 1357 0c94 2338A0E1 		mov	r3, r3, lsr #16
+ 1358 0c98 033082E0 		add	r3, r2, r3
+ 1359 0c9c 0338A0E1 		mov	r3, r3, asl #16
+ 1360 0ca0 2328A0E1 		mov	r2, r3, lsr #16
+ 1361 0ca4 F0309FE5 		ldr	r3, .L70+12
+ 1362 0ca8 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 1363 0cac 033082E0 		add	r3, r2, r3
+ 1364 0cb0 0338A0E1 		mov	r3, r3, asl #16
+ 1365 0cb4 2328A0E1 		mov	r2, r3, lsr #16
+ 1366 0cb8 DC309FE5 		ldr	r3, .L70+12
+ 1367 0cbc B830D3E1 		ldrh	r3, [r3, #8]
+ 1368 0cc0 033082E0 		add	r3, r2, r3
+ 1369 0cc4 0338A0E1 		mov	r3, r3, asl #16
+ 1370 0cc8 2328A0E1 		mov	r2, r3, lsr #16
+ 1371 0ccc C8309FE5 		ldr	r3, .L70+12
+ 1372 0cd0 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 1373 0cd4 033082E0 		add	r3, r2, r3
+ 1374 0cd8 0338A0E1 		mov	r3, r3, asl #16
+ 1375 0cdc 2328A0E1 		mov	r2, r3, lsr #16
+ 1376 0ce0 B4309FE5 		ldr	r3, .L70+12
+ 1377 0ce4 003093E5 		ldr	r3, [r3, #0]
+ 1378 0ce8 0338A0E1 		mov	r3, r3, asl #16
+ 1379 0cec 2338A0E1 		mov	r3, r3, lsr #16
+ 1380 0cf0 033082E0 		add	r3, r2, r3
+ 1381 0cf4 0338A0E1 		mov	r3, r3, asl #16
+ 1382 0cf8 2338A0E1 		mov	r3, r3, lsr #16
+ 1383 0cfc 553C43E2 		sub	r3, r3, #21760
+ 1384 0d00 563043E2 		sub	r3, r3, #86
+ 1385 0d04 0338A0E1 		mov	r3, r3, asl #16
+ 1386 0d08 2338A0E1 		mov	r3, r3, lsr #16
+ 1387 0d0c 0320A0E1 		mov	r2, r3
+ 1388 0d10 84309FE5 		ldr	r3, .L70+12
+ 1389 0d14 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 454:sdk.c         **** 											+ wpToLL.yaw
+ 455:sdk.c         **** 											+ wpToLL.height
+ 456:sdk.c         **** 											+ wpToLL.time
+ 457:sdk.c         **** 											+ wpToLL.X
+ 458:sdk.c         **** 											+ wpToLL.Y
+ 459:sdk.c         **** 											+ wpToLL.max_speed
+ 460:sdk.c         **** 											+ wpToLL.pos_acc
+ 461:sdk.c         **** 											+ wpToLL.properties
+ 462:sdk.c         **** 											+ wpToLL.wp_activated;
+ 463:sdk.c         **** 
+ 464:sdk.c         **** 					//send waypoint
+ 465:sdk.c         **** 					wpCtrlAckTrigger=0;
+ 1391              	.LM107:
+ 1392 0d18 80209FE5 		ldr	r2, .L70+16
+ 1393 0d1c 0030A0E3 		mov	r3, #0
+ 1394 0d20 0030C2E5 		strb	r3, [r2, #0]
+ 466:sdk.c         **** 					wpCtrlWpCmd=WP_CMD_SINGLE_WP;
+ 1396              	.LM108:
+ 1397 0d24 78209FE5 		ldr	r2, .L70+20
+ 1398 0d28 0130A0E3 		mov	r3, #1
+ 1399 0d2c 0030C2E5 		strb	r3, [r2, #0]
+ 467:sdk.c         **** 					wpCtrlWpCmdUpdated=1;
+ 1401              	.LM109:
+ 1402 0d30 70209FE5 		ldr	r2, .L70+24
+ 1403 0d34 0130A0E3 		mov	r3, #1
+ 1404 0d38 0030C2E5 		strb	r3, [r2, #0]
+ 468:sdk.c         **** 
+ 469:sdk.c         **** 					wpExampleState=4;
+ 1406              	.LM110:
+ 1407 0d3c 70209FE5 		ldr	r2, .L70+36
+ 1408 0d40 0430A0E3 		mov	r3, #4
+ 1409 0d44 0030C2E5 		strb	r3, [r2, #0]
+ 1410              	.L54:
+ 1411              	.LBE4:
+ 470:sdk.c         **** 				}
+ 471:sdk.c         **** 
+ 472:sdk.c         **** 				if (wpCtrlNavStatus&WP_NAVSTAT_PILOT_ABORT)
+ 1413              	.LM111:
+ 1414 0d48 5C309FE5 		ldr	r3, .L70+28
+ 1415 0d4c B030D3E1 		ldrh	r3, [r3, #0]
+ 1416 0d50 083003E2 		and	r3, r3, #8
+ 1417 0d54 000053E3 		cmp	r3, #0
+ 1418 0d58 0200000A 		beq	.L51
+ 473:sdk.c         **** 					wpExampleState=0;
+ 1420              	.LM112:
+ 1421 0d5c 50309FE5 		ldr	r3, .L70+36
+ 1422 0d60 0020A0E3 		mov	r2, #0
+ 1423 0d64 0020C3E5 		strb	r2, [r3, #0]
+ 1424              	.L51:
+ 474:sdk.c         **** 
+ 475:sdk.c         **** 
+ 476:sdk.c         **** 			}
+ 477:sdk.c         **** 			if (RO_RC_Data.channel[6]<1600)
+ 1426              	.LM113:
+ 1427 0d68 40309FE5 		ldr	r3, .L70+32
+ 1428 0d6c BC20D3E1 		ldrh	r2, [r3, #12]
+ 1429 0d70 633EA0E3 		mov	r3, #1584
+ 1430 0d74 0F3083E2 		add	r3, r3, #15
+ 1431 0d78 030052E1 		cmp	r2, r3
+ 1432 0d7c AE00008A 		bhi	.L67
+ 478:sdk.c         **** 						wpExampleState=0;
+ 1434              	.LM114:
+ 1435 0d80 2C309FE5 		ldr	r3, .L70+36
+ 1436 0d84 0020A0E3 		mov	r2, #0
+ 1437 0d88 0020C3E5 		strb	r2, [r3, #0]
+ 479:sdk.c         **** 		break;
+ 1439              	.LM115:
+ 1440 0d8c AA0000EA 		b	.L67
+ 1441              	.L71:
+ 1442              		.align	2
+ 1443              	.L70:
+ 1444 0d90 00000000 		.word	IMU_CalcData
+ 1445 0d94 E8010000 		.word	originLon.2065
+ 1446 0d98 F0010000 		.word	originLat.2064
+ 1447 0d9c 00000000 		.word	wpToLL
+ 1448 0da0 00000000 		.word	wpCtrlAckTrigger
+ 1449 0da4 00000000 		.word	wpCtrlWpCmd
+ 1450 0da8 00000000 		.word	wpCtrlWpCmdUpdated
+ 1451 0dac 00000000 		.word	wpCtrlNavStatus
+ 1452 0db0 00000000 		.word	RO_RC_Data
+ 1453 0db4 F8010000 		.word	wpExampleState.2063
+ 1454 0db8 D0126341 		.word	1097011920
+ 1455 0dbc 00000000 		.word	0
+ 1456              	.L36:
+ 480:sdk.c         **** 
+ 481:sdk.c         **** 		case 4:
+ 482:sdk.c         **** 			//wait until cmd is processed and sent to LL processor
+ 483:sdk.c         **** 			if ((wpCtrlWpCmdUpdated==0) && (wpCtrlAckTrigger))
+ 1458              	.LM116:
+ 1459 0dc0 20301FE5 		ldr	r3, .L70+24
+ 1460 0dc4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1461 0dc8 000053E3 		cmp	r3, #0
+ 1462 0dcc 8D00001A 		bne	.L59
+ 1463 0dd0 38301FE5 		ldr	r3, .L70+16
+ 1464 0dd4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1465 0dd8 000053E3 		cmp	r3, #0
+ 1466 0ddc 8900000A 		beq	.L59
+ 484:sdk.c         **** 			{
+ 485:sdk.c         **** 				//check if waypoint was reached and wait time is over
+ 486:sdk.c         **** 				if (wpCtrlNavStatus&(WP_NAVSTAT_REACHED_POS_TIME))
+ 1468              	.LM117:
+ 1469 0de0 3C301FE5 		ldr	r3, .L70+28
+ 1470 0de4 B030D3E1 		ldrh	r3, [r3, #0]
+ 1471 0de8 023003E2 		and	r3, r3, #2
+ 1472 0dec 000053E3 		cmp	r3, #0
+ 1473 0df0 7C00000A 		beq	.L62
+ 487:sdk.c         **** 				{
  488:sdk.c         **** 
- 489:sdk.c         **** 			}
- 490:sdk.c         **** 			if (RO_RC_Data.channel[6]<1600)
- 1401              	.LM112:
- 1402 0d4c 40309FE5 		ldr	r3, .L70+32
- 1403 0d50 BC20D3E1 		ldrh	r2, [r3, #12]
- 1404 0d54 633EA0E3 		mov	r3, #1584
- 1405 0d58 0F3083E2 		add	r3, r3, #15
- 1406 0d5c 030052E1 		cmp	r2, r3
- 1407 0d60 AE00008A 		bhi	.L67
- 491:sdk.c         **** 						wpExampleState=0;
- 1409              	.LM113:
- 1410 0d64 2C309FE5 		ldr	r3, .L70+36
- 1411 0d68 0020A0E3 		mov	r2, #0
- 1412 0d6c 0020C3E5 		strb	r2, [r3, #0]
- 492:sdk.c         **** 		break;
- 1414              	.LM114:
- 1415 0d70 AA0000EA 		b	.L67
- 1416              	.L71:
- 1417              		.align	2
- 1418              	.L70:
- 1419 0d74 00000000 		.word	IMU_CalcData
- 1420 0d78 C4010000 		.word	originLon.2061
- 1421 0d7c CC010000 		.word	originLat.2060
- 1422 0d80 00000000 		.word	wpToLL
- 1423 0d84 00000000 		.word	wpCtrlAckTrigger
- 1424 0d88 00000000 		.word	wpCtrlWpCmd
- 1425 0d8c 00000000 		.word	wpCtrlWpCmdUpdated
- 1426 0d90 00000000 		.word	wpCtrlNavStatus
- 1427 0d94 00000000 		.word	RO_RC_Data
- 1428 0d98 D4010000 		.word	wpExampleState.2059
- 1429 0d9c D0126341 		.word	1097011920
- 1430 0da0 00000000 		.word	0
- 1431              	.L36:
- 493:sdk.c         **** 
- 494:sdk.c         **** 		case 4:
- 495:sdk.c         **** 			//wait until cmd is processed and sent to LL processor
- 496:sdk.c         **** 			if ((wpCtrlWpCmdUpdated==0) && (wpCtrlAckTrigger))
- 1433              	.LM115:
- 1434 0da4 20301FE5 		ldr	r3, .L70+24
- 1435 0da8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1436 0dac 000053E3 		cmp	r3, #0
- 1437 0db0 8D00001A 		bne	.L59
- 1438 0db4 38301FE5 		ldr	r3, .L70+16
- 1439 0db8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1440 0dbc 000053E3 		cmp	r3, #0
- 1441 0dc0 8900000A 		beq	.L59
- 497:sdk.c         **** 			{
- 498:sdk.c         **** 				//check if waypoint was reached and wait time is over
- 499:sdk.c         **** 				if (wpCtrlNavStatus&(WP_NAVSTAT_REACHED_POS_TIME))
- 1443              	.LM116:
- 1444 0dc4 3C301FE5 		ldr	r3, .L70+28
- 1445 0dc8 B030D3E1 		ldrh	r3, [r3, #0]
- 1446 0dcc 023003E2 		and	r3, r3, #2
- 1447 0dd0 000053E3 		cmp	r3, #0
- 1448 0dd4 7C00000A 		beq	.L62
- 500:sdk.c         **** 				{
+ 489:sdk.c         **** 					//fill waypoint structure
+ 490:sdk.c         **** 					wpToLL.max_speed=100;
+ 1475              	.LM118:
+ 1476 0df4 60201FE5 		ldr	r2, .L70+12
+ 1477 0df8 6430A0E3 		mov	r3, #100
+ 1478 0dfc 0530C2E5 		strb	r3, [r2, #5]
+ 491:sdk.c         **** 					wpToLL.pos_acc=3000; //3m accuracy
+ 1480              	.LM119:
+ 1481 0e00 6C201FE5 		ldr	r2, .L70+12
+ 1482 0e04 BB3EA0E3 		mov	r3, #2992
+ 1483 0e08 083083E2 		add	r3, r3, #8
+ 1484 0e0c B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 492:sdk.c         **** 					wpToLL.time=400; //4 seconds wait time
+ 1486              	.LM120:
+ 1487 0e10 7C201FE5 		ldr	r2, .L70+12
+ 1488 0e14 193EA0E3 		mov	r3, #400
+ 1489 0e18 B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 493:sdk.c         **** 					wpToLL.wp_activated=1;
+ 1491              	.LM121:
+ 1492 0e1c 88201FE5 		ldr	r2, .L70+12
+ 1493 0e20 0130A0E3 		mov	r3, #1
+ 1494 0e24 003082E5 		str	r3, [r2, #0]
+ 494:sdk.c         **** 
+ 495:sdk.c         **** 					//see LL_HL_comm.h for WPPROP defines
+ 496:sdk.c         **** 					wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED
+ 1496              	.LM122:
+ 1497 0e28 94201FE5 		ldr	r2, .L70+12
+ 1498 0e2c 1730A0E3 		mov	r3, #23
+ 1499 0e30 0430C2E5 		strb	r3, [r2, #4]
+ 497:sdk.c         **** 
+ 498:sdk.c         **** 					//use current height and yaw
+ 499:sdk.c         **** 					wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
+ 1501              	.LM123:
+ 1502 0e34 AC301FE5 		ldr	r3, .L70
+ 1503 0e38 082093E5 		ldr	r2, [r3, #8]
+ 1504 0e3c A8301FE5 		ldr	r3, .L70+12
+ 1505 0e40 142083E5 		str	r2, [r3, #20]
+ 500:sdk.c         **** 					wpToLL.height=IMU_CalcData.height; //use current height
+ 1507              	.LM124:
+ 1508 0e44 BC301FE5 		ldr	r3, .L70
+ 1509 0e48 4C2093E5 		ldr	r2, [r3, #76]
+ 1510 0e4c B8301FE5 		ldr	r3, .L70+12
+ 1511 0e50 182083E5 		str	r2, [r3, #24]
  501:sdk.c         **** 
- 502:sdk.c         **** 					//fill waypoint structure
- 503:sdk.c         **** 					wpToLL.max_speed=100;
- 1450              	.LM117:
- 1451 0dd8 60201FE5 		ldr	r2, .L70+12
- 1452 0ddc 6430A0E3 		mov	r3, #100
- 1453 0de0 0530C2E5 		strb	r3, [r2, #5]
- 504:sdk.c         **** 					wpToLL.pos_acc=3000; //3m accuracy
- 1455              	.LM118:
- 1456 0de4 6C201FE5 		ldr	r2, .L70+12
- 1457 0de8 BB3EA0E3 		mov	r3, #2992
- 1458 0dec 083083E2 		add	r3, r3, #8
- 1459 0df0 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 505:sdk.c         **** 					wpToLL.time=400; //4 seconds wait time
- 1461              	.LM119:
- 1462 0df4 7C201FE5 		ldr	r2, .L70+12
- 1463 0df8 193EA0E3 		mov	r3, #400
- 1464 0dfc B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 506:sdk.c         **** 					wpToLL.wp_activated=1;
- 1466              	.LM120:
- 1467 0e00 88201FE5 		ldr	r2, .L70+12
- 1468 0e04 0130A0E3 		mov	r3, #1
- 1469 0e08 003082E5 		str	r3, [r2, #0]
- 507:sdk.c         **** 
- 508:sdk.c         **** 					//see LL_HL_comm.h for WPPROP defines
- 509:sdk.c         **** 					wpToLL.properties=WPPROP_ABSCOORDS|WPPROP_AUTOMATICGOTO|WPPROP_HEIGHTENABLED|WPPROP_YAWENABLED
- 1471              	.LM121:
- 1472 0e0c 94201FE5 		ldr	r2, .L70+12
- 1473 0e10 1730A0E3 		mov	r3, #23
- 1474 0e14 0430C2E5 		strb	r3, [r2, #4]
- 510:sdk.c         **** 
- 511:sdk.c         **** 					//use current height and yaw
- 512:sdk.c         **** 					wpToLL.yaw=IMU_CalcData.angle_yaw; //use current yaw
- 1476              	.LM122:
- 1477 0e18 AC301FE5 		ldr	r3, .L70
- 1478 0e1c 082093E5 		ldr	r2, [r3, #8]
- 1479 0e20 A8301FE5 		ldr	r3, .L70+12
- 1480 0e24 142083E5 		str	r2, [r3, #20]
- 513:sdk.c         **** 					wpToLL.height=IMU_CalcData.height; //use current height
- 1482              	.LM123:
- 1483 0e28 BC301FE5 		ldr	r3, .L70
- 1484 0e2c 4C2093E5 		ldr	r2, [r3, #76]
- 1485 0e30 B8301FE5 		ldr	r3, .L70+12
- 1486 0e34 182083E5 		str	r2, [r3, #24]
- 514:sdk.c         **** 
- 515:sdk.c         **** 					//go to the beginning
- 516:sdk.c         **** 
- 517:sdk.c         **** 					wpToLL.X=originLon*10000000;
- 1488              	.LM124:
- 1489 0e38 C8301FE5 		ldr	r3, .L70+4
- 1490 0e3c 180093E8 		ldmia	r3, {r3-r4}
- 1491 0e40 0300A0E1 		mov	r0, r3
- 1492 0e44 0410A0E1 		mov	r1, r4
- 1493 0e48 B4204FE2 		adr	r2, .L70+40
- 1494 0e4c 0C0092E8 		ldmia	r2, {r2-r3}
- 1495 0e50 FEFFFFEB 		bl	__muldf3
- 1496 0e54 0030A0E1 		mov	r3, r0
- 1497 0e58 0140A0E1 		mov	r4, r1
- 1498 0e5c 0300A0E1 		mov	r0, r3
- 1499 0e60 0410A0E1 		mov	r1, r4
- 1500 0e64 FEFFFFEB 		bl	__fixdfsi
- 1501 0e68 0020A0E1 		mov	r2, r0
- 1502 0e6c F4301FE5 		ldr	r3, .L70+12
- 1503 0e70 0C2083E5 		str	r2, [r3, #12]
- 518:sdk.c         **** 					wpToLL.Y=originLat*10000000;
- 1505              	.LM125:
- 1506 0e74 00311FE5 		ldr	r3, .L70+8
- 1507 0e78 180093E8 		ldmia	r3, {r3-r4}
- 1508 0e7c 0300A0E1 		mov	r0, r3
- 1509 0e80 0410A0E1 		mov	r1, r4
- 1510 0e84 F0204FE2 		adr	r2, .L70+40
- 1511 0e88 0C0092E8 		ldmia	r2, {r2-r3}
- 1512 0e8c FEFFFFEB 		bl	__muldf3
- 1513 0e90 0030A0E1 		mov	r3, r0
- 1514 0e94 0140A0E1 		mov	r4, r1
- 1515 0e98 0300A0E1 		mov	r0, r3
- 1516 0e9c 0410A0E1 		mov	r1, r4
- 1517 0ea0 FEFFFFEB 		bl	__fixdfsi
- 1518 0ea4 0020A0E1 		mov	r2, r0
- 1519 0ea8 30311FE5 		ldr	r3, .L70+12
- 1520 0eac 102083E5 		str	r2, [r3, #16]
- 519:sdk.c         **** 
- 520:sdk.c         **** 					//calc chksum
- 521:sdk.c         **** 					wpToLL.chksum = 0xAAAA
- 1522              	.LM126:
- 1523 0eb0 38311FE5 		ldr	r3, .L70+12
- 1524 0eb4 143093E5 		ldr	r3, [r3, #20]
- 1525 0eb8 0338A0E1 		mov	r3, r3, asl #16
- 1526 0ebc 2328A0E1 		mov	r2, r3, lsr #16
- 1527 0ec0 48311FE5 		ldr	r3, .L70+12
- 1528 0ec4 183093E5 		ldr	r3, [r3, #24]
- 1529 0ec8 0338A0E1 		mov	r3, r3, asl #16
- 1530 0ecc 2338A0E1 		mov	r3, r3, lsr #16
- 1531 0ed0 033082E0 		add	r3, r2, r3
- 1532 0ed4 0338A0E1 		mov	r3, r3, asl #16
- 1533 0ed8 2328A0E1 		mov	r2, r3, lsr #16
- 1534 0edc 64311FE5 		ldr	r3, .L70+12
- 1535 0ee0 B630D3E1 		ldrh	r3, [r3, #6]
- 1536 0ee4 033082E0 		add	r3, r2, r3
- 1537 0ee8 0338A0E1 		mov	r3, r3, asl #16
- 1538 0eec 2328A0E1 		mov	r2, r3, lsr #16
- 1539 0ef0 78311FE5 		ldr	r3, .L70+12
- 1540 0ef4 0C3093E5 		ldr	r3, [r3, #12]
- 1541 0ef8 0338A0E1 		mov	r3, r3, asl #16
- 1542 0efc 2338A0E1 		mov	r3, r3, lsr #16
- 1543 0f00 033082E0 		add	r3, r2, r3
- 1544 0f04 0338A0E1 		mov	r3, r3, asl #16
- 1545 0f08 2328A0E1 		mov	r2, r3, lsr #16
- 1546 0f0c 94311FE5 		ldr	r3, .L70+12
- 1547 0f10 103093E5 		ldr	r3, [r3, #16]
- 1548 0f14 0338A0E1 		mov	r3, r3, asl #16
- 1549 0f18 2338A0E1 		mov	r3, r3, lsr #16
- 1550 0f1c 033082E0 		add	r3, r2, r3
- 1551 0f20 0338A0E1 		mov	r3, r3, asl #16
- 1552 0f24 2328A0E1 		mov	r2, r3, lsr #16
- 1553 0f28 B0311FE5 		ldr	r3, .L70+12
- 1554 0f2c 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
- 1555 0f30 033082E0 		add	r3, r2, r3
- 1556 0f34 0338A0E1 		mov	r3, r3, asl #16
- 1557 0f38 2328A0E1 		mov	r2, r3, lsr #16
- 1558 0f3c C4311FE5 		ldr	r3, .L70+12
- 1559 0f40 B830D3E1 		ldrh	r3, [r3, #8]
- 1560 0f44 033082E0 		add	r3, r2, r3
- 1561 0f48 0338A0E1 		mov	r3, r3, asl #16
- 1562 0f4c 2328A0E1 		mov	r2, r3, lsr #16
- 1563 0f50 D8311FE5 		ldr	r3, .L70+12
- 1564 0f54 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 1565 0f58 033082E0 		add	r3, r2, r3
- 1566 0f5c 0338A0E1 		mov	r3, r3, asl #16
- 1567 0f60 2328A0E1 		mov	r2, r3, lsr #16
- 1568 0f64 EC311FE5 		ldr	r3, .L70+12
- 1569 0f68 003093E5 		ldr	r3, [r3, #0]
- 1570 0f6c 0338A0E1 		mov	r3, r3, asl #16
- 1571 0f70 2338A0E1 		mov	r3, r3, lsr #16
- 1572 0f74 033082E0 		add	r3, r2, r3
- 1573 0f78 0338A0E1 		mov	r3, r3, asl #16
- 1574 0f7c 2338A0E1 		mov	r3, r3, lsr #16
- 1575 0f80 553C43E2 		sub	r3, r3, #21760
- 1576 0f84 563043E2 		sub	r3, r3, #86
- 1577 0f88 0338A0E1 		mov	r3, r3, asl #16
- 1578 0f8c 2338A0E1 		mov	r3, r3, lsr #16
- 1579 0f90 0320A0E1 		mov	r2, r3
- 1580 0f94 1C321FE5 		ldr	r3, .L70+12
- 1581 0f98 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
- 522:sdk.c         **** 											+ wpToLL.yaw
- 523:sdk.c         **** 											+ wpToLL.height
- 524:sdk.c         **** 											+ wpToLL.time
- 525:sdk.c         **** 											+ wpToLL.X
- 526:sdk.c         **** 											+ wpToLL.Y
- 527:sdk.c         **** 											+ wpToLL.max_speed
- 528:sdk.c         **** 											+ wpToLL.pos_acc
- 529:sdk.c         **** 											+ wpToLL.properties
- 530:sdk.c         **** 											+ wpToLL.wp_activated;
- 531:sdk.c         **** 
- 532:sdk.c         **** 					//send waypoint
- 533:sdk.c         **** 					wpCtrlAckTrigger=0;
- 1583              	.LM127:
- 1584 0f9c 20221FE5 		ldr	r2, .L70+16
- 1585 0fa0 0030A0E3 		mov	r3, #0
- 1586 0fa4 0030C2E5 		strb	r3, [r2, #0]
- 534:sdk.c         **** 					wpCtrlWpCmd=WP_CMD_SINGLE_WP;
- 1588              	.LM128:
- 1589 0fa8 28221FE5 		ldr	r2, .L70+20
- 1590 0fac 0130A0E3 		mov	r3, #1
- 1591 0fb0 0030C2E5 		strb	r3, [r2, #0]
- 535:sdk.c         **** 					wpCtrlWpCmdUpdated=1;
- 1593              	.LM129:
- 1594 0fb4 30221FE5 		ldr	r2, .L70+24
- 1595 0fb8 0130A0E3 		mov	r3, #1
- 1596 0fbc 0030C2E5 		strb	r3, [r2, #0]
- 536:sdk.c         **** 
- 537:sdk.c         **** 					wpExampleState=0;
- 1598              	.LM130:
- 1599 0fc0 30221FE5 		ldr	r2, .L70+36
- 1600 0fc4 0030A0E3 		mov	r3, #0
- 1601 0fc8 0030C2E5 		strb	r3, [r2, #0]
- 1602              	.L62:
- 538:sdk.c         **** 				}
- 539:sdk.c         **** 
- 540:sdk.c         **** 				if (wpCtrlNavStatus&WP_NAVSTAT_PILOT_ABORT)
- 1604              	.LM131:
- 1605 0fcc 44321FE5 		ldr	r3, .L70+28
- 1606 0fd0 B030D3E1 		ldrh	r3, [r3, #0]
- 1607 0fd4 083003E2 		and	r3, r3, #8
- 1608 0fd8 000053E3 		cmp	r3, #0
- 1609 0fdc 0200000A 		beq	.L59
- 541:sdk.c         **** 					wpExampleState=0;
- 1611              	.LM132:
- 1612 0fe0 50321FE5 		ldr	r3, .L70+36
- 1613 0fe4 0020A0E3 		mov	r2, #0
- 1614 0fe8 0020C3E5 		strb	r2, [r3, #0]
- 1615              	.L59:
+ 502:sdk.c         **** 					//go to the beginning
+ 503:sdk.c         **** 
+ 504:sdk.c         **** 					wpToLL.X=originLon*10000000;
+ 1513              	.LM125:
+ 1514 0e54 C8301FE5 		ldr	r3, .L70+4
+ 1515 0e58 180093E8 		ldmia	r3, {r3-r4}
+ 1516 0e5c 0300A0E1 		mov	r0, r3
+ 1517 0e60 0410A0E1 		mov	r1, r4
+ 1518 0e64 B4204FE2 		adr	r2, .L70+40
+ 1519 0e68 0C0092E8 		ldmia	r2, {r2-r3}
+ 1520 0e6c FEFFFFEB 		bl	__muldf3
+ 1521 0e70 0030A0E1 		mov	r3, r0
+ 1522 0e74 0140A0E1 		mov	r4, r1
+ 1523 0e78 0300A0E1 		mov	r0, r3
+ 1524 0e7c 0410A0E1 		mov	r1, r4
+ 1525 0e80 FEFFFFEB 		bl	__fixdfsi
+ 1526 0e84 0020A0E1 		mov	r2, r0
+ 1527 0e88 F4301FE5 		ldr	r3, .L70+12
+ 1528 0e8c 0C2083E5 		str	r2, [r3, #12]
+ 505:sdk.c         **** 					wpToLL.Y=originLat*10000000;
+ 1530              	.LM126:
+ 1531 0e90 00311FE5 		ldr	r3, .L70+8
+ 1532 0e94 180093E8 		ldmia	r3, {r3-r4}
+ 1533 0e98 0300A0E1 		mov	r0, r3
+ 1534 0e9c 0410A0E1 		mov	r1, r4
+ 1535 0ea0 F0204FE2 		adr	r2, .L70+40
+ 1536 0ea4 0C0092E8 		ldmia	r2, {r2-r3}
+ 1537 0ea8 FEFFFFEB 		bl	__muldf3
+ 1538 0eac 0030A0E1 		mov	r3, r0
+ 1539 0eb0 0140A0E1 		mov	r4, r1
+ 1540 0eb4 0300A0E1 		mov	r0, r3
+ 1541 0eb8 0410A0E1 		mov	r1, r4
+ 1542 0ebc FEFFFFEB 		bl	__fixdfsi
+ 1543 0ec0 0020A0E1 		mov	r2, r0
+ 1544 0ec4 30311FE5 		ldr	r3, .L70+12
+ 1545 0ec8 102083E5 		str	r2, [r3, #16]
+ 506:sdk.c         **** 
+ 507:sdk.c         **** 					//calc chksum
+ 508:sdk.c         **** 					wpToLL.chksum = 0xAAAA
+ 1547              	.LM127:
+ 1548 0ecc 38311FE5 		ldr	r3, .L70+12
+ 1549 0ed0 143093E5 		ldr	r3, [r3, #20]
+ 1550 0ed4 0338A0E1 		mov	r3, r3, asl #16
+ 1551 0ed8 2328A0E1 		mov	r2, r3, lsr #16
+ 1552 0edc 48311FE5 		ldr	r3, .L70+12
+ 1553 0ee0 183093E5 		ldr	r3, [r3, #24]
+ 1554 0ee4 0338A0E1 		mov	r3, r3, asl #16
+ 1555 0ee8 2338A0E1 		mov	r3, r3, lsr #16
+ 1556 0eec 033082E0 		add	r3, r2, r3
+ 1557 0ef0 0338A0E1 		mov	r3, r3, asl #16
+ 1558 0ef4 2328A0E1 		mov	r2, r3, lsr #16
+ 1559 0ef8 64311FE5 		ldr	r3, .L70+12
+ 1560 0efc B630D3E1 		ldrh	r3, [r3, #6]
+ 1561 0f00 033082E0 		add	r3, r2, r3
+ 1562 0f04 0338A0E1 		mov	r3, r3, asl #16
+ 1563 0f08 2328A0E1 		mov	r2, r3, lsr #16
+ 1564 0f0c 78311FE5 		ldr	r3, .L70+12
+ 1565 0f10 0C3093E5 		ldr	r3, [r3, #12]
+ 1566 0f14 0338A0E1 		mov	r3, r3, asl #16
+ 1567 0f18 2338A0E1 		mov	r3, r3, lsr #16
+ 1568 0f1c 033082E0 		add	r3, r2, r3
+ 1569 0f20 0338A0E1 		mov	r3, r3, asl #16
+ 1570 0f24 2328A0E1 		mov	r2, r3, lsr #16
+ 1571 0f28 94311FE5 		ldr	r3, .L70+12
+ 1572 0f2c 103093E5 		ldr	r3, [r3, #16]
+ 1573 0f30 0338A0E1 		mov	r3, r3, asl #16
+ 1574 0f34 2338A0E1 		mov	r3, r3, lsr #16
+ 1575 0f38 033082E0 		add	r3, r2, r3
+ 1576 0f3c 0338A0E1 		mov	r3, r3, asl #16
+ 1577 0f40 2328A0E1 		mov	r2, r3, lsr #16
+ 1578 0f44 B0311FE5 		ldr	r3, .L70+12
+ 1579 0f48 0530D3E5 		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 1580 0f4c 033082E0 		add	r3, r2, r3
+ 1581 0f50 0338A0E1 		mov	r3, r3, asl #16
+ 1582 0f54 2328A0E1 		mov	r2, r3, lsr #16
+ 1583 0f58 C4311FE5 		ldr	r3, .L70+12
+ 1584 0f5c B830D3E1 		ldrh	r3, [r3, #8]
+ 1585 0f60 033082E0 		add	r3, r2, r3
+ 1586 0f64 0338A0E1 		mov	r3, r3, asl #16
+ 1587 0f68 2328A0E1 		mov	r2, r3, lsr #16
+ 1588 0f6c D8311FE5 		ldr	r3, .L70+12
+ 1589 0f70 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 1590 0f74 033082E0 		add	r3, r2, r3
+ 1591 0f78 0338A0E1 		mov	r3, r3, asl #16
+ 1592 0f7c 2328A0E1 		mov	r2, r3, lsr #16
+ 1593 0f80 EC311FE5 		ldr	r3, .L70+12
+ 1594 0f84 003093E5 		ldr	r3, [r3, #0]
+ 1595 0f88 0338A0E1 		mov	r3, r3, asl #16
+ 1596 0f8c 2338A0E1 		mov	r3, r3, lsr #16
+ 1597 0f90 033082E0 		add	r3, r2, r3
+ 1598 0f94 0338A0E1 		mov	r3, r3, asl #16
+ 1599 0f98 2338A0E1 		mov	r3, r3, lsr #16
+ 1600 0f9c 553C43E2 		sub	r3, r3, #21760
+ 1601 0fa0 563043E2 		sub	r3, r3, #86
+ 1602 0fa4 0338A0E1 		mov	r3, r3, asl #16
+ 1603 0fa8 2338A0E1 		mov	r3, r3, lsr #16
+ 1604 0fac 0320A0E1 		mov	r2, r3
+ 1605 0fb0 1C321FE5 		ldr	r3, .L70+12
+ 1606 0fb4 BA20C3E1 		strh	r2, [r3, #10]	@ movhi
+ 509:sdk.c         **** 											+ wpToLL.yaw
+ 510:sdk.c         **** 											+ wpToLL.height
+ 511:sdk.c         **** 											+ wpToLL.time
+ 512:sdk.c         **** 											+ wpToLL.X
+ 513:sdk.c         **** 											+ wpToLL.Y
+ 514:sdk.c         **** 											+ wpToLL.max_speed
+ 515:sdk.c         **** 											+ wpToLL.pos_acc
+ 516:sdk.c         **** 											+ wpToLL.properties
+ 517:sdk.c         **** 											+ wpToLL.wp_activated;
+ 518:sdk.c         **** 
+ 519:sdk.c         **** 					//send waypoint
+ 520:sdk.c         **** 					wpCtrlAckTrigger=0;
+ 1608              	.LM128:
+ 1609 0fb8 20221FE5 		ldr	r2, .L70+16
+ 1610 0fbc 0030A0E3 		mov	r3, #0
+ 1611 0fc0 0030C2E5 		strb	r3, [r2, #0]
+ 521:sdk.c         **** 					wpCtrlWpCmd=WP_CMD_SINGLE_WP;
+ 1613              	.LM129:
+ 1614 0fc4 28221FE5 		ldr	r2, .L70+20
+ 1615 0fc8 0130A0E3 		mov	r3, #1
+ 1616 0fcc 0030C2E5 		strb	r3, [r2, #0]
+ 522:sdk.c         **** 					wpCtrlWpCmdUpdated=1;
+ 1618              	.LM130:
+ 1619 0fd0 30221FE5 		ldr	r2, .L70+24
+ 1620 0fd4 0130A0E3 		mov	r3, #1
+ 1621 0fd8 0030C2E5 		strb	r3, [r2, #0]
+ 523:sdk.c         **** 
+ 524:sdk.c         **** 					wpExampleState=0;
+ 1623              	.LM131:
+ 1624 0fdc 30221FE5 		ldr	r2, .L70+36
+ 1625 0fe0 0030A0E3 		mov	r3, #0
+ 1626 0fe4 0030C2E5 		strb	r3, [r2, #0]
+ 1627              	.L62:
+ 525:sdk.c         **** 				}
+ 526:sdk.c         **** 
+ 527:sdk.c         **** 				if (wpCtrlNavStatus&WP_NAVSTAT_PILOT_ABORT)
+ 1629              	.LM132:
+ 1630 0fe8 44321FE5 		ldr	r3, .L70+28
+ 1631 0fec B030D3E1 		ldrh	r3, [r3, #0]
+ 1632 0ff0 083003E2 		and	r3, r3, #8
+ 1633 0ff4 000053E3 		cmp	r3, #0
+ 1634 0ff8 0200000A 		beq	.L59
+ 528:sdk.c         **** 					wpExampleState=0;
+ 1636              	.LM133:
+ 1637 0ffc 50321FE5 		ldr	r3, .L70+36
+ 1638 1000 0020A0E3 		mov	r2, #0
+ 1639 1004 0020C3E5 		strb	r2, [r3, #0]
+ 1640              	.L59:
+ 529:sdk.c         **** 
+ 530:sdk.c         **** 
+ 531:sdk.c         **** 			}
+ 532:sdk.c         **** 			if (RO_RC_Data.channel[6]<1600)
+ 1642              	.LM134:
+ 1643 1008 60321FE5 		ldr	r3, .L70+32
+ 1644 100c BC20D3E1 		ldrh	r2, [r3, #12]
+ 1645 1010 633EA0E3 		mov	r3, #1584
+ 1646 1014 0F3083E2 		add	r3, r3, #15
+ 1647 1018 030052E1 		cmp	r2, r3
+ 1648 101c 0600008A 		bhi	.L67
+ 533:sdk.c         **** 						wpExampleState=0;
+ 1650              	.LM135:
+ 1651 1020 74321FE5 		ldr	r3, .L70+36
+ 1652 1024 0020A0E3 		mov	r2, #0
+ 1653 1028 0020C3E5 		strb	r2, [r3, #0]
+ 534:sdk.c         **** 		break;
+ 1655              	.LM136:
+ 1656 102c 020000EA 		b	.L67
+ 1657              	.L31:
+ 535:sdk.c         **** 
+ 536:sdk.c         **** 		default:
+ 537:sdk.c         **** 			wpExampleState=0;
+ 1659              	.LM137:
+ 1660 1030 84321FE5 		ldr	r3, .L70+36
+ 1661 1034 0020A0E3 		mov	r2, #0
+ 1662 1038 0020C3E5 		strb	r2, [r3, #0]
+ 1663              	.L67:
+ 538:sdk.c         **** 		break;
+ 539:sdk.c         **** 	}
+ 540:sdk.c         **** 
+ 541:sdk.c         **** }
+ 1665              	.LM138:
+ 1666 103c 18D04BE2 		sub	sp, fp, #24
+ 1667 1040 70689DE8 		ldmfd	sp, {r4, r5, r6, fp, sp, lr}
+ 1668 1044 1EFF2FE1 		bx	lr
+ 1687              	.Lscope5:
+ 1688              		.bss
+ 1689 01f9 000000   		.align	2
+ 1690              	timeout.2295:
+ 1691 01fc 00000000 		.space	4
+ 1693              		.text
+ 1694              		.align	2
+ 1696              		.global	SDK_EXAMPLE_turn_motors_on
+ 1698              	SDK_EXAMPLE_turn_motors_on:
  542:sdk.c         **** 
- 543:sdk.c         **** 
- 544:sdk.c         **** 			}
- 545:sdk.c         **** 			if (RO_RC_Data.channel[6]<1600)
- 1617              	.LM133:
- 1618 0fec 60321FE5 		ldr	r3, .L70+32
- 1619 0ff0 BC20D3E1 		ldrh	r2, [r3, #12]
- 1620 0ff4 633EA0E3 		mov	r3, #1584
- 1621 0ff8 0F3083E2 		add	r3, r3, #15
- 1622 0ffc 030052E1 		cmp	r2, r3
- 1623 1000 0600008A 		bhi	.L67
- 546:sdk.c         **** 						wpExampleState=0;
- 1625              	.LM134:
- 1626 1004 74321FE5 		ldr	r3, .L70+36
- 1627 1008 0020A0E3 		mov	r2, #0
- 1628 100c 0020C3E5 		strb	r2, [r3, #0]
- 547:sdk.c         **** 		break;
- 1630              	.LM135:
- 1631 1010 020000EA 		b	.L67
- 1632              	.L31:
- 548:sdk.c         **** 
- 549:sdk.c         **** 		default:
- 550:sdk.c         **** 			wpExampleState=0;
- 1634              	.LM136:
- 1635 1014 84321FE5 		ldr	r3, .L70+36
- 1636 1018 0020A0E3 		mov	r2, #0
- 1637 101c 0020C3E5 		strb	r2, [r3, #0]
- 1638              	.L67:
- 551:sdk.c         **** 		break;
- 552:sdk.c         **** 	}
- 553:sdk.c         **** 
- 554:sdk.c         **** }
- 1640              	.LM137:
- 1641 1020 18D04BE2 		sub	sp, fp, #24
- 1642 1024 70689DE8 		ldmfd	sp, {r4, r5, r6, fp, sp, lr}
- 1643 1028 1EFF2FE1 		bx	lr
- 1662              	.Lscope5:
- 1663              		.bss
- 1664 01d5 000000   		.align	2
- 1665              	timeout.2291:
- 1666 01d8 00000000 		.space	4
- 1668              		.text
- 1669              		.align	2
- 1671              		.global	SDK_EXAMPLE_turn_motors_on
- 1673              	SDK_EXAMPLE_turn_motors_on:
- 555:sdk.c         **** 
- 556:sdk.c         **** int SDK_EXAMPLE_turn_motors_on(void) //hold throttle stick down and yaw stick fully left to turn mo
- 557:sdk.c         **** {
- 1675              	.LM138:
- 1676              		@ Function supports interworking.
- 1677              		@ args = 0, pretend = 0, frame = 4
- 1678              		@ frame_needed = 1, uses_anonymous_args = 0
- 1679 102c 0DC0A0E1 		mov	ip, sp
- 1680 1030 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1681 1034 04B04CE2 		sub	fp, ip, #4
- 1682 1038 04D04DE2 		sub	sp, sp, #4
- 558:sdk.c         **** 	static int timeout=0;
- 559:sdk.c         **** 
- 560:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;	//0x00: direct individual motor control: individual commands for motors 0..
- 1684              	.LM139:
- 1685 103c E4209FE5 		ldr	r2, .L79
- 1686 1040 0230A0E3 		mov	r3, #2
- 1687 1044 0030C2E5 		strb	r3, [r2, #0]
- 561:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
- 562:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
- 563:sdk.c         **** 							//0x03: GPS waypoint control
- 564:sdk.c         **** 
- 565:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
- 1689              	.LM140:
- 1690 1048 D8209FE5 		ldr	r2, .L79
- 1691 104c 0130A0E3 		mov	r3, #1
- 1692 1050 0130C2E5 		strb	r3, [r2, #1]
- 566:sdk.c         **** 							//1: enable control by HL processor
- 567:sdk.c         **** 
- 568:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0; //make sure stick command is accepted
- 1694              	.LM141:
- 1695 1054 CC209FE5 		ldr	r2, .L79
- 1696 1058 0030A0E3 		mov	r3, #0
- 1697 105c 0230C2E5 		strb	r3, [r2, #2]
- 569:sdk.c         **** 
- 570:sdk.c         **** 	if(++timeout>=1000)
- 1699              	.LM142:
- 1700 1060 C4309FE5 		ldr	r3, .L79+4
- 1701 1064 003093E5 		ldr	r3, [r3, #0]
- 1702 1068 012083E2 		add	r2, r3, #1
- 1703 106c B8309FE5 		ldr	r3, .L79+4
- 1704 1070 002083E5 		str	r2, [r3, #0]
- 1705 1074 B0309FE5 		ldr	r3, .L79+4
- 1706 1078 002093E5 		ldr	r2, [r3, #0]
- 1707 107c F93FA0E3 		mov	r3, #996
- 1708 1080 033083E2 		add	r3, r3, #3
- 1709 1084 030052E1 		cmp	r2, r3
- 1710 1088 050000DA 		ble	.L73
- 571:sdk.c         **** 	{
- 572:sdk.c         **** 		timeout=0;
- 1712              	.LM143:
- 1713 108c 98209FE5 		ldr	r2, .L79+4
- 1714 1090 0030A0E3 		mov	r3, #0
- 1715 1094 003082E5 		str	r3, [r2, #0]
- 573:sdk.c         **** 		return(1); //1 => start sequence completed => motors running => user can stop calling this functi
- 1717              	.LM144:
- 1718 1098 0130A0E3 		mov	r3, #1
- 1719 109c 10300BE5 		str	r3, [fp, #-16]
- 1720 10a0 1B0000EA 		b	.L75
- 1721              	.L73:
- 574:sdk.c         **** 	}
- 575:sdk.c         **** 	else if(timeout>500) //neutral stick command for 500 ms
- 1723              	.LM145:
- 1724 10a4 80309FE5 		ldr	r3, .L79+4
- 1725 10a8 003093E5 		ldr	r3, [r3, #0]
- 1726 10ac 7D0F53E3 		cmp	r3, #500
- 1727 10b0 0B0000DA 		ble	.L76
- 576:sdk.c         **** 	{
- 577:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
- 1729              	.LM146:
- 1730 10b4 74209FE5 		ldr	r2, .L79+8
- 1731 10b8 0C30A0E3 		mov	r3, #12
- 1732 10bc B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 578:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
- 1734              	.LM147:
- 1735 10c0 68209FE5 		ldr	r2, .L79+8
- 1736 10c4 0030A0E3 		mov	r3, #0
- 1737 10c8 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 579:sdk.c         **** 		WO_CTRL_Input.yaw=0;
- 1739              	.LM148:
- 1740 10cc 5C209FE5 		ldr	r2, .L79+8
- 1741 10d0 0030A0E3 		mov	r3, #0
- 1742 10d4 B430C2E1 		strh	r3, [r2, #4]	@ movhi
- 580:sdk.c         **** 		return(0);
- 1744              	.LM149:
- 1745 10d8 0030A0E3 		mov	r3, #0
- 1746 10dc 10300BE5 		str	r3, [fp, #-16]
- 1747 10e0 0B0000EA 		b	.L75
- 1748              	.L76:
- 581:sdk.c         **** 	}
- 582:sdk.c         **** 	else //hold stick command for 500 ms
- 583:sdk.c         **** 	{
- 584:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
- 1750              	.LM150:
- 1751 10e4 44209FE5 		ldr	r2, .L79+8
- 1752 10e8 0C30A0E3 		mov	r3, #12
- 1753 10ec B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 585:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
- 1755              	.LM151:
- 1756 10f0 38209FE5 		ldr	r2, .L79+8
- 1757 10f4 0030A0E3 		mov	r3, #0
- 1758 10f8 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 586:sdk.c         **** 		WO_CTRL_Input.yaw=-2047;
- 1760              	.LM152:
- 1761 10fc 2C209FE5 		ldr	r2, .L79+8
- 1762 1100 7F3EE0E3 		mvn	r3, #2032
- 1763 1104 0E3043E2 		sub	r3, r3, #14
- 1764 1108 B430C2E1 		strh	r3, [r2, #4]	@ movhi
- 587:sdk.c         **** 		return(0);
- 1766              	.LM153:
- 1767 110c 0030A0E3 		mov	r3, #0
- 1768 1110 10300BE5 		str	r3, [fp, #-16]
- 1769              	.L75:
- 1770 1114 10301BE5 		ldr	r3, [fp, #-16]
- 588:sdk.c         **** 	}
- 589:sdk.c         **** 
- 590:sdk.c         **** }
- 1772              	.LM154:
- 1773 1118 0300A0E1 		mov	r0, r3
- 1774 111c 0CD04BE2 		sub	sp, fp, #12
- 1775 1120 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1776 1124 1EFF2FE1 		bx	lr
- 1777              	.L80:
- 1778              		.align	2
- 1779              	.L79:
- 1780 1128 00000000 		.word	WO_SDK
- 1781 112c D8010000 		.word	timeout.2291
- 1782 1130 00000000 		.word	WO_CTRL_Input
- 1787              	.Lscope6:
- 1788              		.bss
- 1789              		.align	2
- 1790              	timeout.2305:
- 1791 01dc 00000000 		.space	4
- 1793              		.text
- 1794              		.align	2
- 1796              		.global	SDK_EXAMPLE_turn_motors_off
- 1798              	SDK_EXAMPLE_turn_motors_off:
- 591:sdk.c         **** 
- 592:sdk.c         **** int SDK_EXAMPLE_turn_motors_off(void) //hold throttle stick down and yaw stick fully right to turn 
- 593:sdk.c         **** {
- 1800              	.LM155:
- 1801              		@ Function supports interworking.
- 1802              		@ args = 0, pretend = 0, frame = 4
- 1803              		@ frame_needed = 1, uses_anonymous_args = 0
- 1804 1134 0DC0A0E1 		mov	ip, sp
- 1805 1138 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1806 113c 04B04CE2 		sub	fp, ip, #4
- 1807 1140 04D04DE2 		sub	sp, sp, #4
- 594:sdk.c         **** 	static int timeout=0;
- 595:sdk.c         **** 
- 596:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;	//0x00: direct individual motor control: individual commands for motors 0..
- 1809              	.LM156:
- 1810 1144 E0209FE5 		ldr	r2, .L88
- 1811 1148 0230A0E3 		mov	r3, #2
- 1812 114c 0030C2E5 		strb	r3, [r2, #0]
- 597:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
- 598:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
- 599:sdk.c         **** 							//0x03: GPS waypoint control
- 600:sdk.c         **** 
- 601:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
- 1814              	.LM157:
- 1815 1150 D4209FE5 		ldr	r2, .L88
- 1816 1154 0130A0E3 		mov	r3, #1
- 1817 1158 0130C2E5 		strb	r3, [r2, #1]
- 602:sdk.c         **** 							//1: enable control by HL processor
- 603:sdk.c         **** 
- 604:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0; //make sure stick command is accepted
- 1819              	.LM158:
- 1820 115c C8209FE5 		ldr	r2, .L88
- 1821 1160 0030A0E3 		mov	r3, #0
- 1822 1164 0230C2E5 		strb	r3, [r2, #2]
- 605:sdk.c         **** 
- 606:sdk.c         **** 	if(++timeout>=1000)
- 1824              	.LM159:
- 1825 1168 C0309FE5 		ldr	r3, .L88+4
- 1826 116c 003093E5 		ldr	r3, [r3, #0]
- 1827 1170 012083E2 		add	r2, r3, #1
- 1828 1174 B4309FE5 		ldr	r3, .L88+4
- 1829 1178 002083E5 		str	r2, [r3, #0]
- 1830 117c AC309FE5 		ldr	r3, .L88+4
- 1831 1180 002093E5 		ldr	r2, [r3, #0]
- 1832 1184 F93FA0E3 		mov	r3, #996
- 1833 1188 033083E2 		add	r3, r3, #3
- 1834 118c 030052E1 		cmp	r2, r3
- 1835 1190 050000DA 		ble	.L82
- 607:sdk.c         **** 	{
- 608:sdk.c         **** 		timeout=0;
- 1837              	.LM160:
- 1838 1194 94209FE5 		ldr	r2, .L88+4
- 1839 1198 0030A0E3 		mov	r3, #0
- 1840 119c 003082E5 		str	r3, [r2, #0]
- 609:sdk.c         **** 		return(1); //1 => stop sequence completed => motors turned off => user can stop calling this func
- 1842              	.LM161:
- 1843 11a0 0130A0E3 		mov	r3, #1
- 1844 11a4 10300BE5 		str	r3, [fp, #-16]
- 1845 11a8 1A0000EA 		b	.L84
- 1846              	.L82:
- 610:sdk.c         **** 	}
- 611:sdk.c         **** 	else if(timeout>500) //neutral stick command for 500 ms
- 1848              	.LM162:
- 1849 11ac 7C309FE5 		ldr	r3, .L88+4
- 1850 11b0 003093E5 		ldr	r3, [r3, #0]
- 1851 11b4 7D0F53E3 		cmp	r3, #500
- 1852 11b8 0B0000DA 		ble	.L85
- 612:sdk.c         **** 	{
- 613:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
- 1854              	.LM163:
- 1855 11bc 70209FE5 		ldr	r2, .L88+8
- 1856 11c0 0C30A0E3 		mov	r3, #12
- 1857 11c4 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 614:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
- 1859              	.LM164:
- 1860 11c8 64209FE5 		ldr	r2, .L88+8
- 1861 11cc 0030A0E3 		mov	r3, #0
- 1862 11d0 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 615:sdk.c         **** 		WO_CTRL_Input.yaw=0;
- 1864              	.LM165:
- 1865 11d4 58209FE5 		ldr	r2, .L88+8
- 1866 11d8 0030A0E3 		mov	r3, #0
- 1867 11dc B430C2E1 		strh	r3, [r2, #4]	@ movhi
- 616:sdk.c         **** 		return(0);
- 1869              	.LM166:
- 1870 11e0 0030A0E3 		mov	r3, #0
- 1871 11e4 10300BE5 		str	r3, [fp, #-16]
- 1872 11e8 0A0000EA 		b	.L84
- 1873              	.L85:
- 617:sdk.c         **** 	}
- 618:sdk.c         **** 	else //hold stick command for 500 ms
- 619:sdk.c         **** 	{
- 620:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
- 1875              	.LM167:
- 1876 11ec 40209FE5 		ldr	r2, .L88+8
- 1877 11f0 0C30A0E3 		mov	r3, #12
- 1878 11f4 B830C2E1 		strh	r3, [r2, #8]	@ movhi
- 621:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
- 1880              	.LM168:
- 1881 11f8 34209FE5 		ldr	r2, .L88+8
- 1882 11fc 0030A0E3 		mov	r3, #0
- 1883 1200 B630C2E1 		strh	r3, [r2, #6]	@ movhi
- 622:sdk.c         **** 		WO_CTRL_Input.yaw=2047;
- 1885              	.LM169:
- 1886 1204 28209FE5 		ldr	r2, .L88+8
- 1887 1208 3E3BE0E3 		mvn	r3, #63488
- 1888 120c B430C2E1 		strh	r3, [r2, #4]	@ movhi
- 623:sdk.c         **** 		return(0);
- 1890              	.LM170:
- 1891 1210 0030A0E3 		mov	r3, #0
- 1892 1214 10300BE5 		str	r3, [fp, #-16]
- 1893              	.L84:
- 1894 1218 10301BE5 		ldr	r3, [fp, #-16]
- 624:sdk.c         **** 	}
- 625:sdk.c         **** }
- 1896              	.LM171:
- 1897 121c 0300A0E1 		mov	r0, r3
- 1898 1220 0CD04BE2 		sub	sp, fp, #12
- 1899 1224 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1900 1228 1EFF2FE1 		bx	lr
- 1901              	.L89:
- 1902              		.align	2
- 1903              	.L88:
- 1904 122c 00000000 		.word	WO_SDK
- 1905 1230 DC010000 		.word	timeout.2305
- 1906 1234 00000000 		.word	WO_CTRL_Input
- 1911              	.Lscope7:
- 1912              		.comm	GPS_timeout,4,4
- 1913              		.comm	SYSTEM_initialized,1,1
- 1914              		.comm	WO_SDK,4,4
- 1915              		.comm	RO_ALL_Data,140,4
- 1916              		.comm	RO_RC_Data,16,4
- 1917              		.comm	WO_Direct_Individual_Motor_Control,8,4
- 1918              		.comm	WO_Direct_Motor_Control,4,4
- 1919              		.comm	WO_CTRL_Input,12,4
- 1920              		.comm	calc_thrust,4,4
- 1943              	.Letext0:
- 1944              		.ident	"GCC: (GNU) 4.1.1"
+ 543:sdk.c         **** int SDK_EXAMPLE_turn_motors_on(void) //hold throttle stick down and yaw stick fully left to turn mo
+ 544:sdk.c         **** {
+ 1700              	.LM139:
+ 1701              		@ Function supports interworking.
+ 1702              		@ args = 0, pretend = 0, frame = 4
+ 1703              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1704 1048 0DC0A0E1 		mov	ip, sp
+ 1705 104c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1706 1050 04B04CE2 		sub	fp, ip, #4
+ 1707 1054 04D04DE2 		sub	sp, sp, #4
+ 545:sdk.c         **** 	static int timeout=0;
+ 546:sdk.c         **** 
+ 547:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;	//0x00: direct individual motor control: individual commands for motors 0..
+ 1709              	.LM140:
+ 1710 1058 E4209FE5 		ldr	r2, .L79
+ 1711 105c 0230A0E3 		mov	r3, #2
+ 1712 1060 0030C2E5 		strb	r3, [r2, #0]
+ 548:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
+ 549:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
+ 550:sdk.c         **** 							//0x03: GPS waypoint control
+ 551:sdk.c         **** 
+ 552:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
+ 1714              	.LM141:
+ 1715 1064 D8209FE5 		ldr	r2, .L79
+ 1716 1068 0130A0E3 		mov	r3, #1
+ 1717 106c 0130C2E5 		strb	r3, [r2, #1]
+ 553:sdk.c         **** 							//1: enable control by HL processor
+ 554:sdk.c         **** 
+ 555:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0; //make sure stick command is accepted
+ 1719              	.LM142:
+ 1720 1070 CC209FE5 		ldr	r2, .L79
+ 1721 1074 0030A0E3 		mov	r3, #0
+ 1722 1078 0230C2E5 		strb	r3, [r2, #2]
+ 556:sdk.c         **** 
+ 557:sdk.c         **** 	if(++timeout>=1000)
+ 1724              	.LM143:
+ 1725 107c C4309FE5 		ldr	r3, .L79+4
+ 1726 1080 003093E5 		ldr	r3, [r3, #0]
+ 1727 1084 012083E2 		add	r2, r3, #1
+ 1728 1088 B8309FE5 		ldr	r3, .L79+4
+ 1729 108c 002083E5 		str	r2, [r3, #0]
+ 1730 1090 B0309FE5 		ldr	r3, .L79+4
+ 1731 1094 002093E5 		ldr	r2, [r3, #0]
+ 1732 1098 F93FA0E3 		mov	r3, #996
+ 1733 109c 033083E2 		add	r3, r3, #3
+ 1734 10a0 030052E1 		cmp	r2, r3
+ 1735 10a4 050000DA 		ble	.L73
+ 558:sdk.c         **** 	{
+ 559:sdk.c         **** 		timeout=0;
+ 1737              	.LM144:
+ 1738 10a8 98209FE5 		ldr	r2, .L79+4
+ 1739 10ac 0030A0E3 		mov	r3, #0
+ 1740 10b0 003082E5 		str	r3, [r2, #0]
+ 560:sdk.c         **** 		return(1); //1 => start sequence completed => motors running => user can stop calling this functi
+ 1742              	.LM145:
+ 1743 10b4 0130A0E3 		mov	r3, #1
+ 1744 10b8 10300BE5 		str	r3, [fp, #-16]
+ 1745 10bc 1B0000EA 		b	.L75
+ 1746              	.L73:
+ 561:sdk.c         **** 	}
+ 562:sdk.c         **** 	else if(timeout>500) //neutral stick command for 500 ms
+ 1748              	.LM146:
+ 1749 10c0 80309FE5 		ldr	r3, .L79+4
+ 1750 10c4 003093E5 		ldr	r3, [r3, #0]
+ 1751 10c8 7D0F53E3 		cmp	r3, #500
+ 1752 10cc 0B0000DA 		ble	.L76
+ 563:sdk.c         **** 	{
+ 564:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
+ 1754              	.LM147:
+ 1755 10d0 74209FE5 		ldr	r2, .L79+8
+ 1756 10d4 0C30A0E3 		mov	r3, #12
+ 1757 10d8 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 565:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
+ 1759              	.LM148:
+ 1760 10dc 68209FE5 		ldr	r2, .L79+8
+ 1761 10e0 0030A0E3 		mov	r3, #0
+ 1762 10e4 B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 566:sdk.c         **** 		WO_CTRL_Input.yaw=0;
+ 1764              	.LM149:
+ 1765 10e8 5C209FE5 		ldr	r2, .L79+8
+ 1766 10ec 0030A0E3 		mov	r3, #0
+ 1767 10f0 B430C2E1 		strh	r3, [r2, #4]	@ movhi
+ 567:sdk.c         **** 		return(0);
+ 1769              	.LM150:
+ 1770 10f4 0030A0E3 		mov	r3, #0
+ 1771 10f8 10300BE5 		str	r3, [fp, #-16]
+ 1772 10fc 0B0000EA 		b	.L75
+ 1773              	.L76:
+ 568:sdk.c         **** 	}
+ 569:sdk.c         **** 	else //hold stick command for 500 ms
+ 570:sdk.c         **** 	{
+ 571:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
+ 1775              	.LM151:
+ 1776 1100 44209FE5 		ldr	r2, .L79+8
+ 1777 1104 0C30A0E3 		mov	r3, #12
+ 1778 1108 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 572:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
+ 1780              	.LM152:
+ 1781 110c 38209FE5 		ldr	r2, .L79+8
+ 1782 1110 0030A0E3 		mov	r3, #0
+ 1783 1114 B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 573:sdk.c         **** 		WO_CTRL_Input.yaw=-2047;
+ 1785              	.LM153:
+ 1786 1118 2C209FE5 		ldr	r2, .L79+8
+ 1787 111c 7F3EE0E3 		mvn	r3, #2032
+ 1788 1120 0E3043E2 		sub	r3, r3, #14
+ 1789 1124 B430C2E1 		strh	r3, [r2, #4]	@ movhi
+ 574:sdk.c         **** 		return(0);
+ 1791              	.LM154:
+ 1792 1128 0030A0E3 		mov	r3, #0
+ 1793 112c 10300BE5 		str	r3, [fp, #-16]
+ 1794              	.L75:
+ 1795 1130 10301BE5 		ldr	r3, [fp, #-16]
+ 575:sdk.c         **** 	}
+ 576:sdk.c         **** 
+ 577:sdk.c         **** }
+ 1797              	.LM155:
+ 1798 1134 0300A0E1 		mov	r0, r3
+ 1799 1138 0CD04BE2 		sub	sp, fp, #12
+ 1800 113c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1801 1140 1EFF2FE1 		bx	lr
+ 1802              	.L80:
+ 1803              		.align	2
+ 1804              	.L79:
+ 1805 1144 00000000 		.word	WO_SDK
+ 1806 1148 FC010000 		.word	timeout.2295
+ 1807 114c 00000000 		.word	WO_CTRL_Input
+ 1812              	.Lscope6:
+ 1813              		.bss
+ 1814              		.align	2
+ 1815              	timeout.2309:
+ 1816 0200 00000000 		.space	4
+ 1818              		.text
+ 1819              		.align	2
+ 1821              		.global	SDK_EXAMPLE_turn_motors_off
+ 1823              	SDK_EXAMPLE_turn_motors_off:
+ 578:sdk.c         **** 
+ 579:sdk.c         **** int SDK_EXAMPLE_turn_motors_off(void) //hold throttle stick down and yaw stick fully right to turn 
+ 580:sdk.c         **** {
+ 1825              	.LM156:
+ 1826              		@ Function supports interworking.
+ 1827              		@ args = 0, pretend = 0, frame = 4
+ 1828              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1829 1150 0DC0A0E1 		mov	ip, sp
+ 1830 1154 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1831 1158 04B04CE2 		sub	fp, ip, #4
+ 1832 115c 04D04DE2 		sub	sp, sp, #4
+ 581:sdk.c         **** 	static int timeout=0;
+ 582:sdk.c         **** 
+ 583:sdk.c         **** 	WO_SDK.ctrl_mode=0x02;	//0x00: direct individual motor control: individual commands for motors 0..
+ 1834              	.LM157:
+ 1835 1160 E0209FE5 		ldr	r2, .L88
+ 1836 1164 0230A0E3 		mov	r3, #2
+ 1837 1168 0030C2E5 		strb	r3, [r2, #0]
+ 584:sdk.c         **** 							//0x01: direct motor control using standard output mapping: commands are interpreted as pitc
+ 585:sdk.c         **** 							//0x02: attitude and throttle control: commands are input for standard attitude controller
+ 586:sdk.c         **** 							//0x03: GPS waypoint control
+ 587:sdk.c         **** 
+ 588:sdk.c         **** 	WO_SDK.ctrl_enabled=1;  //0: disable control by HL processor
+ 1839              	.LM158:
+ 1840 116c D4209FE5 		ldr	r2, .L88
+ 1841 1170 0130A0E3 		mov	r3, #1
+ 1842 1174 0130C2E5 		strb	r3, [r2, #1]
+ 589:sdk.c         **** 							//1: enable control by HL processor
+ 590:sdk.c         **** 
+ 591:sdk.c         **** 	WO_SDK.disable_motor_onoff_by_stick=0; //make sure stick command is accepted
+ 1844              	.LM159:
+ 1845 1178 C8209FE5 		ldr	r2, .L88
+ 1846 117c 0030A0E3 		mov	r3, #0
+ 1847 1180 0230C2E5 		strb	r3, [r2, #2]
+ 592:sdk.c         **** 
+ 593:sdk.c         **** 	if(++timeout>=1000)
+ 1849              	.LM160:
+ 1850 1184 C0309FE5 		ldr	r3, .L88+4
+ 1851 1188 003093E5 		ldr	r3, [r3, #0]
+ 1852 118c 012083E2 		add	r2, r3, #1
+ 1853 1190 B4309FE5 		ldr	r3, .L88+4
+ 1854 1194 002083E5 		str	r2, [r3, #0]
+ 1855 1198 AC309FE5 		ldr	r3, .L88+4
+ 1856 119c 002093E5 		ldr	r2, [r3, #0]
+ 1857 11a0 F93FA0E3 		mov	r3, #996
+ 1858 11a4 033083E2 		add	r3, r3, #3
+ 1859 11a8 030052E1 		cmp	r2, r3
+ 1860 11ac 050000DA 		ble	.L82
+ 594:sdk.c         **** 	{
+ 595:sdk.c         **** 		timeout=0;
+ 1862              	.LM161:
+ 1863 11b0 94209FE5 		ldr	r2, .L88+4
+ 1864 11b4 0030A0E3 		mov	r3, #0
+ 1865 11b8 003082E5 		str	r3, [r2, #0]
+ 596:sdk.c         **** 		return(1); //1 => stop sequence completed => motors turned off => user can stop calling this func
+ 1867              	.LM162:
+ 1868 11bc 0130A0E3 		mov	r3, #1
+ 1869 11c0 10300BE5 		str	r3, [fp, #-16]
+ 1870 11c4 1A0000EA 		b	.L84
+ 1871              	.L82:
+ 597:sdk.c         **** 	}
+ 598:sdk.c         **** 	else if(timeout>500) //neutral stick command for 500 ms
+ 1873              	.LM163:
+ 1874 11c8 7C309FE5 		ldr	r3, .L88+4
+ 1875 11cc 003093E5 		ldr	r3, [r3, #0]
+ 1876 11d0 7D0F53E3 		cmp	r3, #500
+ 1877 11d4 0B0000DA 		ble	.L85
+ 599:sdk.c         **** 	{
+ 600:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
+ 1879              	.LM164:
+ 1880 11d8 70209FE5 		ldr	r2, .L88+8
+ 1881 11dc 0C30A0E3 		mov	r3, #12
+ 1882 11e0 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 601:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
+ 1884              	.LM165:
+ 1885 11e4 64209FE5 		ldr	r2, .L88+8
+ 1886 11e8 0030A0E3 		mov	r3, #0
+ 1887 11ec B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 602:sdk.c         **** 		WO_CTRL_Input.yaw=0;
+ 1889              	.LM166:
+ 1890 11f0 58209FE5 		ldr	r2, .L88+8
+ 1891 11f4 0030A0E3 		mov	r3, #0
+ 1892 11f8 B430C2E1 		strh	r3, [r2, #4]	@ movhi
+ 603:sdk.c         **** 		return(0);
+ 1894              	.LM167:
+ 1895 11fc 0030A0E3 		mov	r3, #0
+ 1896 1200 10300BE5 		str	r3, [fp, #-16]
+ 1897 1204 0A0000EA 		b	.L84
+ 1898              	.L85:
+ 604:sdk.c         **** 	}
+ 605:sdk.c         **** 	else //hold stick command for 500 ms
+ 606:sdk.c         **** 	{
+ 607:sdk.c         **** 		WO_CTRL_Input.ctrl=0x0C;	//0x0C: enable throttle control and yaw control
+ 1900              	.LM168:
+ 1901 1208 40209FE5 		ldr	r2, .L88+8
+ 1902 120c 0C30A0E3 		mov	r3, #12
+ 1903 1210 B830C2E1 		strh	r3, [r2, #8]	@ movhi
+ 608:sdk.c         **** 		WO_CTRL_Input.thrust=0;	//use R/C throttle stick input /2 to control thrust (just for testing)
+ 1905              	.LM169:
+ 1906 1214 34209FE5 		ldr	r2, .L88+8
+ 1907 1218 0030A0E3 		mov	r3, #0
+ 1908 121c B630C2E1 		strh	r3, [r2, #6]	@ movhi
+ 609:sdk.c         **** 		WO_CTRL_Input.yaw=2047;
+ 1910              	.LM170:
+ 1911 1220 28209FE5 		ldr	r2, .L88+8
+ 1912 1224 3E3BE0E3 		mvn	r3, #63488
+ 1913 1228 B430C2E1 		strh	r3, [r2, #4]	@ movhi
+ 610:sdk.c         **** 		return(0);
+ 1915              	.LM171:
+ 1916 122c 0030A0E3 		mov	r3, #0
+ 1917 1230 10300BE5 		str	r3, [fp, #-16]
+ 1918              	.L84:
+ 1919 1234 10301BE5 		ldr	r3, [fp, #-16]
+ 611:sdk.c         **** 	}
+ 612:sdk.c         **** }
+ 1921              	.LM172:
+ 1922 1238 0300A0E1 		mov	r0, r3
+ 1923 123c 0CD04BE2 		sub	sp, fp, #12
+ 1924 1240 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1925 1244 1EFF2FE1 		bx	lr
+ 1926              	.L89:
+ 1927              		.align	2
+ 1928              	.L88:
+ 1929 1248 00000000 		.word	WO_SDK
+ 1930 124c 00020000 		.word	timeout.2309
+ 1931 1250 00000000 		.word	WO_CTRL_Input
+ 1936              	.Lscope7:
+ 1937              		.comm	GPS_timeout,4,4
+ 1938              		.comm	SYSTEM_initialized,1,1
+ 1939              		.comm	WO_SDK,4,4
+ 1940              		.comm	RO_ALL_Data,140,4
+ 1941              		.comm	RO_RC_Data,16,4
+ 1942              		.comm	WO_Direct_Individual_Motor_Control,8,4
+ 1943              		.comm	WO_Direct_Motor_Control,4,4
+ 1944              		.comm	WO_CTRL_Input,12,4
+ 1945              		.comm	calc_thrust,4,4
+ 1970              	.Letext0:
+ 1971              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 sdk.c
-     /tmp/cc5QhSEg.s:117    .bss:00000000 allDataBuffer
-     /tmp/cc5QhSEg.s:118    .bss:00000000 $d
-     /tmp/cc5QhSEg.s:123    .bss:00000100 receivedViconData
-     /tmp/cc5QhSEg.s:129    .bss:00000128 sendDebugData
-     /tmp/cc5QhSEg.s:135    .bss:0000014c sendParamDebug
-     /tmp/cc5QhSEg.s:141    .bss:00000170 receiveParamDebug
-     /tmp/cc5QhSEg.s:147    .bss:00000194 receiveCmdData
-     /tmp/cc5QhSEg.s:152    .bss:00000198 pack_id
-     /tmp/cc5QhSEg.s:158    .bss:0000019c vicon_count
-     /tmp/cc5QhSEg.s:164    .bss:000001a0 receive_valid_data_flag
-     /tmp/cc5QhSEg.s:171    .data:00000000 output_thrust
-     /tmp/cc5QhSEg.s:168    .data:00000000 $d
-     /tmp/cc5QhSEg.s:178    .bss:000001a4 my_state
-     /tmp/cc5QhSEg.s:185    .data:00000004 my_setpoint
-     /tmp/cc5QhSEg.s:195    .bss:000001c0 freq.1985
-     /tmp/cc5QhSEg.s:202    .data:00000020 temp.1984
-     /tmp/cc5QhSEg.s:206    .text:00000000 $a
-     /tmp/cc5QhSEg.s:210    .text:00000000 fake_gps3
-     /tmp/cc5QhSEg.s:292    .text:000000bc $d
+     /tmp/cczCpMyB.s:117    .bss:00000000 allDataBuffer
+     /tmp/cczCpMyB.s:118    .bss:00000000 $d
+     /tmp/cczCpMyB.s:123    .bss:00000100 receivedViconData
+     /tmp/cczCpMyB.s:129    .bss:00000128 sendDebugData
+     /tmp/cczCpMyB.s:135    .bss:0000014c receiveDebugData
+     /tmp/cczCpMyB.s:141    .bss:00000170 sendParamDebug
+     /tmp/cczCpMyB.s:147    .bss:00000194 receiveParamDebug
+     /tmp/cczCpMyB.s:154    .data:00000000 receiveCmdData
+     /tmp/cczCpMyB.s:151    .data:00000000 $d
+     /tmp/cczCpMyB.s:161    .bss:000001b8 pack_id
+     /tmp/cczCpMyB.s:167    .bss:000001bc vicon_count
+     /tmp/cczCpMyB.s:173    .bss:000001c0 vicon_tp
+     /tmp/cczCpMyB.s:179    .bss:000001c4 receive_valid_data_flag
+     /tmp/cczCpMyB.s:186    .data:00000004 output_thrust
+     /tmp/cczCpMyB.s:193    .bss:000001c8 my_state
+     /tmp/cczCpMyB.s:200    .data:00000008 my_setpoint
+     /tmp/cczCpMyB.s:210    .bss:000001e4 freq.1987
+     /tmp/cczCpMyB.s:217    .data:00000024 temp.1986
+     /tmp/cczCpMyB.s:222    .text:00000000 $a
+     /tmp/cczCpMyB.s:226    .text:00000000 fake_gps3
+     /tmp/cczCpMyB.s:317    .text:000000d8 $d
                             *COM*:00000004 WO_SDK
                             *COM*:0000000c WO_CTRL_Input
                             *COM*:00000004 calc_thrust
-     /tmp/cc5QhSEg.s:305    .text:000000d8 $a
-     /tmp/cc5QhSEg.s:309    .text:000000d8 SDK_mainloop
-     /tmp/cc5QhSEg.s:332    .text:000000f4 SDK_EXAMPLE_direct_individual_motor_commands
-     /tmp/cc5QhSEg.s:499    .text:000002ec $d
+     /tmp/cczCpMyB.s:330    .text:000000f4 $a
+     /tmp/cczCpMyB.s:334    .text:000000f4 SDK_mainloop
+     /tmp/cczCpMyB.s:357    .text:00000110 SDK_EXAMPLE_direct_individual_motor_commands
+     /tmp/cczCpMyB.s:524    .text:00000308 $d
                             *COM*:0000008c RO_ALL_Data
                             *COM*:00000008 WO_Direct_Individual_Motor_Control
-     /tmp/cc5QhSEg.s:508    .text:000002fc $a
-     /tmp/cc5QhSEg.s:512    .text:000002fc SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping
-     /tmp/cc5QhSEg.s:601    .text:00000404 $d
+     /tmp/cczCpMyB.s:533    .text:00000318 $a
+     /tmp/cczCpMyB.s:537    .text:00000318 SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping
+     /tmp/cczCpMyB.s:626    .text:00000420 $d
                             *COM*:00000004 WO_Direct_Motor_Control
-     /tmp/cc5QhSEg.s:607    .text:00000414 $a
-     /tmp/cc5QhSEg.s:611    .text:00000414 SDK_EXAMPLE_attitude_commands
-     /tmp/cc5QhSEg.s:648    .text:0000045c $d
-     /tmp/cc5QhSEg.s:654    .bss:000001c4 originLon.2061
-     /tmp/cc5QhSEg.s:658    .bss:000001cc originLat.2060
-     /tmp/cc5QhSEg.s:661    .bss:000001d4 wpExampleState.2059
-     /tmp/cc5QhSEg.s:669    .text:00000464 $a
-     /tmp/cc5QhSEg.s:673    .text:00000464 SDK_EXAMPLE_gps_waypoint_control
-     /tmp/cc5QhSEg.s:702    .text:000004a0 $d
-     /tmp/cc5QhSEg.s:710    .text:000004b4 $a
-     /tmp/cc5QhSEg.s:948    .text:000007b0 $d
+     /tmp/cczCpMyB.s:632    .text:00000430 $a
+     /tmp/cczCpMyB.s:636    .text:00000430 SDK_EXAMPLE_attitude_commands
+     /tmp/cczCpMyB.s:673    .text:00000478 $d
+     /tmp/cczCpMyB.s:679    .bss:000001e8 originLon.2065
+     /tmp/cczCpMyB.s:683    .bss:000001f0 originLat.2064
+     /tmp/cczCpMyB.s:686    .bss:000001f8 wpExampleState.2063
+     /tmp/cczCpMyB.s:694    .text:00000480 $a
+     /tmp/cczCpMyB.s:698    .text:00000480 SDK_EXAMPLE_gps_waypoint_control
+     /tmp/cczCpMyB.s:727    .text:000004bc $d
+     /tmp/cczCpMyB.s:735    .text:000004d0 $a
+     /tmp/cczCpMyB.s:973    .text:000007cc $d
                             *COM*:00000010 RO_RC_Data
-     /tmp/cc5QhSEg.s:966    .text:000007e8 $a
-     /tmp/cc5QhSEg.s:1419   .text:00000d74 $d
-     /tmp/cc5QhSEg.s:1434   .text:00000da4 $a
-     /tmp/cc5QhSEg.s:1665   .bss:000001d8 timeout.2291
-     /tmp/cc5QhSEg.s:1673   .text:0000102c SDK_EXAMPLE_turn_motors_on
-     /tmp/cc5QhSEg.s:1780   .text:00001128 $d
-     /tmp/cc5QhSEg.s:1790   .bss:000001dc timeout.2305
-     /tmp/cc5QhSEg.s:1794   .text:00001134 $a
-     /tmp/cc5QhSEg.s:1798   .text:00001134 SDK_EXAMPLE_turn_motors_off
-     /tmp/cc5QhSEg.s:1904   .text:0000122c $d
+     /tmp/cczCpMyB.s:991    .text:00000804 $a
+     /tmp/cczCpMyB.s:1444   .text:00000d90 $d
+     /tmp/cczCpMyB.s:1459   .text:00000dc0 $a
+     /tmp/cczCpMyB.s:1690   .bss:000001fc timeout.2295
+     /tmp/cczCpMyB.s:1698   .text:00001048 SDK_EXAMPLE_turn_motors_on
+     /tmp/cczCpMyB.s:1805   .text:00001144 $d
+     /tmp/cczCpMyB.s:1815   .bss:00000200 timeout.2309
+     /tmp/cczCpMyB.s:1819   .text:00001150 $a
+     /tmp/cczCpMyB.s:1823   .text:00001150 SDK_EXAMPLE_turn_motors_off
+     /tmp/cczCpMyB.s:1929   .text:00001248 $d
                             *COM*:00000004 GPS_timeout
                             *COM*:00000001 SYSTEM_initialized
 
 UNDEFINED SYMBOLS
+__fixsfsi
 positionControllerInit
 positionController
 __floatsidf

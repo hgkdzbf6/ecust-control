@@ -24,6 +24,8 @@ Archive member included because of file (symbol)
                               pid.o (__mulsf3)
 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
                               pid.o (__gtsf2)
+/usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
+                              sdk.o (__fixsfsi)
 .//libdeclination.a(declination.o)
                               LL_HL_comm.o (estimatedDeclination)
 .//libublox.a(ublox.o)        main.o (gpsLEDTrigger)
@@ -65,8 +67,6 @@ Archive member included because of file (symbol)
                               /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o) (copysign)
 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
                               .//libdeclination.a(declination.o) (__truncdfsf2)
-/usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
-                              .//libdeclination.a(declination.o) (__fixsfsi)
 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
                               /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o) (__errno)
 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
@@ -169,7 +169,7 @@ LOAD /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/
 LOAD /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a
 END GROUP
 
-.text           0x00000000    0x1122c
+.text           0x00000000    0x112e4
  *(.vectorg)
  .vectorg       0x00000000       0x98 Common_WinARM/src/Startup.o
                 0x00000050                __IRQ_Wrapper
@@ -199,338 +199,338 @@ END GROUP
  .text          0x00001670        0x0 mymath.o
  .text          0x00001670      0x194 gpsmath.o
                 0x00001670                xy2latlon
- .text          0x00001804     0x1238 sdk.o
+ .text          0x00001804     0x1254 sdk.o
                 0x00001804                fake_gps3
-                0x000018dc                SDK_mainloop
-                0x000018f8                SDK_EXAMPLE_direct_individual_motor_commands
-                0x00001b00                SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping
-                0x00001c18                SDK_EXAMPLE_attitude_commands
-                0x00001c68                SDK_EXAMPLE_gps_waypoint_control
-                0x00002830                SDK_EXAMPLE_turn_motors_on
-                0x00002938                SDK_EXAMPLE_turn_motors_off
- .text          0x00002a3c      0x614 MyProtocol.o
-                0x00002a3c                my_send
-                0x00002bb0                send_single
-                0x00002be4                receive_single
-                0x00002c20                my_receive
-                0x00002f9c                getPackageLength
- .text          0x00003050      0x7cc pid.o
-                0x00003050                constrain
-                0x00003110                deadband
-                0x000031d4                pidInit
-                0x0000328c                pidUpdate
-                0x00003558                pidSetIntegralLimit
-                0x00003588                pidReset
-                0x000035dc                pidSetError
-                0x0000360c                pidSetDesired
-                0x0000363c                pidGetDesired
-                0x00003668                pidIsActive
-                0x0000375c                pidSetKp
-                0x0000378c                pidSetKi
-                0x000037bc                pidSetKd
-                0x000037ec                pidSetDt
- .text          0x0000381c      0x574 position_controller.o
-                0x0000381c                positionEstimate
-                0x00003938                positionControllerInit
-                0x000039dc                runPid
-                0x00003a48                data_fusion
-                0x00003b9c                positionController
-                0x00003d60                positionControllerResetAllPID
- .text          0x00003d90     0x108c buzzer.o
-                0x00003d90                buzzer_handler
-                0x00004dc0                buzzer
- .text          0x00004e1c      0x818 main.o
-                0x00004e1c                timer0ISR
-                0x00004f04                main
-                0x00005134                mainloop
- .text          0x00005634       0x8c hardware.o
-                0x00005634                LED
- .text          0x000056c0      0x614 LPC2k_ee.o
-                0x000056c0                ee_erase
-                0x000057fc                ee_write
-                0x00005a20                ee_read
-                0x00005ab0                ee_readn
-                0x00005b18                ee_count
-                0x00005b8c                ee_locate
- .text          0x00005cd4      0x58c system.o
-                0x00005cd4                init
-                0x00005d5c                init_interrupts
-                0x00005e08                init_ports
-                0x00005eb0                init_timer0
-                0x00005f58                PWM_Init
-                0x0000600c                init_spi
-                0x00006044                init_spi1
-                0x000060e0                pll_init
-                0x00006120                pll_feed
-                0x00006160                processorClockFrequency
-                0x00006180                peripheralClockFrequency
-                0x00006218                delay
- .text          0x00006260      0xf48 uart.o
-                0x00006260                uart1ISR
-                0x00006330                uart0ISR
-                0x00006668                UARTInitialize
-                0x00006714                UART1Initialize
-                0x000067c0                UARTWriteChar
-                0x00006810                UART1WriteChar
-                0x00006860                UARTReadChar
-                0x000068a8                UART1ReadChar
-                0x000068f0                __putchar
-                0x00006934                UART_send
-                0x000069f0                UART1_send
-                0x00006a84                UART_send_ringbuffer
-                0x00006aec                UART1_send_ringbuffer
-                0x00006b54                UART_SendPacket
-                0x00006c4c                crc_update
-                0x00006d3c                crc16
-                0x00006dd0                ringbuffer
-                0x00006fbc                ringbuffer1
- .text          0x000071a8      0x2b4 syscalls.o
-                0x000071a8                _read_r
-                0x00007288                _write_r
-                0x00007324                _close_r
-                0x00007350                _lseek_r
-                0x00007384                _fstat_r
-                0x000073c0                isatty
-                0x000073e8                _sbrk_r
- .text          0x0000745c      0x750 i2c.o
-                0x0000745c                I2C0MasterHandler
-                0x000078f8                I2C0_send_motordata
-                0x000079a4                I2CStart
-                0x00007a38                I2CStop
-                0x00007a94                I2CInit
-                0x00007b1c                I2CEngine
- .text          0x00007bac      0x2d0 Common_WinARM/src/irq.o
-                0x00007bcc                init_VIC
-                0x00007c90                install_irq
-                0x00007d84                uninstall_irq
- .text          0x00007e7c      0x3ec adc.o
-                0x00007e7c                ADCInit
-                0x00007f04                ADC0Read
-                0x00008040                ADC1Read
-                0x00008148                ADC0triggerSampling
-                0x0000818c                ADC0getSamplingResults
- .text          0x00008268      0x420 ssp.o
-                0x00008268                SSPHandler
-                0x00008440                LL_write_init
-                0x00008480                LL_write
- .text          0x00008688      0x48c pelican_ptu.o
-                0x00008688                PTU_init
-                0x00008754                PTU_update
-                0x0000894c                SERVO_pitch_move
-                0x00008a34                SERVO_roll_move
- .text          0x00008b14       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
-                0x00008b14                memcpy
- .text          0x00008b70       0x60 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
-                0x00008b70                memset
- .text          0x00008bd0       0x8c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
-                0x00008bd0                __udivsi3
-                0x00008bd0                __aeabi_uidiv
-                0x00008c4c                __aeabi_uidivmod
- .text          0x00008c5c       0xa4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
-                0x00008c5c                __aeabi_idiv
-                0x00008c5c                __divsi3
-                0x00008cf0                __aeabi_idivmod
- .text          0x00008d00        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
-                0x00008d00                __aeabi_ldiv0
-                0x00008d00                __div0
-                0x00008d00                __aeabi_idiv0
- .text          0x00008d04      0x430 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
-                0x00008d04                __aeabi_drsub
-                0x00008d0c                __aeabi_dsub
-                0x00008d0c                __subdf3
-                0x00008d10                __adddf3
-                0x00008d10                __aeabi_dadd
-                0x00009020                __aeabi_ui2d
-                0x00009020                __floatunsidf
-                0x00009048                __floatsidf
-                0x00009048                __aeabi_i2d
-                0x00009074                __extendsfdf2
-                0x00009074                __aeabi_f2d
-                0x000090b4                __aeabi_ul2d
-                0x000090b4                __floatundidf
-                0x000090c8                __floatdidf
-                0x000090c8                __aeabi_l2d
- .text          0x00009134      0x49c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
-                0x00009134                __aeabi_dmul
-                0x00009134                __muldf3
-                0x000093c4                __aeabi_ddiv
-                0x000093c4                __divdf3
- .text          0x000095d0      0x140 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
-                0x000095d0                __gtdf2
-                0x000095d0                __gedf2
-                0x000095d8                __ltdf2
-                0x000095d8                __ledf2
-                0x000095e0                __cmpdf2
-                0x000095e0                __eqdf2
-                0x000095e0                __nedf2
-                0x00009664                __aeabi_cdrcmple
-                0x00009680                __aeabi_cdcmple
-                0x00009680                __aeabi_cdcmpeq
-                0x00009698                __aeabi_dcmpeq
-                0x000096b0                __aeabi_dcmplt
-                0x000096c8                __aeabi_dcmple
-                0x000096e0                __aeabi_dcmpge
-                0x000096f8                __aeabi_dcmpgt
- .text          0x00009710       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
-                0x00009710                __fixdfsi
-                0x00009710                __aeabi_d2iz
- .text          0x0000976c      0x2ac /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
-                0x0000976c                __aeabi_frsub
-                0x00009774                __subsf3
-                0x00009774                __aeabi_fsub
-                0x00009778                __aeabi_fadd
-                0x00009778                __addsf3
-                0x00009934                __aeabi_ui2f
-                0x00009934                __floatunsisf
-                0x0000993c                __aeabi_i2f
-                0x0000993c                __floatsisf
-                0x0000995c                __floatundisf
-                0x0000995c                __aeabi_ul2f
-                0x0000996c                __floatdisf
-                0x0000996c                __aeabi_l2f
- .text          0x00009a18      0x2f8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
-                0x00009a18                __mulsf3
-                0x00009a18                __aeabi_fmul
-                0x00009bb0                __divsf3
-                0x00009bb0                __aeabi_fdiv
- .text          0x00009d10      0x110 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
-                0x00009d10                __gtsf2
-                0x00009d10                __gesf2
-                0x00009d18                __lesf2
-                0x00009d18                __ltsf2
-                0x00009d20                __nesf2
-                0x00009d20                __eqsf2
-                0x00009d20                __cmpsf2
-                0x00009d80                __aeabi_cfrcmple
-                0x00009d90                __aeabi_cfcmple
-                0x00009d90                __aeabi_cfcmpeq
-                0x00009da8                __aeabi_fcmpeq
-                0x00009dc0                __aeabi_fcmplt
-                0x00009dd8                __aeabi_fcmple
-                0x00009df0                __aeabi_fcmpge
-                0x00009e08                __aeabi_fcmpgt
- .text          0x00009e20     0x3250 .//libdeclination.a(declination.o)
-                0x0000c864                geomag
-                0x0000c8cc                geomg1
-                0x0000c93c                getDeclination
- .text          0x0000d070     0x1e88 .//libublox.a(ublox.o)
-                0x0000d070                uBloxSendMessage
-                0x0000d288                pollMessageRate
-                0x0000d2e0                setMessageRate
-                0x0000d344                uBloxResetConfiguration
-                0x0000d3e0                uBloxHandleMessage
-                0x0000db98                uBloxReceiveHandler
-                0x0000e25c                uBloxReceiveEngine
- .text          0x0000eef8       0xb8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
-                0x0000eef8                cos
- .text          0x0000efb0       0xbc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
-                0x0000efb0                sin
- .text          0x0000f06c       0xd0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
-                0x0000f06c                atan2
- .text          0x0000f13c       0xc4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
-                0x0000f13c                sqrt
- .text          0x0000f200      0x220 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
-                0x0000f200                __ieee754_atan2
- .text          0x0000f420      0x440 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
-                0x0000f420                __ieee754_rem_pio2
- .text          0x0000f860      0x1d8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
-                0x0000f860                __ieee754_sqrt
- .text          0x0000fa38      0x28c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
-                0x0000fa38                __kernel_cos
- .text          0x0000fcc4      0x89c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
-                0x0000fcc4                __kernel_rem_pio2
- .text          0x00010560      0x180 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
-                0x00010560                __kernel_sin
- .text          0x000106e0      0x380 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
-                0x000106e0                atan
- .text          0x00010a60       0x18 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
-                0x00010a60                fabs
- .text          0x00010a78      0x16c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
-                0x00010a78                floor
- .text          0x00010be4       0x1c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
-                0x00010be4                isnan
- .text          0x00010c00        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
- .text          0x00010c00        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
-                0x00010c00                matherr
- .text          0x00010c04      0x130 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
-                0x00010c04                scalbn
- .text          0x00010d34       0x24 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
-                0x00010d34                copysign
- .text          0x00010d58       0xa0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
-                0x00010d58                __aeabi_d2f
-                0x00010d58                __truncdfsf2
- .text          0x00010df8       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
-                0x00010df8                __fixsfsi
-                0x00010df8                __aeabi_f2iz
- .text          0x00010e54        0xc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
-                0x00010e54                __errno
- .text          0x00010e60        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
+                0x000018f8                SDK_mainloop
+                0x00001914                SDK_EXAMPLE_direct_individual_motor_commands
+                0x00001b1c                SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping
+                0x00001c34                SDK_EXAMPLE_attitude_commands
+                0x00001c84                SDK_EXAMPLE_gps_waypoint_control
+                0x0000284c                SDK_EXAMPLE_turn_motors_on
+                0x00002954                SDK_EXAMPLE_turn_motors_off
+ .text          0x00002a58      0x614 MyProtocol.o
+                0x00002a58                my_send
+                0x00002bcc                send_single
+                0x00002c00                receive_single
+                0x00002c3c                my_receive
+                0x00002fb8                getPackageLength
+ .text          0x0000306c      0x7cc pid.o
+                0x0000306c                constrain
+                0x0000312c                deadband
+                0x000031f0                pidInit
+                0x000032a8                pidUpdate
+                0x00003574                pidSetIntegralLimit
+                0x000035a4                pidReset
+                0x000035f8                pidSetError
+                0x00003628                pidSetDesired
+                0x00003658                pidGetDesired
+                0x00003684                pidIsActive
+                0x00003778                pidSetKp
+                0x000037a8                pidSetKi
+                0x000037d8                pidSetKd
+                0x00003808                pidSetDt
+ .text          0x00003838      0x574 position_controller.o
+                0x00003838                positionEstimate
+                0x00003954                positionControllerInit
+                0x000039f8                runPid
+                0x00003a64                data_fusion
+                0x00003bb8                positionController
+                0x00003d7c                positionControllerResetAllPID
+ .text          0x00003dac     0x108c buzzer.o
+                0x00003dac                buzzer_handler
+                0x00004ddc                buzzer
+ .text          0x00004e38      0x834 main.o
+                0x00004e38                timer0ISR
+                0x00004f20                main
+                0x00005150                mainloop
+ .text          0x0000566c       0x8c hardware.o
+                0x0000566c                LED
+ .text          0x000056f8      0x614 LPC2k_ee.o
+                0x000056f8                ee_erase
+                0x00005834                ee_write
+                0x00005a58                ee_read
+                0x00005ae8                ee_readn
+                0x00005b50                ee_count
+                0x00005bc4                ee_locate
+ .text          0x00005d0c      0x58c system.o
+                0x00005d0c                init
+                0x00005d94                init_interrupts
+                0x00005e40                init_ports
+                0x00005ee8                init_timer0
+                0x00005f90                PWM_Init
+                0x00006044                init_spi
+                0x0000607c                init_spi1
+                0x00006118                pll_init
+                0x00006158                pll_feed
+                0x00006198                processorClockFrequency
+                0x000061b8                peripheralClockFrequency
+                0x00006250                delay
+ .text          0x00006298      0xfc8 uart.o
+                0x00006298                uart1ISR
+                0x00006368                uart0ISR
+                0x00006720                UARTInitialize
+                0x000067cc                UART1Initialize
+                0x00006878                UARTWriteChar
+                0x000068c8                UART1WriteChar
+                0x00006918                UARTReadChar
+                0x00006960                UART1ReadChar
+                0x000069a8                __putchar
+                0x000069ec                UART_send
+                0x00006aa8                UART1_send
+                0x00006b3c                UART_send_ringbuffer
+                0x00006ba4                UART1_send_ringbuffer
+                0x00006c0c                UART_SendPacket
+                0x00006d04                crc_update
+                0x00006df4                crc16
+                0x00006e88                ringbuffer
+                0x00007074                ringbuffer1
+ .text          0x00007260      0x2b4 syscalls.o
+                0x00007260                _read_r
+                0x00007340                _write_r
+                0x000073dc                _close_r
+                0x00007408                _lseek_r
+                0x0000743c                _fstat_r
+                0x00007478                isatty
+                0x000074a0                _sbrk_r
+ .text          0x00007514      0x750 i2c.o
+                0x00007514                I2C0MasterHandler
+                0x000079b0                I2C0_send_motordata
+                0x00007a5c                I2CStart
+                0x00007af0                I2CStop
+                0x00007b4c                I2CInit
+                0x00007bd4                I2CEngine
+ .text          0x00007c64      0x2d0 Common_WinARM/src/irq.o
+                0x00007c84                init_VIC
+                0x00007d48                install_irq
+                0x00007e3c                uninstall_irq
+ .text          0x00007f34      0x3ec adc.o
+                0x00007f34                ADCInit
+                0x00007fbc                ADC0Read
+                0x000080f8                ADC1Read
+                0x00008200                ADC0triggerSampling
+                0x00008244                ADC0getSamplingResults
+ .text          0x00008320      0x420 ssp.o
+                0x00008320                SSPHandler
+                0x000084f8                LL_write_init
+                0x00008538                LL_write
+ .text          0x00008740      0x48c pelican_ptu.o
+                0x00008740                PTU_init
+                0x0000880c                PTU_update
+                0x00008a04                SERVO_pitch_move
+                0x00008aec                SERVO_roll_move
+ .text          0x00008bcc       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+                0x00008bcc                memcpy
+ .text          0x00008c28       0x60 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+                0x00008c28                memset
+ .text          0x00008c88       0x8c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
+                0x00008c88                __udivsi3
+                0x00008c88                __aeabi_uidiv
+                0x00008d04                __aeabi_uidivmod
+ .text          0x00008d14       0xa4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
+                0x00008d14                __aeabi_idiv
+                0x00008d14                __divsi3
+                0x00008da8                __aeabi_idivmod
+ .text          0x00008db8        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
+                0x00008db8                __aeabi_ldiv0
+                0x00008db8                __div0
+                0x00008db8                __aeabi_idiv0
+ .text          0x00008dbc      0x430 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
+                0x00008dbc                __aeabi_drsub
+                0x00008dc4                __aeabi_dsub
+                0x00008dc4                __subdf3
+                0x00008dc8                __adddf3
+                0x00008dc8                __aeabi_dadd
+                0x000090d8                __aeabi_ui2d
+                0x000090d8                __floatunsidf
+                0x00009100                __floatsidf
+                0x00009100                __aeabi_i2d
+                0x0000912c                __extendsfdf2
+                0x0000912c                __aeabi_f2d
+                0x0000916c                __aeabi_ul2d
+                0x0000916c                __floatundidf
+                0x00009180                __floatdidf
+                0x00009180                __aeabi_l2d
+ .text          0x000091ec      0x49c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
+                0x000091ec                __aeabi_dmul
+                0x000091ec                __muldf3
+                0x0000947c                __aeabi_ddiv
+                0x0000947c                __divdf3
+ .text          0x00009688      0x140 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
+                0x00009688                __gtdf2
+                0x00009688                __gedf2
+                0x00009690                __ltdf2
+                0x00009690                __ledf2
+                0x00009698                __cmpdf2
+                0x00009698                __eqdf2
+                0x00009698                __nedf2
+                0x0000971c                __aeabi_cdrcmple
+                0x00009738                __aeabi_cdcmple
+                0x00009738                __aeabi_cdcmpeq
+                0x00009750                __aeabi_dcmpeq
+                0x00009768                __aeabi_dcmplt
+                0x00009780                __aeabi_dcmple
+                0x00009798                __aeabi_dcmpge
+                0x000097b0                __aeabi_dcmpgt
+ .text          0x000097c8       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
+                0x000097c8                __fixdfsi
+                0x000097c8                __aeabi_d2iz
+ .text          0x00009824      0x2ac /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
+                0x00009824                __aeabi_frsub
+                0x0000982c                __subsf3
+                0x0000982c                __aeabi_fsub
+                0x00009830                __aeabi_fadd
+                0x00009830                __addsf3
+                0x000099ec                __aeabi_ui2f
+                0x000099ec                __floatunsisf
+                0x000099f4                __aeabi_i2f
+                0x000099f4                __floatsisf
+                0x00009a14                __floatundisf
+                0x00009a14                __aeabi_ul2f
+                0x00009a24                __floatdisf
+                0x00009a24                __aeabi_l2f
+ .text          0x00009ad0      0x2f8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
+                0x00009ad0                __mulsf3
+                0x00009ad0                __aeabi_fmul
+                0x00009c68                __divsf3
+                0x00009c68                __aeabi_fdiv
+ .text          0x00009dc8      0x110 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
+                0x00009dc8                __gtsf2
+                0x00009dc8                __gesf2
+                0x00009dd0                __lesf2
+                0x00009dd0                __ltsf2
+                0x00009dd8                __nesf2
+                0x00009dd8                __eqsf2
+                0x00009dd8                __cmpsf2
+                0x00009e38                __aeabi_cfrcmple
+                0x00009e48                __aeabi_cfcmple
+                0x00009e48                __aeabi_cfcmpeq
+                0x00009e60                __aeabi_fcmpeq
+                0x00009e78                __aeabi_fcmplt
+                0x00009e90                __aeabi_fcmple
+                0x00009ea8                __aeabi_fcmpge
+                0x00009ec0                __aeabi_fcmpgt
+ .text          0x00009ed8       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
+                0x00009ed8                __fixsfsi
+                0x00009ed8                __aeabi_f2iz
+ .text          0x00009f34     0x3250 .//libdeclination.a(declination.o)
+                0x0000c978                geomag
+                0x0000c9e0                geomg1
+                0x0000ca50                getDeclination
+ .text          0x0000d184     0x1e88 .//libublox.a(ublox.o)
+                0x0000d184                uBloxSendMessage
+                0x0000d39c                pollMessageRate
+                0x0000d3f4                setMessageRate
+                0x0000d458                uBloxResetConfiguration
+                0x0000d4f4                uBloxHandleMessage
+                0x0000dcac                uBloxReceiveHandler
+                0x0000e370                uBloxReceiveEngine
+ .text          0x0000f00c       0xb8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
+                0x0000f00c                cos
+ .text          0x0000f0c4       0xbc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
+                0x0000f0c4                sin
+ .text          0x0000f180       0xd0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+                0x0000f180                atan2
+ .text          0x0000f250       0xc4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+                0x0000f250                sqrt
+ .text          0x0000f314      0x220 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
+                0x0000f314                __ieee754_atan2
+ .text          0x0000f534      0x440 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+                0x0000f534                __ieee754_rem_pio2
+ .text          0x0000f974      0x1d8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
+                0x0000f974                __ieee754_sqrt
+ .text          0x0000fb4c      0x28c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
+                0x0000fb4c                __kernel_cos
+ .text          0x0000fdd8      0x89c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+                0x0000fdd8                __kernel_rem_pio2
+ .text          0x00010674      0x180 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
+                0x00010674                __kernel_sin
+ .text          0x000107f4      0x380 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+                0x000107f4                atan
+ .text          0x00010b74       0x18 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
+                0x00010b74                fabs
+ .text          0x00010b8c      0x16c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
+                0x00010b8c                floor
+ .text          0x00010cf8       0x1c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
+                0x00010cf8                isnan
+ .text          0x00010d14        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+ .text          0x00010d14        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
+                0x00010d14                matherr
+ .text          0x00010d18      0x130 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
+                0x00010d18                scalbn
+ .text          0x00010e48       0x24 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
+                0x00010e48                copysign
+ .text          0x00010e6c       0xa0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
+                0x00010e6c                __aeabi_d2f
+                0x00010e6c                __truncdfsf2
+ .text          0x00010f0c        0xc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
+                0x00010f0c                __errno
+ .text          0x00010f18        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
  *(.gnu.linkonce.t.*)
  *(.glue_7)
- .glue_7        0x00010e60       0x60 linker stubs
-                0x00010e60                __cos_from_arm
-                0x00010e6c                __memcpy_from_arm
-                0x00010e78                __memset_from_arm
-                0x00010e84                ____divsi3_from_arm
-                0x00010e90                ____udivsi3_from_arm
-                0x00010e9c                __sqrt_from_arm
-                0x00010ea8                __sin_from_arm
-                0x00010eb4                __atan2_from_arm
- .glue_7.stub   0x00010ec0       0x50 linker stubs
+ .glue_7        0x00010f18       0x60 linker stubs
+                0x00010f18                __cos_from_arm
+                0x00010f24                __memcpy_from_arm
+                0x00010f30                __memset_from_arm
+                0x00010f3c                ____divsi3_from_arm
+                0x00010f48                ____udivsi3_from_arm
+                0x00010f54                __sqrt_from_arm
+                0x00010f60                __sin_from_arm
+                0x00010f6c                __atan2_from_arm
+ .glue_7.stub   0x00010f78       0x50 linker stubs
  *(.glue_7t)
  .glue_7t       0x00000000        0x0 linker stubs
  *(.gcc_except_table)
  *(.rodata)
- .rodata        0x00010f10        0x4 position_controller.o
-                0x00010f10                thrustScale
- .rodata        0x00010f14       0xe2 .//libublox.a(ublox.o)
- *fill*         0x00010ff6        0x2 00
- .rodata        0x00010ff8        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
- .rodata        0x00011000        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
- .rodata        0x00011008      0x188 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
- .rodata        0x00011190       0x50 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
- .rodata        0x000111e0       0x40 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
- .rodata        0x00011220        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
-                0x00011220                __fdlib_version
- .rodata        0x00011224        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
-                0x00011224                _global_impure_ptr
+ .rodata        0x00010fc8        0x4 position_controller.o
+                0x00010fc8                thrustScale
+ .rodata        0x00010fcc       0xe2 .//libublox.a(ublox.o)
+ *fill*         0x000110ae        0x2 00
+ .rodata        0x000110b0        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+ .rodata        0x000110b8        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+ .rodata        0x000110c0      0x188 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+ .rodata        0x00011248       0x50 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+ .rodata        0x00011298       0x40 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+ .rodata        0x000112d8        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+                0x000112d8                __fdlib_version
+ .rodata        0x000112dc        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
+                0x000112dc                _global_impure_ptr
  *(.rodata*)
  *(.gnu.linkonce.r.*)
-                0x0001122c                . = ALIGN (0x4)
+                0x000112e4                . = ALIGN (0x4)
 
-.vfp11_veneer   0x0001122c        0x0
+.vfp11_veneer   0x000112e4        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x0001122c        0x0
+.v4_bx          0x000112e4        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
-.iplt           0x0001122c        0x0
+.iplt           0x000112e4        0x0
  .iplt          0x00000000        0x0 Common_WinARM/src/Startup.o
 
-.rel.dyn        0x0001122c        0x0
+.rel.dyn        0x000112e4        0x0
  .rel.iplt      0x00000000        0x0 Common_WinARM/src/Startup.o
-                0x0001122c                . = ALIGN (0x4)
+                0x000112e4                . = ALIGN (0x4)
 
-.ctors          0x0001122c        0x0
-                0x0001122c                PROVIDE (__ctors_start__, .)
+.ctors          0x000112e4        0x0
+                0x000112e4                PROVIDE (__ctors_start__, .)
  *(SORT(.ctors.*))
  *(.ctors)
-                0x0001122c                . = ALIGN (0x4)
-                0x0001122c                PROVIDE (__ctors_end__, .)
-                0x0001122c                . = ALIGN (0x4)
+                0x000112e4                . = ALIGN (0x4)
+                0x000112e4                PROVIDE (__ctors_end__, .)
+                0x000112e4                . = ALIGN (0x4)
 
-.dtors          0x0001122c        0x0
-                0x0001122c                PROVIDE (__dtors_start__, .)
+.dtors          0x000112e4        0x0
+                0x000112e4                PROVIDE (__dtors_start__, .)
  *(SORT(.dtors.*))
  *(.dtors)
-                0x0001122c                . = ALIGN (0x4)
-                0x0001122c                PROVIDE (__dtors_end__, .)
-                0x0001122c                . = ALIGN (0x4)
-                0x0001122c                . = ALIGN (0x4)
-                0x0001122c                _etext = .
-                0x0001122c                PROVIDE (etext, .)
+                0x000112e4                . = ALIGN (0x4)
+                0x000112e4                PROVIDE (__dtors_end__, .)
+                0x000112e4                . = ALIGN (0x4)
+                0x000112e4                . = ALIGN (0x4)
+                0x000112e4                _etext = .
+                0x000112e4                PROVIDE (etext, .)
 
-.data           0x40000000      0xa40 load address 0x0001122c
+.data           0x40000000      0xa30 load address 0x000112e4
                 0x40000000                _data = .
  *(.vectmapped)
                 0x40000000                . = ALIGN (0x4)
@@ -543,270 +543,265 @@ END GROUP
  .data          0x40000000        0x0 LL_HL_comm.o
  .data          0x40000000        0x0 mymath.o
  .data          0x40000000        0x0 gpsmath.o
- .data          0x40000000       0x24 sdk.o
-                0x40000000                output_thrust
-                0x40000004                my_setpoint
- .data          0x40000024        0x0 MyProtocol.o
- .data          0x40000024        0x0 pid.o
- .data          0x40000024       0xa4 position_controller.o
-                0x40000024                zVelMax
-                0x40000028                velMaxOverhead
-                0x4000002c                this
- .data          0x400000c8        0x0 buzzer.o
- .data          0x400000c8       0x14 main.o
-                0x400000c8                DataOutputsPerSecond
-                0x400000cc                pd
-                0x400000d0                pd2
-                0x400000d4                pd3
-                0x400000d8                pl
-                0x400000d9                pl2
-                0x400000da                pl3
- .data          0x400000dc        0x0 hardware.o
- .data          0x400000dc        0x0 LPC2k_ee.o
- .data          0x400000dc        0x0 system.o
- .data          0x400000dc        0x7 uart.o
-                0x400000dc                chksum_trigger
-                0x400000dd                startstring
-                0x400000e0                stopstring
- .data          0x400000e3        0x0 syscalls.o
- .data          0x400000e3        0x0 i2c.o
- .data          0x400000e3        0x0 Common_WinARM/src/irq.o
- .data          0x400000e3        0x0 adc.o
- .data          0x400000e3        0x3 ssp.o
-                0x400000e3                data_sent_to_LL
-                0x400000e4                SSP_receiption_complete
-                0x400000e5                data_sent_to_HL
- .data          0x400000e6        0x0 pelican_ptu.o
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
- .data          0x400000e6        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
- *fill*         0x400000e6        0x2 00
- .data          0x400000e8      0x54c .//libdeclination.a(declination.o)
- .data          0x40000634        0x8 .//libublox.a(ublox.o)
-                0x40000634                gpsLEDTrigger
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
- .data          0x4000063c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
- .data          0x4000063c      0x404 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
-                0x4000063c                _impure_ptr
+ .data          0x40000000       0x28 sdk.o
+                0x40000000                receiveCmdData
+                0x40000004                output_thrust
+                0x40000008                my_setpoint
+ .data          0x40000028        0x0 MyProtocol.o
+ .data          0x40000028        0x0 pid.o
+ .data          0x40000028       0xa4 position_controller.o
+                0x40000028                zVelMax
+                0x4000002c                velMaxOverhead
+                0x40000030                this
+ .data          0x400000cc        0x0 buzzer.o
+ .data          0x400000cc        0x2 main.o
+                0x400000cc                DataOutputsPerSecond
+ .data          0x400000ce        0x0 hardware.o
+ .data          0x400000ce        0x0 LPC2k_ee.o
+ .data          0x400000ce        0x0 system.o
+ .data          0x400000ce        0x7 uart.o
+                0x400000ce                chksum_trigger
+                0x400000cf                startstring
+                0x400000d2                stopstring
+ .data          0x400000d5        0x0 syscalls.o
+ .data          0x400000d5        0x0 i2c.o
+ .data          0x400000d5        0x0 Common_WinARM/src/irq.o
+ .data          0x400000d5        0x0 adc.o
+ .data          0x400000d5        0x3 ssp.o
+                0x400000d5                data_sent_to_LL
+                0x400000d6                SSP_receiption_complete
+                0x400000d7                data_sent_to_HL
+ .data          0x400000d8        0x0 pelican_ptu.o
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
+ .data          0x400000d8        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
+ .data          0x400000d8      0x54c .//libdeclination.a(declination.o)
+ .data          0x40000624        0x8 .//libublox.a(ublox.o)
+                0x40000624                gpsLEDTrigger
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
+ .data          0x4000062c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
+ .data          0x4000062c      0x404 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
+                0x4000062c                _impure_ptr
  *(.data.*)
  *(.gnu.linkonce.d*)
-                0x40000a40                . = ALIGN (0x4)
+                0x40000a30                . = ALIGN (0x4)
 
-.igot.plt       0x40000a40        0x0 load address 0x00011c6c
+.igot.plt       0x40000a30        0x0 load address 0x00011d14
  .igot.plt      0x00000000        0x0 Common_WinARM/src/Startup.o
-                0x40000a40                . = ALIGN (0x4)
-                0x40000a40                _edata = .
-                0x40000a40                PROVIDE (edata, .)
+                0x40000a30                . = ALIGN (0x4)
+                0x40000a30                _edata = .
+                0x40000a30                PROVIDE (edata, .)
 
-.bss            0x40000a40     0x1ba0 load address 0x00011c6c
-                0x40000a40                __bss_start = .
-                0x40000a40                __bss_start__ = .
+.bss            0x40000a30     0x1bc4 load address 0x00011d14
+                0x40000a30                __bss_start = .
+                0x40000a30                __bss_start__ = .
  *(.bss)
- .bss           0x40000a40        0x0 Common_WinARM/src/Startup.o
- .bss           0x40000a40        0x0 Common_WinARM/src/swi_handler.o
- .bss           0x40000a40       0x18 LL_HL_comm.o
-                0x40000a40                SSP_ack
-                0x40000a42                wpCtrlWpCmd
-                0x40000a43                wpCtrlWpCmdUpdated
-                0x40000a44                wpCtrlAckTrigger
-                0x40000a46                wpCtrlNavStatus
-                0x40000a48                wpCtrlDistToWp
- .bss           0x40000a58        0x0 mymath.o
- .bss           0x40000a58        0x4 gpsmath.o
-                0x40000a58                gpsDataOkTrigger
- .bss           0x40000a5c      0x1e0 sdk.o
-                0x40000a5c                allDataBuffer
-                0x40000b5c                receivedViconData
-                0x40000b84                sendDebugData
-                0x40000ba8                sendParamDebug
-                0x40000bcc                receiveParamDebug
-                0x40000bf0                receiveCmdData
-                0x40000bf4                pack_id
-                0x40000bf8                vicon_count
-                0x40000bfc                receive_valid_data_flag
-                0x40000c00                my_state
- .bss           0x40000c3c       0x10 MyProtocol.o
- .bss           0x40000c4c        0x0 pid.o
- .bss           0x40000c4c       0x14 position_controller.o
- .bss           0x40000c60       0x14 buzzer.o
- .bss           0x40000c74       0x24 main.o
-                0x40000c74                int_cnt
-                0x40000c78                cnt
-                0x40000c7c                mainloop_cnt
-                0x40000c80                mainloop_trigger
-                0x40000c84                GPS_timeout
-                0x40000c88                trigger_cnt
-                0x40000c8c                SYSTEM_initialized
- .bss           0x40000c98        0x0 hardware.o
- .bss           0x40000c98        0x0 LPC2k_ee.o
- .bss           0x40000c98        0x0 system.o
- .bss           0x40000c98      0x32c uart.o
-                0x40000c98                data_requested
-                0x40000c99                chksum_to_check
-                0x40000c9a                transmission_running
-                0x40000c9b                transmission1_running
-                0x40000c9c                trigger_transmission
-                0x40000c9d                baudrate1_change
-                0x40000c9e                UART_syncstate
-                0x40000c9f                UART1_syncstate
-                0x40000ca0                UART_rxcount
-                0x40000ca4                UART1_rxcount
-                0x40000ca8                UART_CalibDoneFlag
- .bss           0x40000fc4        0x4 syscalls.o
- .bss           0x40000fc8       0x14 i2c.o
-                0x40000fc8                I2CMasterState
-                0x40000fcc                I2CSlaveState
-                0x40000fd0                I2CCount
-                0x40000fd4                RdIndex
-                0x40000fd8                WrIndex
- .bss           0x40000fdc        0x0 Common_WinARM/src/irq.o
- .bss           0x40000fdc        0x8 adc.o
-                0x40000fdc                ADC0IntDone
-                0x40000fe0                ADC1IntDone
- .bss           0x40000fe4        0x4 ssp.o
-                0x40000fe4                SSP_trans_cnt
- .bss           0x40000fe8        0x8 pelican_ptu.o
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
- .bss           0x40000ff0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
- .bss           0x40000ff0      0xcc4 .//libdeclination.a(declination.o)
-                0x40000ff0                estimatedDeclination
-                0x40000ff4                estimatedInclination
-                0x40000ff8                declinationAvailable
- .bss           0x40001cb4       0x28 .//libublox.a(ublox.o)
-                0x40001cb4                urTimeCnt
-                0x40001cb8                GPS_raw_data_size
-                0x40001cbc                urAckReceived
-                0x40001cbd                urAckClass
-                0x40001cbe                urAckId
-                0x40001cbf                urConfigMessageReceived
-                0x40001cc0                urVersionCheck
-                0x40001cc2                urMsgCnt
-                0x40001cc4                ubloxVersion
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
- .bss           0x40001cdc        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
+ .bss           0x40000a30        0x0 Common_WinARM/src/Startup.o
+ .bss           0x40000a30        0x0 Common_WinARM/src/swi_handler.o
+ .bss           0x40000a30       0x18 LL_HL_comm.o
+                0x40000a30                SSP_ack
+                0x40000a32                wpCtrlWpCmd
+                0x40000a33                wpCtrlWpCmdUpdated
+                0x40000a34                wpCtrlAckTrigger
+                0x40000a36                wpCtrlNavStatus
+                0x40000a38                wpCtrlDistToWp
+ .bss           0x40000a48        0x0 mymath.o
+ .bss           0x40000a48        0x4 gpsmath.o
+                0x40000a48                gpsDataOkTrigger
+ .bss           0x40000a4c      0x204 sdk.o
+                0x40000a4c                allDataBuffer
+                0x40000b4c                receivedViconData
+                0x40000b74                sendDebugData
+                0x40000b98                receiveDebugData
+                0x40000bbc                sendParamDebug
+                0x40000be0                receiveParamDebug
+                0x40000c04                pack_id
+                0x40000c08                vicon_count
+                0x40000c0c                vicon_tp
+                0x40000c10                receive_valid_data_flag
+                0x40000c14                my_state
+ .bss           0x40000c50       0x10 MyProtocol.o
+ .bss           0x40000c60        0x0 pid.o
+ .bss           0x40000c60       0x14 position_controller.o
+ .bss           0x40000c74       0x14 buzzer.o
+ .bss           0x40000c88       0x24 main.o
+                0x40000c88                int_cnt
+                0x40000c8c                cnt
+                0x40000c90                mainloop_cnt
+                0x40000c94                mainloop_trigger
+                0x40000c98                GPS_timeout
+                0x40000c9c                trigger_cnt
+                0x40000ca0                SYSTEM_initialized
+ .bss           0x40000cac        0x0 hardware.o
+ .bss           0x40000cac        0x0 LPC2k_ee.o
+ .bss           0x40000cac        0x0 system.o
+ .bss           0x40000cac      0x32c uart.o
+                0x40000cac                data_requested
+                0x40000cad                chksum_to_check
+                0x40000cae                transmission_running
+                0x40000caf                transmission1_running
+                0x40000cb0                trigger_transmission
+                0x40000cb1                baudrate1_change
+                0x40000cb2                UART_syncstate
+                0x40000cb3                UART1_syncstate
+                0x40000cb4                UART_rxcount
+                0x40000cb8                UART1_rxcount
+                0x40000cbc                UART_CalibDoneFlag
+ .bss           0x40000fd8        0x4 syscalls.o
+ .bss           0x40000fdc       0x14 i2c.o
+                0x40000fdc                I2CMasterState
+                0x40000fe0                I2CSlaveState
+                0x40000fe4                I2CCount
+                0x40000fe8                RdIndex
+                0x40000fec                WrIndex
+ .bss           0x40000ff0        0x0 Common_WinARM/src/irq.o
+ .bss           0x40000ff0        0x8 adc.o
+                0x40000ff0                ADC0IntDone
+                0x40000ff4                ADC1IntDone
+ .bss           0x40000ff8        0x4 ssp.o
+                0x40000ff8                SSP_trans_cnt
+ .bss           0x40000ffc        0x8 pelican_ptu.o
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
+ .bss           0x40001004        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
+ .bss           0x40001004      0xcc4 .//libdeclination.a(declination.o)
+                0x40001004                estimatedDeclination
+                0x40001008                estimatedInclination
+                0x4000100c                declinationAvailable
+ .bss           0x40001cc8       0x28 .//libublox.a(ublox.o)
+                0x40001cc8                urTimeCnt
+                0x40001ccc                GPS_raw_data_size
+                0x40001cd0                urAckReceived
+                0x40001cd1                urAckClass
+                0x40001cd2                urAckId
+                0x40001cd3                urConfigMessageReceived
+                0x40001cd4                urVersionCheck
+                0x40001cd6                urMsgCnt
+                0x40001cd8                ubloxVersion
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
+ .bss           0x40001cf0        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
  *(.gnu.linkonce.b*)
  *(COMMON)
- COMMON         0x40001cdc       0xb0 LL_HL_comm.o
-                0x40001cdc                LL_1khz_attitude_data
-                0x40001d38                LL_1khz_control_input
-                0x40001d70                wpToLL
- COMMON         0x40001d8c       0x58 gpsmath.o
-                0x40001d8c                GPS_Data
-                0x40001db8                gps_data_temp
- COMMON         0x40001de4       0xbc sdk.o
-                0x40001de4                WO_CTRL_Input
-                0x40001df0                WO_Direct_Motor_Control
-                0x40001df4                calc_thrust
-                0x40001df8                WO_Direct_Individual_Motor_Control
-                0x40001e00                WO_SDK
-                0x40001e04                RO_RC_Data
-                0x40001e14                RO_ALL_Data
- COMMON         0x40001ea0       0xdc main.o
-                0x40001ea0                GPS_Time
-                0x40001ea8                IMU_CalcData
-                0x40001f04                HL_Status
-                0x40001f1c                uart_cnt
-                0x40001f20                IMU_CalcData_tmp
- COMMON         0x40001f7c        0x4 LPC2k_ee.o
-                0x40001f7c                iap_entry
- COMMON         0x40001f80      0x120 uart.o
-                0x40001f80                UART_rxptr
-                0x40001f84                send_buffer
-                0x40001f94                current_chksum
-                0x40001f96                packets
-                0x40001f98                tx_buff
-                0x40001f9c                my_buffer
-                0x4000209c                UART1_rxptr
- COMMON         0x400020a0       0x50 i2c.o
-                0x400020a0                I2CReadLength
-                0x400020a4                I2CSlaveBuffer
-                0x400020c4                I2CMode
-                0x400020c8                I2CMasterBuffer
-                0x400020e8                I2CCmd
-                0x400020ec                I2CWriteLength
- COMMON         0x400020f0       0x60 adc.o
-                0x400020f0                ADC0Value
-                0x40002110                ADC1Value
-                0x40002130                adcChannelValues
- COMMON         0x40002150      0x10c ssp.o
-                0x40002150                CurrentRxIndex
-                0x40002154                SPIWR_num_bytes
-                0x40002158                CurrentTxIndex
-                0x4000215c                SPIWRData
-                0x400021dc                SPIRDData
- COMMON         0x4000225c       0x2c pelican_ptu.o
-                0x4000225c                CAMERA_Commands
-                0x40002268                CAMERA_ptu
- COMMON         0x40002288      0x356 .//libublox.a(ublox.o)
-                0x40002288                GPS_RawBuffer
-                0x40002408                urRecData
-                0x40002508                satInfo
-                0x400025c8                urConfigCnt
-                0x400025cc                urCfgIdList
-                0x400025d0                gpsHardwareStatus
-                0x400025e0                . = ALIGN (0x4)
- *fill*         0x400025de        0x2 00
-                0x400025e0                . = ALIGN (0x4)
-                0x400025e0                __bss_end__ = .
-                0x400025e0                PROVIDE (__bss_end, .)
+ COMMON         0x40001cf0       0xb0 LL_HL_comm.o
+                0x40001cf0                LL_1khz_attitude_data
+                0x40001d4c                LL_1khz_control_input
+                0x40001d84                wpToLL
+ COMMON         0x40001da0       0x58 gpsmath.o
+                0x40001da0                GPS_Data
+                0x40001dcc                gps_data_temp
+ COMMON         0x40001df8       0xbc sdk.o
+                0x40001df8                WO_CTRL_Input
+                0x40001e04                WO_Direct_Motor_Control
+                0x40001e08                calc_thrust
+                0x40001e0c                WO_Direct_Individual_Motor_Control
+                0x40001e14                WO_SDK
+                0x40001e18                RO_RC_Data
+                0x40001e28                RO_ALL_Data
+ COMMON         0x40001eb4       0xdc main.o
+                0x40001eb4                GPS_Time
+                0x40001ebc                IMU_CalcData
+                0x40001f18                HL_Status
+                0x40001f30                uart_cnt
+                0x40001f34                IMU_CalcData_tmp
+ COMMON         0x40001f90        0x4 LPC2k_ee.o
+                0x40001f90                iap_entry
+ COMMON         0x40001f94      0x120 uart.o
+                0x40001f94                UART_rxptr
+                0x40001f98                send_buffer
+                0x40001fa8                current_chksum
+                0x40001faa                packets
+                0x40001fac                tx_buff
+                0x40001fb0                my_buffer
+                0x400020b0                UART1_rxptr
+ COMMON         0x400020b4       0x50 i2c.o
+                0x400020b4                I2CReadLength
+                0x400020b8                I2CSlaveBuffer
+                0x400020d8                I2CMode
+                0x400020dc                I2CMasterBuffer
+                0x400020fc                I2CCmd
+                0x40002100                I2CWriteLength
+ COMMON         0x40002104       0x60 adc.o
+                0x40002104                ADC0Value
+                0x40002124                ADC1Value
+                0x40002144                adcChannelValues
+ COMMON         0x40002164      0x10c ssp.o
+                0x40002164                CurrentRxIndex
+                0x40002168                SPIWR_num_bytes
+                0x4000216c                CurrentTxIndex
+                0x40002170                SPIWRData
+                0x400021f0                SPIRDData
+ COMMON         0x40002270       0x2c pelican_ptu.o
+                0x40002270                CAMERA_Commands
+                0x4000227c                CAMERA_ptu
+ COMMON         0x4000229c      0x356 .//libublox.a(ublox.o)
+                0x4000229c                GPS_RawBuffer
+                0x4000241c                urRecData
+                0x4000251c                satInfo
+                0x400025dc                urConfigCnt
+                0x400025e0                urCfgIdList
+                0x400025e4                gpsHardwareStatus
+                0x400025f4                . = ALIGN (0x4)
+ *fill*         0x400025f2        0x2 00
+                0x400025f4                . = ALIGN (0x4)
+                0x400025f4                __bss_end__ = .
+                0x400025f4                PROVIDE (__bss_end, .)
 
 .stack          0x40002600     0x1980
  *(.stack)
@@ -816,7 +811,7 @@ END GROUP
                 0x40003f80                _end = .
                 0x40003f80                PROVIDE (end, .)
 
-.stab           0x00000000     0x90cc
+.stab           0x00000000     0x90f0
  *(.stab)
  .stab          0x00000000      0x57c Common_WinARM/src/Startup.o
  .stab          0x0000057c      0x3a8 Common_WinARM/src/swi_handler.o
@@ -827,42 +822,42 @@ END GROUP
                                  0xe4 (size before relaxing)
  .stab          0x00001794      0x1f8 gpsmath.o
                                 0x228 (size before relaxing)
- .stab          0x0000198c      0xfb4 sdk.o
-                               0x105c (size before relaxing)
- .stab          0x00002940      0x7bc MyProtocol.o
+ .stab          0x0000198c      0xfd8 sdk.o
+                               0x1080 (size before relaxing)
+ .stab          0x00002964      0x7bc MyProtocol.o
                                 0x954 (size before relaxing)
- .stab          0x000030fc      0x774 pid.o
+ .stab          0x00003120      0x774 pid.o
                                 0x780 (size before relaxing)
- .stab          0x00003870      0x504 position_controller.o
+ .stab          0x00003894      0x504 position_controller.o
                                 0x5d0 (size before relaxing)
- .stab          0x00003d74      0x7a4 buzzer.o
+ .stab          0x00003d98      0x7a4 buzzer.o
                                 0x828 (size before relaxing)
- .stab          0x00004518      0x948 main.o
-                                0xce4 (size before relaxing)
- .stab          0x00004e60      0x1d4 hardware.o
+ .stab          0x0000453c      0x900 main.o
+                                0xc9c (size before relaxing)
+ .stab          0x00004e3c      0x1d4 hardware.o
                                 0x498 (size before relaxing)
- .stab          0x00005034      0x7b0 LPC2k_ee.o
+ .stab          0x00005010      0x7b0 LPC2k_ee.o
                                 0x7bc (size before relaxing)
- .stab          0x000057e4      0x744 system.o
+ .stab          0x000057c0      0x744 system.o
                                 0xa08 (size before relaxing)
- .stab          0x00005f28     0x114c uart.o
-                               0x1500 (size before relaxing)
- .stab          0x00007074      0x858 syscalls.o
+ .stab          0x00005f04     0x1194 uart.o
+                               0x1548 (size before relaxing)
+ .stab          0x00007098      0x858 syscalls.o
                                 0xac8 (size before relaxing)
- .stab          0x000078cc      0x6d8 i2c.o
+ .stab          0x000078f0      0x6d8 i2c.o
                                 0x720 (size before relaxing)
- .stab          0x00007fa4      0x408 Common_WinARM/src/irq.o
+ .stab          0x00007fc8      0x408 Common_WinARM/src/irq.o
                                 0x414 (size before relaxing)
- .stab          0x000083ac      0x48c adc.o
+ .stab          0x000083d0      0x48c adc.o
                                 0x4d4 (size before relaxing)
- .stab          0x00008838      0x498 ssp.o
+ .stab          0x0000885c      0x498 ssp.o
                                 0x594 (size before relaxing)
- .stab          0x00008cd0      0x3fc pelican_ptu.o
+ .stab          0x00008cf4      0x3fc pelican_ptu.o
                                 0x45c (size before relaxing)
 
-.stabstr        0x00000000     0x9b85
+.stabstr        0x00000000     0x9b66
  *(.stabstr)
- .stabstr       0x00000000     0x9b85 Common_WinARM/src/Startup.o
+ .stabstr       0x00000000     0x9b66 Common_WinARM/src/Startup.o
 
 .stab.excl
  *(.stab.excl)
@@ -992,45 +987,45 @@ END GROUP
  .ARM.attributes
                 0x00000200       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
  .ARM.attributes
-                0x00000210       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
+                0x00000210       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
  .ARM.attributes
-                0x00000220       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
+                0x00000220       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
  .ARM.attributes
-                0x00000230       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+                0x00000230       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
  .ARM.attributes
-                0x00000240       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+                0x00000240       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
  .ARM.attributes
-                0x00000250       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
+                0x00000250       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
  .ARM.attributes
-                0x00000260       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+                0x00000260       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
  .ARM.attributes
-                0x00000270       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
+                0x00000270       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
  .ARM.attributes
-                0x00000280       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
+                0x00000280       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
  .ARM.attributes
-                0x00000290       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+                0x00000290       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
  .ARM.attributes
-                0x000002a0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
+                0x000002a0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
  .ARM.attributes
-                0x000002b0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+                0x000002b0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
  .ARM.attributes
-                0x000002c0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
+                0x000002c0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
  .ARM.attributes
-                0x000002d0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
+                0x000002d0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
  .ARM.attributes
-                0x000002e0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
+                0x000002e0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
  .ARM.attributes
-                0x000002f0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+                0x000002f0       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
  .ARM.attributes
-                0x00000300       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
+                0x00000300       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
  .ARM.attributes
-                0x00000310       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
+                0x00000310       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
  .ARM.attributes
-                0x00000320       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
+                0x00000320       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
  .ARM.attributes
-                0x00000330       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
+                0x00000330       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
  .ARM.attributes
-                0x00000340       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
+                0x00000340       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
  .ARM.attributes
                 0x00000350       0x10 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
  .ARM.attributes
@@ -1588,6 +1583,7 @@ __fixdfsi                                         /usr/local/arm7/bin/../lib/gcc
                                                   sdk.o
 __fixsfsi                                         /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
                                                   .//libdeclination.a(declination.o)
+                                                  sdk.o
 __floatdidf                                       /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
 __floatdisf                                       /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
 __floatsidf                                       /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
@@ -1758,6 +1754,7 @@ getDeclination                                    .//libdeclination.a(declinatio
                                                   main.o
 getPackageLength                                  MyProtocol.o
                                                   uart.o
+                                                  main.o
 gpsDataOkTrigger                                  gpsmath.o
                                                   .//libublox.a(ublox.o)
                                                   LL_HL_comm.o
@@ -1813,9 +1810,6 @@ output_thrust                                     sdk.o
 pack_id                                           sdk.o
                                                   uart.o
 packets                                           uart.o
-pd                                                main.o
-pd2                                               main.o
-pd3                                               main.o
 peripheralClockFrequency                          system.o
                                                   uart.o
 pidGetDesired                                     pid.o
@@ -1834,9 +1828,6 @@ pidSetKi                                          pid.o
 pidSetKp                                          pid.o
 pidUpdate                                         pid.o
                                                   position_controller.o
-pl                                                main.o
-pl2                                               main.o
-pl3                                               main.o
 pll_feed                                          system.o
 pll_init                                          system.o
 pollMessageRate                                   .//libublox.a(ublox.o)
@@ -1850,6 +1841,8 @@ processorClockFrequency                           system.o
 receiveCmdData                                    sdk.o
                                                   uart.o
                                                   main.o
+receiveDebugData                                  sdk.o
+                                                  uart.o
 receiveParamDebug                                 sdk.o
                                                   uart.o
 receive_single                                    MyProtocol.o
@@ -1857,7 +1850,6 @@ receive_valid_data_flag                           sdk.o
                                                   uart.o
 receivedViconData                                 sdk.o
                                                   uart.o
-                                                  main.o
 ringbuffer                                        uart.o
 ringbuffer1                                       uart.o
 runPid                                            position_controller.o
@@ -1915,6 +1907,9 @@ urTimeCnt                                         .//libublox.a(ublox.o)
 urVersionCheck                                    .//libublox.a(ublox.o)
 velMaxOverhead                                    position_controller.o
 vicon_count                                       sdk.o
+                                                  uart.o
+                                                  main.o
+vicon_tp                                          sdk.o
                                                   uart.o
                                                   main.o
 wpCtrlAckTrigger                                  LL_HL_comm.o

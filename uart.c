@@ -80,13 +80,15 @@ extern MyViconData receivedViconData;
 extern ParamDebug sendParamDebug;
 extern ParamDebug receiveParamDebug;
 extern DebugData sendDebugData;
+extern DebugData receiveDebugData;
 extern int vicon_count;
 extern int receive_valid_data_flag;
 extern struct this_s this ;
 extern state_t my_state;
 extern int output_thrust;
 extern CmdData receiveCmdData;
-extern unsigned char pack_id;
+extern int pack_id;
+extern int vicon_tp;
 
 void uart1ISR(void) __irq
 {
@@ -163,7 +165,7 @@ void uart0ISR(void) __irq
         UART_rxdata = U0RBR;
 #ifdef DEBUG_DATA_MODE
         receive_result=my_receive(UART_rxdata,my_buffer,
-				&allDataBuffer,&pack_id,1);
+				allDataBuffer,&pack_id,1);
 		if(receive_result==RECEIVE_STATE_SUCCESS){
 			switch(pack_id){
 			case PACKAGE_DEFINE_STATUS:
@@ -180,6 +182,12 @@ void uart0ISR(void) __irq
 			case PACKAGE_DEFINE_FUSION:
 				break;
 			case PACKAGE_DEFINE_DEBUG:
+				memcpy(&receiveDebugData,
+						&allDataBuffer,getPackageLength(pack_id));
+				my_state.position.z=receiveDebugData.z;
+				my_state.velocity.z=receiveDebugData.vz;
+				vicon_tp=receiveDebugData.timestamp;
+				vicon_count++;
 				break;
 			case PACKAGE_DEFINE_PARAM:
 				memcpy(&receiveParamDebug,

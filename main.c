@@ -77,25 +77,6 @@ volatile char SYSTEM_initialized=0;
 unsigned int uart_cnt;
 unsigned char DataOutputsPerSecond=10;
 
-//long signed int (*read_callback)(int,void*,unsigned long);
-//long signed int (*write_callback)(int,const void*,unsigned long int);
-//
-//long signed int my_read_callback(int fd,void* buffer,unsigned long count){
-//	*((unsigned char*)(buffer))= UARTReadChar();
-//	return 1;
-//}
-//
-//long signed int my_write_callback(int fd,void* buffer,unsigned long count){
-//	UARTWriteChar(*((unsigned char*)(buffer)));
-//	return 1;
-//}
-
-PackageDefine pd=PACKAGE_DEFINE_VICON;
-PackageDefine pd2=PACKAGE_DEFINE_DEBUG;
-PackageDefine pd3=PACKAGE_DEFINE_PARAM;
-unsigned char pl=VICON_DATA_LENGTH;
-unsigned char pl2=DEBUG_DATA_LENGTH;
-unsigned char pl3=PARAM_DEBUG_LENGTH;
 extern MyViconData receivedViconData;
 extern DebugData sendDebugData;
 extern ParamDebug sendParamDebug;
@@ -108,6 +89,7 @@ extern float calc_thrust;
 extern struct this_s this ;
 extern int output_thrust;
 extern int receive_valid_data_flag;
+extern int vicon_tp;
 
 void timer0ISR(void) __irq
 {
@@ -267,17 +249,19 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 	{
 		uart_cnt=0;
 		if(receiveCmdData.cmd==PACKAGE_DEFINE_DEBUG){
-			sendDebugData.timestamp=receivedViconData.timestamp;
+			sendDebugData.timestamp=vicon_tp;
 			sendDebugData.z=my_state.position.z;
-			sendDebugData.vz=my_state.position.z;
+			sendDebugData.vz=my_state.velocity.z;
 			sendDebugData.battery=HL_Status.battery_voltage_1;
 			sendDebugData.cpu_load=mainloop_cnt;
 			sendDebugData.set_position=my_setpoint.position.z;
 			sendDebugData.set_velocity=my_setpoint.velocity.z;
 			sendDebugData.vicon_count=vicon_count;
 			sendDebugData.calc_thrust=calc_thrust;
-			my_send(1,PACKAGE_DEFINE_DEBUG,DEBUG_DATA_LENGTH,&sendDebugData,1);
-		}else if(receiveCmdData.cmd=PACKAGE_DEFINE_PARAM){
+			my_send(1,PACKAGE_DEFINE_DEBUG,
+					getPackageLength(PACKAGE_DEFINE_DEBUG),
+					&sendDebugData,1);
+		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_PARAM){
 			sendParamDebug.calc_thrust=calc_thrust;
 			sendParamDebug.ki_p=this.pidZ.pid.ki;
 			sendParamDebug.kp_p=this.pidZ.pid.kp;
@@ -287,36 +271,10 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			sendParamDebug.vz=my_state.velocity.z;
 			sendParamDebug.z=my_state.position.z;
 			sendParamDebug.thrust=output_thrust;
-			my_send(1,PACKAGE_DEFINE_PARAM,PARAM_DEBUG_LENGTH,&sendParamDebug,1);
+			my_send(1,PACKAGE_DEFINE_PARAM,
+					getPackageLength(PACKAGE_DEFINE_PARAM),
+					&sendParamDebug,1);
 		}
-#ifdef DEBUG_DATA_MODE
-
-#endif
-#ifdef PARAM_DEBUG_MODE
-//		sendParamDebug.calc_thrust=calc_thrust;
-//		sendParamDebug.ki_p=this.pidZ.pid.ki;
-//		sendParamDebug.kp_p=this.pidZ.pid.kp;
-//		sendParamDebug.ki_v=this.pidVZ.pid.ki;
-//		sendParamDebug.kp_v=this.pidVZ.pid.kp;
-//		sendParamDebug.set_velocity=my_setpoint.velocity.z;
-//		sendParamDebug.vz=state.velocity.z;
-//		sendParamDebug.z=state.position.z;
-//		sendParamDebug.thrust=output_thrust;
-
-//		if(receive_valid_data_flag==0){
-//		}else{
-//			sendParamDebug.calc_thrust=calc_thrust;
-//			sendParamDebug.ki_p=this.pidZ.pid.ki;
-//			sendParamDebug.kp_p=this.pidZ.pid.kp;
-//			sendParamDebug.ki_v=this.pidVZ.pid.ki;
-//			sendParamDebug.kp_v=this.pidVZ.pid.kp;
-//			sendParamDebug.set_velocity=my_setpoint.velocity.z;
-//			sendParamDebug.vz=state.velocity.z;
-//			sendParamDebug.z=state.position.z;
-//			sendParamDebug.thrust=(int)WO_CTRL_Input.thrust;
-//		}
-
-#endif
 	}
 	//handle gps data reception
     uBloxReceiveEngine();

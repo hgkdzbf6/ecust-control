@@ -59,14 +59,16 @@ void fake_gps3(void );
 unsigned char allDataBuffer[256]={0};
 MyViconData receivedViconData={0};
 DebugData sendDebugData={0};
+DebugData receiveDebugData={0};
 ParamDebug sendParamDebug={0};
 ParamDebug receiveParamDebug={0};
-CmdData receiveCmdData={0};
-unsigned char pack_id=0;
+CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
+int pack_id=0;
 
 
 //ParamDebug paramDebug={0};
 int vicon_count=0;
+int vicon_tp=0;
 float calc_thrust;
 int receive_valid_data_flag=0;
 volatile int output_thrust=1850;
@@ -109,25 +111,10 @@ void fake_gps3(void ){
 		positionControllerInit();
 	}
 	if(freq++==10){
-		//unit is mm, degree
-		//vicon_readIn(position,rotation,0.01);
-		//state.position.z=viconData.z;//data_fusion(1,viconData.z,RO_ALL_Data.acc_z);
-		//state.pre_position.z=vicon_data.pre_position[0].z;
-		//state.velocity.z=viconData.vz;
 		freq=1;
-		//my_setpoint.velocity.z=RO_ALL_Data.vicon_vz;
 		positionController(&calc_thrust,&my_state);
-
-		//my_setpoint.velocity.z=1234;
-		//my_setpoint.position.z=1234;
-		//my_setpoint.position.z=RO_ALL_Data.vicon_z;
-		//my_setpoint.velocity.z=RO_ALL_Data.vicon_vz;
-		//calc_thrust=1234.5678;
 	}
-
-	//output_thrust=(unsigned short)calc_thrust;
-
-	//output_thrust=1500;
+	output_thrust=calc_thrust;
 	WO_CTRL_Input.thrust=output_thrust;
 
 }
