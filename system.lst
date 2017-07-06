@@ -841,25 +841,25 @@
  793              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 system.c
-     /tmp/ccMBeOCd.s:99     .text:00000000 $a
-     /tmp/ccMBeOCd.s:103    .text:00000000 init
-     /tmp/ccMBeOCd.s:583    .text:0000040c pll_init
-     /tmp/ccMBeOCd.s:617    .text:0000044c pll_feed
-     /tmp/ccMBeOCd.s:257    .text:00000134 init_ports
-     /tmp/ccMBeOCd.s:478    .text:00000338 init_spi
-     /tmp/ccMBeOCd.s:510    .text:00000370 init_spi1
-     /tmp/ccMBeOCd.s:330    .text:000001dc init_timer0
-     /tmp/ccMBeOCd.s:403    .text:00000284 PWM_Init
-     /tmp/ccMBeOCd.s:179    .text:00000088 init_interrupts
-     /tmp/ccMBeOCd.s:247    .text:00000124 $d
-     /tmp/ccMBeOCd.s:253    .text:00000134 $a
-     /tmp/ccMBeOCd.s:322    .text:000001d4 $d
-     /tmp/ccMBeOCd.s:326    .text:000001dc $a
-     /tmp/ccMBeOCd.s:676    .text:000004ac peripheralClockFrequency
-     /tmp/ccMBeOCd.s:396    .text:00000280 $d
-     /tmp/ccMBeOCd.s:399    .text:00000284 $a
-     /tmp/ccMBeOCd.s:651    .text:0000048c processorClockFrequency
-     /tmp/ccMBeOCd.s:750    .text:00000544 delay
+     /tmp/ccFABqet.s:99     .text:00000000 $a
+     /tmp/ccFABqet.s:103    .text:00000000 init
+     /tmp/ccFABqet.s:583    .text:0000040c pll_init
+     /tmp/ccFABqet.s:617    .text:0000044c pll_feed
+     /tmp/ccFABqet.s:257    .text:00000134 init_ports
+     /tmp/ccFABqet.s:478    .text:00000338 init_spi
+     /tmp/ccFABqet.s:510    .text:00000370 init_spi1
+     /tmp/ccFABqet.s:330    .text:000001dc init_timer0
+     /tmp/ccFABqet.s:403    .text:00000284 PWM_Init
+     /tmp/ccFABqet.s:179    .text:00000088 init_interrupts
+     /tmp/ccFABqet.s:247    .text:00000124 $d
+     /tmp/ccFABqet.s:253    .text:00000134 $a
+     /tmp/ccFABqet.s:322    .text:000001d4 $d
+     /tmp/ccFABqet.s:326    .text:000001dc $a
+     /tmp/ccFABqet.s:676    .text:000004ac peripheralClockFrequency
+     /tmp/ccFABqet.s:396    .text:00000280 $d
+     /tmp/ccFABqet.s:399    .text:00000284 $a
+     /tmp/ccFABqet.s:651    .text:0000048c processorClockFrequency
+     /tmp/ccFABqet.s:750    .text:00000544 delay
                             *COM*:00000004 GPS_timeout
                             *COM*:00000001 SYSTEM_initialized
                             *COM*:00000004 SSP_trans_cnt

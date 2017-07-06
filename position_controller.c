@@ -24,14 +24,15 @@
  * position_estimator_pid.c: PID-based implementation of the position controller
  */
 
-
+#include "sdk.h"
 #include "pid.h"
 #include "position_controller.h"
 
 // Maximum roll/pitch angle permited
-//static float rpLimit  = 20;
-//static float rpLimitOverhead = 1.10f;
+float rpLimit  = 400.0f;
+float rpLimitOverhead = 1.10f;
 // Velocity maximums
+float xyVelMax=400.0f;
  float zVelMax  = 10.0f;
  float velMaxOverhead = 1.10f;
  const float thrustScale = 1000.0f;
@@ -40,8 +41,24 @@
 #define DT (float)(1.0/POSITION_RATE)
 #define POSITION_LPF_CUTOFF_FREQ 20.0f
 #define POSITION_LPF_ENABLE true
+struct this_s my_this = {
+	.pidVX = {
+	    .init = {
+	      .kp = 1,
+	      .ki = 0,
+	      .kd = 0,
+	    },
+	    .pid.dt = DT,
+	  },
 
-struct this_s this = {
+	  .pidVY = {
+	    .init = {
+	      .kp = 1,
+	      .ki = 0,
+	      .kd = 0,
+	    },
+	    .pid.dt = DT,
+	  },
 
   .pidVZ = {
     .init = {
@@ -51,14 +68,32 @@ struct this_s this = {
     },
     .pid.dt = DT,
   },
-
-  .pidZ = {
+  .pidX = {
     .init = {
-      .kp = 0.1f,
+      .kp = 0.4,
       .ki = 0,
       .kd = 0,
     },
     .pid.dt = DT,
+  },
+  .pidY = {
+    .init = {
+      .kp = 0.4,
+      .ki = 0,
+      .kd = 0,
+    },
+    .pid.dt = DT,
+  },
+  .pidZ = {
+    .init = {
+      .kp = 0.8f,
+      .ki = 0,
+      .kd = 0,
+    },
+    .pid ={
+    		.dt=DT,
+			.iLimit=100,
+    },
   },
 
   .thrustBase = 1850,
@@ -87,10 +122,20 @@ void positionEstimate(state_t* estimate,
 }
 void positionControllerInit ()
 {
- pidInit(&this.pidZ.pid, this.pidZ.setpoint, this.pidZ.init.kp, this.pidZ.init.ki, this.pidZ.init.kd,
-      this.pidZ.pid.dt);
-  pidInit(&this.pidVZ.pid, this.pidVZ.setpoint, this.pidVZ.init.kp, this.pidVZ.init.ki, this.pidVZ.init.kd,
-      this.pidVZ.pid.dt);
+  pidInit(&my_this.pidX.pid, my_this.pidX.setpoint, my_this.pidX.init.kp, my_this.pidX.init.ki, my_this.pidX.init.kd,
+      my_this.pidX.pid.dt);
+  pidInit(&my_this.pidY.pid, my_this.pidY.setpoint, my_this.pidY.init.kp, my_this.pidY.init.ki, my_this.pidY.init.kd,
+      my_this.pidY.pid.dt);
+  pidInit(&my_this.pidZ.pid, my_this.pidZ.setpoint, my_this.pidZ.init.kp, my_this.pidZ.init.ki, my_this.pidZ.init.kd,
+      my_this.pidZ.pid.dt);
+
+  pidInit(&my_this.pidVX.pid, my_this.pidVX.setpoint, my_this.pidVX.init.kp, my_this.pidVX.init.ki, my_this.pidVX.init.kd,
+      my_this.pidVX.pid.dt);
+  pidInit(&my_this.pidVY.pid, my_this.pidVY.setpoint, my_this.pidVY.init.kp, my_this.pidVY.init.ki, my_this.pidVY.init.kd,
+      my_this.pidVY.pid.dt);
+  pidInit(&my_this.pidVZ.pid, my_this.pidVZ.setpoint, my_this.pidVZ.init.kp, my_this.pidVZ.init.ki, my_this.pidVZ.init.kd,
+      my_this.pidVZ.pid.dt);
+
 }
 
 float runPid(float input, struct pidAxis_s *axis,  float setpoint, float dt) {
@@ -115,25 +160,50 @@ float data_fusion(int flag,float vicon_z,int acc_z){
 	}
 	return result;
 }
-void positionController(float* thrust,
+void positionController(float* thrust,float* pitch,float* roll,
                                                              const state_t *state)
 {
 	float thrustRaw;
-  this.pidZ.pid.outputLimit = max(zVelMax, 80.0f)  * velMaxOverhead;
-    my_setpoint.velocity.z = runPid(state->position.z, &this.pidZ, my_setpoint.position.z, DT);
-    this.pidVZ.pid.outputLimit =150.0f;
+	my_this.pidX.pid.outputLimit = xyVelMax  * velMaxOverhead;
+	my_this.pidY.pid.outputLimit =  xyVelMax  * velMaxOverhead;
+    my_this.pidZ.pid.outputLimit = max(zVelMax, 200.0f)  * velMaxOverhead;
+
+//    float cosyaw = cosf(state->attitude.yaw * DEG_TO_RAD);
+//    float sinyaw = sinf(state->attitude.yaw * DEG_TO_RAD);
+//    float bodyvx = my_setpoint.velocity.x;
+//    float bodyvy = my_setpoint.velocity.y;
+
+    my_setpoint.velocity.x = runPid(state->position.x, &my_this.pidX, my_setpoint.position.x, DT);
+    my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
+    my_setpoint.velocity.z = runPid(state->position.z, &my_this.pidZ, my_setpoint.position.z, DT);
+
+    my_this.pidVX.pid.outputLimit = rpLimit * rpLimitOverhead;
+    my_this.pidVY.pid.outputLimit = rpLimit * rpLimitOverhead;
+    my_this.pidVZ.pid.outputLimit =250.0f;
+
+    float rollRaw  = runPid(state->velocity.x, &my_this.pidVX, my_setpoint.velocity.x, DT);
+      float pitchRaw = runPid(state->velocity.y, &my_this.pidVY, my_setpoint.velocity.y, DT);
+
+      //float yawRad = state->attitude.yaw ;
+      float yawRad = 0 ;
+      *pitch = -(rollRaw  * cosf(yawRad)) - (pitchRaw * sinf(yawRad));
+      *roll  = -(pitchRaw * cosf(yawRad)) + (rollRaw  * sinf(yawRad));
+
+      *roll  = constrain(*roll,  -rpLimit, rpLimit);
+      *pitch = constrain(*pitch, -rpLimit, rpLimit);
+
     // Thrust
-    thrustRaw = runPid(state->velocity.z, &this.pidVZ, my_setpoint.velocity.z, DT);
+    thrustRaw = runPid(state->velocity.z, &my_this.pidVZ, my_setpoint.velocity.z, DT);
     // Scale the thrust and add feed forward term
-    *thrust = thrustRaw + this.thrustBase;
+    *thrust = thrustRaw + my_this.thrustBase;
     // Check for minimum thrust
-    if (*thrust < this.thrustMin) {
-      *thrust = this.thrustMin;
+    if (*thrust < my_this.thrustMin) {
+      *thrust = my_this.thrustMin;
     }
 }
 
 void positionControllerResetAllPID()
 {
-  pidReset(&this.pidZ.pid);
-  pidReset(&this.pidVZ.pid);
+  pidReset(&my_this.pidZ.pid);
+  pidReset(&my_this.pidVZ.pid);
 }

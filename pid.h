@@ -151,8 +151,12 @@ struct pidAxis_s {
 };
 
 struct this_s {
-  struct pidAxis_s pidVZ;
-  struct pidAxis_s pidZ;
+	  struct pidAxis_s pidVZ;
+	  struct pidAxis_s pidZ;
+	  struct pidAxis_s pidVX;
+	  struct pidAxis_s pidX;
+	  struct pidAxis_s pidVY;
+	  struct pidAxis_s pidY;
 
   unsigned short thrustBase; // approximate throttle needed when in perfect hover. More weight/older battery can use a higher value
   unsigned short thrustMin;  // Minimum thrust value to output

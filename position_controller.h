@@ -42,7 +42,7 @@ void positionControllerInit(void);
 void positionControllerResetAllPID(void);
 float runPid(float input, struct pidAxis_s *axis,  float setpoint, float dt);
 
-void positionController(float* thrust,
+void positionController(float* thrust,float* pitch,float* roll,
                                                              const state_t *state);
 float data_fusion(int flag,float vicon_z,int acc_z);
 

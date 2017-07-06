@@ -455,17 +455,17 @@
  527              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 syscalls.c
-     /tmp/ccoXzz0h.s:151    .text:00000000 $a
-     /tmp/ccoXzz0h.s:159    .text:00000000 _read_r
-     /tmp/ccoXzz0h.s:264    .text:000000e0 _write_r
-     /tmp/ccoXzz0h.s:338    .text:0000017c _close_r
-     /tmp/ccoXzz0h.s:369    .text:000001a8 _lseek_r
-     /tmp/ccoXzz0h.s:401    .text:000001dc _fstat_r
-     /tmp/ccoXzz0h.s:435    .text:00000218 isatty
-     /tmp/ccoXzz0h.s:463    .text:00000240 _sbrk_r
-     /tmp/ccoXzz0h.s:512    .text:000002ac $d
-     /tmp/ccoXzz0h.s:521    .bss:00000000 heap_ptr
-     /tmp/ccoXzz0h.s:520    .bss:00000000 $d
+     /tmp/ccEjK3mv.s:151    .text:00000000 $a
+     /tmp/ccEjK3mv.s:159    .text:00000000 _read_r
+     /tmp/ccEjK3mv.s:264    .text:000000e0 _write_r
+     /tmp/ccEjK3mv.s:338    .text:0000017c _close_r
+     /tmp/ccEjK3mv.s:369    .text:000001a8 _lseek_r
+     /tmp/ccEjK3mv.s:401    .text:000001dc _fstat_r
+     /tmp/ccEjK3mv.s:435    .text:00000218 isatty
+     /tmp/ccEjK3mv.s:463    .text:00000240 _sbrk_r
+     /tmp/ccEjK3mv.s:512    .text:000002ac $d
+     /tmp/ccEjK3mv.s:521    .bss:00000000 heap_ptr
+     /tmp/ccEjK3mv.s:520    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 UARTReadChar

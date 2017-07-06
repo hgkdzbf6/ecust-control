@@ -83,7 +83,7 @@ extern DebugData sendDebugData;
 extern DebugData receiveDebugData;
 extern int vicon_count;
 extern int receive_valid_data_flag;
-extern struct this_s this ;
+extern struct this_s my_this ;
 extern state_t my_state;
 extern int output_thrust;
 extern CmdData receiveCmdData;
@@ -184,8 +184,15 @@ void uart0ISR(void) __irq
 			case PACKAGE_DEFINE_DEBUG:
 				memcpy(&receiveDebugData,
 						&allDataBuffer,getPackageLength(pack_id));
+				my_state.position.x=receiveDebugData.x;
+				my_state.position.y=receiveDebugData.y;
 				my_state.position.z=receiveDebugData.z;
-				my_state.velocity.z=receiveDebugData.vz;
+				//my_state.velocity.x=receiveDebugData.vx;
+				//my_state.velocity.y=receiveDebugData.vy;
+				//my_state.velocity.z=receiveDebugData.vz;
+				my_state.attitude.pitch=receiveDebugData.pitch;
+				my_state.attitude.roll=receiveDebugData.roll;
+				my_state.attitude.yaw=receiveDebugData.yaw;
 				vicon_tp=receiveDebugData.timestamp;
 				vicon_count++;
 				break;
@@ -194,10 +201,10 @@ void uart0ISR(void) __irq
 						&allDataBuffer,getPackageLength(pack_id));
 	        	if(receive_valid_data_flag==1||receiveParamDebug.kp_p!=0){
 	        		receive_valid_data_flag=1;
-	        		this.pidZ.pid.kp=receiveParamDebug.kp_p;
-	        		this.pidZ.pid.ki=receiveParamDebug.ki_p;
-	        		this.pidVZ.pid.kp=receiveParamDebug.kp_v;
-	        		this.pidVZ.pid.ki=receiveParamDebug.ki_v;
+	        		my_this.pidZ.pid.kp=receiveParamDebug.kp_p;
+	        		my_this.pidZ.pid.ki=receiveParamDebug.ki_p;
+	        		my_this.pidVZ.pid.kp=receiveParamDebug.kp_v;
+	        		my_this.pidVZ.pid.ki=receiveParamDebug.ki_v;
 	        		my_setpoint.velocity.y=receiveParamDebug.set_velocity;
 	        		//output_thrust=receiveParamDebug.thrust;
 	        		//if(receiveParamDebug.thrust==555)buzzer(1);
@@ -223,10 +230,10 @@ void uart0ISR(void) __irq
 				1)){
         	if(receive_valid_data_flag==1||receiveParamDebug.kp_p!=0){
         		receive_valid_data_flag=1;
-        		this.pidZ.pid.kp=receiveParamDebug.kp_p;
-        		this.pidZ.pid.ki=receiveParamDebug.ki_p;
-        		this.pidVZ.pid.kp=receiveParamDebug.kp_v;
-        		this.pidVZ.pid.ki=receiveParamDebug.ki_v;
+        		my_this.pidZ.pid.kp=receiveParamDebug.kp_p;
+        		my_this.pidZ.pid.ki=receiveParamDebug.ki_p;
+        		my_this.pidVZ.pid.kp=receiveParamDebug.kp_v;
+        		my_this.pidVZ.pid.ki=receiveParamDebug.ki_v;
         		my_setpoint.velocity.y=receiveParamDebug.set_velocity;
         		//output_thrust=receiveParamDebug.thrust;
         		//if(receiveParamDebug.thrust==555)buzzer(1);

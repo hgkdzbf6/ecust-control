@@ -86,10 +86,12 @@ extern state_t my_state;
 extern int cpu_load;
 extern int vicon_count;
 extern float calc_thrust;
-extern struct this_s this ;
+extern struct this_s my_this ;
 extern int output_thrust;
 extern int receive_valid_data_flag;
 extern int vicon_tp;
+extern float calc_pitch;
+extern float calc_roll;
 
 void timer0ISR(void) __irq
 {
@@ -250,12 +252,22 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 		uart_cnt=0;
 		if(receiveCmdData.cmd==PACKAGE_DEFINE_DEBUG){
 			sendDebugData.timestamp=vicon_tp;
+			sendDebugData.x=my_state.position.x;
+			sendDebugData.y=my_state.position.y;
 			sendDebugData.z=my_state.position.z;
+			sendDebugData.vx=my_state.velocity.x;
+			sendDebugData.vy=my_state.velocity.y;
 			sendDebugData.vz=my_state.velocity.z;
-			sendDebugData.battery=HL_Status.battery_voltage_1;
-			sendDebugData.cpu_load=mainloop_cnt;
-			sendDebugData.set_position=my_setpoint.position.z;
-			sendDebugData.set_velocity=my_setpoint.velocity.z;
+//			sendDebugData.pitch=my_state.attitude.pitch;
+//			sendDebugData.roll=my_state.attitude.roll;
+//			sendDebugData.yaw=my_state.attitude.yaw;
+			sendDebugData.pitch=RO_ALL_Data.angle_pitch;
+			sendDebugData.roll=RO_ALL_Data.angle_roll;
+			sendDebugData.yaw=RO_ALL_Data.angle_yaw;
+			sendDebugData.battery=RO_ALL_Data.fusion_height;
+			sendDebugData.cpu_load=RO_ALL_Data.fusion_dheight;
+			sendDebugData.set_position=WO_CTRL_Input.pitch;
+			sendDebugData.set_velocity=WO_CTRL_Input.roll;
 			sendDebugData.vicon_count=vicon_count;
 			sendDebugData.calc_thrust=calc_thrust;
 			my_send(1,PACKAGE_DEFINE_DEBUG,
@@ -263,10 +275,10 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 					&sendDebugData,1);
 		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_PARAM){
 			sendParamDebug.calc_thrust=calc_thrust;
-			sendParamDebug.ki_p=this.pidZ.pid.ki;
-			sendParamDebug.kp_p=this.pidZ.pid.kp;
-			sendParamDebug.ki_v=this.pidVZ.pid.ki;
-			sendParamDebug.kp_v=this.pidVZ.pid.kp;
+			sendParamDebug.ki_p=my_this.pidZ.pid.ki;
+			sendParamDebug.kp_p=my_this.pidZ.pid.kp;
+			sendParamDebug.ki_v=my_this.pidVZ.pid.ki;
+			sendParamDebug.kp_v=my_this.pidVZ.pid.kp;
 			sendParamDebug.set_velocity=my_setpoint.velocity.z;
 			sendParamDebug.vz=my_state.velocity.z;
 			sendParamDebug.z=my_state.position.z;

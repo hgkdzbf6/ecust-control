@@ -30,6 +30,7 @@ DAMAGE.
 
 #include "main.h"
 #include "sdk.h"
+#include "pid.h"
 #include "LL_HL_comm.h"
 #include "gpsmath.h"
 #include "MyProtocol.h"
@@ -62,6 +63,7 @@ DebugData sendDebugData={0};
 DebugData receiveDebugData={0};
 ParamDebug sendParamDebug={0};
 ParamDebug receiveParamDebug={0};
+extern struct this_s my_this;
 CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
 int pack_id=0;
 
@@ -70,6 +72,8 @@ int pack_id=0;
 int vicon_count=0;
 int vicon_tp=0;
 float calc_thrust;
+float calc_pitch;
+float calc_roll;
 int receive_valid_data_flag=0;
 volatile int output_thrust=1850;
 
@@ -83,6 +87,11 @@ state_t my_state={
 				.x=0,
 				.y=0,
 				.z=0
+		},
+		.attitude={
+				.pitch=0,
+				.roll=0,
+				.yaw=0,
 		}
 };
 state_t my_setpoint={
@@ -95,6 +104,11 @@ state_t my_setpoint={
 				.x=0,
 				.y=0,
 				.z=0,
+		},
+		.attitude={
+				.pitch=0,
+				.roll=0,
+				.yaw=0,
 		}
 };
 void fake_gps3(void ){
@@ -104,18 +118,29 @@ void fake_gps3(void ){
 	WO_SDK.ctrl_mode=0x02;
 	WO_SDK.ctrl_enabled=1;
 	WO_SDK.disable_motor_onoff_by_stick=0;
-	WO_CTRL_Input.ctrl=0x08;
+	//WO_CTRL_Input.ctrl=0x0F;
+	WO_CTRL_Input.ctrl=0x0F;
 
 	if(temp==1){
 		temp=0;
 		positionControllerInit();
+		my_this.pidVZ.setpoint=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;
 	}
 	if(freq++==10){
 		freq=1;
-		positionController(&calc_thrust,&my_state);
+		my_state.velocity.x=RO_ALL_Data.fusion_speed_x;
+		my_state.velocity.y=RO_ALL_Data.fusion_speed_y;
+		my_state.velocity.z=RO_ALL_Data.fusion_dheight;
+		my_state.attitude.pitch=(float)RO_ALL_Data.angle_pitch/1000.0f*DEG_TO_RAD;
+		my_state.attitude.roll=(float)RO_ALL_Data.angle_roll/1000.0f*DEG_TO_RAD;
+		my_state.attitude.yaw=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;
+		positionController(&calc_thrust,&calc_pitch,&calc_roll,&my_state);
 	}
 	output_thrust=calc_thrust;
+
 	WO_CTRL_Input.thrust=output_thrust;
+	WO_CTRL_Input.pitch=calc_pitch;
+	WO_CTRL_Input.roll=calc_roll;
 
 }
 /* SDK_mainloop(void) is triggered @ 1kHz.

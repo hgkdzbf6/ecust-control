@@ -30,9 +30,19 @@ typedef struct __my_debug_data{
 	//unit: packages
 	int timestamp;
 	//unit: mm
+	float x;
+	float y;
 	float z;
 	//unit: mm/s
+	float vx;
+	float vy;
 	float vz;
+
+	//unit:degree
+	float pitch;
+	float roll;
+	float yaw;
+
 	//unit mV
 	int battery;
 	int cpu_load;

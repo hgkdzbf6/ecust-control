@@ -233,21 +233,21 @@
  306 01e0 1EFF2FE1 		bx	lr
  308              	.Lscope2:
  309              		.bss
- 310              	crc.1761:
+ 310              	crc.1768:
  311 0000 00       		.space	1
- 313              	i.1760:
+ 313              	i.1767:
  314 0001 00       		.space	1
- 316              	len.1759:
+ 316              	len.1766:
  317 0002 00       		.space	1
- 319              	my_index.1758:
+ 319              	my_index.1765:
  320 0003 00       		.space	1
- 322              	t.1757:
+ 322              	t.1764:
  323 0004 00       		.space	1
  325 0005 000000   		.align	2
- 326              	flag.1756:
+ 326              	flag.1763:
  327 0008 00000000 		.space	4
  329              		.align	2
- 330              	status.1755:
+ 330              	status.1762:
  331 000c 00000000 		.space	4
  333              		.text
  334              		.align	2
@@ -594,13 +594,13 @@
  650              	.L42:
  651              		.align	2
  652              	.L41:
- 653 0544 04000000 		.word	t.1757
- 654 0548 0C000000 		.word	status.1755
- 655 054c 08000000 		.word	flag.1756
- 656 0550 00000000 		.word	crc.1761
- 657 0554 03000000 		.word	my_index.1758
- 658 0558 02000000 		.word	len.1759
- 659 055c 01000000 		.word	i.1760
+ 653 0544 04000000 		.word	t.1764
+ 654 0548 0C000000 		.word	status.1762
+ 655 054c 08000000 		.word	flag.1763
+ 656 0550 00000000 		.word	crc.1768
+ 657 0554 03000000 		.word	my_index.1765
+ 658 0558 02000000 		.word	len.1766
+ 659 055c 01000000 		.word	i.1767
  671              	.Lscope3:
  672              		.align	2
  675              		.global	getPackageLength
@@ -664,7 +664,7 @@
  134:MyProtocol.c  **** 	case PACKAGE_DEFINE_DEBUG:
  135:MyProtocol.c  **** 		return DEBUG_DATA_LENGTH;
  730              	.LM72:
- 731 05d4 2430A0E3 		mov	r3, #36
+ 731 05d4 4030A0E3 		mov	r3, #64
  732 05d8 14300BE5 		str	r3, [fp, #-20]
  733 05dc 070000EA 		b	.L53
  734              	.L50:
@@ -701,24 +701,24 @@
  763              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 MyProtocol.c
-     /tmp/ccVFZm1i.s:81     .text:00000000 $a
-     /tmp/ccVFZm1i.s:90     .text:00000000 my_send
-     /tmp/ccVFZm1i.s:249    .text:00000174 send_single
-     /tmp/ccVFZm1i.s:280    .text:000001a8 receive_single
-     /tmp/ccVFZm1i.s:310    .bss:00000000 crc.1761
-     /tmp/ccVFZm1i.s:311    .bss:00000000 $d
-     /tmp/ccVFZm1i.s:313    .bss:00000001 i.1760
-     /tmp/ccVFZm1i.s:316    .bss:00000002 len.1759
-     /tmp/ccVFZm1i.s:319    .bss:00000003 my_index.1758
-     /tmp/ccVFZm1i.s:322    .bss:00000004 t.1757
-     /tmp/ccVFZm1i.s:326    .bss:00000008 flag.1756
-     /tmp/ccVFZm1i.s:330    .bss:0000000c status.1755
-     /tmp/ccVFZm1i.s:343    .text:000001e4 my_receive
-     /tmp/ccVFZm1i.s:653    .text:00000544 $d
-     /tmp/ccVFZm1i.s:672    .text:00000560 $a
-     /tmp/ccVFZm1i.s:677    .text:00000560 getPackageLength
-     /tmp/ccVFZm1i.s:697    .text:00000588 $d
-     /tmp/ccVFZm1i.s:707    .text:000005a4 $a
+     /tmp/ccvzfZv2.s:81     .text:00000000 $a
+     /tmp/ccvzfZv2.s:90     .text:00000000 my_send
+     /tmp/ccvzfZv2.s:249    .text:00000174 send_single
+     /tmp/ccvzfZv2.s:280    .text:000001a8 receive_single
+     /tmp/ccvzfZv2.s:310    .bss:00000000 crc.1768
+     /tmp/ccvzfZv2.s:311    .bss:00000000 $d
+     /tmp/ccvzfZv2.s:313    .bss:00000001 i.1767
+     /tmp/ccvzfZv2.s:316    .bss:00000002 len.1766
+     /tmp/ccvzfZv2.s:319    .bss:00000003 my_index.1765
+     /tmp/ccvzfZv2.s:322    .bss:00000004 t.1764
+     /tmp/ccvzfZv2.s:326    .bss:00000008 flag.1763
+     /tmp/ccvzfZv2.s:330    .bss:0000000c status.1762
+     /tmp/ccvzfZv2.s:343    .text:000001e4 my_receive
+     /tmp/ccvzfZv2.s:653    .text:00000544 $d
+     /tmp/ccvzfZv2.s:672    .text:00000560 $a
+     /tmp/ccvzfZv2.s:677    .text:00000560 getPackageLength
+     /tmp/ccvzfZv2.s:697    .text:00000588 $d
+     /tmp/ccvzfZv2.s:707    .text:000005a4 $a
 
 UNDEFINED SYMBOLS
 UARTWriteChar

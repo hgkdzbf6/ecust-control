@@ -902,31 +902,31 @@
  922              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 pid.c
-     /tmp/ccZ71RbX.s:28     .text:00000000 $a
-     /tmp/ccZ71RbX.s:35     .text:00000000 constrain
-     /tmp/ccZ71RbX.s:113    .text:000000c0 deadband
-     /tmp/ccZ71RbX.s:192    .text:00000180 $d
-     /tmp/ccZ71RbX.s:195    .text:00000184 $a
-     /tmp/ccZ71RbX.s:205    .text:00000184 pidInit
-     /tmp/ccZ71RbX.s:282    .text:00000234 $d
-     /tmp/ccZ71RbX.s:289    .text:0000023c $a
-     /tmp/ccZ71RbX.s:296    .text:0000023c pidUpdate
-     /tmp/ccZ71RbX.s:532    .text:00000504 $d
-     /tmp/ccZ71RbX.s:539    .text:00000508 $a
-     /tmp/ccZ71RbX.s:545    .text:00000508 pidSetIntegralLimit
-     /tmp/ccZ71RbX.s:574    .text:00000538 pidReset
-     /tmp/ccZ71RbX.s:613    .text:00000588 $d
-     /tmp/ccZ71RbX.s:616    .text:0000058c $a
-     /tmp/ccZ71RbX.s:622    .text:0000058c pidSetError
-     /tmp/ccZ71RbX.s:652    .text:000005bc pidSetDesired
-     /tmp/ccZ71RbX.s:681    .text:000005ec pidGetDesired
-     /tmp/ccZ71RbX.s:711    .text:00000618 pidIsActive
-     /tmp/ccZ71RbX.s:793    .text:00000704 $d
-     /tmp/ccZ71RbX.s:800    .text:0000070c $a
-     /tmp/ccZ71RbX.s:806    .text:0000070c pidSetKp
-     /tmp/ccZ71RbX.s:836    .text:0000073c pidSetKi
-     /tmp/ccZ71RbX.s:866    .text:0000076c pidSetKd
-     /tmp/ccZ71RbX.s:896    .text:0000079c pidSetDt
+     /tmp/ccFBVZ60.s:28     .text:00000000 $a
+     /tmp/ccFBVZ60.s:35     .text:00000000 constrain
+     /tmp/ccFBVZ60.s:113    .text:000000c0 deadband
+     /tmp/ccFBVZ60.s:192    .text:00000180 $d
+     /tmp/ccFBVZ60.s:195    .text:00000184 $a
+     /tmp/ccFBVZ60.s:205    .text:00000184 pidInit
+     /tmp/ccFBVZ60.s:282    .text:00000234 $d
+     /tmp/ccFBVZ60.s:289    .text:0000023c $a
+     /tmp/ccFBVZ60.s:296    .text:0000023c pidUpdate
+     /tmp/ccFBVZ60.s:532    .text:00000504 $d
+     /tmp/ccFBVZ60.s:539    .text:00000508 $a
+     /tmp/ccFBVZ60.s:545    .text:00000508 pidSetIntegralLimit
+     /tmp/ccFBVZ60.s:574    .text:00000538 pidReset
+     /tmp/ccFBVZ60.s:613    .text:00000588 $d
+     /tmp/ccFBVZ60.s:616    .text:0000058c $a
+     /tmp/ccFBVZ60.s:622    .text:0000058c pidSetError
+     /tmp/ccFBVZ60.s:652    .text:000005bc pidSetDesired
+     /tmp/ccFBVZ60.s:681    .text:000005ec pidGetDesired
+     /tmp/ccFBVZ60.s:711    .text:00000618 pidIsActive
+     /tmp/ccFBVZ60.s:793    .text:00000704 $d
+     /tmp/ccFBVZ60.s:800    .text:0000070c $a
+     /tmp/ccFBVZ60.s:806    .text:0000070c pidSetKp
+     /tmp/ccFBVZ60.s:836    .text:0000073c pidSetKi
+     /tmp/ccFBVZ60.s:866    .text:0000076c pidSetKd
+     /tmp/ccFBVZ60.s:896    .text:0000079c pidSetDt
 
 UNDEFINED SYMBOLS
 __gtsf2
