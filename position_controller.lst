@@ -543,7 +543,7 @@
  531 041c 0020A0E1 		mov	r2, r0
  532 0420 08319FE5 		ldr	r3, .L35+16
  533 0424 142083E5 		str	r2, [r3, #20]	@ float
- 124:position_controller.c ****     this.pidVZ.pid.outputLimit =1000.0f;
+ 124:position_controller.c ****     this.pidVZ.pid.outputLimit =150.0f;
  535              	.LM32:
  536 0428 FC209FE5 		ldr	r2, .L35+12
  537 042c 08319FE5 		ldr	r3, .L35+28	@ float
@@ -634,7 +634,7 @@
  618 0530 00000000 		.word	my_setpoint
  619 0534 4C000000 		.word	this+76
  620 0538 0AD7233C 		.word	1008981770
- 621 053c 00007A44 		.word	1148846080
+ 621 053c 00001643 		.word	1125515264
  622 0540 00008047 		.word	1199570944
  627              	.Lscope4:
  628              		.align	2
@@ -673,34 +673,34 @@
  667              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 position_controller.c
-     /tmp/ccr86xR1.s:46     .data:00000000 zVelMax
-     /tmp/ccr86xR1.s:43     .data:00000000 $d
-     /tmp/ccr86xR1.s:52     .data:00000004 velMaxOverhead
-     /tmp/ccr86xR1.s:59     .rodata:00000000 thrustScale
-     /tmp/ccr86xR1.s:56     .rodata:00000000 $d
-     /tmp/ccr86xR1.s:66     .data:00000008 this
-     /tmp/ccr86xR1.s:82     .bss:00000000 $d
-     /tmp/ccr86xR1.s:83     .bss:00000000 estimateMode.1367
-     /tmp/ccr86xR1.s:87     .bss:00000004 prev_estimatedZ.1366
-     /tmp/ccr86xR1.s:95     .text:00000000 $a
-     /tmp/ccr86xR1.s:104    .text:00000000 positionEstimate
-     /tmp/ccr86xR1.s:200    .text:00000114 $d
-     /tmp/ccr86xR1.s:209    .text:0000011c $a
-     /tmp/ccr86xR1.s:213    .text:0000011c positionControllerInit
-     /tmp/ccr86xR1.s:267    .text:000001b8 $d
-     /tmp/ccr86xR1.s:271    .text:000001c0 $a
-     /tmp/ccr86xR1.s:279    .text:000001c0 runPid
-     /tmp/ccr86xR1.s:324    .bss:00000008 acc_get_pos.1416
-     /tmp/ccr86xR1.s:328    .bss:0000000c acc_get_vel.1415
-     /tmp/ccr86xR1.s:332    .bss:00000010 result.1414
-     /tmp/ccr86xR1.s:345    .text:0000022c data_fusion
-     /tmp/ccr86xR1.s:457    .text:00000368 $d
-     /tmp/ccr86xR1.s:473    .text:00000380 $a
-     /tmp/ccr86xR1.s:479    .text:00000380 positionController
-     /tmp/ccr86xR1.s:614    .text:00000520 $d
-     /tmp/ccr86xR1.s:628    .text:00000544 $a
-     /tmp/ccr86xR1.s:632    .text:00000544 positionControllerResetAllPID
-     /tmp/ccr86xR1.s:657    .text:0000056c $d
+     /tmp/ccK1VFxo.s:46     .data:00000000 zVelMax
+     /tmp/ccK1VFxo.s:43     .data:00000000 $d
+     /tmp/ccK1VFxo.s:52     .data:00000004 velMaxOverhead
+     /tmp/ccK1VFxo.s:59     .rodata:00000000 thrustScale
+     /tmp/ccK1VFxo.s:56     .rodata:00000000 $d
+     /tmp/ccK1VFxo.s:66     .data:00000008 this
+     /tmp/ccK1VFxo.s:82     .bss:00000000 $d
+     /tmp/ccK1VFxo.s:83     .bss:00000000 estimateMode.1367
+     /tmp/ccK1VFxo.s:87     .bss:00000004 prev_estimatedZ.1366
+     /tmp/ccK1VFxo.s:95     .text:00000000 $a
+     /tmp/ccK1VFxo.s:104    .text:00000000 positionEstimate
+     /tmp/ccK1VFxo.s:200    .text:00000114 $d
+     /tmp/ccK1VFxo.s:209    .text:0000011c $a
+     /tmp/ccK1VFxo.s:213    .text:0000011c positionControllerInit
+     /tmp/ccK1VFxo.s:267    .text:000001b8 $d
+     /tmp/ccK1VFxo.s:271    .text:000001c0 $a
+     /tmp/ccK1VFxo.s:279    .text:000001c0 runPid
+     /tmp/ccK1VFxo.s:324    .bss:00000008 acc_get_pos.1416
+     /tmp/ccK1VFxo.s:328    .bss:0000000c acc_get_vel.1415
+     /tmp/ccK1VFxo.s:332    .bss:00000010 result.1414
+     /tmp/ccK1VFxo.s:345    .text:0000022c data_fusion
+     /tmp/ccK1VFxo.s:457    .text:00000368 $d
+     /tmp/ccK1VFxo.s:473    .text:00000380 $a
+     /tmp/ccK1VFxo.s:479    .text:00000380 positionController
+     /tmp/ccK1VFxo.s:614    .text:00000520 $d
+     /tmp/ccK1VFxo.s:628    .text:00000544 $a
+     /tmp/ccK1VFxo.s:632    .text:00000544 positionControllerResetAllPID
+     /tmp/ccK1VFxo.s:657    .text:0000056c $d
 
 UNDEFINED SYMBOLS
 __mulsf3

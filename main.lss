@@ -5481,7 +5481,7 @@ void positionController(float* thrust,
     3c54:	e1a02000 	mov	r2, r0
     3c58:	e59f3108 	ldr	r3, [pc, #264]	; 3d68 <positionController+0x1b0>
     3c5c:	e5832014 	str	r2, [r3, #20]
-    this.pidVZ.pid.outputLimit =1000.0f;
+    this.pidVZ.pid.outputLimit =150.0f;
     3c60:	e59f20fc 	ldr	r2, [pc, #252]	; 3d64 <positionController+0x1ac>
     3c64:	e59f3108 	ldr	r3, [pc, #264]	; 3d74 <positionController+0x1bc>
     3c68:	e5823030 	str	r3, [r2, #48]	; 0x30
@@ -5560,7 +5560,7 @@ void positionController(float* thrust,
     3d68:	40000008 	.word	0x40000008
     3d6c:	4000007c 	.word	0x4000007c
     3d70:	3c23d70a 	.word	0x3c23d70a
-    3d74:	447a0000 	.word	0x447a0000
+    3d74:	43160000 	.word	0x43160000
     3d78:	47800000 	.word	0x47800000
 
 00003d7c <positionControllerResetAllPID>:

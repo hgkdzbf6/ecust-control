@@ -121,7 +121,7 @@ void positionController(float* thrust,
 	float thrustRaw;
   this.pidZ.pid.outputLimit = max(zVelMax, 80.0f)  * velMaxOverhead;
     my_setpoint.velocity.z = runPid(state->position.z, &this.pidZ, my_setpoint.position.z, DT);
-    this.pidVZ.pid.outputLimit =1000.0f;
+    this.pidVZ.pid.outputLimit =150.0f;
     // Thrust
     thrustRaw = runPid(state->velocity.z, &this.pidVZ, my_setpoint.velocity.z, DT);
     // Scale the thrust and add feed forward term
