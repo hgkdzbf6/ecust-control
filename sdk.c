@@ -48,6 +48,7 @@ struct RO_ALL_DATA RO_ALL_Data;
 struct WO_DIRECT_MOTOR_CONTROL WO_Direct_Motor_Control;
 struct WO_DIRECT_INDIVIDUAL_MOTOR_CONTROL WO_Direct_Individual_Motor_Control;
 
+extern struct IMU_CALCDATA IMU_CalcData;
 void SDK_EXAMPLE_direct_individual_motor_commands(void);
 void SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping(void);
 void SDK_EXAMPLE_attitude_commands(void);
@@ -128,12 +129,12 @@ void fake_gps3(void ){
 	}
 	if(freq++==10){
 		freq=1;
-		my_state.velocity.x=RO_ALL_Data.fusion_speed_x;
-		my_state.velocity.y=RO_ALL_Data.fusion_speed_y;
+		my_state.velocity.x=receiveDebugData.vx;
+		my_state.velocity.y=receiveDebugData.vy;
 		my_state.velocity.z=RO_ALL_Data.fusion_dheight;
 		my_state.attitude.pitch=(float)RO_ALL_Data.angle_pitch/1000.0f*DEG_TO_RAD;
 		my_state.attitude.roll=(float)RO_ALL_Data.angle_roll/1000.0f*DEG_TO_RAD;
-		my_state.attitude.yaw=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;
+		//my_state.attitude.yaw=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;
 		positionController(&calc_thrust,&calc_pitch,&calc_roll,&my_state);
 	}
 	output_thrust=calc_thrust;

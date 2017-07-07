@@ -29,7 +29,7 @@
 #include "position_controller.h"
 
 // Maximum roll/pitch angle permited
-float rpLimit  = 400.0f;
+float rpLimit  = 800.0f;
 float rpLimitOverhead = 1.10f;
 // Velocity maximums
 float xyVelMax=400.0f;
@@ -78,7 +78,7 @@ struct this_s my_this = {
   },
   .pidY = {
     .init = {
-      .kp = 0.4,
+      .kp = 1.6f,
       .ki = 0,
       .kd = 0,
     },
@@ -164,6 +164,7 @@ void positionController(float* thrust,float* pitch,float* roll,
                                                              const state_t *state)
 {
 	float thrustRaw;
+	static int y_temp=-1000;
 	my_this.pidX.pid.outputLimit = xyVelMax  * velMaxOverhead;
 	my_this.pidY.pid.outputLimit =  xyVelMax  * velMaxOverhead;
     my_this.pidZ.pid.outputLimit = max(zVelMax, 200.0f)  * velMaxOverhead;
@@ -175,6 +176,13 @@ void positionController(float* thrust,float* pitch,float* roll,
 
     my_setpoint.velocity.x = runPid(state->position.x, &my_this.pidX, my_setpoint.position.x, DT);
     my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
+//    my_setpoint.velocity.x=0;
+//    if(y_temp++>200){
+//    	my_setpoint.velocity.y=500;
+//    }else{
+//    	my_setpoint.velocity.y=-500;
+//    }
+//    if(y_temp>400)y_temp=0;
     my_setpoint.velocity.z = runPid(state->position.z, &my_this.pidZ, my_setpoint.position.z, DT);
 
     my_this.pidVX.pid.outputLimit = rpLimit * rpLimitOverhead;
@@ -184,8 +192,8 @@ void positionController(float* thrust,float* pitch,float* roll,
     float rollRaw  = runPid(state->velocity.x, &my_this.pidVX, my_setpoint.velocity.x, DT);
       float pitchRaw = runPid(state->velocity.y, &my_this.pidVY, my_setpoint.velocity.y, DT);
 
-      //float yawRad = state->attitude.yaw ;
-      float yawRad = 0 ;
+     float yawRad = state->attitude.yaw ;
+     // float yawRad = 0 ;
       *pitch = -(rollRaw  * cosf(yawRad)) - (pitchRaw * sinf(yawRad));
       *roll  = -(pitchRaw * cosf(yawRad)) + (rollRaw  * sinf(yawRad));
 

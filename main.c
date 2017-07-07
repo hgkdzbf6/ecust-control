@@ -79,6 +79,7 @@ unsigned char DataOutputsPerSecond=10;
 
 extern MyViconData receivedViconData;
 extern DebugData sendDebugData;
+extern DebugData receiveDebugData;
 extern ParamDebug sendParamDebug;
 extern CmdData receiveCmdData;
 extern state_t my_setpoint;
@@ -255,9 +256,9 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			sendDebugData.x=my_state.position.x;
 			sendDebugData.y=my_state.position.y;
 			sendDebugData.z=my_state.position.z;
-			sendDebugData.vx=my_state.velocity.x;
-			sendDebugData.vy=my_state.velocity.y;
-			sendDebugData.vz=my_state.velocity.z;
+			sendDebugData.vx=receiveDebugData.vx;
+			sendDebugData.vy=receiveDebugData.vy;
+			sendDebugData.vz=my_setpoint.velocity.y;
 //			sendDebugData.pitch=my_state.attitude.pitch;
 //			sendDebugData.roll=my_state.attitude.roll;
 //			sendDebugData.yaw=my_state.attitude.yaw;
@@ -266,7 +267,7 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			sendDebugData.yaw=RO_ALL_Data.angle_yaw;
 			sendDebugData.battery=RO_ALL_Data.fusion_height;
 			sendDebugData.cpu_load=RO_ALL_Data.fusion_dheight;
-			sendDebugData.set_position=WO_CTRL_Input.pitch;
+			sendDebugData.set_position=my_this.pidVY.setpoint;
 			sendDebugData.set_velocity=WO_CTRL_Input.roll;
 			sendDebugData.vicon_count=vicon_count;
 			sendDebugData.calc_thrust=calc_thrust;

@@ -5,7 +5,7 @@
   51              		.data
   52              		.align	2
   55              	rpLimit:
-  56 0000 0000C843 		.word	1137180672
+  56 0000 00004844 		.word	1145569280
   57              		.global	rpLimitOverhead
   58              		.align	2
   61              	rpLimitOverhead:
@@ -94,7 +94,7 @@
  126      00000000 
  126      00000000 
  127 01c4 0AD7233C 		.word	1008981770
- 128 01c8 CDCCCC3E 		.word	1053609165
+ 128 01c8 CDCCCC3F 		.word	1070386381
  129 01cc 00000000 		.word	0
  130 01d0 00000000 		.word	0
  131 01d4 00000000 		.space	8
@@ -147,7 +147,7 @@
   29:position_controller.c **** #include "position_controller.h"
   30:position_controller.c **** 
   31:position_controller.c **** // Maximum roll/pitch angle permited
-  32:position_controller.c **** float rpLimit  = 400.0f;
+  32:position_controller.c **** float rpLimit  = 800.0f;
   33:position_controller.c **** float rpLimitOverhead = 1.10f;
   34:position_controller.c **** // Velocity maximums
   35:position_controller.c **** float xyVelMax=400.0f;
@@ -196,7 +196,7 @@
   78:position_controller.c ****   },
   79:position_controller.c ****   .pidY = {
   80:position_controller.c ****     .init = {
-  81:position_controller.c ****       .kp = 0.4,
+  81:position_controller.c ****       .kp = 1.6f,
   82:position_controller.c ****       .ki = 0,
   83:position_controller.c ****       .kd = 0,
   84:position_controller.c ****     },
@@ -656,446 +656,460 @@
  590 0488 08000000 		.word	acc_get_pos.1524
  591 048c 0AD7233C 		.word	1008981770
  599              	.Lscope3:
- 600              		.global	__gtsf2
- 601              		.global	__ltsf2
- 602              		.align	2
- 608              		.global	positionController
- 610              	positionController:
+ 600              		.data
+ 601              		.align	2
+ 604              	y_temp.1552:
+ 605 01e0 18FCFFFF 		.word	-1000
+ 607              		.global	__gtsf2
+ 608              		.global	__ltsf2
+ 609              		.text
+ 610              		.align	2
+ 616              		.global	positionController
+ 618              	positionController:
  163:position_controller.c **** void positionController(float* thrust,float* pitch,float* roll,
  164:position_controller.c ****                                                              const state_t *state)
  165:position_controller.c **** {
- 612              	.LM33:
- 613              		@ Function supports interworking.
- 614              		@ args = 0, pretend = 0, frame = 40
- 615              		@ frame_needed = 1, uses_anonymous_args = 0
- 616 0490 0DC0A0E1 		mov	ip, sp
- 617 0494 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
- 618 0498 04B04CE2 		sub	fp, ip, #4
- 619 049c 28D04DE2 		sub	sp, sp, #40
- 620 04a0 24000BE5 		str	r0, [fp, #-36]
- 621 04a4 28100BE5 		str	r1, [fp, #-40]
- 622 04a8 2C200BE5 		str	r2, [fp, #-44]
- 623 04ac 30300BE5 		str	r3, [fp, #-48]
+ 620              	.LM33:
+ 621              		@ Function supports interworking.
+ 622              		@ args = 0, pretend = 0, frame = 40
+ 623              		@ frame_needed = 1, uses_anonymous_args = 0
+ 624 0490 0DC0A0E1 		mov	ip, sp
+ 625 0494 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 626 0498 04B04CE2 		sub	fp, ip, #4
+ 627 049c 28D04DE2 		sub	sp, sp, #40
+ 628 04a0 24000BE5 		str	r0, [fp, #-36]
+ 629 04a4 28100BE5 		str	r1, [fp, #-40]
+ 630 04a8 2C200BE5 		str	r2, [fp, #-44]
+ 631 04ac 30300BE5 		str	r3, [fp, #-48]
  166:position_controller.c **** 	float thrustRaw;
- 167:position_controller.c **** 	my_this.pidX.pid.outputLimit = xyVelMax  * velMaxOverhead;
- 625              	.LM34:
- 626 04b0 24349FE5 		ldr	r3, .L35
- 627 04b4 002093E5 		ldr	r2, [r3, #0]	@ float
- 628 04b8 20349FE5 		ldr	r3, .L35+4
- 629 04bc 003093E5 		ldr	r3, [r3, #0]	@ float
- 630 04c0 0200A0E1 		mov	r0, r2
- 631 04c4 0310A0E1 		mov	r1, r3
- 632 04c8 FEFFFFEB 		bl	__mulsf3
- 633 04cc 0030A0E1 		mov	r3, r0
- 634 04d0 0320A0E1 		mov	r2, r3
- 635 04d4 08349FE5 		ldr	r3, .L35+8
- 636 04d8 142183E5 		str	r2, [r3, #276]	@ float
- 168:position_controller.c **** 	my_this.pidY.pid.outputLimit =  xyVelMax  * velMaxOverhead;
- 638              	.LM35:
- 639 04dc F8339FE5 		ldr	r3, .L35
- 640 04e0 002093E5 		ldr	r2, [r3, #0]	@ float
- 641 04e4 F4339FE5 		ldr	r3, .L35+4
- 642 04e8 003093E5 		ldr	r3, [r3, #0]	@ float
- 643 04ec 0200A0E1 		mov	r0, r2
- 644 04f0 0310A0E1 		mov	r1, r3
- 645 04f4 FEFFFFEB 		bl	__mulsf3
- 646 04f8 0030A0E1 		mov	r3, r0
- 647 04fc 0320A0E1 		mov	r2, r3
- 648 0500 DC339FE5 		ldr	r3, .L35+8
- 649 0504 AC2183E5 		str	r2, [r3, #428]	@ float
- 169:position_controller.c ****     my_this.pidZ.pid.outputLimit = max(zVelMax, 200.0f)  * velMaxOverhead;
- 651              	.LM36:
- 652 0508 D8339FE5 		ldr	r3, .L35+12
- 653 050c 003093E5 		ldr	r3, [r3, #0]	@ float
- 654 0510 0300A0E1 		mov	r0, r3
- 655 0514 D0139FE5 		ldr	r1, .L35+16	@ float
- 656 0518 FEFFFFEB 		bl	__gtsf2
- 657 051c 0030A0E1 		mov	r3, r0
- 658 0520 000053E3 		cmp	r3, #0
- 659 0524 000000CA 		bgt	.L28
- 660 0528 030000EA 		b	.L26
- 661              	.L28:
- 662 052c B4339FE5 		ldr	r3, .L35+12
- 663 0530 003093E5 		ldr	r3, [r3, #0]	@ float
- 664 0534 38300BE5 		str	r3, [fp, #-56]	@ float
- 665 0538 010000EA 		b	.L29
- 666              	.L26:
- 667 053c A8239FE5 		ldr	r2, .L35+16	@ float
- 668 0540 38200BE5 		str	r2, [fp, #-56]	@ float
- 669              	.L29:
- 670 0544 94339FE5 		ldr	r3, .L35+4
- 671 0548 003093E5 		ldr	r3, [r3, #0]	@ float
- 672 054c 38001BE5 		ldr	r0, [fp, #-56]	@ float
- 673 0550 0310A0E1 		mov	r1, r3
- 674 0554 FEFFFFEB 		bl	__mulsf3
- 675 0558 0030A0E1 		mov	r3, r0
- 676 055c 0320A0E1 		mov	r2, r3
- 677 0560 7C339FE5 		ldr	r3, .L35+8
- 678 0564 7C2083E5 		str	r2, [r3, #124]	@ float
- 170:position_controller.c **** 
- 171:position_controller.c **** //    float cosyaw = cosf(state->attitude.yaw * DEG_TO_RAD);
- 172:position_controller.c **** //    float sinyaw = sinf(state->attitude.yaw * DEG_TO_RAD);
- 173:position_controller.c **** //    float bodyvx = my_setpoint.velocity.x;
- 174:position_controller.c **** //    float bodyvy = my_setpoint.velocity.y;
- 175:position_controller.c **** 
- 176:position_controller.c ****     my_setpoint.velocity.x = runPid(state->position.x, &my_this.pidX, my_setpoint.position.x, DT);
- 680              	.LM37:
- 681 0568 30301BE5 		ldr	r3, [fp, #-48]
- 682 056c 002093E5 		ldr	r2, [r3, #0]	@ float
- 683 0570 78339FE5 		ldr	r3, .L35+20
- 684 0574 003093E5 		ldr	r3, [r3, #0]	@ float
- 685 0578 0200A0E1 		mov	r0, r2
- 686 057c 70139FE5 		ldr	r1, .L35+24
- 687 0580 0320A0E1 		mov	r2, r3
- 688 0584 6C339FE5 		ldr	r3, .L35+28	@ float
- 689 0588 FEFFFFEB 		bl	runPid
- 690 058c 0020A0E1 		mov	r2, r0
- 691 0590 58339FE5 		ldr	r3, .L35+20
- 692 0594 0C2083E5 		str	r2, [r3, #12]	@ float
- 177:position_controller.c ****     my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
- 694              	.LM38:
- 695 0598 30301BE5 		ldr	r3, [fp, #-48]
- 696 059c 042093E5 		ldr	r2, [r3, #4]	@ float
- 697 05a0 48339FE5 		ldr	r3, .L35+20
- 698 05a4 043093E5 		ldr	r3, [r3, #4]	@ float
- 699 05a8 0200A0E1 		mov	r0, r2
- 700 05ac 48139FE5 		ldr	r1, .L35+32
- 701 05b0 0320A0E1 		mov	r2, r3
- 702 05b4 3C339FE5 		ldr	r3, .L35+28	@ float
- 703 05b8 FEFFFFEB 		bl	runPid
- 704 05bc 0020A0E1 		mov	r2, r0
- 705 05c0 28339FE5 		ldr	r3, .L35+20
- 706 05c4 102083E5 		str	r2, [r3, #16]	@ float
- 178:position_controller.c ****     my_setpoint.velocity.z = runPid(state->position.z, &my_this.pidZ, my_setpoint.position.z, DT);
- 708              	.LM39:
- 709 05c8 30301BE5 		ldr	r3, [fp, #-48]
- 710 05cc 082093E5 		ldr	r2, [r3, #8]	@ float
- 711 05d0 18339FE5 		ldr	r3, .L35+20
- 712 05d4 083093E5 		ldr	r3, [r3, #8]	@ float
- 713 05d8 0200A0E1 		mov	r0, r2
- 714 05dc 1C139FE5 		ldr	r1, .L35+36
- 715 05e0 0320A0E1 		mov	r2, r3
- 716 05e4 0C339FE5 		ldr	r3, .L35+28	@ float
- 717 05e8 FEFFFFEB 		bl	runPid
- 718 05ec 0020A0E1 		mov	r2, r0
- 719 05f0 F8329FE5 		ldr	r3, .L35+20
- 720 05f4 142083E5 		str	r2, [r3, #20]	@ float
- 179:position_controller.c **** 
- 180:position_controller.c ****     my_this.pidVX.pid.outputLimit = rpLimit * rpLimitOverhead;
- 722              	.LM40:
- 723 05f8 04339FE5 		ldr	r3, .L35+40
- 724 05fc 002093E5 		ldr	r2, [r3, #0]	@ float
- 725 0600 00339FE5 		ldr	r3, .L35+44
- 726 0604 003093E5 		ldr	r3, [r3, #0]	@ float
- 727 0608 0200A0E1 		mov	r0, r2
- 728 060c 0310A0E1 		mov	r1, r3
- 729 0610 FEFFFFEB 		bl	__mulsf3
- 730 0614 0030A0E1 		mov	r3, r0
- 731 0618 0320A0E1 		mov	r2, r3
- 732 061c C0329FE5 		ldr	r3, .L35+8
- 733 0620 C82083E5 		str	r2, [r3, #200]	@ float
- 181:position_controller.c ****     my_this.pidVY.pid.outputLimit = rpLimit * rpLimitOverhead;
- 735              	.LM41:
- 736 0624 D8329FE5 		ldr	r3, .L35+40
- 737 0628 002093E5 		ldr	r2, [r3, #0]	@ float
- 738 062c D4329FE5 		ldr	r3, .L35+44
- 739 0630 003093E5 		ldr	r3, [r3, #0]	@ float
- 740 0634 0200A0E1 		mov	r0, r2
- 741 0638 0310A0E1 		mov	r1, r3
- 742 063c FEFFFFEB 		bl	__mulsf3
- 743 0640 0030A0E1 		mov	r3, r0
- 744 0644 0320A0E1 		mov	r2, r3
- 745 0648 94329FE5 		ldr	r3, .L35+8
- 746 064c 602183E5 		str	r2, [r3, #352]	@ float
- 182:position_controller.c ****     my_this.pidVZ.pid.outputLimit =250.0f;
- 748              	.LM42:
- 749 0650 8C229FE5 		ldr	r2, .L35+8
- 750 0654 B0329FE5 		ldr	r3, .L35+48	@ float
- 751 0658 303082E5 		str	r3, [r2, #48]	@ float
- 183:position_controller.c **** 
- 184:position_controller.c ****     float rollRaw  = runPid(state->velocity.x, &my_this.pidVX, my_setpoint.velocity.x, DT);
- 753              	.LM43:
- 754 065c 30301BE5 		ldr	r3, [fp, #-48]
- 755 0660 0C2093E5 		ldr	r2, [r3, #12]	@ float
- 756 0664 84329FE5 		ldr	r3, .L35+20
- 757 0668 0C3093E5 		ldr	r3, [r3, #12]	@ float
- 758 066c 0200A0E1 		mov	r0, r2
- 759 0670 98129FE5 		ldr	r1, .L35+52
- 760 0674 0320A0E1 		mov	r2, r3
- 761 0678 78329FE5 		ldr	r3, .L35+28	@ float
- 762 067c FEFFFFEB 		bl	runPid
- 763 0680 0030A0E1 		mov	r3, r0
- 764 0684 1C300BE5 		str	r3, [fp, #-28]	@ float
- 185:position_controller.c ****       float pitchRaw = runPid(state->velocity.y, &my_this.pidVY, my_setpoint.velocity.y, DT);
- 766              	.LM44:
- 767 0688 30301BE5 		ldr	r3, [fp, #-48]
- 768 068c 102093E5 		ldr	r2, [r3, #16]	@ float
- 769 0690 58329FE5 		ldr	r3, .L35+20
- 770 0694 103093E5 		ldr	r3, [r3, #16]	@ float
- 771 0698 0200A0E1 		mov	r0, r2
- 772 069c 70129FE5 		ldr	r1, .L35+56
- 773 06a0 0320A0E1 		mov	r2, r3
- 774 06a4 4C329FE5 		ldr	r3, .L35+28	@ float
- 775 06a8 FEFFFFEB 		bl	runPid
- 776 06ac 0030A0E1 		mov	r3, r0
- 777 06b0 18300BE5 		str	r3, [fp, #-24]	@ float
- 186:position_controller.c **** 
- 187:position_controller.c ****       //float yawRad = state->attitude.yaw ;
- 188:position_controller.c ****       float yawRad = 0 ;
- 779              	.LM45:
- 780 06b4 5C329FE5 		ldr	r3, .L35+60	@ float
- 781 06b8 14300BE5 		str	r3, [fp, #-20]	@ float
- 189:position_controller.c ****       *pitch = -(rollRaw  * cosf(yawRad)) - (pitchRaw * sinf(yawRad));
- 783              	.LM46:
- 784 06bc 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 785 06c0 FEFFFFEB 		bl	cosf
- 786 06c4 0030A0E1 		mov	r3, r0
- 787 06c8 0300A0E1 		mov	r0, r3
- 788 06cc 1C101BE5 		ldr	r1, [fp, #-28]	@ float
- 789 06d0 FEFFFFEB 		bl	__mulsf3
- 790 06d4 0030A0E1 		mov	r3, r0
- 791 06d8 024123E2 		eor	r4, r3, #-2147483648
- 792 06dc 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 793 06e0 FEFFFFEB 		bl	sinf
- 794 06e4 0030A0E1 		mov	r3, r0
- 795 06e8 0300A0E1 		mov	r0, r3
- 796 06ec 18101BE5 		ldr	r1, [fp, #-24]	@ float
- 797 06f0 FEFFFFEB 		bl	__mulsf3
- 798 06f4 0030A0E1 		mov	r3, r0
- 799 06f8 0400A0E1 		mov	r0, r4
- 800 06fc 0310A0E1 		mov	r1, r3
- 801 0700 FEFFFFEB 		bl	__subsf3
- 802 0704 0030A0E1 		mov	r3, r0
- 803 0708 0320A0E1 		mov	r2, r3
- 804 070c 28301BE5 		ldr	r3, [fp, #-40]
- 805 0710 002083E5 		str	r2, [r3, #0]	@ float
- 190:position_controller.c ****       *roll  = -(pitchRaw * cosf(yawRad)) + (rollRaw  * sinf(yawRad));
- 807              	.LM47:
- 808 0714 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 809 0718 FEFFFFEB 		bl	sinf
- 810 071c 0030A0E1 		mov	r3, r0
- 811 0720 0300A0E1 		mov	r0, r3
- 812 0724 1C101BE5 		ldr	r1, [fp, #-28]	@ float
- 813 0728 FEFFFFEB 		bl	__mulsf3
- 814 072c 0030A0E1 		mov	r3, r0
- 815 0730 0340A0E1 		mov	r4, r3
- 816 0734 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 817 0738 FEFFFFEB 		bl	cosf
- 818 073c 0030A0E1 		mov	r3, r0
- 819 0740 0300A0E1 		mov	r0, r3
- 820 0744 18101BE5 		ldr	r1, [fp, #-24]	@ float
- 821 0748 FEFFFFEB 		bl	__mulsf3
- 822 074c 0030A0E1 		mov	r3, r0
- 823 0750 0400A0E1 		mov	r0, r4
- 824 0754 0310A0E1 		mov	r1, r3
- 825 0758 FEFFFFEB 		bl	__subsf3
- 826 075c 0030A0E1 		mov	r3, r0
- 827 0760 0320A0E1 		mov	r2, r3
- 828 0764 2C301BE5 		ldr	r3, [fp, #-44]
- 829 0768 002083E5 		str	r2, [r3, #0]	@ float
+ 167:position_controller.c **** 	static int y_temp=-1000;
+ 168:position_controller.c **** 	my_this.pidX.pid.outputLimit = xyVelMax  * velMaxOverhead;
+ 633              	.LM34:
+ 634 04b0 28349FE5 		ldr	r3, .L35
+ 635 04b4 002093E5 		ldr	r2, [r3, #0]	@ float
+ 636 04b8 24349FE5 		ldr	r3, .L35+4
+ 637 04bc 003093E5 		ldr	r3, [r3, #0]	@ float
+ 638 04c0 0200A0E1 		mov	r0, r2
+ 639 04c4 0310A0E1 		mov	r1, r3
+ 640 04c8 FEFFFFEB 		bl	__mulsf3
+ 641 04cc 0030A0E1 		mov	r3, r0
+ 642 04d0 0320A0E1 		mov	r2, r3
+ 643 04d4 0C349FE5 		ldr	r3, .L35+8
+ 644 04d8 142183E5 		str	r2, [r3, #276]	@ float
+ 169:position_controller.c **** 	my_this.pidY.pid.outputLimit =  xyVelMax  * velMaxOverhead;
+ 646              	.LM35:
+ 647 04dc FC339FE5 		ldr	r3, .L35
+ 648 04e0 002093E5 		ldr	r2, [r3, #0]	@ float
+ 649 04e4 F8339FE5 		ldr	r3, .L35+4
+ 650 04e8 003093E5 		ldr	r3, [r3, #0]	@ float
+ 651 04ec 0200A0E1 		mov	r0, r2
+ 652 04f0 0310A0E1 		mov	r1, r3
+ 653 04f4 FEFFFFEB 		bl	__mulsf3
+ 654 04f8 0030A0E1 		mov	r3, r0
+ 655 04fc 0320A0E1 		mov	r2, r3
+ 656 0500 E0339FE5 		ldr	r3, .L35+8
+ 657 0504 AC2183E5 		str	r2, [r3, #428]	@ float
+ 170:position_controller.c ****     my_this.pidZ.pid.outputLimit = max(zVelMax, 200.0f)  * velMaxOverhead;
+ 659              	.LM36:
+ 660 0508 DC339FE5 		ldr	r3, .L35+12
+ 661 050c 003093E5 		ldr	r3, [r3, #0]	@ float
+ 662 0510 0300A0E1 		mov	r0, r3
+ 663 0514 D4139FE5 		ldr	r1, .L35+16	@ float
+ 664 0518 FEFFFFEB 		bl	__gtsf2
+ 665 051c 0030A0E1 		mov	r3, r0
+ 666 0520 000053E3 		cmp	r3, #0
+ 667 0524 000000CA 		bgt	.L28
+ 668 0528 030000EA 		b	.L26
+ 669              	.L28:
+ 670 052c B8339FE5 		ldr	r3, .L35+12
+ 671 0530 003093E5 		ldr	r3, [r3, #0]	@ float
+ 672 0534 38300BE5 		str	r3, [fp, #-56]	@ float
+ 673 0538 010000EA 		b	.L29
+ 674              	.L26:
+ 675 053c AC239FE5 		ldr	r2, .L35+16	@ float
+ 676 0540 38200BE5 		str	r2, [fp, #-56]	@ float
+ 677              	.L29:
+ 678 0544 98339FE5 		ldr	r3, .L35+4
+ 679 0548 003093E5 		ldr	r3, [r3, #0]	@ float
+ 680 054c 38001BE5 		ldr	r0, [fp, #-56]	@ float
+ 681 0550 0310A0E1 		mov	r1, r3
+ 682 0554 FEFFFFEB 		bl	__mulsf3
+ 683 0558 0030A0E1 		mov	r3, r0
+ 684 055c 0320A0E1 		mov	r2, r3
+ 685 0560 80339FE5 		ldr	r3, .L35+8
+ 686 0564 7C2083E5 		str	r2, [r3, #124]	@ float
+ 171:position_controller.c **** 
+ 172:position_controller.c **** //    float cosyaw = cosf(state->attitude.yaw * DEG_TO_RAD);
+ 173:position_controller.c **** //    float sinyaw = sinf(state->attitude.yaw * DEG_TO_RAD);
+ 174:position_controller.c **** //    float bodyvx = my_setpoint.velocity.x;
+ 175:position_controller.c **** //    float bodyvy = my_setpoint.velocity.y;
+ 176:position_controller.c **** 
+ 177:position_controller.c ****     my_setpoint.velocity.x = runPid(state->position.x, &my_this.pidX, my_setpoint.position.x, DT);
+ 688              	.LM37:
+ 689 0568 30301BE5 		ldr	r3, [fp, #-48]
+ 690 056c 002093E5 		ldr	r2, [r3, #0]	@ float
+ 691 0570 7C339FE5 		ldr	r3, .L35+20
+ 692 0574 003093E5 		ldr	r3, [r3, #0]	@ float
+ 693 0578 0200A0E1 		mov	r0, r2
+ 694 057c 74139FE5 		ldr	r1, .L35+24
+ 695 0580 0320A0E1 		mov	r2, r3
+ 696 0584 70339FE5 		ldr	r3, .L35+28	@ float
+ 697 0588 FEFFFFEB 		bl	runPid
+ 698 058c 0020A0E1 		mov	r2, r0
+ 699 0590 5C339FE5 		ldr	r3, .L35+20
+ 700 0594 0C2083E5 		str	r2, [r3, #12]	@ float
+ 178:position_controller.c ****     my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
+ 702              	.LM38:
+ 703 0598 30301BE5 		ldr	r3, [fp, #-48]
+ 704 059c 042093E5 		ldr	r2, [r3, #4]	@ float
+ 705 05a0 4C339FE5 		ldr	r3, .L35+20
+ 706 05a4 043093E5 		ldr	r3, [r3, #4]	@ float
+ 707 05a8 0200A0E1 		mov	r0, r2
+ 708 05ac 4C139FE5 		ldr	r1, .L35+32
+ 709 05b0 0320A0E1 		mov	r2, r3
+ 710 05b4 40339FE5 		ldr	r3, .L35+28	@ float
+ 711 05b8 FEFFFFEB 		bl	runPid
+ 712 05bc 0020A0E1 		mov	r2, r0
+ 713 05c0 2C339FE5 		ldr	r3, .L35+20
+ 714 05c4 102083E5 		str	r2, [r3, #16]	@ float
+ 179:position_controller.c **** //    my_setpoint.velocity.x=0;
+ 180:position_controller.c **** //    if(y_temp++>200){
+ 181:position_controller.c **** //    	my_setpoint.velocity.y=500;
+ 182:position_controller.c **** //    }else{
+ 183:position_controller.c **** //    	my_setpoint.velocity.y=-500;
+ 184:position_controller.c **** //    }
+ 185:position_controller.c **** //    if(y_temp>400)y_temp=0;
+ 186:position_controller.c ****     my_setpoint.velocity.z = runPid(state->position.z, &my_this.pidZ, my_setpoint.position.z, DT);
+ 716              	.LM39:
+ 717 05c8 30301BE5 		ldr	r3, [fp, #-48]
+ 718 05cc 082093E5 		ldr	r2, [r3, #8]	@ float
+ 719 05d0 1C339FE5 		ldr	r3, .L35+20
+ 720 05d4 083093E5 		ldr	r3, [r3, #8]	@ float
+ 721 05d8 0200A0E1 		mov	r0, r2
+ 722 05dc 20139FE5 		ldr	r1, .L35+36
+ 723 05e0 0320A0E1 		mov	r2, r3
+ 724 05e4 10339FE5 		ldr	r3, .L35+28	@ float
+ 725 05e8 FEFFFFEB 		bl	runPid
+ 726 05ec 0020A0E1 		mov	r2, r0
+ 727 05f0 FC329FE5 		ldr	r3, .L35+20
+ 728 05f4 142083E5 		str	r2, [r3, #20]	@ float
+ 187:position_controller.c **** 
+ 188:position_controller.c ****     my_this.pidVX.pid.outputLimit = rpLimit * rpLimitOverhead;
+ 730              	.LM40:
+ 731 05f8 08339FE5 		ldr	r3, .L35+40
+ 732 05fc 002093E5 		ldr	r2, [r3, #0]	@ float
+ 733 0600 04339FE5 		ldr	r3, .L35+44
+ 734 0604 003093E5 		ldr	r3, [r3, #0]	@ float
+ 735 0608 0200A0E1 		mov	r0, r2
+ 736 060c 0310A0E1 		mov	r1, r3
+ 737 0610 FEFFFFEB 		bl	__mulsf3
+ 738 0614 0030A0E1 		mov	r3, r0
+ 739 0618 0320A0E1 		mov	r2, r3
+ 740 061c C4329FE5 		ldr	r3, .L35+8
+ 741 0620 C82083E5 		str	r2, [r3, #200]	@ float
+ 189:position_controller.c ****     my_this.pidVY.pid.outputLimit = rpLimit * rpLimitOverhead;
+ 743              	.LM41:
+ 744 0624 DC329FE5 		ldr	r3, .L35+40
+ 745 0628 002093E5 		ldr	r2, [r3, #0]	@ float
+ 746 062c D8329FE5 		ldr	r3, .L35+44
+ 747 0630 003093E5 		ldr	r3, [r3, #0]	@ float
+ 748 0634 0200A0E1 		mov	r0, r2
+ 749 0638 0310A0E1 		mov	r1, r3
+ 750 063c FEFFFFEB 		bl	__mulsf3
+ 751 0640 0030A0E1 		mov	r3, r0
+ 752 0644 0320A0E1 		mov	r2, r3
+ 753 0648 98329FE5 		ldr	r3, .L35+8
+ 754 064c 602183E5 		str	r2, [r3, #352]	@ float
+ 190:position_controller.c ****     my_this.pidVZ.pid.outputLimit =250.0f;
+ 756              	.LM42:
+ 757 0650 90229FE5 		ldr	r2, .L35+8
+ 758 0654 B4329FE5 		ldr	r3, .L35+48	@ float
+ 759 0658 303082E5 		str	r3, [r2, #48]	@ float
  191:position_controller.c **** 
- 192:position_controller.c ****       *roll  = constrain(*roll,  -rpLimit, rpLimit);
- 831              	.LM48:
- 832 076c 2C301BE5 		ldr	r3, [fp, #-44]
- 833 0770 001093E5 		ldr	r1, [r3, #0]	@ float
- 834 0774 88319FE5 		ldr	r3, .L35+40
- 835 0778 003093E5 		ldr	r3, [r3, #0]	@ float
- 836 077c 022123E2 		eor	r2, r3, #-2147483648
- 837 0780 7C319FE5 		ldr	r3, .L35+40
- 838 0784 003093E5 		ldr	r3, [r3, #0]	@ float
- 839 0788 0100A0E1 		mov	r0, r1
- 840 078c 0210A0E1 		mov	r1, r2
- 841 0790 0320A0E1 		mov	r2, r3
- 842 0794 FEFFFFEB 		bl	constrain
- 843 0798 0020A0E1 		mov	r2, r0
- 844 079c 2C301BE5 		ldr	r3, [fp, #-44]
- 845 07a0 002083E5 		str	r2, [r3, #0]	@ float
- 193:position_controller.c ****       *pitch = constrain(*pitch, -rpLimit, rpLimit);
- 847              	.LM49:
- 848 07a4 28301BE5 		ldr	r3, [fp, #-40]
- 849 07a8 001093E5 		ldr	r1, [r3, #0]	@ float
- 850 07ac 50319FE5 		ldr	r3, .L35+40
- 851 07b0 003093E5 		ldr	r3, [r3, #0]	@ float
- 852 07b4 022123E2 		eor	r2, r3, #-2147483648
- 853 07b8 44319FE5 		ldr	r3, .L35+40
- 854 07bc 003093E5 		ldr	r3, [r3, #0]	@ float
- 855 07c0 0100A0E1 		mov	r0, r1
- 856 07c4 0210A0E1 		mov	r1, r2
- 857 07c8 0320A0E1 		mov	r2, r3
- 858 07cc FEFFFFEB 		bl	constrain
- 859 07d0 0020A0E1 		mov	r2, r0
- 860 07d4 28301BE5 		ldr	r3, [fp, #-40]
- 861 07d8 002083E5 		str	r2, [r3, #0]	@ float
+ 192:position_controller.c ****     float rollRaw  = runPid(state->velocity.x, &my_this.pidVX, my_setpoint.velocity.x, DT);
+ 761              	.LM43:
+ 762 065c 30301BE5 		ldr	r3, [fp, #-48]
+ 763 0660 0C2093E5 		ldr	r2, [r3, #12]	@ float
+ 764 0664 88329FE5 		ldr	r3, .L35+20
+ 765 0668 0C3093E5 		ldr	r3, [r3, #12]	@ float
+ 766 066c 0200A0E1 		mov	r0, r2
+ 767 0670 9C129FE5 		ldr	r1, .L35+52
+ 768 0674 0320A0E1 		mov	r2, r3
+ 769 0678 7C329FE5 		ldr	r3, .L35+28	@ float
+ 770 067c FEFFFFEB 		bl	runPid
+ 771 0680 0030A0E1 		mov	r3, r0
+ 772 0684 1C300BE5 		str	r3, [fp, #-28]	@ float
+ 193:position_controller.c ****       float pitchRaw = runPid(state->velocity.y, &my_this.pidVY, my_setpoint.velocity.y, DT);
+ 774              	.LM44:
+ 775 0688 30301BE5 		ldr	r3, [fp, #-48]
+ 776 068c 102093E5 		ldr	r2, [r3, #16]	@ float
+ 777 0690 5C329FE5 		ldr	r3, .L35+20
+ 778 0694 103093E5 		ldr	r3, [r3, #16]	@ float
+ 779 0698 0200A0E1 		mov	r0, r2
+ 780 069c 74129FE5 		ldr	r1, .L35+56
+ 781 06a0 0320A0E1 		mov	r2, r3
+ 782 06a4 50329FE5 		ldr	r3, .L35+28	@ float
+ 783 06a8 FEFFFFEB 		bl	runPid
+ 784 06ac 0030A0E1 		mov	r3, r0
+ 785 06b0 18300BE5 		str	r3, [fp, #-24]	@ float
  194:position_controller.c **** 
- 195:position_controller.c ****     // Thrust
- 196:position_controller.c ****     thrustRaw = runPid(state->velocity.z, &my_this.pidVZ, my_setpoint.velocity.z, DT);
- 863              	.LM50:
- 864 07dc 30301BE5 		ldr	r3, [fp, #-48]
- 865 07e0 142093E5 		ldr	r2, [r3, #20]	@ float
- 866 07e4 04319FE5 		ldr	r3, .L35+20
- 867 07e8 143093E5 		ldr	r3, [r3, #20]	@ float
- 868 07ec 0200A0E1 		mov	r0, r2
- 869 07f0 EC109FE5 		ldr	r1, .L35+8
- 870 07f4 0320A0E1 		mov	r2, r3
- 871 07f8 F8309FE5 		ldr	r3, .L35+28	@ float
- 872 07fc FEFFFFEB 		bl	runPid
- 873 0800 0030A0E1 		mov	r3, r0
- 874 0804 20300BE5 		str	r3, [fp, #-32]	@ float
- 197:position_controller.c ****     // Scale the thrust and add feed forward term
- 198:position_controller.c ****     *thrust = thrustRaw + my_this.thrustBase;
- 876              	.LM51:
- 877 0808 D4209FE5 		ldr	r2, .L35+8
- 878 080c 723FA0E3 		mov	r3, #456
- 879 0810 B33092E1 		ldrh	r3, [r2, r3]
- 880 0814 0300A0E1 		mov	r0, r3
- 881 0818 FEFFFFEB 		bl	__floatsisf
- 882 081c 0030A0E1 		mov	r3, r0
- 883 0820 0300A0E1 		mov	r0, r3
- 884 0824 20101BE5 		ldr	r1, [fp, #-32]	@ float
- 885 0828 FEFFFFEB 		bl	__addsf3
- 886 082c 0030A0E1 		mov	r3, r0
- 887 0830 0320A0E1 		mov	r2, r3
- 888 0834 24301BE5 		ldr	r3, [fp, #-36]
- 889 0838 002083E5 		str	r2, [r3, #0]	@ float
- 199:position_controller.c ****     // Check for minimum thrust
- 200:position_controller.c ****     if (*thrust < my_this.thrustMin) {
- 891              	.LM52:
- 892 083c 24301BE5 		ldr	r3, [fp, #-36]
- 893 0840 004093E5 		ldr	r4, [r3, #0]	@ float
- 894 0844 98209FE5 		ldr	r2, .L35+8
- 895 0848 723FA0E3 		mov	r3, #456
- 896 084c 023083E2 		add	r3, r3, #2
- 897 0850 B33092E1 		ldrh	r3, [r2, r3]
- 898 0854 0300A0E1 		mov	r0, r3
- 899 0858 FEFFFFEB 		bl	__floatsisf
- 900 085c 0030A0E1 		mov	r3, r0
- 901 0860 0400A0E1 		mov	r0, r4
- 902 0864 0310A0E1 		mov	r1, r3
- 903 0868 FEFFFFEB 		bl	__ltsf2
- 904 086c 0030A0E1 		mov	r3, r0
- 905 0870 000053E3 		cmp	r3, #0
- 906 0874 000000BA 		blt	.L32
- 907 0878 140000EA 		b	.L34
- 908              	.L32:
- 201:position_controller.c ****       *thrust = my_this.thrustMin;
- 910              	.LM53:
- 911 087c 60209FE5 		ldr	r2, .L35+8
- 912 0880 723FA0E3 		mov	r3, #456
- 913 0884 023083E2 		add	r3, r3, #2
- 914 0888 B34092E1 		ldrh	r4, [r2, r3]
- 915 088c 0438A0E1 		mov	r3, r4, asl #16
- 916 0890 4338A0E1 		mov	r3, r3, asr #16
- 917 0894 0300A0E1 		mov	r0, r3
- 918 0898 FEFFFFEB 		bl	__floatsisf
- 919 089c 34000BE5 		str	r0, [fp, #-52]	@ float
- 920 08a0 0438A0E1 		mov	r3, r4, asl #16
- 921 08a4 4338A0E1 		mov	r3, r3, asr #16
- 922 08a8 000053E3 		cmp	r3, #0
- 923 08ac 040000AA 		bge	.L33
- 924 08b0 34001BE5 		ldr	r0, [fp, #-52]	@ float
- 925 08b4 60109FE5 		ldr	r1, .L35+64	@ float
- 926 08b8 FEFFFFEB 		bl	__addsf3
- 927 08bc 0030A0E1 		mov	r3, r0
- 928 08c0 34300BE5 		str	r3, [fp, #-52]	@ float
- 929              	.L33:
- 930 08c4 24301BE5 		ldr	r3, [fp, #-36]
- 931 08c8 34201BE5 		ldr	r2, [fp, #-52]	@ float
- 932 08cc 002083E5 		str	r2, [r3, #0]	@ float
- 933              	.L34:
- 202:position_controller.c ****     }
- 203:position_controller.c **** }
- 935              	.LM54:
- 936 08d0 10D04BE2 		sub	sp, fp, #16
- 937 08d4 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
- 938 08d8 1EFF2FE1 		bx	lr
- 939              	.L36:
- 940              		.align	2
- 941              	.L35:
- 942 08dc 00000000 		.word	xyVelMax
- 943 08e0 00000000 		.word	velMaxOverhead
- 944 08e4 00000000 		.word	my_this
- 945 08e8 00000000 		.word	zVelMax
- 946 08ec 00004843 		.word	1128792064
- 947 08f0 00000000 		.word	my_setpoint
- 948 08f4 E4000000 		.word	my_this+228
- 949 08f8 0AD7233C 		.word	1008981770
- 950 08fc 7C010000 		.word	my_this+380
- 951 0900 4C000000 		.word	my_this+76
- 952 0904 00000000 		.word	rpLimit
- 953 0908 00000000 		.word	rpLimitOverhead
- 954 090c 00007A43 		.word	1132068864
- 955 0910 98000000 		.word	my_this+152
- 956 0914 30010000 		.word	my_this+304
- 957 0918 00000000 		.word	0
- 958 091c 00008047 		.word	1199570944
- 966              	.Lscope4:
- 967              		.align	2
- 969              		.global	positionControllerResetAllPID
- 971              	positionControllerResetAllPID:
- 204:position_controller.c **** 
- 205:position_controller.c **** void positionControllerResetAllPID()
- 206:position_controller.c **** {
- 973              	.LM55:
- 974              		@ Function supports interworking.
- 975              		@ args = 0, pretend = 0, frame = 0
- 976              		@ frame_needed = 1, uses_anonymous_args = 0
- 977 0920 0DC0A0E1 		mov	ip, sp
- 978 0924 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 979 0928 04B04CE2 		sub	fp, ip, #4
- 207:position_controller.c ****   pidReset(&my_this.pidZ.pid);
- 981              	.LM56:
- 982 092c 14009FE5 		ldr	r0, .L39
- 983 0930 FEFFFFEB 		bl	pidReset
- 208:position_controller.c ****   pidReset(&my_this.pidVZ.pid);
- 985              	.LM57:
- 986 0934 10009FE5 		ldr	r0, .L39+4
- 987 0938 FEFFFFEB 		bl	pidReset
- 209:position_controller.c **** }
- 989              	.LM58:
- 990 093c 0CD04BE2 		sub	sp, fp, #12
- 991 0940 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 992 0944 1EFF2FE1 		bx	lr
- 993              	.L40:
- 994              		.align	2
- 995              	.L39:
- 996 0948 4C000000 		.word	my_this+76
- 997 094c 00000000 		.word	my_this
- 999              	.Lscope5:
- 1008              	.Letext0:
- 1009              		.ident	"GCC: (GNU) 4.1.1"
+ 195:position_controller.c ****      float yawRad = state->attitude.yaw ;
+ 787              	.LM45:
+ 788 06b4 30301BE5 		ldr	r3, [fp, #-48]
+ 789 06b8 243093E5 		ldr	r3, [r3, #36]	@ float
+ 790 06bc 14300BE5 		str	r3, [fp, #-20]	@ float
+ 196:position_controller.c ****      // float yawRad = 0 ;
+ 197:position_controller.c ****       *pitch = -(rollRaw  * cosf(yawRad)) - (pitchRaw * sinf(yawRad));
+ 792              	.LM46:
+ 793 06c0 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 794 06c4 FEFFFFEB 		bl	cosf
+ 795 06c8 0030A0E1 		mov	r3, r0
+ 796 06cc 0300A0E1 		mov	r0, r3
+ 797 06d0 1C101BE5 		ldr	r1, [fp, #-28]	@ float
+ 798 06d4 FEFFFFEB 		bl	__mulsf3
+ 799 06d8 0030A0E1 		mov	r3, r0
+ 800 06dc 024123E2 		eor	r4, r3, #-2147483648
+ 801 06e0 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 802 06e4 FEFFFFEB 		bl	sinf
+ 803 06e8 0030A0E1 		mov	r3, r0
+ 804 06ec 0300A0E1 		mov	r0, r3
+ 805 06f0 18101BE5 		ldr	r1, [fp, #-24]	@ float
+ 806 06f4 FEFFFFEB 		bl	__mulsf3
+ 807 06f8 0030A0E1 		mov	r3, r0
+ 808 06fc 0400A0E1 		mov	r0, r4
+ 809 0700 0310A0E1 		mov	r1, r3
+ 810 0704 FEFFFFEB 		bl	__subsf3
+ 811 0708 0030A0E1 		mov	r3, r0
+ 812 070c 0320A0E1 		mov	r2, r3
+ 813 0710 28301BE5 		ldr	r3, [fp, #-40]
+ 814 0714 002083E5 		str	r2, [r3, #0]	@ float
+ 198:position_controller.c ****       *roll  = -(pitchRaw * cosf(yawRad)) + (rollRaw  * sinf(yawRad));
+ 816              	.LM47:
+ 817 0718 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 818 071c FEFFFFEB 		bl	sinf
+ 819 0720 0030A0E1 		mov	r3, r0
+ 820 0724 0300A0E1 		mov	r0, r3
+ 821 0728 1C101BE5 		ldr	r1, [fp, #-28]	@ float
+ 822 072c FEFFFFEB 		bl	__mulsf3
+ 823 0730 0030A0E1 		mov	r3, r0
+ 824 0734 0340A0E1 		mov	r4, r3
+ 825 0738 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 826 073c FEFFFFEB 		bl	cosf
+ 827 0740 0030A0E1 		mov	r3, r0
+ 828 0744 0300A0E1 		mov	r0, r3
+ 829 0748 18101BE5 		ldr	r1, [fp, #-24]	@ float
+ 830 074c FEFFFFEB 		bl	__mulsf3
+ 831 0750 0030A0E1 		mov	r3, r0
+ 832 0754 0400A0E1 		mov	r0, r4
+ 833 0758 0310A0E1 		mov	r1, r3
+ 834 075c FEFFFFEB 		bl	__subsf3
+ 835 0760 0030A0E1 		mov	r3, r0
+ 836 0764 0320A0E1 		mov	r2, r3
+ 837 0768 2C301BE5 		ldr	r3, [fp, #-44]
+ 838 076c 002083E5 		str	r2, [r3, #0]	@ float
+ 199:position_controller.c **** 
+ 200:position_controller.c ****       *roll  = constrain(*roll,  -rpLimit, rpLimit);
+ 840              	.LM48:
+ 841 0770 2C301BE5 		ldr	r3, [fp, #-44]
+ 842 0774 001093E5 		ldr	r1, [r3, #0]	@ float
+ 843 0778 88319FE5 		ldr	r3, .L35+40
+ 844 077c 003093E5 		ldr	r3, [r3, #0]	@ float
+ 845 0780 022123E2 		eor	r2, r3, #-2147483648
+ 846 0784 7C319FE5 		ldr	r3, .L35+40
+ 847 0788 003093E5 		ldr	r3, [r3, #0]	@ float
+ 848 078c 0100A0E1 		mov	r0, r1
+ 849 0790 0210A0E1 		mov	r1, r2
+ 850 0794 0320A0E1 		mov	r2, r3
+ 851 0798 FEFFFFEB 		bl	constrain
+ 852 079c 0020A0E1 		mov	r2, r0
+ 853 07a0 2C301BE5 		ldr	r3, [fp, #-44]
+ 854 07a4 002083E5 		str	r2, [r3, #0]	@ float
+ 201:position_controller.c ****       *pitch = constrain(*pitch, -rpLimit, rpLimit);
+ 856              	.LM49:
+ 857 07a8 28301BE5 		ldr	r3, [fp, #-40]
+ 858 07ac 001093E5 		ldr	r1, [r3, #0]	@ float
+ 859 07b0 50319FE5 		ldr	r3, .L35+40
+ 860 07b4 003093E5 		ldr	r3, [r3, #0]	@ float
+ 861 07b8 022123E2 		eor	r2, r3, #-2147483648
+ 862 07bc 44319FE5 		ldr	r3, .L35+40
+ 863 07c0 003093E5 		ldr	r3, [r3, #0]	@ float
+ 864 07c4 0100A0E1 		mov	r0, r1
+ 865 07c8 0210A0E1 		mov	r1, r2
+ 866 07cc 0320A0E1 		mov	r2, r3
+ 867 07d0 FEFFFFEB 		bl	constrain
+ 868 07d4 0020A0E1 		mov	r2, r0
+ 869 07d8 28301BE5 		ldr	r3, [fp, #-40]
+ 870 07dc 002083E5 		str	r2, [r3, #0]	@ float
+ 202:position_controller.c **** 
+ 203:position_controller.c ****     // Thrust
+ 204:position_controller.c ****     thrustRaw = runPid(state->velocity.z, &my_this.pidVZ, my_setpoint.velocity.z, DT);
+ 872              	.LM50:
+ 873 07e0 30301BE5 		ldr	r3, [fp, #-48]
+ 874 07e4 142093E5 		ldr	r2, [r3, #20]	@ float
+ 875 07e8 04319FE5 		ldr	r3, .L35+20
+ 876 07ec 143093E5 		ldr	r3, [r3, #20]	@ float
+ 877 07f0 0200A0E1 		mov	r0, r2
+ 878 07f4 EC109FE5 		ldr	r1, .L35+8
+ 879 07f8 0320A0E1 		mov	r2, r3
+ 880 07fc F8309FE5 		ldr	r3, .L35+28	@ float
+ 881 0800 FEFFFFEB 		bl	runPid
+ 882 0804 0030A0E1 		mov	r3, r0
+ 883 0808 20300BE5 		str	r3, [fp, #-32]	@ float
+ 205:position_controller.c ****     // Scale the thrust and add feed forward term
+ 206:position_controller.c ****     *thrust = thrustRaw + my_this.thrustBase;
+ 885              	.LM51:
+ 886 080c D4209FE5 		ldr	r2, .L35+8
+ 887 0810 723FA0E3 		mov	r3, #456
+ 888 0814 B33092E1 		ldrh	r3, [r2, r3]
+ 889 0818 0300A0E1 		mov	r0, r3
+ 890 081c FEFFFFEB 		bl	__floatsisf
+ 891 0820 0030A0E1 		mov	r3, r0
+ 892 0824 0300A0E1 		mov	r0, r3
+ 893 0828 20101BE5 		ldr	r1, [fp, #-32]	@ float
+ 894 082c FEFFFFEB 		bl	__addsf3
+ 895 0830 0030A0E1 		mov	r3, r0
+ 896 0834 0320A0E1 		mov	r2, r3
+ 897 0838 24301BE5 		ldr	r3, [fp, #-36]
+ 898 083c 002083E5 		str	r2, [r3, #0]	@ float
+ 207:position_controller.c ****     // Check for minimum thrust
+ 208:position_controller.c ****     if (*thrust < my_this.thrustMin) {
+ 900              	.LM52:
+ 901 0840 24301BE5 		ldr	r3, [fp, #-36]
+ 902 0844 004093E5 		ldr	r4, [r3, #0]	@ float
+ 903 0848 98209FE5 		ldr	r2, .L35+8
+ 904 084c 723FA0E3 		mov	r3, #456
+ 905 0850 023083E2 		add	r3, r3, #2
+ 906 0854 B33092E1 		ldrh	r3, [r2, r3]
+ 907 0858 0300A0E1 		mov	r0, r3
+ 908 085c FEFFFFEB 		bl	__floatsisf
+ 909 0860 0030A0E1 		mov	r3, r0
+ 910 0864 0400A0E1 		mov	r0, r4
+ 911 0868 0310A0E1 		mov	r1, r3
+ 912 086c FEFFFFEB 		bl	__ltsf2
+ 913 0870 0030A0E1 		mov	r3, r0
+ 914 0874 000053E3 		cmp	r3, #0
+ 915 0878 000000BA 		blt	.L32
+ 916 087c 140000EA 		b	.L34
+ 917              	.L32:
+ 209:position_controller.c ****       *thrust = my_this.thrustMin;
+ 919              	.LM53:
+ 920 0880 60209FE5 		ldr	r2, .L35+8
+ 921 0884 723FA0E3 		mov	r3, #456
+ 922 0888 023083E2 		add	r3, r3, #2
+ 923 088c B34092E1 		ldrh	r4, [r2, r3]
+ 924 0890 0438A0E1 		mov	r3, r4, asl #16
+ 925 0894 4338A0E1 		mov	r3, r3, asr #16
+ 926 0898 0300A0E1 		mov	r0, r3
+ 927 089c FEFFFFEB 		bl	__floatsisf
+ 928 08a0 34000BE5 		str	r0, [fp, #-52]	@ float
+ 929 08a4 0438A0E1 		mov	r3, r4, asl #16
+ 930 08a8 4338A0E1 		mov	r3, r3, asr #16
+ 931 08ac 000053E3 		cmp	r3, #0
+ 932 08b0 040000AA 		bge	.L33
+ 933 08b4 34001BE5 		ldr	r0, [fp, #-52]	@ float
+ 934 08b8 5C109FE5 		ldr	r1, .L35+60	@ float
+ 935 08bc FEFFFFEB 		bl	__addsf3
+ 936 08c0 0030A0E1 		mov	r3, r0
+ 937 08c4 34300BE5 		str	r3, [fp, #-52]	@ float
+ 938              	.L33:
+ 939 08c8 24301BE5 		ldr	r3, [fp, #-36]
+ 940 08cc 34201BE5 		ldr	r2, [fp, #-52]	@ float
+ 941 08d0 002083E5 		str	r2, [r3, #0]	@ float
+ 942              	.L34:
+ 210:position_controller.c ****     }
+ 211:position_controller.c **** }
+ 944              	.LM54:
+ 945 08d4 10D04BE2 		sub	sp, fp, #16
+ 946 08d8 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 947 08dc 1EFF2FE1 		bx	lr
+ 948              	.L36:
+ 949              		.align	2
+ 950              	.L35:
+ 951 08e0 00000000 		.word	xyVelMax
+ 952 08e4 00000000 		.word	velMaxOverhead
+ 953 08e8 00000000 		.word	my_this
+ 954 08ec 00000000 		.word	zVelMax
+ 955 08f0 00004843 		.word	1128792064
+ 956 08f4 00000000 		.word	my_setpoint
+ 957 08f8 E4000000 		.word	my_this+228
+ 958 08fc 0AD7233C 		.word	1008981770
+ 959 0900 7C010000 		.word	my_this+380
+ 960 0904 4C000000 		.word	my_this+76
+ 961 0908 00000000 		.word	rpLimit
+ 962 090c 00000000 		.word	rpLimitOverhead
+ 963 0910 00007A43 		.word	1132068864
+ 964 0914 98000000 		.word	my_this+152
+ 965 0918 30010000 		.word	my_this+304
+ 966 091c 00008047 		.word	1199570944
+ 975              	.Lscope4:
+ 976              		.align	2
+ 978              		.global	positionControllerResetAllPID
+ 980              	positionControllerResetAllPID:
+ 212:position_controller.c **** 
+ 213:position_controller.c **** void positionControllerResetAllPID()
+ 214:position_controller.c **** {
+ 982              	.LM55:
+ 983              		@ Function supports interworking.
+ 984              		@ args = 0, pretend = 0, frame = 0
+ 985              		@ frame_needed = 1, uses_anonymous_args = 0
+ 986 0920 0DC0A0E1 		mov	ip, sp
+ 987 0924 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 988 0928 04B04CE2 		sub	fp, ip, #4
+ 215:position_controller.c ****   pidReset(&my_this.pidZ.pid);
+ 990              	.LM56:
+ 991 092c 14009FE5 		ldr	r0, .L39
+ 992 0930 FEFFFFEB 		bl	pidReset
+ 216:position_controller.c ****   pidReset(&my_this.pidVZ.pid);
+ 994              	.LM57:
+ 995 0934 10009FE5 		ldr	r0, .L39+4
+ 996 0938 FEFFFFEB 		bl	pidReset
+ 217:position_controller.c **** }
+ 998              	.LM58:
+ 999 093c 0CD04BE2 		sub	sp, fp, #12
+ 1000 0940 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1001 0944 1EFF2FE1 		bx	lr
+ 1002              	.L40:
+ 1003              		.align	2
+ 1004              	.L39:
+ 1005 0948 4C000000 		.word	my_this+76
+ 1006 094c 00000000 		.word	my_this
+ 1008              	.Lscope5:
+ 1017              	.Letext0:
+ 1018              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 position_controller.c
-     /tmp/ccB4ZgKC.s:55     .data:00000000 rpLimit
-     /tmp/ccB4ZgKC.s:52     .data:00000000 $d
-     /tmp/ccB4ZgKC.s:61     .data:00000004 rpLimitOverhead
-     /tmp/ccB4ZgKC.s:67     .data:00000008 xyVelMax
-     /tmp/ccB4ZgKC.s:73     .data:0000000c zVelMax
-     /tmp/ccB4ZgKC.s:79     .data:00000010 velMaxOverhead
-     /tmp/ccB4ZgKC.s:86     .rodata:00000000 thrustScale
-     /tmp/ccB4ZgKC.s:83     .rodata:00000000 $d
-     /tmp/ccB4ZgKC.s:93     .data:00000014 my_this
-     /tmp/ccB4ZgKC.s:135    .bss:00000000 $d
-     /tmp/ccB4ZgKC.s:136    .bss:00000000 estimateMode.1455
-     /tmp/ccB4ZgKC.s:140    .bss:00000004 prev_estimatedZ.1454
-     /tmp/ccB4ZgKC.s:148    .text:00000000 $a
-     /tmp/ccB4ZgKC.s:157    .text:00000000 positionEstimate
-     /tmp/ccB4ZgKC.s:253    .text:00000114 $d
-     /tmp/ccB4ZgKC.s:262    .text:0000011c $a
-     /tmp/ccB4ZgKC.s:266    .text:0000011c positionControllerInit
-     /tmp/ccB4ZgKC.s:392    .text:000002b8 $d
-     /tmp/ccB4ZgKC.s:400    .text:000002d0 $a
-     /tmp/ccB4ZgKC.s:408    .text:000002d0 runPid
-     /tmp/ccB4ZgKC.s:453    .bss:00000008 acc_get_pos.1524
-     /tmp/ccB4ZgKC.s:457    .bss:0000000c acc_get_vel.1523
-     /tmp/ccB4ZgKC.s:461    .bss:00000010 result.1522
-     /tmp/ccB4ZgKC.s:474    .text:0000033c data_fusion
-     /tmp/ccB4ZgKC.s:586    .text:00000478 $d
-     /tmp/ccB4ZgKC.s:602    .text:00000490 $a
-     /tmp/ccB4ZgKC.s:610    .text:00000490 positionController
-     /tmp/ccB4ZgKC.s:942    .text:000008dc $d
-     /tmp/ccB4ZgKC.s:967    .text:00000920 $a
-     /tmp/ccB4ZgKC.s:971    .text:00000920 positionControllerResetAllPID
-     /tmp/ccB4ZgKC.s:996    .text:00000948 $d
+     /tmp/ccKjmuiS.s:55     .data:00000000 rpLimit
+     /tmp/ccKjmuiS.s:52     .data:00000000 $d
+     /tmp/ccKjmuiS.s:61     .data:00000004 rpLimitOverhead
+     /tmp/ccKjmuiS.s:67     .data:00000008 xyVelMax
+     /tmp/ccKjmuiS.s:73     .data:0000000c zVelMax
+     /tmp/ccKjmuiS.s:79     .data:00000010 velMaxOverhead
+     /tmp/ccKjmuiS.s:86     .rodata:00000000 thrustScale
+     /tmp/ccKjmuiS.s:83     .rodata:00000000 $d
+     /tmp/ccKjmuiS.s:93     .data:00000014 my_this
+     /tmp/ccKjmuiS.s:135    .bss:00000000 $d
+     /tmp/ccKjmuiS.s:136    .bss:00000000 estimateMode.1455
+     /tmp/ccKjmuiS.s:140    .bss:00000004 prev_estimatedZ.1454
+     /tmp/ccKjmuiS.s:148    .text:00000000 $a
+     /tmp/ccKjmuiS.s:157    .text:00000000 positionEstimate
+     /tmp/ccKjmuiS.s:253    .text:00000114 $d
+     /tmp/ccKjmuiS.s:262    .text:0000011c $a
+     /tmp/ccKjmuiS.s:266    .text:0000011c positionControllerInit
+     /tmp/ccKjmuiS.s:392    .text:000002b8 $d
+     /tmp/ccKjmuiS.s:400    .text:000002d0 $a
+     /tmp/ccKjmuiS.s:408    .text:000002d0 runPid
+     /tmp/ccKjmuiS.s:453    .bss:00000008 acc_get_pos.1524
+     /tmp/ccKjmuiS.s:457    .bss:0000000c acc_get_vel.1523
+     /tmp/ccKjmuiS.s:461    .bss:00000010 result.1522
+     /tmp/ccKjmuiS.s:474    .text:0000033c data_fusion
+     /tmp/ccKjmuiS.s:586    .text:00000478 $d
+     /tmp/ccKjmuiS.s:604    .data:000001e0 y_temp.1552
+     /tmp/ccKjmuiS.s:610    .text:00000490 $a
+     /tmp/ccKjmuiS.s:618    .text:00000490 positionController
+     /tmp/ccKjmuiS.s:951    .text:000008e0 $d
+     /tmp/ccKjmuiS.s:976    .text:00000920 $a
+     /tmp/ccKjmuiS.s:980    .text:00000920 positionControllerResetAllPID
+     /tmp/ccKjmuiS.s:1005   .text:00000948 $d
 
 UNDEFINED SYMBOLS
 __mulsf3
