@@ -64,7 +64,7 @@ struct this_s my_this = {
 
   .pidVZ = {
     .init = {
-      .kp = 0.5f,
+      .kp = 1.0f,
       .ki = 0.05f,
       .kd = 0,
     },

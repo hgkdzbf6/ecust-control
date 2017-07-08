@@ -187,9 +187,9 @@ void uart0ISR(void) __irq
 				my_state.position.x=receiveDebugData.x;
 				my_state.position.y=receiveDebugData.y;
 				my_state.position.z=receiveDebugData.z;
-				//my_state.velocity.x=receiveDebugData.vx;
-				//my_state.velocity.y=receiveDebugData.vy;
-				//my_state.velocity.z=receiveDebugData.vz;
+				my_state.velocity.x=receiveDebugData.vx;
+				my_state.velocity.y=receiveDebugData.vy;
+				my_state.velocity.z=receiveDebugData.vz;
 				my_state.attitude.pitch=receiveDebugData.pitch;
 				my_state.attitude.roll=receiveDebugData.roll;
 				my_state.attitude.yaw=receiveDebugData.yaw;
