@@ -287,6 +287,7 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			my_send(1,PACKAGE_DEFINE_PARAM,
 					getPackageLength(PACKAGE_DEFINE_PARAM),
 					&sendParamDebug,1);
+			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
 		}
 	}
 	//handle gps data reception

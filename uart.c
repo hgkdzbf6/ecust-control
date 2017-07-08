@@ -163,7 +163,7 @@ void uart0ISR(void) __irq
       case 2:
         // RDA interrupt - put your HL_serial_0 receive state machine here!
         UART_rxdata = U0RBR;
-#ifdef DEBUG_DATA_MODE
+
         receive_result=my_receive(UART_rxdata,my_buffer,
 				allDataBuffer,&pack_id,1);
 		if(receive_result==RECEIVE_STATE_SUCCESS){
@@ -199,19 +199,18 @@ void uart0ISR(void) __irq
 			case PACKAGE_DEFINE_PARAM:
 				memcpy(&receiveParamDebug,
 						&allDataBuffer,getPackageLength(pack_id));
-	        	if(receive_valid_data_flag==1||receiveParamDebug.kp_p!=0){
+	        	if(receiveParamDebug.kp_p!=0){
 	        		receive_valid_data_flag=1;
 	        		my_this.pidZ.pid.kp=receiveParamDebug.kp_p;
 	        		my_this.pidZ.pid.ki=receiveParamDebug.ki_p;
 	        		my_this.pidVZ.pid.kp=receiveParamDebug.kp_v;
 	        		my_this.pidVZ.pid.ki=receiveParamDebug.ki_v;
-	        		my_setpoint.velocity.y=receiveParamDebug.set_velocity;
-	        		//output_thrust=receiveParamDebug.thrust;
-	        		//if(receiveParamDebug.thrust==555)buzzer(1);
+	        		my_setpoint.velocity.z=receiveParamDebug.set_velocity;
 	        	}
 	    		my_state.position.z=receiveParamDebug.z;
 	    		my_state.velocity.z=receiveParamDebug.vz;
 	        	vicon_count++;
+				receiveCmdData.cmd=PACKAGE_DEFINE_PARAM;
 				break;
 			case PACKAGE_DEFINE_CMD:
 				memcpy(&receiveCmdData,
@@ -221,28 +220,6 @@ void uart0ISR(void) __irq
 				break;
 			}
         }
-#endif
-
-#ifdef PARAM_DEBUG_MODE
-        if(my_receive(UART_rxdata,
-        		my_buffer,
-				&receiveParamDebug,
-				1)){
-        	if(receive_valid_data_flag==1||receiveParamDebug.kp_p!=0){
-        		receive_valid_data_flag=1;
-        		my_this.pidZ.pid.kp=receiveParamDebug.kp_p;
-        		my_this.pidZ.pid.ki=receiveParamDebug.ki_p;
-        		my_this.pidVZ.pid.kp=receiveParamDebug.kp_v;
-        		my_this.pidVZ.pid.ki=receiveParamDebug.ki_v;
-        		my_setpoint.velocity.y=receiveParamDebug.set_velocity;
-        		//output_thrust=receiveParamDebug.thrust;
-        		//if(receiveParamDebug.thrust==555)buzzer(1);
-        	}
-    		my_state.position.z=receiveParamDebug.z;
-    		my_state.velocity.z=receiveParamDebug.vz;
-        	vicon_count++;
-        }
-#endif
 
 //        if (UART_syncstate==0)
 //		{
