@@ -131,7 +131,7 @@ void fake_gps3(void ){
 		freq=1;
 		my_state.velocity.x=receiveDebugData.vx;
 		my_state.velocity.y=receiveDebugData.vy;
-		my_state.velocity.z=RO_ALL_Data.fusion_dheight;
+		my_state.velocity.z=receiveDebugData.vz;
 		my_state.attitude.pitch=(float)RO_ALL_Data.angle_pitch/1000.0f*DEG_TO_RAD;
 		my_state.attitude.roll=(float)RO_ALL_Data.angle_roll/1000.0f*DEG_TO_RAD;
 		//my_state.attitude.yaw=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;

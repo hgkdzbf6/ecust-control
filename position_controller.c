@@ -44,7 +44,7 @@ float xyVelMax=400.0f;
 struct this_s my_this = {
 	.pidVX = {
 	    .init = {
-	      .kp = 1,
+	      .kp = 0.3,
 	      .ki = 0.4,
 	      .kd = 0,
 	    },
@@ -54,7 +54,7 @@ struct this_s my_this = {
 
 	  .pidVY = {
 	    .init = {
-	      .kp = 1.2f,
+	      .kp = 0.3f,
 	      .ki =0.4 ,
 	      .kd = 0,
 	    },
@@ -64,7 +64,7 @@ struct this_s my_this = {
 
   .pidVZ = {
     .init = {
-      .kp = 1,
+      .kp = 0.5f,
       .ki = 0.05f,
       .kd = 0,
     },
@@ -177,14 +177,14 @@ void positionController(float* thrust,float* pitch,float* roll,
 //    float bodyvy = my_setpoint.velocity.y;
 
     my_setpoint.velocity.x = runPid(state->position.x, &my_this.pidX, my_setpoint.position.x, DT);
-//    my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
+    my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
 //    my_setpoint.velocity.x=0;
-    if(y_temp++>400){
-    	my_setpoint.velocity.y=500;
-    }else{
-    	my_setpoint.velocity.y=-500;
-    }
-    if(y_temp>800)y_temp=0;
+//    if(y_temp++>400){
+//    	my_setpoint.velocity.y=500;
+//    }else{
+//    	my_setpoint.velocity.y=-500;
+//    }
+//    if(y_temp>800)y_temp=0;
     my_setpoint.velocity.z = runPid(state->position.z, &my_this.pidZ, my_setpoint.position.z, DT);
 
     my_this.pidVX.pid.outputLimit = rpLimit * rpLimitOverhead;
