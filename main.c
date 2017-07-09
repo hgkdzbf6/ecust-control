@@ -83,6 +83,8 @@ extern DebugData receiveDebugData;
 extern ParamDebug sendParamDebug;
 extern PositionWayPointData sendPositionWayPointData;
 extern PositionWayPointData receivePositionWayPointData;
+extern LandSignal sendLandSignal;
+extern LandSignal receiveLandSignal;
 extern CmdData receiveCmdData;
 extern state_t my_setpoint;
 extern state_t my_state;
@@ -297,6 +299,12 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			my_send(1,PACKAGE_DEFINE_POSITION_WAY_POINT,
 					getPackageLength(PACKAGE_DEFINE_POSITION_WAY_POINT),
 					&sendPositionWayPointData,1);
+			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
+		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_LAND){
+			sendLandSignal.mode=receiveLandSignal.mode;
+			my_send(1,PACKAGE_DEFINE_LAND,
+					getPackageLength(PACKAGE_DEFINE_LAND),
+					&sendLandSignal,1);
 			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
 		}
 	}

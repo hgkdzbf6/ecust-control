@@ -1,64 +1,64 @@
    1              		.file	"uart.c"
    3              		.text
    4              	.Ltext0:
- 139              		.global	data_requested
- 140              		.bss
- 143              	data_requested:
- 144 0000 00       		.space	1
- 145              		.global	chksum_to_check
- 148              	chksum_to_check:
- 149 0001 00       		.space	1
- 150              		.global	chksum_trigger
- 151              		.data
- 154              	chksum_trigger:
- 155 0000 01       		.byte	1
- 156              		.global	transmission_running
- 157              		.bss
- 160              	transmission_running:
- 161 0002 00       		.space	1
- 162              		.global	transmission1_running
- 165              	transmission1_running:
- 166 0003 00       		.space	1
- 167              		.global	trigger_transmission
- 170              	trigger_transmission:
- 171 0004 00       		.space	1
- 172              		.global	baudrate1_change
- 175              	baudrate1_change:
- 176 0005 00       		.space	1
- 177              		.global	UART_syncstate
- 180              	UART_syncstate:
- 181 0006 00       		.space	1
- 182              		.global	UART1_syncstate
- 185              	UART1_syncstate:
- 186 0007 00       		.space	1
- 187              		.global	UART_rxcount
- 188              		.align	2
- 191              	UART_rxcount:
- 192 0008 00000000 		.space	4
- 193              		.global	UART1_rxcount
- 194              		.align	2
- 197              	UART1_rxcount:
- 198 000c 00000000 		.space	4
- 199              		.global	UART_CalibDoneFlag
- 202              	UART_CalibDoneFlag:
- 203 0010 00       		.space	1
- 204              	rb_busy:
- 205 0011 00       		.space	1
- 206              		.global	startstring
- 207              		.data
- 210              	startstring:
- 211 0001 3E       		.byte	62
- 212 0002 2A       		.byte	42
- 213 0003 3E       		.byte	62
- 214              		.global	stopstring
- 217              	stopstring:
- 218 0004 3C       		.byte	60
- 219 0005 23       		.byte	35
- 220 0006 3C       		.byte	60
- 221              		.text
- 222              		.align	2
- 224              		.global	uart1ISR
- 226              	uart1ISR:
+ 143              		.global	data_requested
+ 144              		.bss
+ 147              	data_requested:
+ 148 0000 00       		.space	1
+ 149              		.global	chksum_to_check
+ 152              	chksum_to_check:
+ 153 0001 00       		.space	1
+ 154              		.global	chksum_trigger
+ 155              		.data
+ 158              	chksum_trigger:
+ 159 0000 01       		.byte	1
+ 160              		.global	transmission_running
+ 161              		.bss
+ 164              	transmission_running:
+ 165 0002 00       		.space	1
+ 166              		.global	transmission1_running
+ 169              	transmission1_running:
+ 170 0003 00       		.space	1
+ 171              		.global	trigger_transmission
+ 174              	trigger_transmission:
+ 175 0004 00       		.space	1
+ 176              		.global	baudrate1_change
+ 179              	baudrate1_change:
+ 180 0005 00       		.space	1
+ 181              		.global	UART_syncstate
+ 184              	UART_syncstate:
+ 185 0006 00       		.space	1
+ 186              		.global	UART1_syncstate
+ 189              	UART1_syncstate:
+ 190 0007 00       		.space	1
+ 191              		.global	UART_rxcount
+ 192              		.align	2
+ 195              	UART_rxcount:
+ 196 0008 00000000 		.space	4
+ 197              		.global	UART1_rxcount
+ 198              		.align	2
+ 201              	UART1_rxcount:
+ 202 000c 00000000 		.space	4
+ 203              		.global	UART_CalibDoneFlag
+ 206              	UART_CalibDoneFlag:
+ 207 0010 00       		.space	1
+ 208              	rb_busy:
+ 209 0011 00       		.space	1
+ 210              		.global	startstring
+ 211              		.data
+ 214              	startstring:
+ 215 0001 3E       		.byte	62
+ 216 0002 2A       		.byte	42
+ 217 0003 3E       		.byte	62
+ 218              		.global	stopstring
+ 221              	stopstring:
+ 222 0004 3C       		.byte	60
+ 223 0005 23       		.byte	35
+ 224 0006 3C       		.byte	60
+ 225              		.text
+ 226              		.align	2
+ 228              		.global	uart1ISR
+ 230              	uart1ISR:
    1:uart.c        **** /*
    2:uart.c        **** 
    3:uart.c        **** Copyright (c) 2011, Ascending Technologies GmbH
@@ -144,2020 +144,2047 @@
   83:uart.c        **** extern DebugData receiveDebugData;
   84:uart.c        **** extern PositionWayPointData sendPositionWayPointData;
   85:uart.c        **** extern PositionWayPointData receivePositionWayPointData;
-  86:uart.c        **** extern int vicon_count;
-  87:uart.c        **** extern int receive_valid_data_flag;
-  88:uart.c        **** extern struct this_s my_this ;
-  89:uart.c        **** extern state_t my_state;
-  90:uart.c        **** extern int output_thrust;
-  91:uart.c        **** extern CmdData receiveCmdData;
-  92:uart.c        **** extern int pack_id;
-  93:uart.c        **** extern int vicon_tp;
-  94:uart.c        **** 
-  95:uart.c        **** void uart1ISR(void) __irq
-  96:uart.c        **** {
- 228              	.LM0:
- 229              		@ Function supports interworking.
- 230              		@ args = 0, pretend = 0, frame = 12
- 231              		@ frame_needed = 1, uses_anonymous_args = 0
- 232 0000 0DC0A0E1 		mov	ip, sp
- 233 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 234 0008 04B04CE2 		sub	fp, ip, #4
- 235 000c 0CD04DE2 		sub	sp, sp, #12
-  97:uart.c        ****   unsigned char t;
-  98:uart.c        ****   IENABLE;
-  99:uart.c        ****   unsigned iir = U1IIR;
- 237              	.LM1:
- 238 0010 8E32A0E3 		mov	r3, #-536870904
- 239 0014 013883E2 		add	r3, r3, #65536
- 240 0018 003093E5 		ldr	r3, [r3, #0]
- 241 001c 10300BE5 		str	r3, [fp, #-16]
- 100:uart.c        ****   // Handle UART interrupt
- 101:uart.c        ****   switch ((iir >> 1) & 0x7)
- 243              	.LM2:
- 244 0020 10301BE5 		ldr	r3, [fp, #-16]
- 245 0024 A330A0E1 		mov	r3, r3, lsr #1
- 246 0028 073003E2 		and	r3, r3, #7
- 247 002c 18300BE5 		str	r3, [fp, #-24]
- 248 0030 18301BE5 		ldr	r3, [fp, #-24]
- 249 0034 010053E3 		cmp	r3, #1
- 250 0038 0300000A 		beq	.L3
- 251 003c 18301BE5 		ldr	r3, [fp, #-24]
- 252 0040 020053E3 		cmp	r3, #2
- 253 0044 1300000A 		beq	.L4
- 254 0048 180000EA 		b	.L2
- 255              	.L3:
- 102:uart.c        ****     {
- 103:uart.c        ****       case 1:
- 104:uart.c        **** 		  // THRE interrupt
- 105:uart.c        **** 		 if (ringbuffer1(RBREAD, &t, 1))
- 257              	.LM3:
- 258 004c 11304BE2 		sub	r3, fp, #17
- 259 0050 0000A0E3 		mov	r0, #0
- 260 0054 0310A0E1 		mov	r1, r3
- 261 0058 0120A0E3 		mov	r2, #1
- 262 005c FEFFFFEB 		bl	ringbuffer1
- 263 0060 0030A0E1 		mov	r3, r0
- 264 0064 000053E3 		cmp	r3, #0
- 265 0068 0600000A 		beq	.L5
- 106:uart.c        **** 		 {
- 107:uart.c        **** 		   transmission1_running=1;
- 267              	.LM4:
- 268 006c 58209FE5 		ldr	r2, .L9
- 269 0070 0130A0E3 		mov	r3, #1
- 270 0074 0030C2E5 		strb	r3, [r2, #0]
- 108:uart.c        **** 		   UART1WriteChar(t);
- 272              	.LM5:
- 273 0078 11305BE5 		ldrb	r3, [fp, #-17]	@ zero_extendqisi2
- 274 007c 0300A0E1 		mov	r0, r3
- 275 0080 FEFFFFEB 		bl	UART1WriteChar
- 276 0084 090000EA 		b	.L2
- 277              	.L5:
- 109:uart.c        **** 		 }
- 110:uart.c        **** 		 else
- 111:uart.c        **** 		 {
- 112:uart.c        **** 		   transmission1_running=0;
- 279              	.LM6:
- 280 0088 3C309FE5 		ldr	r3, .L9
- 281 008c 0020A0E3 		mov	r2, #0
- 282 0090 0020C3E5 		strb	r2, [r3, #0]
- 113:uart.c        **** 		 }
- 114:uart.c        ****         break;
- 284              	.LM7:
- 285 0094 050000EA 		b	.L2
- 286              	.L4:
- 115:uart.c        ****       case 2:
- 116:uart.c        ****     	// RX interrupt
- 117:uart.c        **** 	    uBloxReceiveHandler(U1RBR);
- 288              	.LM8:
- 289 0098 0E32A0E3 		mov	r3, #-536870912
- 290 009c 013883E2 		add	r3, r3, #65536
- 291 00a0 003093E5 		ldr	r3, [r3, #0]
- 292 00a4 FF3003E2 		and	r3, r3, #255
- 293 00a8 0300A0E1 		mov	r0, r3
- 294 00ac FEFFFFEB 		bl	uBloxReceiveHandler
- 295              	.L2:
- 118:uart.c        **** 	    break;
- 119:uart.c        ****       case 3:
- 120:uart.c        ****         // RLS interrupt
- 121:uart.c        ****         break;
- 122:uart.c        ****       case 6:
- 123:uart.c        ****         // CTI interrupt
- 124:uart.c        ****         break;
- 125:uart.c        ****    }
- 126:uart.c        ****   IDISABLE;
- 127:uart.c        ****   VICVectAddr = 0;		/* Acknowledge Interrupt */
- 297              	.LM9:
- 298 00b0 0030A0E3 		mov	r3, #0
- 299 00b4 FD3E43E2 		sub	r3, r3, #4048
- 300 00b8 0020A0E3 		mov	r2, #0
- 301 00bc 002083E5 		str	r2, [r3, #0]
- 128:uart.c        **** }
- 303              	.LM10:
- 304 00c0 0CD04BE2 		sub	sp, fp, #12
- 305 00c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 306 00c8 1EFF2FE1 		bx	lr
- 307              	.L10:
- 308              		.align	2
- 309              	.L9:
- 310 00cc 00000000 		.word	transmission1_running
- 316              	.Lscope0:
- 317              		.global	__nesf2
- 318              		.align	2
- 320              		.global	uart0ISR
- 322              	uart0ISR:
- 129:uart.c        **** 
- 130:uart.c        **** 
+  86:uart.c        **** extern LandSignal sendLandSignal;
+  87:uart.c        **** extern LandSignal receiveLandSignal;
+  88:uart.c        **** extern int vicon_count;
+  89:uart.c        **** extern int receive_valid_data_flag;
+  90:uart.c        **** extern struct this_s my_this ;
+  91:uart.c        **** extern state_t my_state;
+  92:uart.c        **** extern int output_thrust;
+  93:uart.c        **** extern CmdData receiveCmdData;
+  94:uart.c        **** extern int pack_id;
+  95:uart.c        **** extern int vicon_tp;
+  96:uart.c        **** 
+  97:uart.c        **** void uart1ISR(void) __irq
+  98:uart.c        **** {
+ 232              	.LM0:
+ 233              		@ Function supports interworking.
+ 234              		@ args = 0, pretend = 0, frame = 12
+ 235              		@ frame_needed = 1, uses_anonymous_args = 0
+ 236 0000 0DC0A0E1 		mov	ip, sp
+ 237 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 238 0008 04B04CE2 		sub	fp, ip, #4
+ 239 000c 0CD04DE2 		sub	sp, sp, #12
+  99:uart.c        ****   unsigned char t;
+ 100:uart.c        ****   IENABLE;
+ 101:uart.c        ****   unsigned iir = U1IIR;
+ 241              	.LM1:
+ 242 0010 8E32A0E3 		mov	r3, #-536870904
+ 243 0014 013883E2 		add	r3, r3, #65536
+ 244 0018 003093E5 		ldr	r3, [r3, #0]
+ 245 001c 10300BE5 		str	r3, [fp, #-16]
+ 102:uart.c        ****   // Handle UART interrupt
+ 103:uart.c        ****   switch ((iir >> 1) & 0x7)
+ 247              	.LM2:
+ 248 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 249 0024 A330A0E1 		mov	r3, r3, lsr #1
+ 250 0028 073003E2 		and	r3, r3, #7
+ 251 002c 18300BE5 		str	r3, [fp, #-24]
+ 252 0030 18301BE5 		ldr	r3, [fp, #-24]
+ 253 0034 010053E3 		cmp	r3, #1
+ 254 0038 0300000A 		beq	.L3
+ 255 003c 18301BE5 		ldr	r3, [fp, #-24]
+ 256 0040 020053E3 		cmp	r3, #2
+ 257 0044 1300000A 		beq	.L4
+ 258 0048 180000EA 		b	.L2
+ 259              	.L3:
+ 104:uart.c        ****     {
+ 105:uart.c        ****       case 1:
+ 106:uart.c        **** 		  // THRE interrupt
+ 107:uart.c        **** 		 if (ringbuffer1(RBREAD, &t, 1))
+ 261              	.LM3:
+ 262 004c 11304BE2 		sub	r3, fp, #17
+ 263 0050 0000A0E3 		mov	r0, #0
+ 264 0054 0310A0E1 		mov	r1, r3
+ 265 0058 0120A0E3 		mov	r2, #1
+ 266 005c FEFFFFEB 		bl	ringbuffer1
+ 267 0060 0030A0E1 		mov	r3, r0
+ 268 0064 000053E3 		cmp	r3, #0
+ 269 0068 0600000A 		beq	.L5
+ 108:uart.c        **** 		 {
+ 109:uart.c        **** 		   transmission1_running=1;
+ 271              	.LM4:
+ 272 006c 58209FE5 		ldr	r2, .L9
+ 273 0070 0130A0E3 		mov	r3, #1
+ 274 0074 0030C2E5 		strb	r3, [r2, #0]
+ 110:uart.c        **** 		   UART1WriteChar(t);
+ 276              	.LM5:
+ 277 0078 11305BE5 		ldrb	r3, [fp, #-17]	@ zero_extendqisi2
+ 278 007c 0300A0E1 		mov	r0, r3
+ 279 0080 FEFFFFEB 		bl	UART1WriteChar
+ 280 0084 090000EA 		b	.L2
+ 281              	.L5:
+ 111:uart.c        **** 		 }
+ 112:uart.c        **** 		 else
+ 113:uart.c        **** 		 {
+ 114:uart.c        **** 		   transmission1_running=0;
+ 283              	.LM6:
+ 284 0088 3C309FE5 		ldr	r3, .L9
+ 285 008c 0020A0E3 		mov	r2, #0
+ 286 0090 0020C3E5 		strb	r2, [r3, #0]
+ 115:uart.c        **** 		 }
+ 116:uart.c        ****         break;
+ 288              	.LM7:
+ 289 0094 050000EA 		b	.L2
+ 290              	.L4:
+ 117:uart.c        ****       case 2:
+ 118:uart.c        ****     	// RX interrupt
+ 119:uart.c        **** 	    uBloxReceiveHandler(U1RBR);
+ 292              	.LM8:
+ 293 0098 0E32A0E3 		mov	r3, #-536870912
+ 294 009c 013883E2 		add	r3, r3, #65536
+ 295 00a0 003093E5 		ldr	r3, [r3, #0]
+ 296 00a4 FF3003E2 		and	r3, r3, #255
+ 297 00a8 0300A0E1 		mov	r0, r3
+ 298 00ac FEFFFFEB 		bl	uBloxReceiveHandler
+ 299              	.L2:
+ 120:uart.c        **** 	    break;
+ 121:uart.c        ****       case 3:
+ 122:uart.c        ****         // RLS interrupt
+ 123:uart.c        ****         break;
+ 124:uart.c        ****       case 6:
+ 125:uart.c        ****         // CTI interrupt
+ 126:uart.c        ****         break;
+ 127:uart.c        ****    }
+ 128:uart.c        ****   IDISABLE;
+ 129:uart.c        ****   VICVectAddr = 0;		/* Acknowledge Interrupt */
+ 301              	.LM9:
+ 302 00b0 0030A0E3 		mov	r3, #0
+ 303 00b4 FD3E43E2 		sub	r3, r3, #4048
+ 304 00b8 0020A0E3 		mov	r2, #0
+ 305 00bc 002083E5 		str	r2, [r3, #0]
+ 130:uart.c        **** }
+ 307              	.LM10:
+ 308 00c0 0CD04BE2 		sub	sp, fp, #12
+ 309 00c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 310 00c8 1EFF2FE1 		bx	lr
+ 311              	.L10:
+ 312              		.align	2
+ 313              	.L9:
+ 314 00cc 00000000 		.word	transmission1_running
+ 320              	.Lscope0:
+ 321              		.global	__nesf2
+ 322              		.align	2
+ 324              		.global	uart0ISR
+ 326              	uart0ISR:
  131:uart.c        **** 
- 132:uart.c        **** void uart0ISR(void) __irq
- 133:uart.c        **** {
- 324              	.LM11:
- 325              		@ Function supports interworking.
- 326              		@ args = 0, pretend = 0, frame = 12
- 327              		@ frame_needed = 1, uses_anonymous_args = 0
- 328 00d0 0DC0A0E1 		mov	ip, sp
- 329 00d4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 330 00d8 04B04CE2 		sub	fp, ip, #4
- 331 00dc 10D04DE2 		sub	sp, sp, #16
- 134:uart.c        ****   unsigned char t;
- 135:uart.c        ****   unsigned char receive_result;
- 136:uart.c        ****   unsigned char UART_rxdata;
- 137:uart.c        **** 
- 138:uart.c        ****   // Read IIR to clear interrupt and find out the cause
- 139:uart.c        ****   IENABLE;
- 140:uart.c        ****   unsigned iir = U0IIR;
- 333              	.LM12:
- 334 00e0 0339A0E3 		mov	r3, #49152
- 335 00e4 8E3283E2 		add	r3, r3, #-536870904
- 336 00e8 003093E5 		ldr	r3, [r3, #0]
- 337 00ec 10300BE5 		str	r3, [fp, #-16]
- 141:uart.c        ****   // Handle UART interrupt
- 142:uart.c        ****   switch ((iir >> 1) & 0x7)
- 339              	.LM13:
- 340 00f0 10301BE5 		ldr	r3, [fp, #-16]
- 341 00f4 A330A0E1 		mov	r3, r3, lsr #1
- 342 00f8 073003E2 		and	r3, r3, #7
- 343 00fc 18300BE5 		str	r3, [fp, #-24]
- 344 0100 18301BE5 		ldr	r3, [fp, #-24]
- 345 0104 010053E3 		cmp	r3, #1
- 346 0108 0300000A 		beq	.L13
- 347 010c 18301BE5 		ldr	r3, [fp, #-24]
- 348 0110 020053E3 		cmp	r3, #2
- 349 0114 2000000A 		beq	.L14
- 350 0118 FC0000EA 		b	.L12
- 351              	.L13:
- 143:uart.c        ****     {
- 144:uart.c        ****       case 1:
- 145:uart.c        ****         // THRE interrupt
- 146:uart.c        **** 		if(!(IOPIN0&(1<<CTS_RADIO)))
- 353              	.LM14:
- 354 011c 0E32A0E3 		mov	r3, #-536870912
- 355 0120 0A3983E2 		add	r3, r3, #163840
- 356 0124 003093E5 		ldr	r3, [r3, #0]
- 357 0128 013503E2 		and	r3, r3, #4194304
- 358 012c 000053E3 		cmp	r3, #0
- 359 0130 1500001A 		bne	.L15
- 147:uart.c        **** 		{
- 148:uart.c        **** 			trigger_transmission=0;
- 361              	.LM15:
- 362 0134 F0239FE5 		ldr	r2, .L35
- 363 0138 0030A0E3 		mov	r3, #0
- 364 013c 0030C2E5 		strb	r3, [r2, #0]
- 149:uart.c        **** 			 if (ringbuffer(RBREAD, &t, 1))
- 366              	.LM16:
- 367 0140 13304BE2 		sub	r3, fp, #19
- 368 0144 0000A0E3 		mov	r0, #0
- 369 0148 0310A0E1 		mov	r1, r3
- 370 014c 0120A0E3 		mov	r2, #1
- 371 0150 FEFFFFEB 		bl	ringbuffer
- 372 0154 0030A0E1 		mov	r3, r0
- 373 0158 000053E3 		cmp	r3, #0
- 374 015c 0600000A 		beq	.L17
- 150:uart.c        **** 		     {
- 151:uart.c        **** 		       transmission_running=1;
- 376              	.LM17:
- 377 0160 C8239FE5 		ldr	r2, .L35+4
- 378 0164 0130A0E3 		mov	r3, #1
- 379 0168 0030C2E5 		strb	r3, [r2, #0]
- 152:uart.c        **** 		       UARTWriteChar(t);
- 381              	.LM18:
- 382 016c 13305BE5 		ldrb	r3, [fp, #-19]	@ zero_extendqisi2
- 383 0170 0300A0E1 		mov	r0, r3
- 384 0174 FEFFFFEB 		bl	UARTWriteChar
- 385 0178 E40000EA 		b	.L12
- 386              	.L17:
- 153:uart.c        **** 		     }
- 154:uart.c        **** 		     else
- 155:uart.c        **** 		     {
- 156:uart.c        **** 		       transmission_running=0;
- 388              	.LM19:
- 389 017c AC339FE5 		ldr	r3, .L35+4
- 390 0180 0020A0E3 		mov	r2, #0
- 391 0184 0020C3E5 		strb	r2, [r3, #0]
- 392 0188 E00000EA 		b	.L12
- 393              	.L15:
- 157:uart.c        **** 		     }
- 158:uart.c        **** 		}
- 159:uart.c        **** 		else
- 160:uart.c        **** 		{
- 161:uart.c        **** 			trigger_transmission=1;
- 395              	.LM20:
- 396 018c 98339FE5 		ldr	r3, .L35
- 397 0190 0120A0E3 		mov	r2, #1
- 398 0194 0020C3E5 		strb	r2, [r3, #0]
- 162:uart.c        **** 		}
- 163:uart.c        **** 		break;
- 400              	.LM21:
- 401 0198 DC0000EA 		b	.L12
- 402              	.L14:
- 164:uart.c        **** 
- 165:uart.c        ****       case 2:
- 166:uart.c        ****         // RDA interrupt - put your HL_serial_0 receive state machine here!
- 167:uart.c        ****         UART_rxdata = U0RBR;
- 404              	.LM22:
- 405 019c 0E32A0E3 		mov	r3, #-536870912
- 406 01a0 033983E2 		add	r3, r3, #49152
- 407 01a4 003093E5 		ldr	r3, [r3, #0]
- 408 01a8 11304BE5 		strb	r3, [fp, #-17]
- 168:uart.c        **** 
- 169:uart.c        ****         receive_result=my_receive(UART_rxdata,my_buffer,
- 410              	.LM23:
- 411 01ac 11205BE5 		ldrb	r2, [fp, #-17]	@ zero_extendqisi2
- 412 01b0 0130A0E3 		mov	r3, #1
- 413 01b4 00308DE5 		str	r3, [sp, #0]
- 414 01b8 0200A0E1 		mov	r0, r2
- 415 01bc 70139FE5 		ldr	r1, .L35+8
- 416 01c0 70239FE5 		ldr	r2, .L35+12
- 417 01c4 70339FE5 		ldr	r3, .L35+16
- 418 01c8 FEFFFFEB 		bl	my_receive
- 419 01cc 0030A0E1 		mov	r3, r0
- 420 01d0 12304BE5 		strb	r3, [fp, #-18]
- 170:uart.c        **** 				allDataBuffer,&pack_id,1);
- 171:uart.c        **** 		if(receive_result==RECEIVE_STATE_SUCCESS){
- 422              	.LM24:
- 423 01d4 12305BE5 		ldrb	r3, [fp, #-18]	@ zero_extendqisi2
- 424 01d8 020053E3 		cmp	r3, #2
- 425 01dc CB00001A 		bne	.L12
- 172:uart.c        **** 			switch(pack_id){
- 427              	.LM25:
- 428 01e0 54339FE5 		ldr	r3, .L35+16
- 429 01e4 003093E5 		ldr	r3, [r3, #0]
- 430 01e8 013043E2 		sub	r3, r3, #1
- 431 01ec 070053E3 		cmp	r3, #7
- 432 01f0 03F19F97 		ldrls	pc, [pc, r3, asl #2]
- 433 01f4 C50000EA 		b	.L12
- 434              		.align	2
- 435              	.L30:
- 436 01f8 10050000 		.word	.L12
- 437 01fc 18020000 		.word	.L23
- 438 0200 10050000 		.word	.L12
- 439 0204 10050000 		.word	.L12
- 440 0208 84020000 		.word	.L26
- 441 020c 70030000 		.word	.L27
- 442 0210 68040000 		.word	.L28
- 443 0214 A0040000 		.word	.L29
- 444              	.L23:
- 173:uart.c        **** 			case PACKAGE_DEFINE_STATUS:
- 174:uart.c        **** 				break;
- 175:uart.c        **** 			case PACKAGE_DEFINE_VICON:
- 176:uart.c        **** 				memcpy(&receivedViconData,
- 446              	.LM26:
- 447 0218 1C339FE5 		ldr	r3, .L35+16
- 448 021c 003093E5 		ldr	r3, [r3, #0]
- 449 0220 0300A0E1 		mov	r0, r3
- 450 0224 FEFFFFEB 		bl	getPackageLength
- 451 0228 0030A0E1 		mov	r3, r0
- 452 022c 0310A0E1 		mov	r1, r3
- 453 0230 08339FE5 		ldr	r3, .L35+20
- 454 0234 FC229FE5 		ldr	r2, .L35+12
- 455 0238 01C0A0E1 		mov	ip, r1
- 456 023c 0300A0E1 		mov	r0, r3
- 457 0240 0210A0E1 		mov	r1, r2
- 458 0244 0C20A0E1 		mov	r2, ip
- 459 0248 FEFFFFEB 		bl	memcpy
- 177:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
- 178:uart.c        **** 				my_state.position.z=receivedViconData.z;
- 461              	.LM27:
- 462 024c EC329FE5 		ldr	r3, .L35+20
- 463 0250 0C2093E5 		ldr	r2, [r3, #12]	@ float
- 464 0254 E8329FE5 		ldr	r3, .L35+24
- 465 0258 082083E5 		str	r2, [r3, #8]	@ float
- 179:uart.c        **** 				my_state.velocity.z=receivedViconData.vz;
- 467              	.LM28:
- 468 025c DC329FE5 		ldr	r3, .L35+20
- 469 0260 242093E5 		ldr	r2, [r3, #36]	@ float
- 470 0264 D8329FE5 		ldr	r3, .L35+24
- 471 0268 142083E5 		str	r2, [r3, #20]	@ float
- 180:uart.c        **** 				vicon_count++;
- 473              	.LM29:
- 474 026c D4329FE5 		ldr	r3, .L35+28
- 475 0270 003093E5 		ldr	r3, [r3, #0]
- 476 0274 012083E2 		add	r2, r3, #1
- 477 0278 C8329FE5 		ldr	r3, .L35+28
- 478 027c 002083E5 		str	r2, [r3, #0]
- 181:uart.c        **** 				break;
- 480              	.LM30:
- 481 0280 A20000EA 		b	.L12
- 482              	.L26:
- 182:uart.c        **** 			case PACKAGE_DEFINE_SENSOR:
+ 132:uart.c        **** 
+ 133:uart.c        **** 
+ 134:uart.c        **** void uart0ISR(void) __irq
+ 135:uart.c        **** {
+ 328              	.LM11:
+ 329              		@ Function supports interworking.
+ 330              		@ args = 0, pretend = 0, frame = 12
+ 331              		@ frame_needed = 1, uses_anonymous_args = 0
+ 332 00d0 0DC0A0E1 		mov	ip, sp
+ 333 00d4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 334 00d8 04B04CE2 		sub	fp, ip, #4
+ 335 00dc 10D04DE2 		sub	sp, sp, #16
+ 136:uart.c        ****   unsigned char t;
+ 137:uart.c        ****   unsigned char receive_result;
+ 138:uart.c        ****   unsigned char UART_rxdata;
+ 139:uart.c        **** 
+ 140:uart.c        ****   // Read IIR to clear interrupt and find out the cause
+ 141:uart.c        ****   IENABLE;
+ 142:uart.c        ****   unsigned iir = U0IIR;
+ 337              	.LM12:
+ 338 00e0 0339A0E3 		mov	r3, #49152
+ 339 00e4 8E3283E2 		add	r3, r3, #-536870904
+ 340 00e8 003093E5 		ldr	r3, [r3, #0]
+ 341 00ec 10300BE5 		str	r3, [fp, #-16]
+ 143:uart.c        ****   // Handle UART interrupt
+ 144:uart.c        ****   switch ((iir >> 1) & 0x7)
+ 343              	.LM13:
+ 344 00f0 10301BE5 		ldr	r3, [fp, #-16]
+ 345 00f4 A330A0E1 		mov	r3, r3, lsr #1
+ 346 00f8 073003E2 		and	r3, r3, #7
+ 347 00fc 18300BE5 		str	r3, [fp, #-24]
+ 348 0100 18301BE5 		ldr	r3, [fp, #-24]
+ 349 0104 010053E3 		cmp	r3, #1
+ 350 0108 0300000A 		beq	.L13
+ 351 010c 18301BE5 		ldr	r3, [fp, #-24]
+ 352 0110 020053E3 		cmp	r3, #2
+ 353 0114 2000000A 		beq	.L14
+ 354 0118 0D0100EA 		b	.L12
+ 355              	.L13:
+ 145:uart.c        ****     {
+ 146:uart.c        ****       case 1:
+ 147:uart.c        ****         // THRE interrupt
+ 148:uart.c        **** 		if(!(IOPIN0&(1<<CTS_RADIO)))
+ 357              	.LM14:
+ 358 011c 0E32A0E3 		mov	r3, #-536870912
+ 359 0120 0A3983E2 		add	r3, r3, #163840
+ 360 0124 003093E5 		ldr	r3, [r3, #0]
+ 361 0128 013503E2 		and	r3, r3, #4194304
+ 362 012c 000053E3 		cmp	r3, #0
+ 363 0130 1500001A 		bne	.L15
+ 149:uart.c        **** 		{
+ 150:uart.c        **** 			trigger_transmission=0;
+ 365              	.LM15:
+ 366 0134 34249FE5 		ldr	r2, .L36
+ 367 0138 0030A0E3 		mov	r3, #0
+ 368 013c 0030C2E5 		strb	r3, [r2, #0]
+ 151:uart.c        **** 			 if (ringbuffer(RBREAD, &t, 1))
+ 370              	.LM16:
+ 371 0140 13304BE2 		sub	r3, fp, #19
+ 372 0144 0000A0E3 		mov	r0, #0
+ 373 0148 0310A0E1 		mov	r1, r3
+ 374 014c 0120A0E3 		mov	r2, #1
+ 375 0150 FEFFFFEB 		bl	ringbuffer
+ 376 0154 0030A0E1 		mov	r3, r0
+ 377 0158 000053E3 		cmp	r3, #0
+ 378 015c 0600000A 		beq	.L17
+ 152:uart.c        **** 		     {
+ 153:uart.c        **** 		       transmission_running=1;
+ 380              	.LM17:
+ 381 0160 0C249FE5 		ldr	r2, .L36+4
+ 382 0164 0130A0E3 		mov	r3, #1
+ 383 0168 0030C2E5 		strb	r3, [r2, #0]
+ 154:uart.c        **** 		       UARTWriteChar(t);
+ 385              	.LM18:
+ 386 016c 13305BE5 		ldrb	r3, [fp, #-19]	@ zero_extendqisi2
+ 387 0170 0300A0E1 		mov	r0, r3
+ 388 0174 FEFFFFEB 		bl	UARTWriteChar
+ 389 0178 F50000EA 		b	.L12
+ 390              	.L17:
+ 155:uart.c        **** 		     }
+ 156:uart.c        **** 		     else
+ 157:uart.c        **** 		     {
+ 158:uart.c        **** 		       transmission_running=0;
+ 392              	.LM19:
+ 393 017c F0339FE5 		ldr	r3, .L36+4
+ 394 0180 0020A0E3 		mov	r2, #0
+ 395 0184 0020C3E5 		strb	r2, [r3, #0]
+ 396 0188 F10000EA 		b	.L12
+ 397              	.L15:
+ 159:uart.c        **** 		     }
+ 160:uart.c        **** 		}
+ 161:uart.c        **** 		else
+ 162:uart.c        **** 		{
+ 163:uart.c        **** 			trigger_transmission=1;
+ 399              	.LM20:
+ 400 018c DC339FE5 		ldr	r3, .L36
+ 401 0190 0120A0E3 		mov	r2, #1
+ 402 0194 0020C3E5 		strb	r2, [r3, #0]
+ 164:uart.c        **** 		}
+ 165:uart.c        **** 		break;
+ 404              	.LM21:
+ 405 0198 ED0000EA 		b	.L12
+ 406              	.L14:
+ 166:uart.c        **** 
+ 167:uart.c        ****       case 2:
+ 168:uart.c        ****         // RDA interrupt - put your HL_serial_0 receive state machine here!
+ 169:uart.c        ****         UART_rxdata = U0RBR;
+ 408              	.LM22:
+ 409 019c 0E32A0E3 		mov	r3, #-536870912
+ 410 01a0 033983E2 		add	r3, r3, #49152
+ 411 01a4 003093E5 		ldr	r3, [r3, #0]
+ 412 01a8 11304BE5 		strb	r3, [fp, #-17]
+ 170:uart.c        **** 
+ 171:uart.c        ****         receive_result=my_receive(UART_rxdata,my_buffer,
+ 414              	.LM23:
+ 415 01ac 11205BE5 		ldrb	r2, [fp, #-17]	@ zero_extendqisi2
+ 416 01b0 0130A0E3 		mov	r3, #1
+ 417 01b4 00308DE5 		str	r3, [sp, #0]
+ 418 01b8 0200A0E1 		mov	r0, r2
+ 419 01bc B4139FE5 		ldr	r1, .L36+8
+ 420 01c0 B4239FE5 		ldr	r2, .L36+12
+ 421 01c4 B4339FE5 		ldr	r3, .L36+16
+ 422 01c8 FEFFFFEB 		bl	my_receive
+ 423 01cc 0030A0E1 		mov	r3, r0
+ 424 01d0 12304BE5 		strb	r3, [fp, #-18]
+ 172:uart.c        **** 				allDataBuffer,&pack_id,1);
+ 173:uart.c        **** 		if(receive_result==RECEIVE_STATE_SUCCESS){
+ 426              	.LM24:
+ 427 01d4 12305BE5 		ldrb	r3, [fp, #-18]	@ zero_extendqisi2
+ 428 01d8 020053E3 		cmp	r3, #2
+ 429 01dc DC00001A 		bne	.L12
+ 174:uart.c        **** 			switch(pack_id){
+ 431              	.LM25:
+ 432 01e0 98339FE5 		ldr	r3, .L36+16
+ 433 01e4 003093E5 		ldr	r3, [r3, #0]
+ 434 01e8 013043E2 		sub	r3, r3, #1
+ 435 01ec 080053E3 		cmp	r3, #8
+ 436 01f0 03F19F97 		ldrls	pc, [pc, r3, asl #2]
+ 437 01f4 D60000EA 		b	.L12
+ 438              		.align	2
+ 439              	.L31:
+ 440 01f8 54050000 		.word	.L12
+ 441 01fc 1C020000 		.word	.L23
+ 442 0200 54050000 		.word	.L12
+ 443 0204 54050000 		.word	.L12
+ 444 0208 88020000 		.word	.L26
+ 445 020c 74030000 		.word	.L27
+ 446 0210 6C040000 		.word	.L28
+ 447 0214 A4040000 		.word	.L29
+ 448 0218 14050000 		.word	.L30
+ 449              	.L23:
+ 175:uart.c        **** 			case PACKAGE_DEFINE_STATUS:
+ 176:uart.c        **** 				break;
+ 177:uart.c        **** 			case PACKAGE_DEFINE_VICON:
+ 178:uart.c        **** 				memcpy(&receivedViconData,
+ 451              	.LM26:
+ 452 021c 5C339FE5 		ldr	r3, .L36+16
+ 453 0220 003093E5 		ldr	r3, [r3, #0]
+ 454 0224 0300A0E1 		mov	r0, r3
+ 455 0228 FEFFFFEB 		bl	getPackageLength
+ 456 022c 0030A0E1 		mov	r3, r0
+ 457 0230 0310A0E1 		mov	r1, r3
+ 458 0234 48339FE5 		ldr	r3, .L36+20
+ 459 0238 3C239FE5 		ldr	r2, .L36+12
+ 460 023c 01C0A0E1 		mov	ip, r1
+ 461 0240 0300A0E1 		mov	r0, r3
+ 462 0244 0210A0E1 		mov	r1, r2
+ 463 0248 0C20A0E1 		mov	r2, ip
+ 464 024c FEFFFFEB 		bl	memcpy
+ 179:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
+ 180:uart.c        **** 				my_state.position.z=receivedViconData.z;
+ 466              	.LM27:
+ 467 0250 2C339FE5 		ldr	r3, .L36+20
+ 468 0254 0C2093E5 		ldr	r2, [r3, #12]	@ float
+ 469 0258 28339FE5 		ldr	r3, .L36+24
+ 470 025c 082083E5 		str	r2, [r3, #8]	@ float
+ 181:uart.c        **** 				my_state.velocity.z=receivedViconData.vz;
+ 472              	.LM28:
+ 473 0260 1C339FE5 		ldr	r3, .L36+20
+ 474 0264 242093E5 		ldr	r2, [r3, #36]	@ float
+ 475 0268 18339FE5 		ldr	r3, .L36+24
+ 476 026c 142083E5 		str	r2, [r3, #20]	@ float
+ 182:uart.c        **** 				vicon_count++;
+ 478              	.LM29:
+ 479 0270 14339FE5 		ldr	r3, .L36+28
+ 480 0274 003093E5 		ldr	r3, [r3, #0]
+ 481 0278 012083E2 		add	r2, r3, #1
+ 482 027c 08339FE5 		ldr	r3, .L36+28
+ 483 0280 002083E5 		str	r2, [r3, #0]
  183:uart.c        **** 				break;
- 184:uart.c        **** 			case PACKAGE_DEFINE_FUSION:
+ 485              	.LM30:
+ 486 0284 B20000EA 		b	.L12
+ 487              	.L26:
+ 184:uart.c        **** 			case PACKAGE_DEFINE_SENSOR:
  185:uart.c        **** 				break;
- 186:uart.c        **** 			case PACKAGE_DEFINE_DEBUG:
- 187:uart.c        **** 				memcpy(&receiveDebugData,
- 484              	.LM31:
- 485 0284 B0329FE5 		ldr	r3, .L35+16
- 486 0288 003093E5 		ldr	r3, [r3, #0]
- 487 028c 0300A0E1 		mov	r0, r3
- 488 0290 FEFFFFEB 		bl	getPackageLength
- 489 0294 0030A0E1 		mov	r3, r0
- 490 0298 0310A0E1 		mov	r1, r3
- 491 029c A8329FE5 		ldr	r3, .L35+32
- 492 02a0 90229FE5 		ldr	r2, .L35+12
- 493 02a4 01C0A0E1 		mov	ip, r1
- 494 02a8 0300A0E1 		mov	r0, r3
- 495 02ac 0210A0E1 		mov	r1, r2
- 496 02b0 0C20A0E1 		mov	r2, ip
- 497 02b4 FEFFFFEB 		bl	memcpy
- 188:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
- 189:uart.c        **** 				my_state.position.x=receiveDebugData.x;
- 499              	.LM32:
- 500 02b8 8C329FE5 		ldr	r3, .L35+32
- 501 02bc 042093E5 		ldr	r2, [r3, #4]	@ float
- 502 02c0 7C329FE5 		ldr	r3, .L35+24
- 503 02c4 002083E5 		str	r2, [r3, #0]	@ float
- 190:uart.c        **** 				my_state.position.y=receiveDebugData.y;
- 505              	.LM33:
- 506 02c8 7C329FE5 		ldr	r3, .L35+32
- 507 02cc 082093E5 		ldr	r2, [r3, #8]	@ float
- 508 02d0 6C329FE5 		ldr	r3, .L35+24
- 509 02d4 042083E5 		str	r2, [r3, #4]	@ float
- 191:uart.c        **** 				my_state.position.z=receiveDebugData.z;
- 511              	.LM34:
- 512 02d8 6C329FE5 		ldr	r3, .L35+32
- 513 02dc 0C2093E5 		ldr	r2, [r3, #12]	@ float
- 514 02e0 5C329FE5 		ldr	r3, .L35+24
- 515 02e4 082083E5 		str	r2, [r3, #8]	@ float
- 192:uart.c        **** 				my_state.velocity.x=receiveDebugData.vx;
- 517              	.LM35:
- 518 02e8 5C329FE5 		ldr	r3, .L35+32
- 519 02ec 102093E5 		ldr	r2, [r3, #16]	@ float
- 520 02f0 4C329FE5 		ldr	r3, .L35+24
- 521 02f4 0C2083E5 		str	r2, [r3, #12]	@ float
- 193:uart.c        **** 				my_state.velocity.y=receiveDebugData.vy;
- 523              	.LM36:
- 524 02f8 4C329FE5 		ldr	r3, .L35+32
- 525 02fc 142093E5 		ldr	r2, [r3, #20]	@ float
- 526 0300 3C329FE5 		ldr	r3, .L35+24
- 527 0304 102083E5 		str	r2, [r3, #16]	@ float
- 194:uart.c        **** 				my_state.velocity.z=receiveDebugData.vz;
- 529              	.LM37:
- 530 0308 3C329FE5 		ldr	r3, .L35+32
- 531 030c 182093E5 		ldr	r2, [r3, #24]	@ float
- 532 0310 2C329FE5 		ldr	r3, .L35+24
- 533 0314 142083E5 		str	r2, [r3, #20]	@ float
- 195:uart.c        **** 				my_state.attitude.pitch=receiveDebugData.pitch;
- 535              	.LM38:
- 536 0318 2C329FE5 		ldr	r3, .L35+32
- 537 031c 1C2093E5 		ldr	r2, [r3, #28]	@ float
- 538 0320 1C329FE5 		ldr	r3, .L35+24
- 539 0324 202083E5 		str	r2, [r3, #32]	@ float
- 196:uart.c        **** 				my_state.attitude.roll=receiveDebugData.roll;
- 541              	.LM39:
- 542 0328 1C329FE5 		ldr	r3, .L35+32
- 543 032c 202093E5 		ldr	r2, [r3, #32]	@ float
- 544 0330 0C329FE5 		ldr	r3, .L35+24
- 545 0334 1C2083E5 		str	r2, [r3, #28]	@ float
- 197:uart.c        **** 				my_state.attitude.yaw=receiveDebugData.yaw;
- 547              	.LM40:
- 548 0338 0C329FE5 		ldr	r3, .L35+32
- 549 033c 242093E5 		ldr	r2, [r3, #36]	@ float
- 550 0340 FC319FE5 		ldr	r3, .L35+24
- 551 0344 242083E5 		str	r2, [r3, #36]	@ float
- 198:uart.c        **** 				vicon_tp=receiveDebugData.timestamp;
- 553              	.LM41:
- 554 0348 FC319FE5 		ldr	r3, .L35+32
- 555 034c 002093E5 		ldr	r2, [r3, #0]
- 556 0350 F8319FE5 		ldr	r3, .L35+36
- 557 0354 002083E5 		str	r2, [r3, #0]
- 199:uart.c        **** 				vicon_count++;
- 559              	.LM42:
- 560 0358 E8319FE5 		ldr	r3, .L35+28
- 561 035c 003093E5 		ldr	r3, [r3, #0]
- 562 0360 012083E2 		add	r2, r3, #1
- 563 0364 DC319FE5 		ldr	r3, .L35+28
- 564 0368 002083E5 		str	r2, [r3, #0]
- 200:uart.c        **** 				break;
- 566              	.LM43:
- 567 036c 670000EA 		b	.L12
- 568              	.L27:
- 201:uart.c        **** 			case PACKAGE_DEFINE_PARAM:
- 202:uart.c        **** 				memcpy(&receiveParamDebug,
- 570              	.LM44:
- 571 0370 C4319FE5 		ldr	r3, .L35+16
- 572 0374 003093E5 		ldr	r3, [r3, #0]
- 573 0378 0300A0E1 		mov	r0, r3
- 574 037c FEFFFFEB 		bl	getPackageLength
- 575 0380 0030A0E1 		mov	r3, r0
- 576 0384 0310A0E1 		mov	r1, r3
- 577 0388 C4319FE5 		ldr	r3, .L35+40
- 578 038c A4219FE5 		ldr	r2, .L35+12
- 579 0390 01C0A0E1 		mov	ip, r1
- 580 0394 0300A0E1 		mov	r0, r3
- 581 0398 0210A0E1 		mov	r1, r2
- 582 039c 0C20A0E1 		mov	r2, ip
- 583 03a0 FEFFFFEB 		bl	memcpy
- 203:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
- 204:uart.c        **** 	        	if(receiveParamDebug.kp_p!=0){
- 585              	.LM45:
- 586 03a4 A8319FE5 		ldr	r3, .L35+40
- 587 03a8 0C3093E5 		ldr	r3, [r3, #12]	@ float
- 588 03ac 0300A0E1 		mov	r0, r3
- 589 03b0 A0119FE5 		ldr	r1, .L35+44	@ float
- 590 03b4 FEFFFFEB 		bl	__nesf2
- 591 03b8 0030A0E1 		mov	r3, r0
- 592 03bc 000053E3 		cmp	r3, #0
- 593 03c0 0000001A 		bne	.L33
- 594 03c4 160000EA 		b	.L31
- 595              	.L33:
- 205:uart.c        **** 	        		receive_valid_data_flag=1;
- 597              	.LM46:
- 598 03c8 8C219FE5 		ldr	r2, .L35+48
- 599 03cc 0130A0E3 		mov	r3, #1
- 600 03d0 003082E5 		str	r3, [r2, #0]
- 206:uart.c        **** 	        		my_this.pidZ.pid.kp=receiveParamDebug.kp_p;
- 602              	.LM47:
- 603 03d4 78319FE5 		ldr	r3, .L35+40
- 604 03d8 0C2093E5 		ldr	r2, [r3, #12]	@ float
- 605 03dc 7C319FE5 		ldr	r3, .L35+52
- 606 03e0 602083E5 		str	r2, [r3, #96]	@ float
- 207:uart.c        **** 	        		my_this.pidZ.pid.ki=receiveParamDebug.ki_p;
- 608              	.LM48:
- 609 03e4 68319FE5 		ldr	r3, .L35+40
- 610 03e8 102093E5 		ldr	r2, [r3, #16]	@ float
- 611 03ec 6C319FE5 		ldr	r3, .L35+52
- 612 03f0 642083E5 		str	r2, [r3, #100]	@ float
- 208:uart.c        **** 	        		my_this.pidVZ.pid.kp=receiveParamDebug.kp_v;
- 614              	.LM49:
- 615 03f4 58319FE5 		ldr	r3, .L35+40
- 616 03f8 042093E5 		ldr	r2, [r3, #4]	@ float
- 617 03fc 5C319FE5 		ldr	r3, .L35+52
- 618 0400 142083E5 		str	r2, [r3, #20]	@ float
- 209:uart.c        **** 	        		my_this.pidVZ.pid.ki=receiveParamDebug.ki_v;
- 620              	.LM50:
- 621 0404 48319FE5 		ldr	r3, .L35+40
- 622 0408 082093E5 		ldr	r2, [r3, #8]	@ float
- 623 040c 4C319FE5 		ldr	r3, .L35+52
- 624 0410 182083E5 		str	r2, [r3, #24]	@ float
- 210:uart.c        **** 	        		my_setpoint.velocity.z=receiveParamDebug.set_velocity;
- 626              	.LM51:
- 627 0414 38319FE5 		ldr	r3, .L35+40
- 628 0418 1C2093E5 		ldr	r2, [r3, #28]	@ float
- 629 041c 40319FE5 		ldr	r3, .L35+56
- 630 0420 142083E5 		str	r2, [r3, #20]	@ float
- 631              	.L31:
- 211:uart.c        **** 	        	}
- 212:uart.c        **** 	    		my_state.position.z=receiveParamDebug.z;
- 633              	.LM52:
- 634 0424 28319FE5 		ldr	r3, .L35+40
- 635 0428 142093E5 		ldr	r2, [r3, #20]	@ float
- 636 042c 10319FE5 		ldr	r3, .L35+24
- 637 0430 082083E5 		str	r2, [r3, #8]	@ float
- 213:uart.c        **** 	    		my_state.velocity.z=receiveParamDebug.vz;
- 639              	.LM53:
- 640 0434 18319FE5 		ldr	r3, .L35+40
- 641 0438 182093E5 		ldr	r2, [r3, #24]	@ float
- 642 043c 00319FE5 		ldr	r3, .L35+24
- 643 0440 142083E5 		str	r2, [r3, #20]	@ float
- 214:uart.c        **** 	        	vicon_count++;
- 645              	.LM54:
- 646 0444 FC309FE5 		ldr	r3, .L35+28
- 647 0448 003093E5 		ldr	r3, [r3, #0]
- 648 044c 012083E2 		add	r2, r3, #1
- 649 0450 F0309FE5 		ldr	r3, .L35+28
- 650 0454 002083E5 		str	r2, [r3, #0]
- 215:uart.c        **** 				receiveCmdData.cmd=PACKAGE_DEFINE_PARAM;
- 652              	.LM55:
- 653 0458 08219FE5 		ldr	r2, .L35+60
- 654 045c 0630A0E3 		mov	r3, #6
- 655 0460 003082E5 		str	r3, [r2, #0]
- 216:uart.c        **** 				break;
- 657              	.LM56:
- 658 0464 290000EA 		b	.L12
- 659              	.L28:
- 217:uart.c        **** 			case PACKAGE_DEFINE_CMD:
- 218:uart.c        **** 				memcpy(&receiveCmdData,
- 661              	.LM57:
- 662 0468 CC309FE5 		ldr	r3, .L35+16
- 663 046c 003093E5 		ldr	r3, [r3, #0]
- 664 0470 0300A0E1 		mov	r0, r3
- 665 0474 FEFFFFEB 		bl	getPackageLength
- 666 0478 0030A0E1 		mov	r3, r0
- 667 047c 0310A0E1 		mov	r1, r3
- 668 0480 E0309FE5 		ldr	r3, .L35+60
- 669 0484 AC209FE5 		ldr	r2, .L35+12
- 670 0488 01C0A0E1 		mov	ip, r1
- 671 048c 0300A0E1 		mov	r0, r3
- 672 0490 0210A0E1 		mov	r1, r2
- 673 0494 0C20A0E1 		mov	r2, ip
- 674 0498 FEFFFFEB 		bl	memcpy
- 219:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
- 220:uart.c        **** 				break;
- 676              	.LM58:
- 677 049c 1B0000EA 		b	.L12
- 678              	.L29:
- 221:uart.c        **** 			case PACKAGE_DEFINE_POSITION_WAY_POINT:
- 222:uart.c        **** 				memcpy(&receivePositionWayPointData,
- 680              	.LM59:
- 681 04a0 94309FE5 		ldr	r3, .L35+16
- 682 04a4 003093E5 		ldr	r3, [r3, #0]
- 683 04a8 0300A0E1 		mov	r0, r3
- 684 04ac FEFFFFEB 		bl	getPackageLength
- 685 04b0 0030A0E1 		mov	r3, r0
- 686 04b4 0310A0E1 		mov	r1, r3
- 687 04b8 AC309FE5 		ldr	r3, .L35+64
- 688 04bc 74209FE5 		ldr	r2, .L35+12
- 689 04c0 01C0A0E1 		mov	ip, r1
- 690 04c4 0300A0E1 		mov	r0, r3
- 691 04c8 0210A0E1 		mov	r1, r2
- 692 04cc 0C20A0E1 		mov	r2, ip
- 693 04d0 FEFFFFEB 		bl	memcpy
- 223:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
- 224:uart.c        **** 				my_setpoint.position.x=receivePositionWayPointData.x;
- 695              	.LM60:
- 696 04d4 90309FE5 		ldr	r3, .L35+64
- 697 04d8 002093E5 		ldr	r2, [r3, #0]	@ float
- 698 04dc 80309FE5 		ldr	r3, .L35+56
- 699 04e0 002083E5 		str	r2, [r3, #0]	@ float
- 225:uart.c        **** 				my_setpoint.position.y=receivePositionWayPointData.y;
- 701              	.LM61:
- 702 04e4 80309FE5 		ldr	r3, .L35+64
- 703 04e8 042093E5 		ldr	r2, [r3, #4]	@ float
- 704 04ec 70309FE5 		ldr	r3, .L35+56
- 705 04f0 042083E5 		str	r2, [r3, #4]	@ float
- 226:uart.c        **** 				my_setpoint.position.z=receivePositionWayPointData.z;
- 707              	.LM62:
- 708 04f4 70309FE5 		ldr	r3, .L35+64
- 709 04f8 082093E5 		ldr	r2, [r3, #8]	@ float
- 710 04fc 60309FE5 		ldr	r3, .L35+56
- 711 0500 082083E5 		str	r2, [r3, #8]	@ float
- 227:uart.c        **** 				receiveCmdData.cmd=PACKAGE_DEFINE_POSITION_WAY_POINT;
- 713              	.LM63:
- 714 0504 5C209FE5 		ldr	r2, .L35+60
- 715 0508 0830A0E3 		mov	r3, #8
- 716 050c 003082E5 		str	r3, [r2, #0]
- 717              	.L12:
- 228:uart.c        **** 			default:
- 229:uart.c        **** 				break;
- 230:uart.c        **** 			}
- 231:uart.c        ****         }
- 232:uart.c        **** 
- 233:uart.c        **** //        if (UART_syncstate==0)
- 234:uart.c        **** //		{
- 235:uart.c        **** //			if (UART_rxdata=='>') UART_syncstate++; else UART_syncstate=0;
- 236:uart.c        **** //		}
- 237:uart.c        **** //		else if (UART_syncstate==1)
- 238:uart.c        **** //		{
- 239:uart.c        **** //			if (UART_rxdata=='*') UART_syncstate++; else UART_syncstate=0;
- 240:uart.c        **** //		}
- 241:uart.c        **** //		else if (UART_syncstate==2)
- 242:uart.c        **** //		{
- 243:uart.c        **** //			if (UART_rxdata=='>') UART_syncstate++; else UART_syncstate=0;
- 244:uart.c        **** //		}
- 245:uart.c        **** //		else if (UART_syncstate==3)
- 246:uart.c        **** //		{
- 247:uart.c        **** //			//synchronized to start string => receive your data from here
- 248:uart.c        **** //           UART_syncstate=0;
- 249:uart.c        **** //        }
- 250:uart.c        **** //		else UART_syncstate=0;
- 251:uart.c        **** 
- 252:uart.c        **** 
- 253:uart.c        **** 
- 254:uart.c        **** 
- 255:uart.c        **** 
- 256:uart.c        **** 
- 257:uart.c        ****         break;
- 258:uart.c        ****       case 3:
- 259:uart.c        ****         // RLS interrupt
- 260:uart.c        ****         break;
- 261:uart.c        ****       case 6:
- 262:uart.c        ****         // CTI interrupt
+ 186:uart.c        **** 			case PACKAGE_DEFINE_FUSION:
+ 187:uart.c        **** 				break;
+ 188:uart.c        **** 			case PACKAGE_DEFINE_DEBUG:
+ 189:uart.c        **** 				memcpy(&receiveDebugData,
+ 489              	.LM31:
+ 490 0288 F0329FE5 		ldr	r3, .L36+16
+ 491 028c 003093E5 		ldr	r3, [r3, #0]
+ 492 0290 0300A0E1 		mov	r0, r3
+ 493 0294 FEFFFFEB 		bl	getPackageLength
+ 494 0298 0030A0E1 		mov	r3, r0
+ 495 029c 0310A0E1 		mov	r1, r3
+ 496 02a0 E8329FE5 		ldr	r3, .L36+32
+ 497 02a4 D0229FE5 		ldr	r2, .L36+12
+ 498 02a8 01C0A0E1 		mov	ip, r1
+ 499 02ac 0300A0E1 		mov	r0, r3
+ 500 02b0 0210A0E1 		mov	r1, r2
+ 501 02b4 0C20A0E1 		mov	r2, ip
+ 502 02b8 FEFFFFEB 		bl	memcpy
+ 190:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
+ 191:uart.c        **** 				my_state.position.x=receiveDebugData.x;
+ 504              	.LM32:
+ 505 02bc CC329FE5 		ldr	r3, .L36+32
+ 506 02c0 042093E5 		ldr	r2, [r3, #4]	@ float
+ 507 02c4 BC329FE5 		ldr	r3, .L36+24
+ 508 02c8 002083E5 		str	r2, [r3, #0]	@ float
+ 192:uart.c        **** 				my_state.position.y=receiveDebugData.y;
+ 510              	.LM33:
+ 511 02cc BC329FE5 		ldr	r3, .L36+32
+ 512 02d0 082093E5 		ldr	r2, [r3, #8]	@ float
+ 513 02d4 AC329FE5 		ldr	r3, .L36+24
+ 514 02d8 042083E5 		str	r2, [r3, #4]	@ float
+ 193:uart.c        **** 				my_state.position.z=receiveDebugData.z;
+ 516              	.LM34:
+ 517 02dc AC329FE5 		ldr	r3, .L36+32
+ 518 02e0 0C2093E5 		ldr	r2, [r3, #12]	@ float
+ 519 02e4 9C329FE5 		ldr	r3, .L36+24
+ 520 02e8 082083E5 		str	r2, [r3, #8]	@ float
+ 194:uart.c        **** 				my_state.velocity.x=receiveDebugData.vx;
+ 522              	.LM35:
+ 523 02ec 9C329FE5 		ldr	r3, .L36+32
+ 524 02f0 102093E5 		ldr	r2, [r3, #16]	@ float
+ 525 02f4 8C329FE5 		ldr	r3, .L36+24
+ 526 02f8 0C2083E5 		str	r2, [r3, #12]	@ float
+ 195:uart.c        **** 				my_state.velocity.y=receiveDebugData.vy;
+ 528              	.LM36:
+ 529 02fc 8C329FE5 		ldr	r3, .L36+32
+ 530 0300 142093E5 		ldr	r2, [r3, #20]	@ float
+ 531 0304 7C329FE5 		ldr	r3, .L36+24
+ 532 0308 102083E5 		str	r2, [r3, #16]	@ float
+ 196:uart.c        **** 				my_state.velocity.z=receiveDebugData.vz;
+ 534              	.LM37:
+ 535 030c 7C329FE5 		ldr	r3, .L36+32
+ 536 0310 182093E5 		ldr	r2, [r3, #24]	@ float
+ 537 0314 6C329FE5 		ldr	r3, .L36+24
+ 538 0318 142083E5 		str	r2, [r3, #20]	@ float
+ 197:uart.c        **** 				my_state.attitude.pitch=receiveDebugData.pitch;
+ 540              	.LM38:
+ 541 031c 6C329FE5 		ldr	r3, .L36+32
+ 542 0320 1C2093E5 		ldr	r2, [r3, #28]	@ float
+ 543 0324 5C329FE5 		ldr	r3, .L36+24
+ 544 0328 202083E5 		str	r2, [r3, #32]	@ float
+ 198:uart.c        **** 				my_state.attitude.roll=receiveDebugData.roll;
+ 546              	.LM39:
+ 547 032c 5C329FE5 		ldr	r3, .L36+32
+ 548 0330 202093E5 		ldr	r2, [r3, #32]	@ float
+ 549 0334 4C329FE5 		ldr	r3, .L36+24
+ 550 0338 1C2083E5 		str	r2, [r3, #28]	@ float
+ 199:uart.c        **** 				my_state.attitude.yaw=receiveDebugData.yaw;
+ 552              	.LM40:
+ 553 033c 4C329FE5 		ldr	r3, .L36+32
+ 554 0340 242093E5 		ldr	r2, [r3, #36]	@ float
+ 555 0344 3C329FE5 		ldr	r3, .L36+24
+ 556 0348 242083E5 		str	r2, [r3, #36]	@ float
+ 200:uart.c        **** 				vicon_tp=receiveDebugData.timestamp;
+ 558              	.LM41:
+ 559 034c 3C329FE5 		ldr	r3, .L36+32
+ 560 0350 002093E5 		ldr	r2, [r3, #0]
+ 561 0354 38329FE5 		ldr	r3, .L36+36
+ 562 0358 002083E5 		str	r2, [r3, #0]
+ 201:uart.c        **** 				vicon_count++;
+ 564              	.LM42:
+ 565 035c 28329FE5 		ldr	r3, .L36+28
+ 566 0360 003093E5 		ldr	r3, [r3, #0]
+ 567 0364 012083E2 		add	r2, r3, #1
+ 568 0368 1C329FE5 		ldr	r3, .L36+28
+ 569 036c 002083E5 		str	r2, [r3, #0]
+ 202:uart.c        **** 				break;
+ 571              	.LM43:
+ 572 0370 770000EA 		b	.L12
+ 573              	.L27:
+ 203:uart.c        **** 			case PACKAGE_DEFINE_PARAM:
+ 204:uart.c        **** 				memcpy(&receiveParamDebug,
+ 575              	.LM44:
+ 576 0374 04329FE5 		ldr	r3, .L36+16
+ 577 0378 003093E5 		ldr	r3, [r3, #0]
+ 578 037c 0300A0E1 		mov	r0, r3
+ 579 0380 FEFFFFEB 		bl	getPackageLength
+ 580 0384 0030A0E1 		mov	r3, r0
+ 581 0388 0310A0E1 		mov	r1, r3
+ 582 038c 04329FE5 		ldr	r3, .L36+40
+ 583 0390 E4219FE5 		ldr	r2, .L36+12
+ 584 0394 01C0A0E1 		mov	ip, r1
+ 585 0398 0300A0E1 		mov	r0, r3
+ 586 039c 0210A0E1 		mov	r1, r2
+ 587 03a0 0C20A0E1 		mov	r2, ip
+ 588 03a4 FEFFFFEB 		bl	memcpy
+ 205:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
+ 206:uart.c        **** 	        	if(receiveParamDebug.kp_p!=0){
+ 590              	.LM45:
+ 591 03a8 E8319FE5 		ldr	r3, .L36+40
+ 592 03ac 0C3093E5 		ldr	r3, [r3, #12]	@ float
+ 593 03b0 0300A0E1 		mov	r0, r3
+ 594 03b4 E0119FE5 		ldr	r1, .L36+44	@ float
+ 595 03b8 FEFFFFEB 		bl	__nesf2
+ 596 03bc 0030A0E1 		mov	r3, r0
+ 597 03c0 000053E3 		cmp	r3, #0
+ 598 03c4 0000001A 		bne	.L34
+ 599 03c8 160000EA 		b	.L32
+ 600              	.L34:
+ 207:uart.c        **** 	        		receive_valid_data_flag=1;
+ 602              	.LM46:
+ 603 03cc CC219FE5 		ldr	r2, .L36+48
+ 604 03d0 0130A0E3 		mov	r3, #1
+ 605 03d4 003082E5 		str	r3, [r2, #0]
+ 208:uart.c        **** 	        		my_this.pidZ.pid.kp=receiveParamDebug.kp_p;
+ 607              	.LM47:
+ 608 03d8 B8319FE5 		ldr	r3, .L36+40
+ 609 03dc 0C2093E5 		ldr	r2, [r3, #12]	@ float
+ 610 03e0 BC319FE5 		ldr	r3, .L36+52
+ 611 03e4 602083E5 		str	r2, [r3, #96]	@ float
+ 209:uart.c        **** 	        		my_this.pidZ.pid.ki=receiveParamDebug.ki_p;
+ 613              	.LM48:
+ 614 03e8 A8319FE5 		ldr	r3, .L36+40
+ 615 03ec 102093E5 		ldr	r2, [r3, #16]	@ float
+ 616 03f0 AC319FE5 		ldr	r3, .L36+52
+ 617 03f4 642083E5 		str	r2, [r3, #100]	@ float
+ 210:uart.c        **** 	        		my_this.pidVZ.pid.kp=receiveParamDebug.kp_v;
+ 619              	.LM49:
+ 620 03f8 98319FE5 		ldr	r3, .L36+40
+ 621 03fc 042093E5 		ldr	r2, [r3, #4]	@ float
+ 622 0400 9C319FE5 		ldr	r3, .L36+52
+ 623 0404 142083E5 		str	r2, [r3, #20]	@ float
+ 211:uart.c        **** 	        		my_this.pidVZ.pid.ki=receiveParamDebug.ki_v;
+ 625              	.LM50:
+ 626 0408 88319FE5 		ldr	r3, .L36+40
+ 627 040c 082093E5 		ldr	r2, [r3, #8]	@ float
+ 628 0410 8C319FE5 		ldr	r3, .L36+52
+ 629 0414 182083E5 		str	r2, [r3, #24]	@ float
+ 212:uart.c        **** 	        		my_setpoint.velocity.z=receiveParamDebug.set_velocity;
+ 631              	.LM51:
+ 632 0418 78319FE5 		ldr	r3, .L36+40
+ 633 041c 1C2093E5 		ldr	r2, [r3, #28]	@ float
+ 634 0420 80319FE5 		ldr	r3, .L36+56
+ 635 0424 142083E5 		str	r2, [r3, #20]	@ float
+ 636              	.L32:
+ 213:uart.c        **** 	        	}
+ 214:uart.c        **** 	    		my_state.position.z=receiveParamDebug.z;
+ 638              	.LM52:
+ 639 0428 68319FE5 		ldr	r3, .L36+40
+ 640 042c 142093E5 		ldr	r2, [r3, #20]	@ float
+ 641 0430 50319FE5 		ldr	r3, .L36+24
+ 642 0434 082083E5 		str	r2, [r3, #8]	@ float
+ 215:uart.c        **** 	    		my_state.velocity.z=receiveParamDebug.vz;
+ 644              	.LM53:
+ 645 0438 58319FE5 		ldr	r3, .L36+40
+ 646 043c 182093E5 		ldr	r2, [r3, #24]	@ float
+ 647 0440 40319FE5 		ldr	r3, .L36+24
+ 648 0444 142083E5 		str	r2, [r3, #20]	@ float
+ 216:uart.c        **** 	        	vicon_count++;
+ 650              	.LM54:
+ 651 0448 3C319FE5 		ldr	r3, .L36+28
+ 652 044c 003093E5 		ldr	r3, [r3, #0]
+ 653 0450 012083E2 		add	r2, r3, #1
+ 654 0454 30319FE5 		ldr	r3, .L36+28
+ 655 0458 002083E5 		str	r2, [r3, #0]
+ 217:uart.c        **** 				receiveCmdData.cmd=PACKAGE_DEFINE_PARAM;
+ 657              	.LM55:
+ 658 045c 48219FE5 		ldr	r2, .L36+60
+ 659 0460 0630A0E3 		mov	r3, #6
+ 660 0464 003082E5 		str	r3, [r2, #0]
+ 218:uart.c        **** 				break;
+ 662              	.LM56:
+ 663 0468 390000EA 		b	.L12
+ 664              	.L28:
+ 219:uart.c        **** 			case PACKAGE_DEFINE_CMD:
+ 220:uart.c        **** 				memcpy(&receiveCmdData,
+ 666              	.LM57:
+ 667 046c 0C319FE5 		ldr	r3, .L36+16
+ 668 0470 003093E5 		ldr	r3, [r3, #0]
+ 669 0474 0300A0E1 		mov	r0, r3
+ 670 0478 FEFFFFEB 		bl	getPackageLength
+ 671 047c 0030A0E1 		mov	r3, r0
+ 672 0480 0310A0E1 		mov	r1, r3
+ 673 0484 20319FE5 		ldr	r3, .L36+60
+ 674 0488 EC209FE5 		ldr	r2, .L36+12
+ 675 048c 01C0A0E1 		mov	ip, r1
+ 676 0490 0300A0E1 		mov	r0, r3
+ 677 0494 0210A0E1 		mov	r1, r2
+ 678 0498 0C20A0E1 		mov	r2, ip
+ 679 049c FEFFFFEB 		bl	memcpy
+ 221:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
+ 222:uart.c        **** 				break;
+ 681              	.LM58:
+ 682 04a0 2B0000EA 		b	.L12
+ 683              	.L29:
+ 223:uart.c        **** 			case PACKAGE_DEFINE_POSITION_WAY_POINT:
+ 224:uart.c        **** 				memcpy(&receivePositionWayPointData,
+ 685              	.LM59:
+ 686 04a4 D4309FE5 		ldr	r3, .L36+16
+ 687 04a8 003093E5 		ldr	r3, [r3, #0]
+ 688 04ac 0300A0E1 		mov	r0, r3
+ 689 04b0 FEFFFFEB 		bl	getPackageLength
+ 690 04b4 0030A0E1 		mov	r3, r0
+ 691 04b8 0310A0E1 		mov	r1, r3
+ 692 04bc EC309FE5 		ldr	r3, .L36+64
+ 693 04c0 B4209FE5 		ldr	r2, .L36+12
+ 694 04c4 01C0A0E1 		mov	ip, r1
+ 695 04c8 0300A0E1 		mov	r0, r3
+ 696 04cc 0210A0E1 		mov	r1, r2
+ 697 04d0 0C20A0E1 		mov	r2, ip
+ 698 04d4 FEFFFFEB 		bl	memcpy
+ 225:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
+ 226:uart.c        **** 				my_setpoint.position.x=receivePositionWayPointData.x;
+ 700              	.LM60:
+ 701 04d8 D0309FE5 		ldr	r3, .L36+64
+ 702 04dc 002093E5 		ldr	r2, [r3, #0]	@ float
+ 703 04e0 C0309FE5 		ldr	r3, .L36+56
+ 704 04e4 002083E5 		str	r2, [r3, #0]	@ float
+ 227:uart.c        **** 				my_setpoint.position.y=receivePositionWayPointData.y;
+ 706              	.LM61:
+ 707 04e8 C0309FE5 		ldr	r3, .L36+64
+ 708 04ec 042093E5 		ldr	r2, [r3, #4]	@ float
+ 709 04f0 B0309FE5 		ldr	r3, .L36+56
+ 710 04f4 042083E5 		str	r2, [r3, #4]	@ float
+ 228:uart.c        **** 				my_setpoint.position.z=receivePositionWayPointData.z;
+ 712              	.LM62:
+ 713 04f8 B0309FE5 		ldr	r3, .L36+64
+ 714 04fc 082093E5 		ldr	r2, [r3, #8]	@ float
+ 715 0500 A0309FE5 		ldr	r3, .L36+56
+ 716 0504 082083E5 		str	r2, [r3, #8]	@ float
+ 229:uart.c        **** 				receiveCmdData.cmd=PACKAGE_DEFINE_POSITION_WAY_POINT;
+ 718              	.LM63:
+ 719 0508 9C209FE5 		ldr	r2, .L36+60
+ 720 050c 0830A0E3 		mov	r3, #8
+ 721 0510 003082E5 		str	r3, [r2, #0]
+ 722              	.L30:
+ 230:uart.c        **** 			case PACKAGE_DEFINE_LAND:
+ 231:uart.c        **** 				memcpy(&receiveLandSignal,
+ 724              	.LM64:
+ 725 0514 64309FE5 		ldr	r3, .L36+16
+ 726 0518 003093E5 		ldr	r3, [r3, #0]
+ 727 051c 0300A0E1 		mov	r0, r3
+ 728 0520 FEFFFFEB 		bl	getPackageLength
+ 729 0524 0030A0E1 		mov	r3, r0
+ 730 0528 0310A0E1 		mov	r1, r3
+ 731 052c 80309FE5 		ldr	r3, .L36+68
+ 732 0530 44209FE5 		ldr	r2, .L36+12
+ 733 0534 01C0A0E1 		mov	ip, r1
+ 734 0538 0300A0E1 		mov	r0, r3
+ 735 053c 0210A0E1 		mov	r1, r2
+ 736 0540 0C20A0E1 		mov	r2, ip
+ 737 0544 FEFFFFEB 		bl	memcpy
+ 232:uart.c        **** 						&allDataBuffer,getPackageLength(pack_id));
+ 233:uart.c        **** 				receiveCmdData.cmd=PACKAGE_DEFINE_LAND;
+ 739              	.LM65:
+ 740 0548 5C209FE5 		ldr	r2, .L36+60
+ 741 054c 0930A0E3 		mov	r3, #9
+ 742 0550 003082E5 		str	r3, [r2, #0]
+ 743              	.L12:
+ 234:uart.c        **** 			default:
+ 235:uart.c        **** 				break;
+ 236:uart.c        **** 			}
+ 237:uart.c        ****         }
+ 238:uart.c        **** 
+ 239:uart.c        **** //        if (UART_syncstate==0)
+ 240:uart.c        **** //		{
+ 241:uart.c        **** //			if (UART_rxdata=='>') UART_syncstate++; else UART_syncstate=0;
+ 242:uart.c        **** //		}
+ 243:uart.c        **** //		else if (UART_syncstate==1)
+ 244:uart.c        **** //		{
+ 245:uart.c        **** //			if (UART_rxdata=='*') UART_syncstate++; else UART_syncstate=0;
+ 246:uart.c        **** //		}
+ 247:uart.c        **** //		else if (UART_syncstate==2)
+ 248:uart.c        **** //		{
+ 249:uart.c        **** //			if (UART_rxdata=='>') UART_syncstate++; else UART_syncstate=0;
+ 250:uart.c        **** //		}
+ 251:uart.c        **** //		else if (UART_syncstate==3)
+ 252:uart.c        **** //		{
+ 253:uart.c        **** //			//synchronized to start string => receive your data from here
+ 254:uart.c        **** //           UART_syncstate=0;
+ 255:uart.c        **** //        }
+ 256:uart.c        **** //		else UART_syncstate=0;
+ 257:uart.c        **** 
+ 258:uart.c        **** 
+ 259:uart.c        **** 
+ 260:uart.c        **** 
+ 261:uart.c        **** 
+ 262:uart.c        **** 
  263:uart.c        ****         break;
- 264:uart.c        ****   }
- 265:uart.c        ****   IDISABLE;
- 266:uart.c        ****   VICVectAddr = 0;		// Acknowledge Interrupt
- 719              	.LM64:
- 720 0510 0030A0E3 		mov	r3, #0
- 721 0514 FD3E43E2 		sub	r3, r3, #4048
- 722 0518 0020A0E3 		mov	r2, #0
- 723 051c 002083E5 		str	r2, [r3, #0]
- 267:uart.c        ****  }
- 725              	.LM65:
- 726 0520 0CD04BE2 		sub	sp, fp, #12
- 727 0524 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 728 0528 1EFF2FE1 		bx	lr
- 729              	.L36:
- 730              		.align	2
- 731              	.L35:
- 732 052c 00000000 		.word	trigger_transmission
- 733 0530 00000000 		.word	transmission_running
- 734 0534 00000000 		.word	my_buffer
- 735 0538 00000000 		.word	allDataBuffer
- 736 053c 00000000 		.word	pack_id
- 737 0540 00000000 		.word	receivedViconData
- 738 0544 00000000 		.word	my_state
- 739 0548 00000000 		.word	vicon_count
- 740 054c 00000000 		.word	receiveDebugData
- 741 0550 00000000 		.word	vicon_tp
- 742 0554 00000000 		.word	receiveParamDebug
- 743 0558 00000000 		.word	0
- 744 055c 00000000 		.word	receive_valid_data_flag
- 745 0560 00000000 		.word	my_this
- 746 0564 00000000 		.word	my_setpoint
- 747 0568 00000000 		.word	receiveCmdData
- 748 056c 00000000 		.word	receivePositionWayPointData
- 756              	.Lscope1:
- 757              		.global	__udivsi3
- 758              		.align	2
- 761              		.global	UARTInitialize
- 763              	UARTInitialize:
- 268:uart.c        **** 
- 269:uart.c        **** 
- 270:uart.c        **** void UARTInitialize(unsigned int baud)
- 271:uart.c        **** {
- 765              	.LM66:
- 766              		@ Function supports interworking.
- 767              		@ args = 0, pretend = 0, frame = 8
- 768              		@ frame_needed = 1, uses_anonymous_args = 0
- 769 0570 0DC0A0E1 		mov	ip, sp
- 770 0574 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 771 0578 04B04CE2 		sub	fp, ip, #4
- 772 057c 08D04DE2 		sub	sp, sp, #8
- 773 0580 14000BE5 		str	r0, [fp, #-20]
- 272:uart.c        ****   unsigned int divisor = peripheralClockFrequency() / (16 * baud);
- 775              	.LM67:
- 776 0584 FEFFFFEB 		bl	peripheralClockFrequency
- 777 0588 0020A0E1 		mov	r2, r0
- 778 058c 14301BE5 		ldr	r3, [fp, #-20]
- 779 0590 0332A0E1 		mov	r3, r3, asl #4
- 780 0594 0200A0E1 		mov	r0, r2
- 781 0598 0310A0E1 		mov	r1, r3
- 782 059c FEFFFFEB 		bl	__udivsi3
- 783 05a0 0030A0E1 		mov	r3, r0
- 784 05a4 10300BE5 		str	r3, [fp, #-16]
- 273:uart.c        **** 
- 274:uart.c        ****   //UART0
- 275:uart.c        ****   U0LCR = 0x83; /* 8 bit, 1 stop bit, no parity, enable DLAB */
- 786              	.LM68:
- 787 05a8 0339A0E3 		mov	r3, #49152
- 788 05ac CE3283E2 		add	r3, r3, #-536870900
- 789 05b0 8320A0E3 		mov	r2, #131
- 790 05b4 002083E5 		str	r2, [r3, #0]
- 276:uart.c        ****   U0DLL = divisor & 0xFF;
- 792              	.LM69:
- 793 05b8 0E32A0E3 		mov	r3, #-536870912
- 794 05bc 033983E2 		add	r3, r3, #49152
- 795 05c0 10201BE5 		ldr	r2, [fp, #-16]
- 796 05c4 FF2002E2 		and	r2, r2, #255
- 797 05c8 002083E5 		str	r2, [r3, #0]
- 277:uart.c        ****   U0DLM = (divisor >> 8) & 0xFF;
- 799              	.LM70:
- 800 05cc 0329A0E3 		mov	r2, #49152
- 801 05d0 4E2282E2 		add	r2, r2, #-536870908
- 802 05d4 10301BE5 		ldr	r3, [fp, #-16]
- 803 05d8 2334A0E1 		mov	r3, r3, lsr #8
- 804 05dc FF3003E2 		and	r3, r3, #255
- 805 05e0 003082E5 		str	r3, [r2, #0]
- 278:uart.c        ****   U0LCR &= ~0x80; /* Disable DLAB */
- 807              	.LM71:
- 808 05e4 0329A0E3 		mov	r2, #49152
- 809 05e8 CE2282E2 		add	r2, r2, #-536870900
- 810 05ec 0339A0E3 		mov	r3, #49152
- 811 05f0 CE3283E2 		add	r3, r3, #-536870900
- 812 05f4 003093E5 		ldr	r3, [r3, #0]
- 813 05f8 8030C3E3 		bic	r3, r3, #128
- 814 05fc 003082E5 		str	r3, [r2, #0]
- 279:uart.c        ****   U0FCR = 1;
- 816              	.LM72:
- 817 0600 0339A0E3 		mov	r3, #49152
- 818 0604 8E3283E2 		add	r3, r3, #-536870904
- 819 0608 0120A0E3 		mov	r2, #1
- 820 060c 002083E5 		str	r2, [r3, #0]
- 280:uart.c        **** 
- 281:uart.c        **** 
- 282:uart.c        **** }
- 822              	.LM73:
- 823 0610 0CD04BE2 		sub	sp, fp, #12
- 824 0614 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 825 0618 1EFF2FE1 		bx	lr
- 830              	.Lscope2:
- 831              		.align	2
- 834              		.global	UART1Initialize
- 836              	UART1Initialize:
- 283:uart.c        **** 
- 284:uart.c        **** void UART1Initialize(unsigned int baud)
- 285:uart.c        **** {
- 838              	.LM74:
- 839              		@ Function supports interworking.
- 840              		@ args = 0, pretend = 0, frame = 8
- 841              		@ frame_needed = 1, uses_anonymous_args = 0
- 842 061c 0DC0A0E1 		mov	ip, sp
- 843 0620 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 844 0624 04B04CE2 		sub	fp, ip, #4
- 845 0628 08D04DE2 		sub	sp, sp, #8
- 846 062c 14000BE5 		str	r0, [fp, #-20]
- 286:uart.c        ****   unsigned int divisor = peripheralClockFrequency() / (16 * baud);
- 848              	.LM75:
- 849 0630 FEFFFFEB 		bl	peripheralClockFrequency
- 850 0634 0020A0E1 		mov	r2, r0
- 851 0638 14301BE5 		ldr	r3, [fp, #-20]
- 852 063c 0332A0E1 		mov	r3, r3, asl #4
- 853 0640 0200A0E1 		mov	r0, r2
- 854 0644 0310A0E1 		mov	r1, r3
- 855 0648 FEFFFFEB 		bl	__udivsi3
- 856 064c 0030A0E1 		mov	r3, r0
- 857 0650 10300BE5 		str	r3, [fp, #-16]
- 287:uart.c        **** //UART1
- 288:uart.c        ****   U1LCR = 0x83; /* 8 bit, 1 stop bit, no parity, enable DLAB */
- 859              	.LM76:
- 860 0654 CE32A0E3 		mov	r3, #-536870900
- 861 0658 013883E2 		add	r3, r3, #65536
- 862 065c 8320A0E3 		mov	r2, #131
- 863 0660 002083E5 		str	r2, [r3, #0]
- 289:uart.c        ****   U1DLL = divisor & 0xFF;
- 865              	.LM77:
- 866 0664 0E32A0E3 		mov	r3, #-536870912
- 867 0668 013883E2 		add	r3, r3, #65536
- 868 066c 10201BE5 		ldr	r2, [fp, #-16]
- 869 0670 FF2002E2 		and	r2, r2, #255
- 870 0674 002083E5 		str	r2, [r3, #0]
- 290:uart.c        ****   U1DLM = (divisor >> 8) & 0xFF;
- 872              	.LM78:
- 873 0678 4E22A0E3 		mov	r2, #-536870908
- 874 067c 012882E2 		add	r2, r2, #65536
- 875 0680 10301BE5 		ldr	r3, [fp, #-16]
- 876 0684 2334A0E1 		mov	r3, r3, lsr #8
- 877 0688 FF3003E2 		and	r3, r3, #255
- 878 068c 003082E5 		str	r3, [r2, #0]
- 291:uart.c        ****   U1LCR &= ~0x80; /* Disable DLAB */
- 880              	.LM79:
- 881 0690 CE22A0E3 		mov	r2, #-536870900
- 882 0694 012882E2 		add	r2, r2, #65536
- 883 0698 CE32A0E3 		mov	r3, #-536870900
- 884 069c 013883E2 		add	r3, r3, #65536
- 885 06a0 003093E5 		ldr	r3, [r3, #0]
- 886 06a4 8030C3E3 		bic	r3, r3, #128
- 887 06a8 003082E5 		str	r3, [r2, #0]
- 292:uart.c        ****   U1FCR = 1;
- 889              	.LM80:
- 890 06ac 8E32A0E3 		mov	r3, #-536870904
- 891 06b0 013883E2 		add	r3, r3, #65536
- 892 06b4 0120A0E3 		mov	r2, #1
- 893 06b8 002083E5 		str	r2, [r3, #0]
- 293:uart.c        **** }
- 895              	.LM81:
- 896 06bc 0CD04BE2 		sub	sp, fp, #12
- 897 06c0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 898 06c4 1EFF2FE1 		bx	lr
- 903              	.Lscope3:
- 904              		.align	2
- 907              		.global	UARTWriteChar
- 909              	UARTWriteChar:
- 294:uart.c        **** 
- 295:uart.c        **** 
- 296:uart.c        **** //Write to UART0
- 297:uart.c        **** void UARTWriteChar(unsigned char ch)
- 298:uart.c        **** {
- 911              	.LM82:
- 912              		@ Function supports interworking.
- 913              		@ args = 0, pretend = 0, frame = 4
- 914              		@ frame_needed = 1, uses_anonymous_args = 0
- 915 06c8 0DC0A0E1 		mov	ip, sp
- 916 06cc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 917 06d0 04B04CE2 		sub	fp, ip, #4
- 918 06d4 04D04DE2 		sub	sp, sp, #4
- 919 06d8 0030A0E1 		mov	r3, r0
- 920 06dc 10304BE5 		strb	r3, [fp, #-16]
- 921              	.L42:
- 299:uart.c        ****   while ((U0LSR & 0x20) == 0);
- 923              	.LM83:
- 924 06e0 0E32A0E3 		mov	r3, #-536870912
- 925 06e4 033983E2 		add	r3, r3, #49152
- 926 06e8 143083E2 		add	r3, r3, #20
- 927 06ec 003093E5 		ldr	r3, [r3, #0]
- 928 06f0 203003E2 		and	r3, r3, #32
- 929 06f4 000053E3 		cmp	r3, #0
- 930 06f8 F8FFFF0A 		beq	.L42
- 300:uart.c        ****   U0THR = ch;
- 932              	.LM84:
- 933 06fc 0E32A0E3 		mov	r3, #-536870912
- 934 0700 033983E2 		add	r3, r3, #49152
- 935 0704 10205BE5 		ldrb	r2, [fp, #-16]	@ zero_extendqisi2
- 936 0708 002083E5 		str	r2, [r3, #0]
- 301:uart.c        **** }
- 938              	.LM85:
- 939 070c 0CD04BE2 		sub	sp, fp, #12
- 940 0710 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 941 0714 1EFF2FE1 		bx	lr
- 943              	.Lscope4:
- 944              		.align	2
- 947              		.global	UART1WriteChar
- 949              	UART1WriteChar:
- 302:uart.c        **** //Write to UART1
- 303:uart.c        **** void UART1WriteChar(unsigned char ch)
+ 264:uart.c        ****       case 3:
+ 265:uart.c        ****         // RLS interrupt
+ 266:uart.c        ****         break;
+ 267:uart.c        ****       case 6:
+ 268:uart.c        ****         // CTI interrupt
+ 269:uart.c        ****         break;
+ 270:uart.c        ****   }
+ 271:uart.c        ****   IDISABLE;
+ 272:uart.c        ****   VICVectAddr = 0;		// Acknowledge Interrupt
+ 745              	.LM66:
+ 746 0554 0030A0E3 		mov	r3, #0
+ 747 0558 FD3E43E2 		sub	r3, r3, #4048
+ 748 055c 0020A0E3 		mov	r2, #0
+ 749 0560 002083E5 		str	r2, [r3, #0]
+ 273:uart.c        ****  }
+ 751              	.LM67:
+ 752 0564 0CD04BE2 		sub	sp, fp, #12
+ 753 0568 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 754 056c 1EFF2FE1 		bx	lr
+ 755              	.L37:
+ 756              		.align	2
+ 757              	.L36:
+ 758 0570 00000000 		.word	trigger_transmission
+ 759 0574 00000000 		.word	transmission_running
+ 760 0578 00000000 		.word	my_buffer
+ 761 057c 00000000 		.word	allDataBuffer
+ 762 0580 00000000 		.word	pack_id
+ 763 0584 00000000 		.word	receivedViconData
+ 764 0588 00000000 		.word	my_state
+ 765 058c 00000000 		.word	vicon_count
+ 766 0590 00000000 		.word	receiveDebugData
+ 767 0594 00000000 		.word	vicon_tp
+ 768 0598 00000000 		.word	receiveParamDebug
+ 769 059c 00000000 		.word	0
+ 770 05a0 00000000 		.word	receive_valid_data_flag
+ 771 05a4 00000000 		.word	my_this
+ 772 05a8 00000000 		.word	my_setpoint
+ 773 05ac 00000000 		.word	receiveCmdData
+ 774 05b0 00000000 		.word	receivePositionWayPointData
+ 775 05b4 00000000 		.word	receiveLandSignal
+ 783              	.Lscope1:
+ 784              		.global	__udivsi3
+ 785              		.align	2
+ 788              		.global	UARTInitialize
+ 790              	UARTInitialize:
+ 274:uart.c        **** 
+ 275:uart.c        **** 
+ 276:uart.c        **** void UARTInitialize(unsigned int baud)
+ 277:uart.c        **** {
+ 792              	.LM68:
+ 793              		@ Function supports interworking.
+ 794              		@ args = 0, pretend = 0, frame = 8
+ 795              		@ frame_needed = 1, uses_anonymous_args = 0
+ 796 05b8 0DC0A0E1 		mov	ip, sp
+ 797 05bc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 798 05c0 04B04CE2 		sub	fp, ip, #4
+ 799 05c4 08D04DE2 		sub	sp, sp, #8
+ 800 05c8 14000BE5 		str	r0, [fp, #-20]
+ 278:uart.c        ****   unsigned int divisor = peripheralClockFrequency() / (16 * baud);
+ 802              	.LM69:
+ 803 05cc FEFFFFEB 		bl	peripheralClockFrequency
+ 804 05d0 0020A0E1 		mov	r2, r0
+ 805 05d4 14301BE5 		ldr	r3, [fp, #-20]
+ 806 05d8 0332A0E1 		mov	r3, r3, asl #4
+ 807 05dc 0200A0E1 		mov	r0, r2
+ 808 05e0 0310A0E1 		mov	r1, r3
+ 809 05e4 FEFFFFEB 		bl	__udivsi3
+ 810 05e8 0030A0E1 		mov	r3, r0
+ 811 05ec 10300BE5 		str	r3, [fp, #-16]
+ 279:uart.c        **** 
+ 280:uart.c        ****   //UART0
+ 281:uart.c        ****   U0LCR = 0x83; /* 8 bit, 1 stop bit, no parity, enable DLAB */
+ 813              	.LM70:
+ 814 05f0 0339A0E3 		mov	r3, #49152
+ 815 05f4 CE3283E2 		add	r3, r3, #-536870900
+ 816 05f8 8320A0E3 		mov	r2, #131
+ 817 05fc 002083E5 		str	r2, [r3, #0]
+ 282:uart.c        ****   U0DLL = divisor & 0xFF;
+ 819              	.LM71:
+ 820 0600 0E32A0E3 		mov	r3, #-536870912
+ 821 0604 033983E2 		add	r3, r3, #49152
+ 822 0608 10201BE5 		ldr	r2, [fp, #-16]
+ 823 060c FF2002E2 		and	r2, r2, #255
+ 824 0610 002083E5 		str	r2, [r3, #0]
+ 283:uart.c        ****   U0DLM = (divisor >> 8) & 0xFF;
+ 826              	.LM72:
+ 827 0614 0329A0E3 		mov	r2, #49152
+ 828 0618 4E2282E2 		add	r2, r2, #-536870908
+ 829 061c 10301BE5 		ldr	r3, [fp, #-16]
+ 830 0620 2334A0E1 		mov	r3, r3, lsr #8
+ 831 0624 FF3003E2 		and	r3, r3, #255
+ 832 0628 003082E5 		str	r3, [r2, #0]
+ 284:uart.c        ****   U0LCR &= ~0x80; /* Disable DLAB */
+ 834              	.LM73:
+ 835 062c 0329A0E3 		mov	r2, #49152
+ 836 0630 CE2282E2 		add	r2, r2, #-536870900
+ 837 0634 0339A0E3 		mov	r3, #49152
+ 838 0638 CE3283E2 		add	r3, r3, #-536870900
+ 839 063c 003093E5 		ldr	r3, [r3, #0]
+ 840 0640 8030C3E3 		bic	r3, r3, #128
+ 841 0644 003082E5 		str	r3, [r2, #0]
+ 285:uart.c        ****   U0FCR = 1;
+ 843              	.LM74:
+ 844 0648 0339A0E3 		mov	r3, #49152
+ 845 064c 8E3283E2 		add	r3, r3, #-536870904
+ 846 0650 0120A0E3 		mov	r2, #1
+ 847 0654 002083E5 		str	r2, [r3, #0]
+ 286:uart.c        **** 
+ 287:uart.c        **** 
+ 288:uart.c        **** }
+ 849              	.LM75:
+ 850 0658 0CD04BE2 		sub	sp, fp, #12
+ 851 065c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 852 0660 1EFF2FE1 		bx	lr
+ 857              	.Lscope2:
+ 858              		.align	2
+ 861              		.global	UART1Initialize
+ 863              	UART1Initialize:
+ 289:uart.c        **** 
+ 290:uart.c        **** void UART1Initialize(unsigned int baud)
+ 291:uart.c        **** {
+ 865              	.LM76:
+ 866              		@ Function supports interworking.
+ 867              		@ args = 0, pretend = 0, frame = 8
+ 868              		@ frame_needed = 1, uses_anonymous_args = 0
+ 869 0664 0DC0A0E1 		mov	ip, sp
+ 870 0668 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 871 066c 04B04CE2 		sub	fp, ip, #4
+ 872 0670 08D04DE2 		sub	sp, sp, #8
+ 873 0674 14000BE5 		str	r0, [fp, #-20]
+ 292:uart.c        ****   unsigned int divisor = peripheralClockFrequency() / (16 * baud);
+ 875              	.LM77:
+ 876 0678 FEFFFFEB 		bl	peripheralClockFrequency
+ 877 067c 0020A0E1 		mov	r2, r0
+ 878 0680 14301BE5 		ldr	r3, [fp, #-20]
+ 879 0684 0332A0E1 		mov	r3, r3, asl #4
+ 880 0688 0200A0E1 		mov	r0, r2
+ 881 068c 0310A0E1 		mov	r1, r3
+ 882 0690 FEFFFFEB 		bl	__udivsi3
+ 883 0694 0030A0E1 		mov	r3, r0
+ 884 0698 10300BE5 		str	r3, [fp, #-16]
+ 293:uart.c        **** //UART1
+ 294:uart.c        ****   U1LCR = 0x83; /* 8 bit, 1 stop bit, no parity, enable DLAB */
+ 886              	.LM78:
+ 887 069c CE32A0E3 		mov	r3, #-536870900
+ 888 06a0 013883E2 		add	r3, r3, #65536
+ 889 06a4 8320A0E3 		mov	r2, #131
+ 890 06a8 002083E5 		str	r2, [r3, #0]
+ 295:uart.c        ****   U1DLL = divisor & 0xFF;
+ 892              	.LM79:
+ 893 06ac 0E32A0E3 		mov	r3, #-536870912
+ 894 06b0 013883E2 		add	r3, r3, #65536
+ 895 06b4 10201BE5 		ldr	r2, [fp, #-16]
+ 896 06b8 FF2002E2 		and	r2, r2, #255
+ 897 06bc 002083E5 		str	r2, [r3, #0]
+ 296:uart.c        ****   U1DLM = (divisor >> 8) & 0xFF;
+ 899              	.LM80:
+ 900 06c0 4E22A0E3 		mov	r2, #-536870908
+ 901 06c4 012882E2 		add	r2, r2, #65536
+ 902 06c8 10301BE5 		ldr	r3, [fp, #-16]
+ 903 06cc 2334A0E1 		mov	r3, r3, lsr #8
+ 904 06d0 FF3003E2 		and	r3, r3, #255
+ 905 06d4 003082E5 		str	r3, [r2, #0]
+ 297:uart.c        ****   U1LCR &= ~0x80; /* Disable DLAB */
+ 907              	.LM81:
+ 908 06d8 CE22A0E3 		mov	r2, #-536870900
+ 909 06dc 012882E2 		add	r2, r2, #65536
+ 910 06e0 CE32A0E3 		mov	r3, #-536870900
+ 911 06e4 013883E2 		add	r3, r3, #65536
+ 912 06e8 003093E5 		ldr	r3, [r3, #0]
+ 913 06ec 8030C3E3 		bic	r3, r3, #128
+ 914 06f0 003082E5 		str	r3, [r2, #0]
+ 298:uart.c        ****   U1FCR = 1;
+ 916              	.LM82:
+ 917 06f4 8E32A0E3 		mov	r3, #-536870904
+ 918 06f8 013883E2 		add	r3, r3, #65536
+ 919 06fc 0120A0E3 		mov	r2, #1
+ 920 0700 002083E5 		str	r2, [r3, #0]
+ 299:uart.c        **** }
+ 922              	.LM83:
+ 923 0704 0CD04BE2 		sub	sp, fp, #12
+ 924 0708 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 925 070c 1EFF2FE1 		bx	lr
+ 930              	.Lscope3:
+ 931              		.align	2
+ 934              		.global	UARTWriteChar
+ 936              	UARTWriteChar:
+ 300:uart.c        **** 
+ 301:uart.c        **** 
+ 302:uart.c        **** //Write to UART0
+ 303:uart.c        **** void UARTWriteChar(unsigned char ch)
  304:uart.c        **** {
- 951              	.LM86:
- 952              		@ Function supports interworking.
- 953              		@ args = 0, pretend = 0, frame = 4
- 954              		@ frame_needed = 1, uses_anonymous_args = 0
- 955 0718 0DC0A0E1 		mov	ip, sp
- 956 071c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 957 0720 04B04CE2 		sub	fp, ip, #4
- 958 0724 04D04DE2 		sub	sp, sp, #4
- 959 0728 0030A0E1 		mov	r3, r0
- 960 072c 10304BE5 		strb	r3, [fp, #-16]
- 961              	.L46:
- 305:uart.c        ****   while ((U1LSR & 0x20) == 0);
- 963              	.LM87:
- 964 0730 0E32A0E3 		mov	r3, #-536870912
- 965 0734 013883E2 		add	r3, r3, #65536
- 966 0738 143083E2 		add	r3, r3, #20
- 967 073c 003093E5 		ldr	r3, [r3, #0]
- 968 0740 203003E2 		and	r3, r3, #32
- 969 0744 000053E3 		cmp	r3, #0
- 970 0748 F8FFFF0A 		beq	.L46
- 306:uart.c        ****   U1THR = ch;
- 972              	.LM88:
- 973 074c 0E32A0E3 		mov	r3, #-536870912
- 974 0750 013883E2 		add	r3, r3, #65536
- 975 0754 10205BE5 		ldrb	r2, [fp, #-16]	@ zero_extendqisi2
- 976 0758 002083E5 		str	r2, [r3, #0]
+ 938              	.LM84:
+ 939              		@ Function supports interworking.
+ 940              		@ args = 0, pretend = 0, frame = 4
+ 941              		@ frame_needed = 1, uses_anonymous_args = 0
+ 942 0710 0DC0A0E1 		mov	ip, sp
+ 943 0714 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 944 0718 04B04CE2 		sub	fp, ip, #4
+ 945 071c 04D04DE2 		sub	sp, sp, #4
+ 946 0720 0030A0E1 		mov	r3, r0
+ 947 0724 10304BE5 		strb	r3, [fp, #-16]
+ 948              	.L43:
+ 305:uart.c        ****   while ((U0LSR & 0x20) == 0);
+ 950              	.LM85:
+ 951 0728 0E32A0E3 		mov	r3, #-536870912
+ 952 072c 033983E2 		add	r3, r3, #49152
+ 953 0730 143083E2 		add	r3, r3, #20
+ 954 0734 003093E5 		ldr	r3, [r3, #0]
+ 955 0738 203003E2 		and	r3, r3, #32
+ 956 073c 000053E3 		cmp	r3, #0
+ 957 0740 F8FFFF0A 		beq	.L43
+ 306:uart.c        ****   U0THR = ch;
+ 959              	.LM86:
+ 960 0744 0E32A0E3 		mov	r3, #-536870912
+ 961 0748 033983E2 		add	r3, r3, #49152
+ 962 074c 10205BE5 		ldrb	r2, [fp, #-16]	@ zero_extendqisi2
+ 963 0750 002083E5 		str	r2, [r3, #0]
  307:uart.c        **** }
- 978              	.LM89:
- 979 075c 0CD04BE2 		sub	sp, fp, #12
- 980 0760 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 981 0764 1EFF2FE1 		bx	lr
- 983              	.Lscope5:
- 984              		.align	2
- 986              		.global	UARTReadChar
- 988              	UARTReadChar:
- 308:uart.c        **** 
- 309:uart.c        **** unsigned char UARTReadChar(void)
+ 965              	.LM87:
+ 966 0754 0CD04BE2 		sub	sp, fp, #12
+ 967 0758 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 968 075c 1EFF2FE1 		bx	lr
+ 970              	.Lscope4:
+ 971              		.align	2
+ 974              		.global	UART1WriteChar
+ 976              	UART1WriteChar:
+ 308:uart.c        **** //Write to UART1
+ 309:uart.c        **** void UART1WriteChar(unsigned char ch)
  310:uart.c        **** {
- 990              	.LM90:
- 991              		@ Function supports interworking.
- 992              		@ args = 0, pretend = 0, frame = 0
- 993              		@ frame_needed = 1, uses_anonymous_args = 0
- 994 0768 0DC0A0E1 		mov	ip, sp
- 995 076c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 996 0770 04B04CE2 		sub	fp, ip, #4
- 997              	.L50:
- 311:uart.c        ****   while ((U0LSR & 0x01) == 0);
- 999              	.LM91:
- 1000 0774 0E32A0E3 		mov	r3, #-536870912
- 1001 0778 033983E2 		add	r3, r3, #49152
- 1002 077c 143083E2 		add	r3, r3, #20
- 1003 0780 003093E5 		ldr	r3, [r3, #0]
- 1004 0784 013003E2 		and	r3, r3, #1
- 1005 0788 000053E3 		cmp	r3, #0
- 1006 078c F8FFFF0A 		beq	.L50
- 312:uart.c        ****   return U0RBR;
- 1008              	.LM92:
- 1009 0790 0E32A0E3 		mov	r3, #-536870912
- 1010 0794 033983E2 		add	r3, r3, #49152
- 1011 0798 003093E5 		ldr	r3, [r3, #0]
- 1012 079c FF3003E2 		and	r3, r3, #255
+ 978              	.LM88:
+ 979              		@ Function supports interworking.
+ 980              		@ args = 0, pretend = 0, frame = 4
+ 981              		@ frame_needed = 1, uses_anonymous_args = 0
+ 982 0760 0DC0A0E1 		mov	ip, sp
+ 983 0764 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 984 0768 04B04CE2 		sub	fp, ip, #4
+ 985 076c 04D04DE2 		sub	sp, sp, #4
+ 986 0770 0030A0E1 		mov	r3, r0
+ 987 0774 10304BE5 		strb	r3, [fp, #-16]
+ 988              	.L47:
+ 311:uart.c        ****   while ((U1LSR & 0x20) == 0);
+ 990              	.LM89:
+ 991 0778 0E32A0E3 		mov	r3, #-536870912
+ 992 077c 013883E2 		add	r3, r3, #65536
+ 993 0780 143083E2 		add	r3, r3, #20
+ 994 0784 003093E5 		ldr	r3, [r3, #0]
+ 995 0788 203003E2 		and	r3, r3, #32
+ 996 078c 000053E3 		cmp	r3, #0
+ 997 0790 F8FFFF0A 		beq	.L47
+ 312:uart.c        ****   U1THR = ch;
+ 999              	.LM90:
+ 1000 0794 0E32A0E3 		mov	r3, #-536870912
+ 1001 0798 013883E2 		add	r3, r3, #65536
+ 1002 079c 10205BE5 		ldrb	r2, [fp, #-16]	@ zero_extendqisi2
+ 1003 07a0 002083E5 		str	r2, [r3, #0]
  313:uart.c        **** }
- 1014              	.LM93:
- 1015 07a0 0300A0E1 		mov	r0, r3
- 1016 07a4 0CD04BE2 		sub	sp, fp, #12
- 1017 07a8 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1018 07ac 1EFF2FE1 		bx	lr
- 1020              	.Lscope6:
- 1021              		.align	2
- 1023              		.global	UART1ReadChar
- 1025              	UART1ReadChar:
+ 1005              	.LM91:
+ 1006 07a4 0CD04BE2 		sub	sp, fp, #12
+ 1007 07a8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1008 07ac 1EFF2FE1 		bx	lr
+ 1010              	.Lscope5:
+ 1011              		.align	2
+ 1013              		.global	UARTReadChar
+ 1015              	UARTReadChar:
  314:uart.c        **** 
- 315:uart.c        **** unsigned char UART1ReadChar(void)
+ 315:uart.c        **** unsigned char UARTReadChar(void)
  316:uart.c        **** {
- 1027              	.LM94:
- 1028              		@ Function supports interworking.
- 1029              		@ args = 0, pretend = 0, frame = 0
- 1030              		@ frame_needed = 1, uses_anonymous_args = 0
- 1031 07b0 0DC0A0E1 		mov	ip, sp
- 1032 07b4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1033 07b8 04B04CE2 		sub	fp, ip, #4
- 1034              	.L54:
- 317:uart.c        ****   while ((U1LSR & 0x01) == 0);
- 1036              	.LM95:
- 1037 07bc 0E32A0E3 		mov	r3, #-536870912
- 1038 07c0 013883E2 		add	r3, r3, #65536
- 1039 07c4 143083E2 		add	r3, r3, #20
- 1040 07c8 003093E5 		ldr	r3, [r3, #0]
- 1041 07cc 013003E2 		and	r3, r3, #1
- 1042 07d0 000053E3 		cmp	r3, #0
- 1043 07d4 F8FFFF0A 		beq	.L54
- 318:uart.c        ****   return U1RBR;
- 1045              	.LM96:
- 1046 07d8 0E32A0E3 		mov	r3, #-536870912
- 1047 07dc 013883E2 		add	r3, r3, #65536
- 1048 07e0 003093E5 		ldr	r3, [r3, #0]
- 1049 07e4 FF3003E2 		and	r3, r3, #255
+ 1017              	.LM92:
+ 1018              		@ Function supports interworking.
+ 1019              		@ args = 0, pretend = 0, frame = 0
+ 1020              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1021 07b0 0DC0A0E1 		mov	ip, sp
+ 1022 07b4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1023 07b8 04B04CE2 		sub	fp, ip, #4
+ 1024              	.L51:
+ 317:uart.c        ****   while ((U0LSR & 0x01) == 0);
+ 1026              	.LM93:
+ 1027 07bc 0E32A0E3 		mov	r3, #-536870912
+ 1028 07c0 033983E2 		add	r3, r3, #49152
+ 1029 07c4 143083E2 		add	r3, r3, #20
+ 1030 07c8 003093E5 		ldr	r3, [r3, #0]
+ 1031 07cc 013003E2 		and	r3, r3, #1
+ 1032 07d0 000053E3 		cmp	r3, #0
+ 1033 07d4 F8FFFF0A 		beq	.L51
+ 318:uart.c        ****   return U0RBR;
+ 1035              	.LM94:
+ 1036 07d8 0E32A0E3 		mov	r3, #-536870912
+ 1037 07dc 033983E2 		add	r3, r3, #49152
+ 1038 07e0 003093E5 		ldr	r3, [r3, #0]
+ 1039 07e4 FF3003E2 		and	r3, r3, #255
  319:uart.c        **** }
- 1051              	.LM97:
- 1052 07e8 0300A0E1 		mov	r0, r3
- 1053 07ec 0CD04BE2 		sub	sp, fp, #12
- 1054 07f0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1055 07f4 1EFF2FE1 		bx	lr
- 1057              	.Lscope7:
- 1058              		.align	2
- 1061              		.global	__putchar
- 1063              	__putchar:
+ 1041              	.LM95:
+ 1042 07e8 0300A0E1 		mov	r0, r3
+ 1043 07ec 0CD04BE2 		sub	sp, fp, #12
+ 1044 07f0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1045 07f4 1EFF2FE1 		bx	lr
+ 1047              	.Lscope6:
+ 1048              		.align	2
+ 1050              		.global	UART1ReadChar
+ 1052              	UART1ReadChar:
  320:uart.c        **** 
- 321:uart.c        **** void __putchar(int ch)
+ 321:uart.c        **** unsigned char UART1ReadChar(void)
  322:uart.c        **** {
- 1065              	.LM98:
- 1066              		@ Function supports interworking.
- 1067              		@ args = 0, pretend = 0, frame = 4
- 1068              		@ frame_needed = 1, uses_anonymous_args = 0
- 1069 07f8 0DC0A0E1 		mov	ip, sp
- 1070 07fc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1071 0800 04B04CE2 		sub	fp, ip, #4
- 1072 0804 04D04DE2 		sub	sp, sp, #4
- 1073 0808 10000BE5 		str	r0, [fp, #-16]
- 323:uart.c        ****   if (ch == '\n')
- 1075              	.LM99:
- 1076 080c 10301BE5 		ldr	r3, [fp, #-16]
- 1077 0810 0A0053E3 		cmp	r3, #10
- 1078 0814 0100001A 		bne	.L58
- 324:uart.c        ****     UARTWriteChar('\r');
- 1080              	.LM100:
- 1081 0818 0D00A0E3 		mov	r0, #13
- 1082 081c FEFFFFEB 		bl	UARTWriteChar
- 1083              	.L58:
- 325:uart.c        ****   UARTWriteChar(ch);
- 1085              	.LM101:
- 1086 0820 10301BE5 		ldr	r3, [fp, #-16]
- 1087 0824 FF3003E2 		and	r3, r3, #255
- 1088 0828 0300A0E1 		mov	r0, r3
- 1089 082c FEFFFFEB 		bl	UARTWriteChar
- 326:uart.c        **** }
- 1091              	.LM102:
- 1092 0830 0CD04BE2 		sub	sp, fp, #12
- 1093 0834 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1094 0838 1EFF2FE1 		bx	lr
- 1096              	.Lscope8:
- 1097              		.align	2
- 1101              		.global	UART_send
- 1103              	UART_send:
- 327:uart.c        **** 
- 328:uart.c        **** void UART_send(char *buffer, unsigned char length)
- 329:uart.c        **** {
- 1105              	.LM103:
- 1106              		@ Function supports interworking.
- 1107              		@ args = 0, pretend = 0, frame = 12
- 1108              		@ frame_needed = 1, uses_anonymous_args = 0
- 1109 083c 0DC0A0E1 		mov	ip, sp
- 1110 0840 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1111 0844 04B04CE2 		sub	fp, ip, #4
- 1112 0848 0CD04DE2 		sub	sp, sp, #12
- 1113 084c 14000BE5 		str	r0, [fp, #-20]
- 1114 0850 0130A0E1 		mov	r3, r1
- 1115 0854 18304BE5 		strb	r3, [fp, #-24]
- 330:uart.c        ****   unsigned char cnt=0;
- 1117              	.LM104:
- 1118 0858 0030A0E3 		mov	r3, #0
- 1119 085c 0D304BE5 		strb	r3, [fp, #-13]
- 1120              	.L62:
- 331:uart.c        ****   while (!(U0LSR & 0x20)); //wait until U0THR and U0TSR are both empty
- 1122              	.LM105:
- 1123 0860 0E32A0E3 		mov	r3, #-536870912
- 1124 0864 033983E2 		add	r3, r3, #49152
- 1125 0868 143083E2 		add	r3, r3, #20
- 1126 086c 003093E5 		ldr	r3, [r3, #0]
- 1127 0870 203003E2 		and	r3, r3, #32
- 1128 0874 000053E3 		cmp	r3, #0
- 1129 0878 F8FFFF0A 		beq	.L62
- 332:uart.c        ****   while(length--)
- 1131              	.LM106:
- 1132 087c 140000EA 		b	.L69
- 1133              	.L65:
- 333:uart.c        ****   {
- 334:uart.c        ****     U0THR = buffer[cnt++];
- 1135              	.LM107:
- 1136 0880 0E22A0E3 		mov	r2, #-536870912
- 1137 0884 032982E2 		add	r2, r2, #49152
- 1138 0888 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
- 1139 088c 0310A0E1 		mov	r1, r3
- 1140 0890 14301BE5 		ldr	r3, [fp, #-20]
- 1141 0894 033081E0 		add	r3, r1, r3
- 1142 0898 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1143 089c 003082E5 		str	r3, [r2, #0]
- 1144 08a0 0D305BE5 		ldrb	r3, [fp, #-13]
- 1145 08a4 013083E2 		add	r3, r3, #1
- 1146 08a8 0D304BE5 		strb	r3, [fp, #-13]
- 335:uart.c        ****     if(cnt>15)
- 1148              	.LM108:
- 1149 08ac 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
- 1150 08b0 0F0053E3 		cmp	r3, #15
- 1151 08b4 0600009A 		bls	.L64
- 1152              	.L66:
- 336:uart.c        ****     {
- 337:uart.c        ****       while (!(U0LSR & 0x20)); //wait until U0THR is empty
- 1154              	.LM109:
- 1155 08b8 0E32A0E3 		mov	r3, #-536870912
- 1156 08bc 033983E2 		add	r3, r3, #49152
- 1157 08c0 143083E2 		add	r3, r3, #20
- 1158 08c4 003093E5 		ldr	r3, [r3, #0]
- 1159 08c8 203003E2 		and	r3, r3, #32
- 1160 08cc 000053E3 		cmp	r3, #0
- 1161 08d0 F8FFFF0A 		beq	.L66
- 1162              	.L64:
- 1163              	.L69:
- 332:uart.c        ****   while(length--)
- 1165              	.LM110:
- 1166 08d4 18305BE5 		ldrb	r3, [fp, #-24]
- 1167 08d8 013043E2 		sub	r3, r3, #1
- 1168 08dc 18304BE5 		strb	r3, [fp, #-24]
- 1169 08e0 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1170 08e4 FF0053E3 		cmp	r3, #255
- 1171 08e8 E4FFFF1A 		bne	.L65
- 338:uart.c        ****     }
- 339:uart.c        ****   }
- 340:uart.c        **** }
- 1173              	.LM111:
- 1174 08ec 0CD04BE2 		sub	sp, fp, #12
- 1175 08f0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1176 08f4 1EFF2FE1 		bx	lr
- 1181              	.Lscope9:
- 1182              		.align	2
- 1186              		.global	UART1_send
- 1188              	UART1_send:
- 341:uart.c        **** 
- 342:uart.c        **** void UART1_send(unsigned char *buffer, unsigned char length)
- 343:uart.c        **** {
- 1190              	.LM112:
- 1191              		@ Function supports interworking.
- 1192              		@ args = 0, pretend = 0, frame = 12
- 1193              		@ frame_needed = 1, uses_anonymous_args = 0
- 1194 08f8 0DC0A0E1 		mov	ip, sp
- 1195 08fc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1196 0900 04B04CE2 		sub	fp, ip, #4
- 1197 0904 0CD04DE2 		sub	sp, sp, #12
- 1198 0908 14000BE5 		str	r0, [fp, #-20]
- 1199 090c 0130A0E1 		mov	r3, r1
- 1200 0910 18304BE5 		strb	r3, [fp, #-24]
- 344:uart.c        ****   unsigned char cnt=0;
- 1202              	.LM113:
- 1203 0914 0030A0E3 		mov	r3, #0
- 1204 0918 0D304BE5 		strb	r3, [fp, #-13]
- 345:uart.c        ****   while(length--)
- 1206              	.LM114:
- 1207 091c 110000EA 		b	.L71
- 1208              	.L72:
- 346:uart.c        ****   {
- 347:uart.c        ****     while (!(U1LSR & 0x20)); //wait until U1THR is empty
- 1210              	.LM115:
- 1211 0920 0E32A0E3 		mov	r3, #-536870912
- 1212 0924 013883E2 		add	r3, r3, #65536
- 1213 0928 143083E2 		add	r3, r3, #20
- 1214 092c 003093E5 		ldr	r3, [r3, #0]
- 1215 0930 203003E2 		and	r3, r3, #32
- 1216 0934 000053E3 		cmp	r3, #0
- 1217 0938 F8FFFF0A 		beq	.L72
- 348:uart.c        ****     U1THR = buffer[cnt++];
- 1219              	.LM116:
- 1220 093c 0E22A0E3 		mov	r2, #-536870912
- 1221 0940 012882E2 		add	r2, r2, #65536
- 1222 0944 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
- 1223 0948 0310A0E1 		mov	r1, r3
- 1224 094c 14301BE5 		ldr	r3, [fp, #-20]
- 1225 0950 033081E0 		add	r3, r1, r3
- 1226 0954 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1227 0958 003082E5 		str	r3, [r2, #0]
- 1228 095c 0D305BE5 		ldrb	r3, [fp, #-13]
- 1229 0960 013083E2 		add	r3, r3, #1
- 1230 0964 0D304BE5 		strb	r3, [fp, #-13]
- 1231              	.L71:
- 345:uart.c        ****   while(length--)
- 1233              	.LM117:
- 1234 0968 18305BE5 		ldrb	r3, [fp, #-24]
- 1235 096c 013043E2 		sub	r3, r3, #1
- 1236 0970 18304BE5 		strb	r3, [fp, #-24]
- 1237 0974 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1238 0978 FF0053E3 		cmp	r3, #255
- 1239 097c E7FFFF1A 		bne	.L72
- 349:uart.c        ****   }
- 350:uart.c        **** }
- 1241              	.LM118:
- 1242 0980 0CD04BE2 		sub	sp, fp, #12
- 1243 0984 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1244 0988 1EFF2FE1 		bx	lr
- 1249              	.Lscope10:
- 1250              		.align	2
- 1252              		.global	UART_send_ringbuffer
- 1254              	UART_send_ringbuffer:
- 351:uart.c        **** 
- 352:uart.c        **** 
- 353:uart.c        **** void UART_send_ringbuffer(void)
- 354:uart.c        **** {
- 1256              	.LM119:
- 1257              		@ Function supports interworking.
- 1258              		@ args = 0, pretend = 0, frame = 4
- 1259              		@ frame_needed = 1, uses_anonymous_args = 0
- 1260 098c 0DC0A0E1 		mov	ip, sp
- 1261 0990 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1262 0994 04B04CE2 		sub	fp, ip, #4
- 1263 0998 04D04DE2 		sub	sp, sp, #4
- 355:uart.c        ****   unsigned char t;
- 356:uart.c        ****   if(!transmission_running)
- 1265              	.LM120:
- 1266 099c 4C309FE5 		ldr	r3, .L81
- 1267 09a0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1268 09a4 000053E3 		cmp	r3, #0
- 1269 09a8 0D00001A 		bne	.L80
- 357:uart.c        ****   {
- 358:uart.c        ****     if(ringbuffer(RBREAD, &t, 1))
- 1271              	.LM121:
- 1272 09ac 0D304BE2 		sub	r3, fp, #13
- 1273 09b0 0000A0E3 		mov	r0, #0
- 1274 09b4 0310A0E1 		mov	r1, r3
- 1275 09b8 0120A0E3 		mov	r2, #1
- 1276 09bc FEFFFFEB 		bl	ringbuffer
- 1277 09c0 0030A0E1 		mov	r3, r0
- 1278 09c4 000053E3 		cmp	r3, #0
- 1279 09c8 0500000A 		beq	.L80
- 359:uart.c        ****     {
- 360:uart.c        ****       transmission_running=1;
- 1281              	.LM122:
- 1282 09cc 1C209FE5 		ldr	r2, .L81
- 1283 09d0 0130A0E3 		mov	r3, #1
- 1284 09d4 0030C2E5 		strb	r3, [r2, #0]
- 361:uart.c        ****       UARTWriteChar(t);
- 1286              	.LM123:
- 1287 09d8 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
- 1288 09dc 0300A0E1 		mov	r0, r3
- 1289 09e0 FEFFFFEB 		bl	UARTWriteChar
- 1290              	.L80:
- 362:uart.c        ****     }
- 363:uart.c        ****   }
- 364:uart.c        **** }
- 1292              	.LM124:
- 1293 09e4 0CD04BE2 		sub	sp, fp, #12
- 1294 09e8 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1295 09ec 1EFF2FE1 		bx	lr
- 1296              	.L82:
- 1297              		.align	2
- 1298              	.L81:
- 1299 09f0 00000000 		.word	transmission_running
- 1304              	.Lscope11:
- 1305              		.align	2
- 1307              		.global	UART1_send_ringbuffer
- 1309              	UART1_send_ringbuffer:
- 365:uart.c        **** 
- 366:uart.c        **** void UART1_send_ringbuffer(void)
- 367:uart.c        **** {
- 1311              	.LM125:
- 1312              		@ Function supports interworking.
- 1313              		@ args = 0, pretend = 0, frame = 4
- 1314              		@ frame_needed = 1, uses_anonymous_args = 0
- 1315 09f4 0DC0A0E1 		mov	ip, sp
- 1316 09f8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1317 09fc 04B04CE2 		sub	fp, ip, #4
- 1318 0a00 04D04DE2 		sub	sp, sp, #4
- 368:uart.c        ****   unsigned char t;
- 369:uart.c        ****   if(!transmission1_running)
- 1320              	.LM126:
- 1321 0a04 4C309FE5 		ldr	r3, .L88
- 1322 0a08 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1323 0a0c 000053E3 		cmp	r3, #0
- 1324 0a10 0D00001A 		bne	.L87
- 370:uart.c        ****   {
- 371:uart.c        ****     if(ringbuffer1(RBREAD, &t, 1))
- 1326              	.LM127:
- 1327 0a14 0D304BE2 		sub	r3, fp, #13
- 1328 0a18 0000A0E3 		mov	r0, #0
- 1329 0a1c 0310A0E1 		mov	r1, r3
- 1330 0a20 0120A0E3 		mov	r2, #1
- 1331 0a24 FEFFFFEB 		bl	ringbuffer1
- 1332 0a28 0030A0E1 		mov	r3, r0
- 1333 0a2c 000053E3 		cmp	r3, #0
- 1334 0a30 0500000A 		beq	.L87
- 372:uart.c        ****     {
- 373:uart.c        ****       transmission1_running=1;
- 1336              	.LM128:
- 1337 0a34 1C209FE5 		ldr	r2, .L88
- 1338 0a38 0130A0E3 		mov	r3, #1
- 1339 0a3c 0030C2E5 		strb	r3, [r2, #0]
- 374:uart.c        ****       UART1WriteChar(t);
- 1341              	.LM129:
- 1342 0a40 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
- 1343 0a44 0300A0E1 		mov	r0, r3
- 1344 0a48 FEFFFFEB 		bl	UART1WriteChar
- 1345              	.L87:
- 375:uart.c        ****     }
- 376:uart.c        ****   }
- 377:uart.c        **** }
- 1347              	.LM130:
- 1348 0a4c 0CD04BE2 		sub	sp, fp, #12
- 1349 0a50 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1350 0a54 1EFF2FE1 		bx	lr
- 1351              	.L89:
- 1352              		.align	2
- 1353              	.L88:
- 1354 0a58 00000000 		.word	transmission1_running
- 1359              	.Lscope12:
- 1360              		.align	2
- 1365              		.global	UART_SendPacket
- 1367              	UART_SendPacket:
- 378:uart.c        **** 
- 379:uart.c        **** void UART_SendPacket(void *data, unsigned short count, unsigned char packetdescriptor) //example to
- 380:uart.c        **** {
- 1369              	.LM131:
- 1370              		@ Function supports interworking.
- 1371              		@ args = 0, pretend = 0, frame = 20
- 1372              		@ frame_needed = 1, uses_anonymous_args = 0
- 1373 0a5c 0DC0A0E1 		mov	ip, sp
- 1374 0a60 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1375 0a64 04B04CE2 		sub	fp, ip, #4
- 1376 0a68 14D04DE2 		sub	sp, sp, #20
- 1377 0a6c 18000BE5 		str	r0, [fp, #-24]
- 1378 0a70 0130A0E1 		mov	r3, r1
- 1379 0a74 BC314BE1 		strh	r3, [fp, #-28]	@ movhi
- 1380 0a78 0230A0E1 		mov	r3, r2
- 1381 0a7c 20304BE5 		strb	r3, [fp, #-32]
- 381:uart.c        ****   unsigned short crc;
- 382:uart.c        ****   int state;
- 383:uart.c        ****       state=ringbuffer(RBWRITE, startstring, 3);
- 1383              	.LM132:
- 1384 0a80 0100A0E3 		mov	r0, #1
- 1385 0a84 C0109FE5 		ldr	r1, .L92
- 1386 0a88 0320A0E3 		mov	r2, #3
- 1387 0a8c FEFFFFEB 		bl	ringbuffer
- 1388 0a90 0030A0E1 		mov	r3, r0
- 1389 0a94 10300BE5 		str	r3, [fp, #-16]
- 384:uart.c        ****       state=ringbuffer(RBWRITE, (unsigned char *) &count, 2);
- 1391              	.LM133:
- 1392 0a98 1C304BE2 		sub	r3, fp, #28
- 1393 0a9c 0100A0E3 		mov	r0, #1
- 1394 0aa0 0310A0E1 		mov	r1, r3
- 1395 0aa4 0220A0E3 		mov	r2, #2
- 1396 0aa8 FEFFFFEB 		bl	ringbuffer
- 1397 0aac 0030A0E1 		mov	r3, r0
- 1398 0ab0 10300BE5 		str	r3, [fp, #-16]
- 385:uart.c        ****       state=ringbuffer(RBWRITE, &packetdescriptor, 1);
- 1400              	.LM134:
- 1401 0ab4 20304BE2 		sub	r3, fp, #32
- 1402 0ab8 0100A0E3 		mov	r0, #1
- 1403 0abc 0310A0E1 		mov	r1, r3
- 1404 0ac0 0120A0E3 		mov	r2, #1
- 1405 0ac4 FEFFFFEB 		bl	ringbuffer
- 1406 0ac8 0030A0E1 		mov	r3, r0
- 1407 0acc 10300BE5 		str	r3, [fp, #-16]
- 386:uart.c        ****       state=ringbuffer(RBWRITE, data, count);
- 1409              	.LM135:
- 1410 0ad0 18201BE5 		ldr	r2, [fp, #-24]
- 1411 0ad4 BC315BE1 		ldrh	r3, [fp, #-28]
- 1412 0ad8 0100A0E3 		mov	r0, #1
- 1413 0adc 0210A0E1 		mov	r1, r2
- 1414 0ae0 0320A0E1 		mov	r2, r3
- 1415 0ae4 FEFFFFEB 		bl	ringbuffer
- 1416 0ae8 0030A0E1 		mov	r3, r0
- 1417 0aec 10300BE5 		str	r3, [fp, #-16]
- 387:uart.c        ****                 crc=crc16(data,count);
- 1419              	.LM136:
- 1420 0af0 BC315BE1 		ldrh	r3, [fp, #-28]
- 1421 0af4 18001BE5 		ldr	r0, [fp, #-24]
- 1422 0af8 0310A0E1 		mov	r1, r3
- 1423 0afc FEFFFFEB 		bl	crc16
- 1424 0b00 0030A0E1 		mov	r3, r0
- 1425 0b04 B2314BE1 		strh	r3, [fp, #-18]	@ movhi
- 388:uart.c        ****       state=ringbuffer(RBWRITE, (unsigned char *) &crc, 2);
- 1427              	.LM137:
- 1428 0b08 12304BE2 		sub	r3, fp, #18
- 1429 0b0c 0100A0E3 		mov	r0, #1
- 1430 0b10 0310A0E1 		mov	r1, r3
- 1431 0b14 0220A0E3 		mov	r2, #2
- 1432 0b18 FEFFFFEB 		bl	ringbuffer
- 1433 0b1c 0030A0E1 		mov	r3, r0
- 1434 0b20 10300BE5 		str	r3, [fp, #-16]
- 389:uart.c        ****       state=ringbuffer(RBWRITE, stopstring, 3);
- 1436              	.LM138:
- 1437 0b24 0100A0E3 		mov	r0, #1
- 1438 0b28 20109FE5 		ldr	r1, .L92+4
- 1439 0b2c 0320A0E3 		mov	r2, #3
- 1440 0b30 FEFFFFEB 		bl	ringbuffer
- 1441 0b34 0030A0E1 		mov	r3, r0
- 1442 0b38 10300BE5 		str	r3, [fp, #-16]
- 390:uart.c        ****       UART_send_ringbuffer();
- 1444              	.LM139:
- 1445 0b3c FEFFFFEB 		bl	UART_send_ringbuffer
- 391:uart.c        **** }
- 1447              	.LM140:
- 1448 0b40 0CD04BE2 		sub	sp, fp, #12
- 1449 0b44 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1450 0b48 1EFF2FE1 		bx	lr
- 1451              	.L93:
- 1452              		.align	2
- 1453              	.L92:
- 1454 0b4c 00000000 		.word	startstring
- 1455 0b50 00000000 		.word	stopstring
- 1461              	.Lscope13:
- 1462              		.align	2
- 1466              		.global	crc_update
- 1468              	crc_update:
- 392:uart.c        **** 
- 393:uart.c        **** //example CRC16 function
- 394:uart.c        **** unsigned short crc_update (unsigned short crc, unsigned char data)
- 395:uart.c        ****      {
- 1470              	.LM141:
- 1471              		@ Function supports interworking.
- 1472              		@ args = 0, pretend = 0, frame = 8
- 1473              		@ frame_needed = 1, uses_anonymous_args = 0
- 1474 0b54 0DC0A0E1 		mov	ip, sp
- 1475 0b58 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1476 0b5c 04B04CE2 		sub	fp, ip, #4
- 1477 0b60 08D04DE2 		sub	sp, sp, #8
- 1478 0b64 0030A0E1 		mov	r3, r0
- 1479 0b68 0120A0E1 		mov	r2, r1
- 1480 0b6c B0314BE1 		strh	r3, [fp, #-16]	@ movhi
- 1481 0b70 0230A0E1 		mov	r3, r2
- 1482 0b74 14304BE5 		strb	r3, [fp, #-20]
- 396:uart.c        ****          data ^= (crc & 0xff);
- 1484              	.LM142:
- 1485 0b78 B0315BE1 		ldrh	r3, [fp, #-16]	@ movhi
- 1486 0b7c FF3003E2 		and	r3, r3, #255
- 1487 0b80 FF3003E2 		and	r3, r3, #255
- 1488 0b84 14205BE5 		ldrb	r2, [fp, #-20]	@ zero_extendqisi2
- 1489 0b88 0310A0E1 		mov	r1, r3
- 1490 0b8c 0230A0E1 		mov	r3, r2
- 1491 0b90 033021E0 		eor	r3, r1, r3
- 1492 0b94 FF3003E2 		and	r3, r3, #255
- 1493 0b98 14304BE5 		strb	r3, [fp, #-20]
- 397:uart.c        ****          data ^= data << 4;
- 1495              	.LM143:
- 1496 0b9c 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
- 1497 0ba0 0332A0E1 		mov	r3, r3, asl #4
- 1498 0ba4 FF3003E2 		and	r3, r3, #255
- 1499 0ba8 14205BE5 		ldrb	r2, [fp, #-20]	@ zero_extendqisi2
- 1500 0bac 0310A0E1 		mov	r1, r3
- 1501 0bb0 0230A0E1 		mov	r3, r2
- 1502 0bb4 033021E0 		eor	r3, r1, r3
- 1503 0bb8 FF3003E2 		and	r3, r3, #255
- 1504 0bbc 14304BE5 		strb	r3, [fp, #-20]
+ 1054              	.LM96:
+ 1055              		@ Function supports interworking.
+ 1056              		@ args = 0, pretend = 0, frame = 0
+ 1057              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1058 07f8 0DC0A0E1 		mov	ip, sp
+ 1059 07fc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1060 0800 04B04CE2 		sub	fp, ip, #4
+ 1061              	.L55:
+ 323:uart.c        ****   while ((U1LSR & 0x01) == 0);
+ 1063              	.LM97:
+ 1064 0804 0E32A0E3 		mov	r3, #-536870912
+ 1065 0808 013883E2 		add	r3, r3, #65536
+ 1066 080c 143083E2 		add	r3, r3, #20
+ 1067 0810 003093E5 		ldr	r3, [r3, #0]
+ 1068 0814 013003E2 		and	r3, r3, #1
+ 1069 0818 000053E3 		cmp	r3, #0
+ 1070 081c F8FFFF0A 		beq	.L55
+ 324:uart.c        ****   return U1RBR;
+ 1072              	.LM98:
+ 1073 0820 0E32A0E3 		mov	r3, #-536870912
+ 1074 0824 013883E2 		add	r3, r3, #65536
+ 1075 0828 003093E5 		ldr	r3, [r3, #0]
+ 1076 082c FF3003E2 		and	r3, r3, #255
+ 325:uart.c        **** }
+ 1078              	.LM99:
+ 1079 0830 0300A0E1 		mov	r0, r3
+ 1080 0834 0CD04BE2 		sub	sp, fp, #12
+ 1081 0838 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1082 083c 1EFF2FE1 		bx	lr
+ 1084              	.Lscope7:
+ 1085              		.align	2
+ 1088              		.global	__putchar
+ 1090              	__putchar:
+ 326:uart.c        **** 
+ 327:uart.c        **** void __putchar(int ch)
+ 328:uart.c        **** {
+ 1092              	.LM100:
+ 1093              		@ Function supports interworking.
+ 1094              		@ args = 0, pretend = 0, frame = 4
+ 1095              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1096 0840 0DC0A0E1 		mov	ip, sp
+ 1097 0844 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1098 0848 04B04CE2 		sub	fp, ip, #4
+ 1099 084c 04D04DE2 		sub	sp, sp, #4
+ 1100 0850 10000BE5 		str	r0, [fp, #-16]
+ 329:uart.c        ****   if (ch == '\n')
+ 1102              	.LM101:
+ 1103 0854 10301BE5 		ldr	r3, [fp, #-16]
+ 1104 0858 0A0053E3 		cmp	r3, #10
+ 1105 085c 0100001A 		bne	.L59
+ 330:uart.c        ****     UARTWriteChar('\r');
+ 1107              	.LM102:
+ 1108 0860 0D00A0E3 		mov	r0, #13
+ 1109 0864 FEFFFFEB 		bl	UARTWriteChar
+ 1110              	.L59:
+ 331:uart.c        ****   UARTWriteChar(ch);
+ 1112              	.LM103:
+ 1113 0868 10301BE5 		ldr	r3, [fp, #-16]
+ 1114 086c FF3003E2 		and	r3, r3, #255
+ 1115 0870 0300A0E1 		mov	r0, r3
+ 1116 0874 FEFFFFEB 		bl	UARTWriteChar
+ 332:uart.c        **** }
+ 1118              	.LM104:
+ 1119 0878 0CD04BE2 		sub	sp, fp, #12
+ 1120 087c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1121 0880 1EFF2FE1 		bx	lr
+ 1123              	.Lscope8:
+ 1124              		.align	2
+ 1128              		.global	UART_send
+ 1130              	UART_send:
+ 333:uart.c        **** 
+ 334:uart.c        **** void UART_send(char *buffer, unsigned char length)
+ 335:uart.c        **** {
+ 1132              	.LM105:
+ 1133              		@ Function supports interworking.
+ 1134              		@ args = 0, pretend = 0, frame = 12
+ 1135              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1136 0884 0DC0A0E1 		mov	ip, sp
+ 1137 0888 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1138 088c 04B04CE2 		sub	fp, ip, #4
+ 1139 0890 0CD04DE2 		sub	sp, sp, #12
+ 1140 0894 14000BE5 		str	r0, [fp, #-20]
+ 1141 0898 0130A0E1 		mov	r3, r1
+ 1142 089c 18304BE5 		strb	r3, [fp, #-24]
+ 336:uart.c        ****   unsigned char cnt=0;
+ 1144              	.LM106:
+ 1145 08a0 0030A0E3 		mov	r3, #0
+ 1146 08a4 0D304BE5 		strb	r3, [fp, #-13]
+ 1147              	.L63:
+ 337:uart.c        ****   while (!(U0LSR & 0x20)); //wait until U0THR and U0TSR are both empty
+ 1149              	.LM107:
+ 1150 08a8 0E32A0E3 		mov	r3, #-536870912
+ 1151 08ac 033983E2 		add	r3, r3, #49152
+ 1152 08b0 143083E2 		add	r3, r3, #20
+ 1153 08b4 003093E5 		ldr	r3, [r3, #0]
+ 1154 08b8 203003E2 		and	r3, r3, #32
+ 1155 08bc 000053E3 		cmp	r3, #0
+ 1156 08c0 F8FFFF0A 		beq	.L63
+ 338:uart.c        ****   while(length--)
+ 1158              	.LM108:
+ 1159 08c4 140000EA 		b	.L70
+ 1160              	.L66:
+ 339:uart.c        ****   {
+ 340:uart.c        ****     U0THR = buffer[cnt++];
+ 1162              	.LM109:
+ 1163 08c8 0E22A0E3 		mov	r2, #-536870912
+ 1164 08cc 032982E2 		add	r2, r2, #49152
+ 1165 08d0 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1166 08d4 0310A0E1 		mov	r1, r3
+ 1167 08d8 14301BE5 		ldr	r3, [fp, #-20]
+ 1168 08dc 033081E0 		add	r3, r1, r3
+ 1169 08e0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1170 08e4 003082E5 		str	r3, [r2, #0]
+ 1171 08e8 0D305BE5 		ldrb	r3, [fp, #-13]
+ 1172 08ec 013083E2 		add	r3, r3, #1
+ 1173 08f0 0D304BE5 		strb	r3, [fp, #-13]
+ 341:uart.c        ****     if(cnt>15)
+ 1175              	.LM110:
+ 1176 08f4 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1177 08f8 0F0053E3 		cmp	r3, #15
+ 1178 08fc 0600009A 		bls	.L65
+ 1179              	.L67:
+ 342:uart.c        ****     {
+ 343:uart.c        ****       while (!(U0LSR & 0x20)); //wait until U0THR is empty
+ 1181              	.LM111:
+ 1182 0900 0E32A0E3 		mov	r3, #-536870912
+ 1183 0904 033983E2 		add	r3, r3, #49152
+ 1184 0908 143083E2 		add	r3, r3, #20
+ 1185 090c 003093E5 		ldr	r3, [r3, #0]
+ 1186 0910 203003E2 		and	r3, r3, #32
+ 1187 0914 000053E3 		cmp	r3, #0
+ 1188 0918 F8FFFF0A 		beq	.L67
+ 1189              	.L65:
+ 1190              	.L70:
+ 338:uart.c        ****   while(length--)
+ 1192              	.LM112:
+ 1193 091c 18305BE5 		ldrb	r3, [fp, #-24]
+ 1194 0920 013043E2 		sub	r3, r3, #1
+ 1195 0924 18304BE5 		strb	r3, [fp, #-24]
+ 1196 0928 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1197 092c FF0053E3 		cmp	r3, #255
+ 1198 0930 E4FFFF1A 		bne	.L66
+ 344:uart.c        ****     }
+ 345:uart.c        ****   }
+ 346:uart.c        **** }
+ 1200              	.LM113:
+ 1201 0934 0CD04BE2 		sub	sp, fp, #12
+ 1202 0938 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1203 093c 1EFF2FE1 		bx	lr
+ 1208              	.Lscope9:
+ 1209              		.align	2
+ 1213              		.global	UART1_send
+ 1215              	UART1_send:
+ 347:uart.c        **** 
+ 348:uart.c        **** void UART1_send(unsigned char *buffer, unsigned char length)
+ 349:uart.c        **** {
+ 1217              	.LM114:
+ 1218              		@ Function supports interworking.
+ 1219              		@ args = 0, pretend = 0, frame = 12
+ 1220              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1221 0940 0DC0A0E1 		mov	ip, sp
+ 1222 0944 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1223 0948 04B04CE2 		sub	fp, ip, #4
+ 1224 094c 0CD04DE2 		sub	sp, sp, #12
+ 1225 0950 14000BE5 		str	r0, [fp, #-20]
+ 1226 0954 0130A0E1 		mov	r3, r1
+ 1227 0958 18304BE5 		strb	r3, [fp, #-24]
+ 350:uart.c        ****   unsigned char cnt=0;
+ 1229              	.LM115:
+ 1230 095c 0030A0E3 		mov	r3, #0
+ 1231 0960 0D304BE5 		strb	r3, [fp, #-13]
+ 351:uart.c        ****   while(length--)
+ 1233              	.LM116:
+ 1234 0964 110000EA 		b	.L72
+ 1235              	.L73:
+ 352:uart.c        ****   {
+ 353:uart.c        ****     while (!(U1LSR & 0x20)); //wait until U1THR is empty
+ 1237              	.LM117:
+ 1238 0968 0E32A0E3 		mov	r3, #-536870912
+ 1239 096c 013883E2 		add	r3, r3, #65536
+ 1240 0970 143083E2 		add	r3, r3, #20
+ 1241 0974 003093E5 		ldr	r3, [r3, #0]
+ 1242 0978 203003E2 		and	r3, r3, #32
+ 1243 097c 000053E3 		cmp	r3, #0
+ 1244 0980 F8FFFF0A 		beq	.L73
+ 354:uart.c        ****     U1THR = buffer[cnt++];
+ 1246              	.LM118:
+ 1247 0984 0E22A0E3 		mov	r2, #-536870912
+ 1248 0988 012882E2 		add	r2, r2, #65536
+ 1249 098c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1250 0990 0310A0E1 		mov	r1, r3
+ 1251 0994 14301BE5 		ldr	r3, [fp, #-20]
+ 1252 0998 033081E0 		add	r3, r1, r3
+ 1253 099c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1254 09a0 003082E5 		str	r3, [r2, #0]
+ 1255 09a4 0D305BE5 		ldrb	r3, [fp, #-13]
+ 1256 09a8 013083E2 		add	r3, r3, #1
+ 1257 09ac 0D304BE5 		strb	r3, [fp, #-13]
+ 1258              	.L72:
+ 351:uart.c        ****   while(length--)
+ 1260              	.LM119:
+ 1261 09b0 18305BE5 		ldrb	r3, [fp, #-24]
+ 1262 09b4 013043E2 		sub	r3, r3, #1
+ 1263 09b8 18304BE5 		strb	r3, [fp, #-24]
+ 1264 09bc 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1265 09c0 FF0053E3 		cmp	r3, #255
+ 1266 09c4 E7FFFF1A 		bne	.L73
+ 355:uart.c        ****   }
+ 356:uart.c        **** }
+ 1268              	.LM120:
+ 1269 09c8 0CD04BE2 		sub	sp, fp, #12
+ 1270 09cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1271 09d0 1EFF2FE1 		bx	lr
+ 1276              	.Lscope10:
+ 1277              		.align	2
+ 1279              		.global	UART_send_ringbuffer
+ 1281              	UART_send_ringbuffer:
+ 357:uart.c        **** 
+ 358:uart.c        **** 
+ 359:uart.c        **** void UART_send_ringbuffer(void)
+ 360:uart.c        **** {
+ 1283              	.LM121:
+ 1284              		@ Function supports interworking.
+ 1285              		@ args = 0, pretend = 0, frame = 4
+ 1286              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1287 09d4 0DC0A0E1 		mov	ip, sp
+ 1288 09d8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1289 09dc 04B04CE2 		sub	fp, ip, #4
+ 1290 09e0 04D04DE2 		sub	sp, sp, #4
+ 361:uart.c        ****   unsigned char t;
+ 362:uart.c        ****   if(!transmission_running)
+ 1292              	.LM122:
+ 1293 09e4 4C309FE5 		ldr	r3, .L82
+ 1294 09e8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1295 09ec 000053E3 		cmp	r3, #0
+ 1296 09f0 0D00001A 		bne	.L81
+ 363:uart.c        ****   {
+ 364:uart.c        ****     if(ringbuffer(RBREAD, &t, 1))
+ 1298              	.LM123:
+ 1299 09f4 0D304BE2 		sub	r3, fp, #13
+ 1300 09f8 0000A0E3 		mov	r0, #0
+ 1301 09fc 0310A0E1 		mov	r1, r3
+ 1302 0a00 0120A0E3 		mov	r2, #1
+ 1303 0a04 FEFFFFEB 		bl	ringbuffer
+ 1304 0a08 0030A0E1 		mov	r3, r0
+ 1305 0a0c 000053E3 		cmp	r3, #0
+ 1306 0a10 0500000A 		beq	.L81
+ 365:uart.c        ****     {
+ 366:uart.c        ****       transmission_running=1;
+ 1308              	.LM124:
+ 1309 0a14 1C209FE5 		ldr	r2, .L82
+ 1310 0a18 0130A0E3 		mov	r3, #1
+ 1311 0a1c 0030C2E5 		strb	r3, [r2, #0]
+ 367:uart.c        ****       UARTWriteChar(t);
+ 1313              	.LM125:
+ 1314 0a20 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1315 0a24 0300A0E1 		mov	r0, r3
+ 1316 0a28 FEFFFFEB 		bl	UARTWriteChar
+ 1317              	.L81:
+ 368:uart.c        ****     }
+ 369:uart.c        ****   }
+ 370:uart.c        **** }
+ 1319              	.LM126:
+ 1320 0a2c 0CD04BE2 		sub	sp, fp, #12
+ 1321 0a30 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1322 0a34 1EFF2FE1 		bx	lr
+ 1323              	.L83:
+ 1324              		.align	2
+ 1325              	.L82:
+ 1326 0a38 00000000 		.word	transmission_running
+ 1331              	.Lscope11:
+ 1332              		.align	2
+ 1334              		.global	UART1_send_ringbuffer
+ 1336              	UART1_send_ringbuffer:
+ 371:uart.c        **** 
+ 372:uart.c        **** void UART1_send_ringbuffer(void)
+ 373:uart.c        **** {
+ 1338              	.LM127:
+ 1339              		@ Function supports interworking.
+ 1340              		@ args = 0, pretend = 0, frame = 4
+ 1341              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1342 0a3c 0DC0A0E1 		mov	ip, sp
+ 1343 0a40 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1344 0a44 04B04CE2 		sub	fp, ip, #4
+ 1345 0a48 04D04DE2 		sub	sp, sp, #4
+ 374:uart.c        ****   unsigned char t;
+ 375:uart.c        ****   if(!transmission1_running)
+ 1347              	.LM128:
+ 1348 0a4c 4C309FE5 		ldr	r3, .L89
+ 1349 0a50 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1350 0a54 000053E3 		cmp	r3, #0
+ 1351 0a58 0D00001A 		bne	.L88
+ 376:uart.c        ****   {
+ 377:uart.c        ****     if(ringbuffer1(RBREAD, &t, 1))
+ 1353              	.LM129:
+ 1354 0a5c 0D304BE2 		sub	r3, fp, #13
+ 1355 0a60 0000A0E3 		mov	r0, #0
+ 1356 0a64 0310A0E1 		mov	r1, r3
+ 1357 0a68 0120A0E3 		mov	r2, #1
+ 1358 0a6c FEFFFFEB 		bl	ringbuffer1
+ 1359 0a70 0030A0E1 		mov	r3, r0
+ 1360 0a74 000053E3 		cmp	r3, #0
+ 1361 0a78 0500000A 		beq	.L88
+ 378:uart.c        ****     {
+ 379:uart.c        ****       transmission1_running=1;
+ 1363              	.LM130:
+ 1364 0a7c 1C209FE5 		ldr	r2, .L89
+ 1365 0a80 0130A0E3 		mov	r3, #1
+ 1366 0a84 0030C2E5 		strb	r3, [r2, #0]
+ 380:uart.c        ****       UART1WriteChar(t);
+ 1368              	.LM131:
+ 1369 0a88 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1370 0a8c 0300A0E1 		mov	r0, r3
+ 1371 0a90 FEFFFFEB 		bl	UART1WriteChar
+ 1372              	.L88:
+ 381:uart.c        ****     }
+ 382:uart.c        ****   }
+ 383:uart.c        **** }
+ 1374              	.LM132:
+ 1375 0a94 0CD04BE2 		sub	sp, fp, #12
+ 1376 0a98 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1377 0a9c 1EFF2FE1 		bx	lr
+ 1378              	.L90:
+ 1379              		.align	2
+ 1380              	.L89:
+ 1381 0aa0 00000000 		.word	transmission1_running
+ 1386              	.Lscope12:
+ 1387              		.align	2
+ 1392              		.global	UART_SendPacket
+ 1394              	UART_SendPacket:
+ 384:uart.c        **** 
+ 385:uart.c        **** void UART_SendPacket(void *data, unsigned short count, unsigned char packetdescriptor) //example to
+ 386:uart.c        **** {
+ 1396              	.LM133:
+ 1397              		@ Function supports interworking.
+ 1398              		@ args = 0, pretend = 0, frame = 20
+ 1399              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1400 0aa4 0DC0A0E1 		mov	ip, sp
+ 1401 0aa8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1402 0aac 04B04CE2 		sub	fp, ip, #4
+ 1403 0ab0 14D04DE2 		sub	sp, sp, #20
+ 1404 0ab4 18000BE5 		str	r0, [fp, #-24]
+ 1405 0ab8 0130A0E1 		mov	r3, r1
+ 1406 0abc BC314BE1 		strh	r3, [fp, #-28]	@ movhi
+ 1407 0ac0 0230A0E1 		mov	r3, r2
+ 1408 0ac4 20304BE5 		strb	r3, [fp, #-32]
+ 387:uart.c        ****   unsigned short crc;
+ 388:uart.c        ****   int state;
+ 389:uart.c        ****       state=ringbuffer(RBWRITE, startstring, 3);
+ 1410              	.LM134:
+ 1411 0ac8 0100A0E3 		mov	r0, #1
+ 1412 0acc C0109FE5 		ldr	r1, .L93
+ 1413 0ad0 0320A0E3 		mov	r2, #3
+ 1414 0ad4 FEFFFFEB 		bl	ringbuffer
+ 1415 0ad8 0030A0E1 		mov	r3, r0
+ 1416 0adc 10300BE5 		str	r3, [fp, #-16]
+ 390:uart.c        ****       state=ringbuffer(RBWRITE, (unsigned char *) &count, 2);
+ 1418              	.LM135:
+ 1419 0ae0 1C304BE2 		sub	r3, fp, #28
+ 1420 0ae4 0100A0E3 		mov	r0, #1
+ 1421 0ae8 0310A0E1 		mov	r1, r3
+ 1422 0aec 0220A0E3 		mov	r2, #2
+ 1423 0af0 FEFFFFEB 		bl	ringbuffer
+ 1424 0af4 0030A0E1 		mov	r3, r0
+ 1425 0af8 10300BE5 		str	r3, [fp, #-16]
+ 391:uart.c        ****       state=ringbuffer(RBWRITE, &packetdescriptor, 1);
+ 1427              	.LM136:
+ 1428 0afc 20304BE2 		sub	r3, fp, #32
+ 1429 0b00 0100A0E3 		mov	r0, #1
+ 1430 0b04 0310A0E1 		mov	r1, r3
+ 1431 0b08 0120A0E3 		mov	r2, #1
+ 1432 0b0c FEFFFFEB 		bl	ringbuffer
+ 1433 0b10 0030A0E1 		mov	r3, r0
+ 1434 0b14 10300BE5 		str	r3, [fp, #-16]
+ 392:uart.c        ****       state=ringbuffer(RBWRITE, data, count);
+ 1436              	.LM137:
+ 1437 0b18 18201BE5 		ldr	r2, [fp, #-24]
+ 1438 0b1c BC315BE1 		ldrh	r3, [fp, #-28]
+ 1439 0b20 0100A0E3 		mov	r0, #1
+ 1440 0b24 0210A0E1 		mov	r1, r2
+ 1441 0b28 0320A0E1 		mov	r2, r3
+ 1442 0b2c FEFFFFEB 		bl	ringbuffer
+ 1443 0b30 0030A0E1 		mov	r3, r0
+ 1444 0b34 10300BE5 		str	r3, [fp, #-16]
+ 393:uart.c        ****                 crc=crc16(data,count);
+ 1446              	.LM138:
+ 1447 0b38 BC315BE1 		ldrh	r3, [fp, #-28]
+ 1448 0b3c 18001BE5 		ldr	r0, [fp, #-24]
+ 1449 0b40 0310A0E1 		mov	r1, r3
+ 1450 0b44 FEFFFFEB 		bl	crc16
+ 1451 0b48 0030A0E1 		mov	r3, r0
+ 1452 0b4c B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+ 394:uart.c        ****       state=ringbuffer(RBWRITE, (unsigned char *) &crc, 2);
+ 1454              	.LM139:
+ 1455 0b50 12304BE2 		sub	r3, fp, #18
+ 1456 0b54 0100A0E3 		mov	r0, #1
+ 1457 0b58 0310A0E1 		mov	r1, r3
+ 1458 0b5c 0220A0E3 		mov	r2, #2
+ 1459 0b60 FEFFFFEB 		bl	ringbuffer
+ 1460 0b64 0030A0E1 		mov	r3, r0
+ 1461 0b68 10300BE5 		str	r3, [fp, #-16]
+ 395:uart.c        ****       state=ringbuffer(RBWRITE, stopstring, 3);
+ 1463              	.LM140:
+ 1464 0b6c 0100A0E3 		mov	r0, #1
+ 1465 0b70 20109FE5 		ldr	r1, .L93+4
+ 1466 0b74 0320A0E3 		mov	r2, #3
+ 1467 0b78 FEFFFFEB 		bl	ringbuffer
+ 1468 0b7c 0030A0E1 		mov	r3, r0
+ 1469 0b80 10300BE5 		str	r3, [fp, #-16]
+ 396:uart.c        ****       UART_send_ringbuffer();
+ 1471              	.LM141:
+ 1472 0b84 FEFFFFEB 		bl	UART_send_ringbuffer
+ 397:uart.c        **** }
+ 1474              	.LM142:
+ 1475 0b88 0CD04BE2 		sub	sp, fp, #12
+ 1476 0b8c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1477 0b90 1EFF2FE1 		bx	lr
+ 1478              	.L94:
+ 1479              		.align	2
+ 1480              	.L93:
+ 1481 0b94 00000000 		.word	startstring
+ 1482 0b98 00000000 		.word	stopstring
+ 1488              	.Lscope13:
+ 1489              		.align	2
+ 1493              		.global	crc_update
+ 1495              	crc_update:
  398:uart.c        **** 
- 399:uart.c        ****          return ((((unsigned short )data << 8) | ((crc>>8)&0xff)) ^ (unsigned char )(data >> 4)
- 1506              	.LM144:
- 1507 0bc0 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
- 1508 0bc4 0334A0E1 		mov	r3, r3, asl #8
- 1509 0bc8 0338A0E1 		mov	r3, r3, asl #16
- 1510 0bcc 2328A0E1 		mov	r2, r3, lsr #16
- 1511 0bd0 B0315BE1 		ldrh	r3, [fp, #-16]
- 1512 0bd4 2334A0E1 		mov	r3, r3, lsr #8
- 1513 0bd8 0338A0E1 		mov	r3, r3, asl #16
- 1514 0bdc 2338A0E1 		mov	r3, r3, lsr #16
- 1515 0be0 0338A0E1 		mov	r3, r3, asl #16
- 1516 0be4 2338A0E1 		mov	r3, r3, lsr #16
- 1517 0be8 FF3003E2 		and	r3, r3, #255
- 1518 0bec 033082E1 		orr	r3, r2, r3
- 1519 0bf0 0338A0E1 		mov	r3, r3, asl #16
- 1520 0bf4 2328A0E1 		mov	r2, r3, lsr #16
- 1521 0bf8 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
- 1522 0bfc 2332A0E1 		mov	r3, r3, lsr #4
- 1523 0c00 FF3003E2 		and	r3, r3, #255
- 1524 0c04 033022E0 		eor	r3, r2, r3
- 1525 0c08 0338A0E1 		mov	r3, r3, asl #16
- 1526 0c0c 2328A0E1 		mov	r2, r3, lsr #16
- 1527 0c10 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
- 1528 0c14 8331A0E1 		mov	r3, r3, asl #3
- 1529 0c18 0338A0E1 		mov	r3, r3, asl #16
- 1530 0c1c 2338A0E1 		mov	r3, r3, lsr #16
- 1531 0c20 033022E0 		eor	r3, r2, r3
- 1532 0c24 0338A0E1 		mov	r3, r3, asl #16
- 1533 0c28 2338A0E1 		mov	r3, r3, lsr #16
- 1534 0c2c 0338A0E1 		mov	r3, r3, asl #16
- 1535 0c30 2338A0E1 		mov	r3, r3, lsr #16
- 400:uart.c        ****                  ^ ((unsigned short )data << 3));
- 401:uart.c        ****      }
- 1537              	.LM145:
- 1538 0c34 0300A0E1 		mov	r0, r3
- 1539 0c38 0CD04BE2 		sub	sp, fp, #12
- 1540 0c3c 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1541 0c40 1EFF2FE1 		bx	lr
- 1543              	.Lscope14:
- 1544              		.align	2
- 1548              		.global	crc16
- 1550              	crc16:
- 402:uart.c        **** 
- 403:uart.c        ****  unsigned short crc16(void* data, unsigned short cnt)
- 404:uart.c        ****  {
- 1552              	.LM146:
- 1553              		@ Function supports interworking.
- 1554              		@ args = 0, pretend = 0, frame = 20
- 1555              		@ frame_needed = 1, uses_anonymous_args = 0
- 1556 0c44 0DC0A0E1 		mov	ip, sp
- 1557 0c48 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1558 0c4c 04B04CE2 		sub	fp, ip, #4
- 1559 0c50 14D04DE2 		sub	sp, sp, #20
- 1560 0c54 1C000BE5 		str	r0, [fp, #-28]
- 1561 0c58 0130A0E1 		mov	r3, r1
- 1562 0c5c B0324BE1 		strh	r3, [fp, #-32]	@ movhi
- 405:uart.c        ****    unsigned short crc=0xff;
+ 399:uart.c        **** //example CRC16 function
+ 400:uart.c        **** unsigned short crc_update (unsigned short crc, unsigned char data)
+ 401:uart.c        ****      {
+ 1497              	.LM143:
+ 1498              		@ Function supports interworking.
+ 1499              		@ args = 0, pretend = 0, frame = 8
+ 1500              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1501 0b9c 0DC0A0E1 		mov	ip, sp
+ 1502 0ba0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1503 0ba4 04B04CE2 		sub	fp, ip, #4
+ 1504 0ba8 08D04DE2 		sub	sp, sp, #8
+ 1505 0bac 0030A0E1 		mov	r3, r0
+ 1506 0bb0 0120A0E1 		mov	r2, r1
+ 1507 0bb4 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 1508 0bb8 0230A0E1 		mov	r3, r2
+ 1509 0bbc 14304BE5 		strb	r3, [fp, #-20]
+ 402:uart.c        ****          data ^= (crc & 0xff);
+ 1511              	.LM144:
+ 1512 0bc0 B0315BE1 		ldrh	r3, [fp, #-16]	@ movhi
+ 1513 0bc4 FF3003E2 		and	r3, r3, #255
+ 1514 0bc8 FF3003E2 		and	r3, r3, #255
+ 1515 0bcc 14205BE5 		ldrb	r2, [fp, #-20]	@ zero_extendqisi2
+ 1516 0bd0 0310A0E1 		mov	r1, r3
+ 1517 0bd4 0230A0E1 		mov	r3, r2
+ 1518 0bd8 033021E0 		eor	r3, r1, r3
+ 1519 0bdc FF3003E2 		and	r3, r3, #255
+ 1520 0be0 14304BE5 		strb	r3, [fp, #-20]
+ 403:uart.c        ****          data ^= data << 4;
+ 1522              	.LM145:
+ 1523 0be4 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 1524 0be8 0332A0E1 		mov	r3, r3, asl #4
+ 1525 0bec FF3003E2 		and	r3, r3, #255
+ 1526 0bf0 14205BE5 		ldrb	r2, [fp, #-20]	@ zero_extendqisi2
+ 1527 0bf4 0310A0E1 		mov	r1, r3
+ 1528 0bf8 0230A0E1 		mov	r3, r2
+ 1529 0bfc 033021E0 		eor	r3, r1, r3
+ 1530 0c00 FF3003E2 		and	r3, r3, #255
+ 1531 0c04 14304BE5 		strb	r3, [fp, #-20]
+ 404:uart.c        **** 
+ 405:uart.c        ****          return ((((unsigned short )data << 8) | ((crc>>8)&0xff)) ^ (unsigned char )(data >> 4)
+ 1533              	.LM146:
+ 1534 0c08 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 1535 0c0c 0334A0E1 		mov	r3, r3, asl #8
+ 1536 0c10 0338A0E1 		mov	r3, r3, asl #16
+ 1537 0c14 2328A0E1 		mov	r2, r3, lsr #16
+ 1538 0c18 B0315BE1 		ldrh	r3, [fp, #-16]
+ 1539 0c1c 2334A0E1 		mov	r3, r3, lsr #8
+ 1540 0c20 0338A0E1 		mov	r3, r3, asl #16
+ 1541 0c24 2338A0E1 		mov	r3, r3, lsr #16
+ 1542 0c28 0338A0E1 		mov	r3, r3, asl #16
+ 1543 0c2c 2338A0E1 		mov	r3, r3, lsr #16
+ 1544 0c30 FF3003E2 		and	r3, r3, #255
+ 1545 0c34 033082E1 		orr	r3, r2, r3
+ 1546 0c38 0338A0E1 		mov	r3, r3, asl #16
+ 1547 0c3c 2328A0E1 		mov	r2, r3, lsr #16
+ 1548 0c40 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 1549 0c44 2332A0E1 		mov	r3, r3, lsr #4
+ 1550 0c48 FF3003E2 		and	r3, r3, #255
+ 1551 0c4c 033022E0 		eor	r3, r2, r3
+ 1552 0c50 0338A0E1 		mov	r3, r3, asl #16
+ 1553 0c54 2328A0E1 		mov	r2, r3, lsr #16
+ 1554 0c58 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 1555 0c5c 8331A0E1 		mov	r3, r3, asl #3
+ 1556 0c60 0338A0E1 		mov	r3, r3, asl #16
+ 1557 0c64 2338A0E1 		mov	r3, r3, lsr #16
+ 1558 0c68 033022E0 		eor	r3, r2, r3
+ 1559 0c6c 0338A0E1 		mov	r3, r3, asl #16
+ 1560 0c70 2338A0E1 		mov	r3, r3, lsr #16
+ 1561 0c74 0338A0E1 		mov	r3, r3, asl #16
+ 1562 0c78 2338A0E1 		mov	r3, r3, lsr #16
+ 406:uart.c        ****                  ^ ((unsigned short )data << 3));
+ 407:uart.c        ****      }
  1564              	.LM147:
- 1565 0c60 FF30A0E3 		mov	r3, #255
- 1566 0c64 B6314BE1 		strh	r3, [fp, #-22]	@ movhi
- 406:uart.c        ****    unsigned char * ptr=(unsigned char *) data;
- 1568              	.LM148:
- 1569 0c68 1C301BE5 		ldr	r3, [fp, #-28]
- 1570 0c6c 14300BE5 		str	r3, [fp, #-20]
- 407:uart.c        ****    int i;
+ 1565 0c7c 0300A0E1 		mov	r0, r3
+ 1566 0c80 0CD04BE2 		sub	sp, fp, #12
+ 1567 0c84 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1568 0c88 1EFF2FE1 		bx	lr
+ 1570              	.Lscope14:
+ 1571              		.align	2
+ 1575              		.global	crc16
+ 1577              	crc16:
  408:uart.c        **** 
- 409:uart.c        ****    for (i=0;i<cnt;i++)
- 1572              	.LM149:
- 1573 0c70 0030A0E3 		mov	r3, #0
- 1574 0c74 10300BE5 		str	r3, [fp, #-16]
- 1575 0c78 0D0000EA 		b	.L97
- 1576              	.L98:
- 410:uart.c        ****      {
- 411:uart.c        ****        crc=crc_update(crc,*ptr);
- 1578              	.LM150:
- 1579 0c7c B6215BE1 		ldrh	r2, [fp, #-22]
- 1580 0c80 14301BE5 		ldr	r3, [fp, #-20]
- 1581 0c84 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1582 0c88 0200A0E1 		mov	r0, r2
- 1583 0c8c 0310A0E1 		mov	r1, r3
- 1584 0c90 FEFFFFEB 		bl	crc_update
- 1585 0c94 0030A0E1 		mov	r3, r0
- 1586 0c98 B6314BE1 		strh	r3, [fp, #-22]	@ movhi
- 412:uart.c        ****        ptr++;
- 1588              	.LM151:
- 1589 0c9c 14301BE5 		ldr	r3, [fp, #-20]
- 1590 0ca0 013083E2 		add	r3, r3, #1
- 1591 0ca4 14300BE5 		str	r3, [fp, #-20]
- 409:uart.c        ****    for (i=0;i<cnt;i++)
- 1593              	.LM152:
- 1594 0ca8 10301BE5 		ldr	r3, [fp, #-16]
- 1595 0cac 013083E2 		add	r3, r3, #1
- 1596 0cb0 10300BE5 		str	r3, [fp, #-16]
- 1597              	.L97:
- 1598 0cb4 B0225BE1 		ldrh	r2, [fp, #-32]
- 1599 0cb8 10301BE5 		ldr	r3, [fp, #-16]
- 1600 0cbc 030052E1 		cmp	r2, r3
- 1601 0cc0 EDFFFFCA 		bgt	.L98
- 413:uart.c        ****      }
- 414:uart.c        ****    return crc;
- 1603              	.LM153:
- 1604 0cc4 B6315BE1 		ldrh	r3, [fp, #-22]
- 415:uart.c        ****  }
- 1606              	.LM154:
- 1607 0cc8 0300A0E1 		mov	r0, r3
- 1608 0ccc 0CD04BE2 		sub	sp, fp, #12
- 1609 0cd0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1610 0cd4 1EFF2FE1 		bx	lr
- 1617              	.Lscope15:
- 1618              		.bss
- 1619 0012 0000     		.align	2
- 1620              	content.2586:
- 1621 0014 00000000 		.space	4
- 1623              		.align	2
- 1624              	write_pointer.2585:
- 1625 0018 00000000 		.space	4
- 1627              		.align	2
- 1628              	read_pointer.2584:
- 1629 001c 00000000 		.space	4
- 1631              	buffer.2583:
- 1632 0020 00000000 		.space	384
- 1632      00000000 
- 1632      00000000 
- 1632      00000000 
- 1632      00000000 
- 1634              		.text
- 1635              		.align	2
- 1640              		.global	ringbuffer
- 1642              	ringbuffer:
- 416:uart.c        **** 
- 417:uart.c        **** // no longer a ringbuffer! - now it's a FIFO
- 418:uart.c        **** int ringbuffer(unsigned char rw, unsigned char *data, unsigned int count)	//returns 1 when write/re
- 419:uart.c        **** {
- 1644              	.LM155:
- 1645              		@ Function supports interworking.
- 1646              		@ args = 0, pretend = 0, frame = 24
- 1647              		@ frame_needed = 1, uses_anonymous_args = 0
- 1648 0cd8 0DC0A0E1 		mov	ip, sp
- 1649 0cdc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1650 0ce0 04B04CE2 		sub	fp, ip, #4
- 1651 0ce4 18D04DE2 		sub	sp, sp, #24
- 1652 0ce8 0030A0E1 		mov	r3, r0
- 1653 0cec 1C100BE5 		str	r1, [fp, #-28]
- 1654 0cf0 20200BE5 		str	r2, [fp, #-32]
- 1655 0cf4 18304BE5 		strb	r3, [fp, #-24]
- 420:uart.c        ****     static volatile unsigned char buffer[RINGBUFFERSIZE];
- 421:uart.c        **** //	static volatile unsigned int pfirst=0, plast=0;	//Pointers to first and last to read byte
- 422:uart.c        **** 	static volatile unsigned int read_pointer, write_pointer;
- 423:uart.c        **** 	static volatile unsigned int content=0;
- 424:uart.c        **** 	unsigned int p=0;
- 1657              	.LM156:
- 1658 0cf8 0030A0E3 		mov	r3, #0
- 1659 0cfc 14300BE5 		str	r3, [fp, #-20]
- 425:uart.c        ****     unsigned int p2=0;
- 1661              	.LM157:
- 1662 0d00 0030A0E3 		mov	r3, #0
- 1663 0d04 10300BE5 		str	r3, [fp, #-16]
- 426:uart.c        **** 
- 427:uart.c        **** 	if(rw==RBWRITE)
- 1665              	.LM158:
- 1666 0d08 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1667 0d0c 010053E3 		cmp	r3, #1
- 1668 0d10 2100001A 		bne	.L102
- 428:uart.c        **** 	{
- 429:uart.c        **** 		if(count<RINGBUFFERSIZE-content)	//enough space in buffer?
- 1670              	.LM159:
- 1671 0d14 98319FE5 		ldr	r3, .L124
- 1672 0d18 003093E5 		ldr	r3, [r3, #0]
- 1673 0d1c 062D63E2 		rsb	r2, r3, #384
- 1674 0d20 20301BE5 		ldr	r3, [fp, #-32]
- 1675 0d24 030052E1 		cmp	r2, r3
- 1676 0d28 5A00009A 		bls	.L110
- 430:uart.c        **** 		{
- 431:uart.c        **** 			while(p<count)
- 1678              	.LM160:
- 1679 0d2c 0D0000EA 		b	.L106
- 1680              	.L107:
- 432:uart.c        **** 			{
- 433:uart.c        **** 				buffer[write_pointer++]=data[p++];
- 1682              	.LM161:
- 1683 0d30 80319FE5 		ldr	r3, .L124+4
- 1684 0d34 001093E5 		ldr	r1, [r3, #0]
- 1685 0d38 14201BE5 		ldr	r2, [fp, #-20]
- 1686 0d3c 1C301BE5 		ldr	r3, [fp, #-28]
- 1687 0d40 033082E0 		add	r3, r2, r3
- 1688 0d44 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1689 0d48 6C219FE5 		ldr	r2, .L124+8
- 1690 0d4c 0130C2E7 		strb	r3, [r2, r1]
- 1691 0d50 012081E2 		add	r2, r1, #1
- 1692 0d54 5C319FE5 		ldr	r3, .L124+4
- 1693 0d58 002083E5 		str	r2, [r3, #0]
- 1694 0d5c 14301BE5 		ldr	r3, [fp, #-20]
- 1695 0d60 013083E2 		add	r3, r3, #1
- 1696 0d64 14300BE5 		str	r3, [fp, #-20]
- 1697              	.L106:
- 431:uart.c        **** 			while(p<count)
- 1699              	.LM162:
- 1700 0d68 14201BE5 		ldr	r2, [fp, #-20]
- 1701 0d6c 20301BE5 		ldr	r3, [fp, #-32]
- 1702 0d70 030052E1 		cmp	r2, r3
- 1703 0d74 EDFFFF3A 		bcc	.L107
- 434:uart.c        **** 			}
- 435:uart.c        ****             content+=count;
- 1705              	.LM163:
- 1706 0d78 34319FE5 		ldr	r3, .L124
- 1707 0d7c 002093E5 		ldr	r2, [r3, #0]
- 1708 0d80 20301BE5 		ldr	r3, [fp, #-32]
- 1709 0d84 032082E0 		add	r2, r2, r3
- 1710 0d88 24319FE5 		ldr	r3, .L124
- 1711 0d8c 002083E5 		str	r2, [r3, #0]
- 436:uart.c        ****             return(1);
- 1713              	.LM164:
- 1714 0d90 0130A0E3 		mov	r3, #1
- 1715 0d94 24300BE5 		str	r3, [fp, #-36]
- 1716 0d98 400000EA 		b	.L109
- 1717              	.L102:
- 437:uart.c        **** 		}
- 438:uart.c        **** 	}
- 439:uart.c        **** 	else if(rw==RBREAD)
- 1719              	.LM165:
- 1720 0d9c 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1721 0da0 000053E3 		cmp	r3, #0
- 1722 0da4 2B00001A 		bne	.L111
- 440:uart.c        **** 	{
- 441:uart.c        **** 		if(content>=count)
- 1724              	.LM166:
- 1725 0da8 04319FE5 		ldr	r3, .L124
- 1726 0dac 002093E5 		ldr	r2, [r3, #0]
- 1727 0db0 20301BE5 		ldr	r3, [fp, #-32]
- 1728 0db4 030052E1 		cmp	r2, r3
- 1729 0db8 3600003A 		bcc	.L110
- 442:uart.c        **** 		{
- 443:uart.c        **** 			while(p2<count)
- 1731              	.LM167:
- 1732 0dbc 0E0000EA 		b	.L115
- 1733              	.L116:
- 444:uart.c        **** 			{
- 445:uart.c        **** 				data[p2++]=buffer[read_pointer++];
- 1735              	.LM168:
- 1736 0dc0 10201BE5 		ldr	r2, [fp, #-16]
- 1737 0dc4 1C301BE5 		ldr	r3, [fp, #-28]
- 1738 0dc8 032082E0 		add	r2, r2, r3
- 1739 0dcc EC309FE5 		ldr	r3, .L124+12
- 1740 0dd0 001093E5 		ldr	r1, [r3, #0]
- 1741 0dd4 E0309FE5 		ldr	r3, .L124+8
- 1742 0dd8 0130D3E7 		ldrb	r3, [r3, r1]
- 1743 0ddc FF3003E2 		and	r3, r3, #255
- 1744 0de0 0030C2E5 		strb	r3, [r2, #0]
- 1745 0de4 10301BE5 		ldr	r3, [fp, #-16]
- 1746 0de8 013083E2 		add	r3, r3, #1
- 1747 0dec 10300BE5 		str	r3, [fp, #-16]
- 1748 0df0 012081E2 		add	r2, r1, #1
- 1749 0df4 C4309FE5 		ldr	r3, .L124+12
- 1750 0df8 002083E5 		str	r2, [r3, #0]
- 1751              	.L115:
- 443:uart.c        **** 			while(p2<count)
- 1753              	.LM169:
- 1754 0dfc 10201BE5 		ldr	r2, [fp, #-16]
- 1755 0e00 20301BE5 		ldr	r3, [fp, #-32]
- 1756 0e04 030052E1 		cmp	r2, r3
- 1757 0e08 ECFFFF3A 		bcc	.L116
- 446:uart.c        **** 			}
- 447:uart.c        ****             content-=count;
- 1759              	.LM170:
- 1760 0e0c A0309FE5 		ldr	r3, .L124
- 1761 0e10 002093E5 		ldr	r2, [r3, #0]
- 1762 0e14 20301BE5 		ldr	r3, [fp, #-32]
- 1763 0e18 022063E0 		rsb	r2, r3, r2
- 1764 0e1c 90309FE5 		ldr	r3, .L124
- 1765 0e20 002083E5 		str	r2, [r3, #0]
- 448:uart.c        ****             if(!content) //buffer empty
- 1767              	.LM171:
- 1768 0e24 88309FE5 		ldr	r3, .L124
- 1769 0e28 003093E5 		ldr	r3, [r3, #0]
- 1770 0e2c 000053E3 		cmp	r3, #0
- 1771 0e30 0500001A 		bne	.L118
- 449:uart.c        ****             {
- 450:uart.c        ****             	write_pointer=0;
- 1773              	.LM172:
- 1774 0e34 7C209FE5 		ldr	r2, .L124+4
- 1775 0e38 0030A0E3 		mov	r3, #0
- 1776 0e3c 003082E5 		str	r3, [r2, #0]
- 451:uart.c        ****             	read_pointer=0;
- 1778              	.LM173:
- 1779 0e40 78209FE5 		ldr	r2, .L124+12
- 1780 0e44 0030A0E3 		mov	r3, #0
- 1781 0e48 003082E5 		str	r3, [r2, #0]
- 1782              	.L118:
- 452:uart.c        ****             }
- 453:uart.c        **** 			return(1);
- 1784              	.LM174:
- 1785 0e4c 0130A0E3 		mov	r3, #1
- 1786 0e50 24300BE5 		str	r3, [fp, #-36]
- 1787 0e54 110000EA 		b	.L109
- 1788              	.L111:
- 454:uart.c        **** 		}
- 455:uart.c        **** 	}
- 456:uart.c        ****         else if(rw==RBFREE)
- 1790              	.LM175:
- 1791 0e58 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1792 0e5c 020053E3 		cmp	r3, #2
- 1793 0e60 0C00001A 		bne	.L110
- 457:uart.c        ****         {
- 458:uart.c        ****           if(content) return 0;
- 1795              	.LM176:
- 1796 0e64 48309FE5 		ldr	r3, .L124
- 1797 0e68 003093E5 		ldr	r3, [r3, #0]
- 1798 0e6c 000053E3 		cmp	r3, #0
- 1799 0e70 0200000A 		beq	.L121
- 1800 0e74 0030A0E3 		mov	r3, #0
- 1801 0e78 24300BE5 		str	r3, [fp, #-36]
- 1802 0e7c 070000EA 		b	.L109
- 1803              	.L121:
- 459:uart.c        ****           else return(RINGBUFFERSIZE-11);
- 1805              	.LM177:
- 1806 0e80 5D3FA0E3 		mov	r3, #372
- 1807 0e84 24300BE5 		str	r3, [fp, #-36]
- 1808 0e88 24301BE5 		ldr	r3, [fp, #-36]
- 1809 0e8c 013083E2 		add	r3, r3, #1
- 1810 0e90 24300BE5 		str	r3, [fp, #-36]
- 1811 0e94 010000EA 		b	.L109
- 1812              	.L110:
- 460:uart.c        ****         }
- 461:uart.c        **** 
- 462:uart.c        **** 	return(0);
- 1814              	.LM178:
- 1815 0e98 0030A0E3 		mov	r3, #0
- 1816 0e9c 24300BE5 		str	r3, [fp, #-36]
- 1817              	.L109:
- 1818 0ea0 24301BE5 		ldr	r3, [fp, #-36]
- 463:uart.c        **** }
- 1820              	.LM179:
- 1821 0ea4 0300A0E1 		mov	r0, r3
- 1822 0ea8 0CD04BE2 		sub	sp, fp, #12
- 1823 0eac 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1824 0eb0 1EFF2FE1 		bx	lr
- 1825              	.L125:
- 1826              		.align	2
- 1827              	.L124:
- 1828 0eb4 14000000 		.word	content.2586
- 1829 0eb8 18000000 		.word	write_pointer.2585
- 1830 0ebc 20000000 		.word	buffer.2583
- 1831 0ec0 1C000000 		.word	read_pointer.2584
- 1841              	.Lscope16:
- 1842              		.bss
- 1843              		.align	2
- 1844              	content.2640:
- 1845 01a0 00000000 		.space	4
- 1847              		.align	2
- 1848              	write_pointer.2639:
- 1849 01a4 00000000 		.space	4
- 1851              		.align	2
- 1852              	read_pointer.2638:
- 1853 01a8 00000000 		.space	4
- 1855              	buffer.2637:
- 1856 01ac 00000000 		.space	384
- 1856      00000000 
- 1856      00000000 
- 1856      00000000 
- 1856      00000000 
- 1858              		.text
- 1859              		.align	2
- 1864              		.global	ringbuffer1
- 1866              	ringbuffer1:
- 464:uart.c        **** 
- 465:uart.c        **** int ringbuffer1(unsigned char rw, unsigned char *data, unsigned int count)	//returns 1 when write/r
- 466:uart.c        **** {
- 1868              	.LM180:
- 1869              		@ Function supports interworking.
- 1870              		@ args = 0, pretend = 0, frame = 24
- 1871              		@ frame_needed = 1, uses_anonymous_args = 0
- 1872 0ec4 0DC0A0E1 		mov	ip, sp
- 1873 0ec8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 1874 0ecc 04B04CE2 		sub	fp, ip, #4
- 1875 0ed0 18D04DE2 		sub	sp, sp, #24
- 1876 0ed4 0030A0E1 		mov	r3, r0
- 1877 0ed8 1C100BE5 		str	r1, [fp, #-28]
- 1878 0edc 20200BE5 		str	r2, [fp, #-32]
- 1879 0ee0 18304BE5 		strb	r3, [fp, #-24]
- 467:uart.c        ****     static volatile unsigned char buffer[RINGBUFFERSIZE];
- 468:uart.c        **** //	static volatile unsigned int pfirst=0, plast=0;	//Pointers to first and last to read byte
- 469:uart.c        **** 	static volatile unsigned int read_pointer, write_pointer;
- 470:uart.c        **** 	static volatile unsigned int content=0;
- 471:uart.c        **** 	unsigned int p=0;
- 1881              	.LM181:
- 1882 0ee4 0030A0E3 		mov	r3, #0
- 1883 0ee8 14300BE5 		str	r3, [fp, #-20]
- 472:uart.c        ****     unsigned int p2=0;
- 1885              	.LM182:
- 1886 0eec 0030A0E3 		mov	r3, #0
- 1887 0ef0 10300BE5 		str	r3, [fp, #-16]
- 473:uart.c        **** 
- 474:uart.c        **** 	if(rw==RBWRITE)
- 1889              	.LM183:
- 1890 0ef4 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1891 0ef8 010053E3 		cmp	r3, #1
- 1892 0efc 2100001A 		bne	.L127
- 475:uart.c        **** 	{
- 476:uart.c        **** 		if(count<RINGBUFFERSIZE-content)	//enough space in buffer?
- 1894              	.LM184:
- 1895 0f00 98319FE5 		ldr	r3, .L149
- 1896 0f04 003093E5 		ldr	r3, [r3, #0]
- 1897 0f08 062D63E2 		rsb	r2, r3, #384
- 1898 0f0c 20301BE5 		ldr	r3, [fp, #-32]
- 1899 0f10 030052E1 		cmp	r2, r3
- 1900 0f14 5A00009A 		bls	.L135
- 477:uart.c        **** 		{
- 478:uart.c        **** 			while(p<count)
- 1902              	.LM185:
- 1903 0f18 0D0000EA 		b	.L131
- 1904              	.L132:
- 479:uart.c        **** 			{
- 480:uart.c        **** 				buffer[write_pointer++]=data[p++];
- 1906              	.LM186:
- 1907 0f1c 80319FE5 		ldr	r3, .L149+4
- 1908 0f20 001093E5 		ldr	r1, [r3, #0]
- 1909 0f24 14201BE5 		ldr	r2, [fp, #-20]
- 1910 0f28 1C301BE5 		ldr	r3, [fp, #-28]
- 1911 0f2c 033082E0 		add	r3, r2, r3
- 1912 0f30 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 1913 0f34 6C219FE5 		ldr	r2, .L149+8
- 1914 0f38 0130C2E7 		strb	r3, [r2, r1]
- 1915 0f3c 012081E2 		add	r2, r1, #1
- 1916 0f40 5C319FE5 		ldr	r3, .L149+4
- 1917 0f44 002083E5 		str	r2, [r3, #0]
- 1918 0f48 14301BE5 		ldr	r3, [fp, #-20]
- 1919 0f4c 013083E2 		add	r3, r3, #1
- 1920 0f50 14300BE5 		str	r3, [fp, #-20]
- 1921              	.L131:
- 478:uart.c        **** 			while(p<count)
- 1923              	.LM187:
- 1924 0f54 14201BE5 		ldr	r2, [fp, #-20]
- 1925 0f58 20301BE5 		ldr	r3, [fp, #-32]
- 1926 0f5c 030052E1 		cmp	r2, r3
- 1927 0f60 EDFFFF3A 		bcc	.L132
- 481:uart.c        **** 			}
- 482:uart.c        ****             content+=count;
- 1929              	.LM188:
- 1930 0f64 34319FE5 		ldr	r3, .L149
- 1931 0f68 002093E5 		ldr	r2, [r3, #0]
- 1932 0f6c 20301BE5 		ldr	r3, [fp, #-32]
- 1933 0f70 032082E0 		add	r2, r2, r3
- 1934 0f74 24319FE5 		ldr	r3, .L149
- 1935 0f78 002083E5 		str	r2, [r3, #0]
- 483:uart.c        ****             return(1);
- 1937              	.LM189:
- 1938 0f7c 0130A0E3 		mov	r3, #1
- 1939 0f80 24300BE5 		str	r3, [fp, #-36]
- 1940 0f84 400000EA 		b	.L134
- 1941              	.L127:
- 484:uart.c        **** 		}
- 485:uart.c        **** 	}
- 486:uart.c        **** 	else if(rw==RBREAD)
- 1943              	.LM190:
- 1944 0f88 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 1945 0f8c 000053E3 		cmp	r3, #0
- 1946 0f90 2B00001A 		bne	.L136
- 487:uart.c        **** 	{
- 488:uart.c        **** 		if(content>=count)
- 1948              	.LM191:
- 1949 0f94 04319FE5 		ldr	r3, .L149
- 1950 0f98 002093E5 		ldr	r2, [r3, #0]
- 1951 0f9c 20301BE5 		ldr	r3, [fp, #-32]
- 1952 0fa0 030052E1 		cmp	r2, r3
- 1953 0fa4 3600003A 		bcc	.L135
- 489:uart.c        **** 		{
- 490:uart.c        **** 			while(p2<count)
- 1955              	.LM192:
- 1956 0fa8 0E0000EA 		b	.L140
- 1957              	.L141:
- 491:uart.c        **** 			{
- 492:uart.c        **** 				data[p2++]=buffer[read_pointer++];
- 1959              	.LM193:
- 1960 0fac 10201BE5 		ldr	r2, [fp, #-16]
- 1961 0fb0 1C301BE5 		ldr	r3, [fp, #-28]
- 1962 0fb4 032082E0 		add	r2, r2, r3
- 1963 0fb8 EC309FE5 		ldr	r3, .L149+12
- 1964 0fbc 001093E5 		ldr	r1, [r3, #0]
- 1965 0fc0 E0309FE5 		ldr	r3, .L149+8
- 1966 0fc4 0130D3E7 		ldrb	r3, [r3, r1]
- 1967 0fc8 FF3003E2 		and	r3, r3, #255
- 1968 0fcc 0030C2E5 		strb	r3, [r2, #0]
- 1969 0fd0 10301BE5 		ldr	r3, [fp, #-16]
- 1970 0fd4 013083E2 		add	r3, r3, #1
- 1971 0fd8 10300BE5 		str	r3, [fp, #-16]
- 1972 0fdc 012081E2 		add	r2, r1, #1
- 1973 0fe0 C4309FE5 		ldr	r3, .L149+12
- 1974 0fe4 002083E5 		str	r2, [r3, #0]
- 1975              	.L140:
- 490:uart.c        **** 			while(p2<count)
- 1977              	.LM194:
- 1978 0fe8 10201BE5 		ldr	r2, [fp, #-16]
- 1979 0fec 20301BE5 		ldr	r3, [fp, #-32]
- 1980 0ff0 030052E1 		cmp	r2, r3
- 1981 0ff4 ECFFFF3A 		bcc	.L141
- 493:uart.c        **** 			}
- 494:uart.c        ****             content-=count;
- 1983              	.LM195:
- 1984 0ff8 A0309FE5 		ldr	r3, .L149
- 1985 0ffc 002093E5 		ldr	r2, [r3, #0]
- 1986 1000 20301BE5 		ldr	r3, [fp, #-32]
- 1987 1004 022063E0 		rsb	r2, r3, r2
- 1988 1008 90309FE5 		ldr	r3, .L149
- 1989 100c 002083E5 		str	r2, [r3, #0]
- 495:uart.c        ****             if(!content) //buffer empty
- 1991              	.LM196:
- 1992 1010 88309FE5 		ldr	r3, .L149
- 1993 1014 003093E5 		ldr	r3, [r3, #0]
- 1994 1018 000053E3 		cmp	r3, #0
- 1995 101c 0500001A 		bne	.L143
- 496:uart.c        ****             {
- 497:uart.c        ****             	write_pointer=0;
- 1997              	.LM197:
- 1998 1020 7C209FE5 		ldr	r2, .L149+4
- 1999 1024 0030A0E3 		mov	r3, #0
- 2000 1028 003082E5 		str	r3, [r2, #0]
- 498:uart.c        ****             	read_pointer=0;
- 2002              	.LM198:
- 2003 102c 78209FE5 		ldr	r2, .L149+12
- 2004 1030 0030A0E3 		mov	r3, #0
- 2005 1034 003082E5 		str	r3, [r2, #0]
- 2006              	.L143:
- 499:uart.c        ****             }
- 500:uart.c        **** 			return(1);
- 2008              	.LM199:
- 2009 1038 0130A0E3 		mov	r3, #1
- 2010 103c 24300BE5 		str	r3, [fp, #-36]
- 2011 1040 110000EA 		b	.L134
- 2012              	.L136:
- 501:uart.c        **** 		}
- 502:uart.c        **** 	}
- 503:uart.c        ****         else if(rw==RBFREE)
- 2014              	.LM200:
- 2015 1044 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
- 2016 1048 020053E3 		cmp	r3, #2
- 2017 104c 0C00001A 		bne	.L135
- 504:uart.c        ****         {
- 505:uart.c        ****           if(content) return 0;
- 2019              	.LM201:
- 2020 1050 48309FE5 		ldr	r3, .L149
- 2021 1054 003093E5 		ldr	r3, [r3, #0]
- 2022 1058 000053E3 		cmp	r3, #0
- 2023 105c 0200000A 		beq	.L146
- 2024 1060 0030A0E3 		mov	r3, #0
- 2025 1064 24300BE5 		str	r3, [fp, #-36]
- 2026 1068 070000EA 		b	.L134
- 2027              	.L146:
- 506:uart.c        ****           else return(RINGBUFFERSIZE-11);
- 2029              	.LM202:
- 2030 106c 5D3FA0E3 		mov	r3, #372
- 2031 1070 24300BE5 		str	r3, [fp, #-36]
- 2032 1074 24301BE5 		ldr	r3, [fp, #-36]
- 2033 1078 013083E2 		add	r3, r3, #1
- 2034 107c 24300BE5 		str	r3, [fp, #-36]
- 2035 1080 010000EA 		b	.L134
- 2036              	.L135:
- 507:uart.c        ****         }
- 508:uart.c        **** 
- 509:uart.c        **** 	return(0);
- 2038              	.LM203:
- 2039 1084 0030A0E3 		mov	r3, #0
- 2040 1088 24300BE5 		str	r3, [fp, #-36]
- 2041              	.L134:
- 2042 108c 24301BE5 		ldr	r3, [fp, #-36]
- 510:uart.c        **** }
- 2044              	.LM204:
- 2045 1090 0300A0E1 		mov	r0, r3
- 2046 1094 0CD04BE2 		sub	sp, fp, #12
- 2047 1098 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 2048 109c 1EFF2FE1 		bx	lr
- 2049              	.L150:
- 2050              		.align	2
- 2051              	.L149:
- 2052 10a0 A0010000 		.word	content.2640
- 2053 10a4 A4010000 		.word	write_pointer.2639
- 2054 10a8 AC010000 		.word	buffer.2637
- 2055 10ac A8010000 		.word	read_pointer.2638
- 2065              	.Lscope17:
- 2066              		.comm	GPS_timeout,4,4
- 2067              		.comm	SYSTEM_initialized,1,1
- 2068              		.comm	send_buffer,16,1
- 2069              		.comm	SSP_trans_cnt,4,4
- 2070              		.comm	packets,1,1
- 2071              		.comm	DataOutputsPerSecond,1,1
- 2072              		.comm	uart_cnt,4,4
- 2073              		.comm	current_chksum,2,2
- 2074              		.comm	tx_buff,4,4
- 2075              		.comm	UART_rxptr,4,4
- 2076              		.comm	UART1_rxptr,4,4
- 2077              		.comm	my_buffer,256,1
- 2106              	.Letext0:
- 2107              		.ident	"GCC: (GNU) 4.1.1"
+ 409:uart.c        ****  unsigned short crc16(void* data, unsigned short cnt)
+ 410:uart.c        ****  {
+ 1579              	.LM148:
+ 1580              		@ Function supports interworking.
+ 1581              		@ args = 0, pretend = 0, frame = 20
+ 1582              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1583 0c8c 0DC0A0E1 		mov	ip, sp
+ 1584 0c90 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1585 0c94 04B04CE2 		sub	fp, ip, #4
+ 1586 0c98 14D04DE2 		sub	sp, sp, #20
+ 1587 0c9c 1C000BE5 		str	r0, [fp, #-28]
+ 1588 0ca0 0130A0E1 		mov	r3, r1
+ 1589 0ca4 B0324BE1 		strh	r3, [fp, #-32]	@ movhi
+ 411:uart.c        ****    unsigned short crc=0xff;
+ 1591              	.LM149:
+ 1592 0ca8 FF30A0E3 		mov	r3, #255
+ 1593 0cac B6314BE1 		strh	r3, [fp, #-22]	@ movhi
+ 412:uart.c        ****    unsigned char * ptr=(unsigned char *) data;
+ 1595              	.LM150:
+ 1596 0cb0 1C301BE5 		ldr	r3, [fp, #-28]
+ 1597 0cb4 14300BE5 		str	r3, [fp, #-20]
+ 413:uart.c        ****    int i;
+ 414:uart.c        **** 
+ 415:uart.c        ****    for (i=0;i<cnt;i++)
+ 1599              	.LM151:
+ 1600 0cb8 0030A0E3 		mov	r3, #0
+ 1601 0cbc 10300BE5 		str	r3, [fp, #-16]
+ 1602 0cc0 0D0000EA 		b	.L98
+ 1603              	.L99:
+ 416:uart.c        ****      {
+ 417:uart.c        ****        crc=crc_update(crc,*ptr);
+ 1605              	.LM152:
+ 1606 0cc4 B6215BE1 		ldrh	r2, [fp, #-22]
+ 1607 0cc8 14301BE5 		ldr	r3, [fp, #-20]
+ 1608 0ccc 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1609 0cd0 0200A0E1 		mov	r0, r2
+ 1610 0cd4 0310A0E1 		mov	r1, r3
+ 1611 0cd8 FEFFFFEB 		bl	crc_update
+ 1612 0cdc 0030A0E1 		mov	r3, r0
+ 1613 0ce0 B6314BE1 		strh	r3, [fp, #-22]	@ movhi
+ 418:uart.c        ****        ptr++;
+ 1615              	.LM153:
+ 1616 0ce4 14301BE5 		ldr	r3, [fp, #-20]
+ 1617 0ce8 013083E2 		add	r3, r3, #1
+ 1618 0cec 14300BE5 		str	r3, [fp, #-20]
+ 415:uart.c        ****    for (i=0;i<cnt;i++)
+ 1620              	.LM154:
+ 1621 0cf0 10301BE5 		ldr	r3, [fp, #-16]
+ 1622 0cf4 013083E2 		add	r3, r3, #1
+ 1623 0cf8 10300BE5 		str	r3, [fp, #-16]
+ 1624              	.L98:
+ 1625 0cfc B0225BE1 		ldrh	r2, [fp, #-32]
+ 1626 0d00 10301BE5 		ldr	r3, [fp, #-16]
+ 1627 0d04 030052E1 		cmp	r2, r3
+ 1628 0d08 EDFFFFCA 		bgt	.L99
+ 419:uart.c        ****      }
+ 420:uart.c        ****    return crc;
+ 1630              	.LM155:
+ 1631 0d0c B6315BE1 		ldrh	r3, [fp, #-22]
+ 421:uart.c        ****  }
+ 1633              	.LM156:
+ 1634 0d10 0300A0E1 		mov	r0, r3
+ 1635 0d14 0CD04BE2 		sub	sp, fp, #12
+ 1636 0d18 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1637 0d1c 1EFF2FE1 		bx	lr
+ 1644              	.Lscope15:
+ 1645              		.bss
+ 1646 0012 0000     		.align	2
+ 1647              	content.2606:
+ 1648 0014 00000000 		.space	4
+ 1650              		.align	2
+ 1651              	write_pointer.2605:
+ 1652 0018 00000000 		.space	4
+ 1654              		.align	2
+ 1655              	read_pointer.2604:
+ 1656 001c 00000000 		.space	4
+ 1658              	buffer.2603:
+ 1659 0020 00000000 		.space	384
+ 1659      00000000 
+ 1659      00000000 
+ 1659      00000000 
+ 1659      00000000 
+ 1661              		.text
+ 1662              		.align	2
+ 1667              		.global	ringbuffer
+ 1669              	ringbuffer:
+ 422:uart.c        **** 
+ 423:uart.c        **** // no longer a ringbuffer! - now it's a FIFO
+ 424:uart.c        **** int ringbuffer(unsigned char rw, unsigned char *data, unsigned int count)	//returns 1 when write/re
+ 425:uart.c        **** {
+ 1671              	.LM157:
+ 1672              		@ Function supports interworking.
+ 1673              		@ args = 0, pretend = 0, frame = 24
+ 1674              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1675 0d20 0DC0A0E1 		mov	ip, sp
+ 1676 0d24 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1677 0d28 04B04CE2 		sub	fp, ip, #4
+ 1678 0d2c 18D04DE2 		sub	sp, sp, #24
+ 1679 0d30 0030A0E1 		mov	r3, r0
+ 1680 0d34 1C100BE5 		str	r1, [fp, #-28]
+ 1681 0d38 20200BE5 		str	r2, [fp, #-32]
+ 1682 0d3c 18304BE5 		strb	r3, [fp, #-24]
+ 426:uart.c        ****     static volatile unsigned char buffer[RINGBUFFERSIZE];
+ 427:uart.c        **** //	static volatile unsigned int pfirst=0, plast=0;	//Pointers to first and last to read byte
+ 428:uart.c        **** 	static volatile unsigned int read_pointer, write_pointer;
+ 429:uart.c        **** 	static volatile unsigned int content=0;
+ 430:uart.c        **** 	unsigned int p=0;
+ 1684              	.LM158:
+ 1685 0d40 0030A0E3 		mov	r3, #0
+ 1686 0d44 14300BE5 		str	r3, [fp, #-20]
+ 431:uart.c        ****     unsigned int p2=0;
+ 1688              	.LM159:
+ 1689 0d48 0030A0E3 		mov	r3, #0
+ 1690 0d4c 10300BE5 		str	r3, [fp, #-16]
+ 432:uart.c        **** 
+ 433:uart.c        **** 	if(rw==RBWRITE)
+ 1692              	.LM160:
+ 1693 0d50 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1694 0d54 010053E3 		cmp	r3, #1
+ 1695 0d58 2100001A 		bne	.L103
+ 434:uart.c        **** 	{
+ 435:uart.c        **** 		if(count<RINGBUFFERSIZE-content)	//enough space in buffer?
+ 1697              	.LM161:
+ 1698 0d5c 98319FE5 		ldr	r3, .L125
+ 1699 0d60 003093E5 		ldr	r3, [r3, #0]
+ 1700 0d64 062D63E2 		rsb	r2, r3, #384
+ 1701 0d68 20301BE5 		ldr	r3, [fp, #-32]
+ 1702 0d6c 030052E1 		cmp	r2, r3
+ 1703 0d70 5A00009A 		bls	.L111
+ 436:uart.c        **** 		{
+ 437:uart.c        **** 			while(p<count)
+ 1705              	.LM162:
+ 1706 0d74 0D0000EA 		b	.L107
+ 1707              	.L108:
+ 438:uart.c        **** 			{
+ 439:uart.c        **** 				buffer[write_pointer++]=data[p++];
+ 1709              	.LM163:
+ 1710 0d78 80319FE5 		ldr	r3, .L125+4
+ 1711 0d7c 001093E5 		ldr	r1, [r3, #0]
+ 1712 0d80 14201BE5 		ldr	r2, [fp, #-20]
+ 1713 0d84 1C301BE5 		ldr	r3, [fp, #-28]
+ 1714 0d88 033082E0 		add	r3, r2, r3
+ 1715 0d8c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1716 0d90 6C219FE5 		ldr	r2, .L125+8
+ 1717 0d94 0130C2E7 		strb	r3, [r2, r1]
+ 1718 0d98 012081E2 		add	r2, r1, #1
+ 1719 0d9c 5C319FE5 		ldr	r3, .L125+4
+ 1720 0da0 002083E5 		str	r2, [r3, #0]
+ 1721 0da4 14301BE5 		ldr	r3, [fp, #-20]
+ 1722 0da8 013083E2 		add	r3, r3, #1
+ 1723 0dac 14300BE5 		str	r3, [fp, #-20]
+ 1724              	.L107:
+ 437:uart.c        **** 			while(p<count)
+ 1726              	.LM164:
+ 1727 0db0 14201BE5 		ldr	r2, [fp, #-20]
+ 1728 0db4 20301BE5 		ldr	r3, [fp, #-32]
+ 1729 0db8 030052E1 		cmp	r2, r3
+ 1730 0dbc EDFFFF3A 		bcc	.L108
+ 440:uart.c        **** 			}
+ 441:uart.c        ****             content+=count;
+ 1732              	.LM165:
+ 1733 0dc0 34319FE5 		ldr	r3, .L125
+ 1734 0dc4 002093E5 		ldr	r2, [r3, #0]
+ 1735 0dc8 20301BE5 		ldr	r3, [fp, #-32]
+ 1736 0dcc 032082E0 		add	r2, r2, r3
+ 1737 0dd0 24319FE5 		ldr	r3, .L125
+ 1738 0dd4 002083E5 		str	r2, [r3, #0]
+ 442:uart.c        ****             return(1);
+ 1740              	.LM166:
+ 1741 0dd8 0130A0E3 		mov	r3, #1
+ 1742 0ddc 24300BE5 		str	r3, [fp, #-36]
+ 1743 0de0 400000EA 		b	.L110
+ 1744              	.L103:
+ 443:uart.c        **** 		}
+ 444:uart.c        **** 	}
+ 445:uart.c        **** 	else if(rw==RBREAD)
+ 1746              	.LM167:
+ 1747 0de4 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1748 0de8 000053E3 		cmp	r3, #0
+ 1749 0dec 2B00001A 		bne	.L112
+ 446:uart.c        **** 	{
+ 447:uart.c        **** 		if(content>=count)
+ 1751              	.LM168:
+ 1752 0df0 04319FE5 		ldr	r3, .L125
+ 1753 0df4 002093E5 		ldr	r2, [r3, #0]
+ 1754 0df8 20301BE5 		ldr	r3, [fp, #-32]
+ 1755 0dfc 030052E1 		cmp	r2, r3
+ 1756 0e00 3600003A 		bcc	.L111
+ 448:uart.c        **** 		{
+ 449:uart.c        **** 			while(p2<count)
+ 1758              	.LM169:
+ 1759 0e04 0E0000EA 		b	.L116
+ 1760              	.L117:
+ 450:uart.c        **** 			{
+ 451:uart.c        **** 				data[p2++]=buffer[read_pointer++];
+ 1762              	.LM170:
+ 1763 0e08 10201BE5 		ldr	r2, [fp, #-16]
+ 1764 0e0c 1C301BE5 		ldr	r3, [fp, #-28]
+ 1765 0e10 032082E0 		add	r2, r2, r3
+ 1766 0e14 EC309FE5 		ldr	r3, .L125+12
+ 1767 0e18 001093E5 		ldr	r1, [r3, #0]
+ 1768 0e1c E0309FE5 		ldr	r3, .L125+8
+ 1769 0e20 0130D3E7 		ldrb	r3, [r3, r1]
+ 1770 0e24 FF3003E2 		and	r3, r3, #255
+ 1771 0e28 0030C2E5 		strb	r3, [r2, #0]
+ 1772 0e2c 10301BE5 		ldr	r3, [fp, #-16]
+ 1773 0e30 013083E2 		add	r3, r3, #1
+ 1774 0e34 10300BE5 		str	r3, [fp, #-16]
+ 1775 0e38 012081E2 		add	r2, r1, #1
+ 1776 0e3c C4309FE5 		ldr	r3, .L125+12
+ 1777 0e40 002083E5 		str	r2, [r3, #0]
+ 1778              	.L116:
+ 449:uart.c        **** 			while(p2<count)
+ 1780              	.LM171:
+ 1781 0e44 10201BE5 		ldr	r2, [fp, #-16]
+ 1782 0e48 20301BE5 		ldr	r3, [fp, #-32]
+ 1783 0e4c 030052E1 		cmp	r2, r3
+ 1784 0e50 ECFFFF3A 		bcc	.L117
+ 452:uart.c        **** 			}
+ 453:uart.c        ****             content-=count;
+ 1786              	.LM172:
+ 1787 0e54 A0309FE5 		ldr	r3, .L125
+ 1788 0e58 002093E5 		ldr	r2, [r3, #0]
+ 1789 0e5c 20301BE5 		ldr	r3, [fp, #-32]
+ 1790 0e60 022063E0 		rsb	r2, r3, r2
+ 1791 0e64 90309FE5 		ldr	r3, .L125
+ 1792 0e68 002083E5 		str	r2, [r3, #0]
+ 454:uart.c        ****             if(!content) //buffer empty
+ 1794              	.LM173:
+ 1795 0e6c 88309FE5 		ldr	r3, .L125
+ 1796 0e70 003093E5 		ldr	r3, [r3, #0]
+ 1797 0e74 000053E3 		cmp	r3, #0
+ 1798 0e78 0500001A 		bne	.L119
+ 455:uart.c        ****             {
+ 456:uart.c        ****             	write_pointer=0;
+ 1800              	.LM174:
+ 1801 0e7c 7C209FE5 		ldr	r2, .L125+4
+ 1802 0e80 0030A0E3 		mov	r3, #0
+ 1803 0e84 003082E5 		str	r3, [r2, #0]
+ 457:uart.c        ****             	read_pointer=0;
+ 1805              	.LM175:
+ 1806 0e88 78209FE5 		ldr	r2, .L125+12
+ 1807 0e8c 0030A0E3 		mov	r3, #0
+ 1808 0e90 003082E5 		str	r3, [r2, #0]
+ 1809              	.L119:
+ 458:uart.c        ****             }
+ 459:uart.c        **** 			return(1);
+ 1811              	.LM176:
+ 1812 0e94 0130A0E3 		mov	r3, #1
+ 1813 0e98 24300BE5 		str	r3, [fp, #-36]
+ 1814 0e9c 110000EA 		b	.L110
+ 1815              	.L112:
+ 460:uart.c        **** 		}
+ 461:uart.c        **** 	}
+ 462:uart.c        ****         else if(rw==RBFREE)
+ 1817              	.LM177:
+ 1818 0ea0 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1819 0ea4 020053E3 		cmp	r3, #2
+ 1820 0ea8 0C00001A 		bne	.L111
+ 463:uart.c        ****         {
+ 464:uart.c        ****           if(content) return 0;
+ 1822              	.LM178:
+ 1823 0eac 48309FE5 		ldr	r3, .L125
+ 1824 0eb0 003093E5 		ldr	r3, [r3, #0]
+ 1825 0eb4 000053E3 		cmp	r3, #0
+ 1826 0eb8 0200000A 		beq	.L122
+ 1827 0ebc 0030A0E3 		mov	r3, #0
+ 1828 0ec0 24300BE5 		str	r3, [fp, #-36]
+ 1829 0ec4 070000EA 		b	.L110
+ 1830              	.L122:
+ 465:uart.c        ****           else return(RINGBUFFERSIZE-11);
+ 1832              	.LM179:
+ 1833 0ec8 5D3FA0E3 		mov	r3, #372
+ 1834 0ecc 24300BE5 		str	r3, [fp, #-36]
+ 1835 0ed0 24301BE5 		ldr	r3, [fp, #-36]
+ 1836 0ed4 013083E2 		add	r3, r3, #1
+ 1837 0ed8 24300BE5 		str	r3, [fp, #-36]
+ 1838 0edc 010000EA 		b	.L110
+ 1839              	.L111:
+ 466:uart.c        ****         }
+ 467:uart.c        **** 
+ 468:uart.c        **** 	return(0);
+ 1841              	.LM180:
+ 1842 0ee0 0030A0E3 		mov	r3, #0
+ 1843 0ee4 24300BE5 		str	r3, [fp, #-36]
+ 1844              	.L110:
+ 1845 0ee8 24301BE5 		ldr	r3, [fp, #-36]
+ 469:uart.c        **** }
+ 1847              	.LM181:
+ 1848 0eec 0300A0E1 		mov	r0, r3
+ 1849 0ef0 0CD04BE2 		sub	sp, fp, #12
+ 1850 0ef4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1851 0ef8 1EFF2FE1 		bx	lr
+ 1852              	.L126:
+ 1853              		.align	2
+ 1854              	.L125:
+ 1855 0efc 14000000 		.word	content.2606
+ 1856 0f00 18000000 		.word	write_pointer.2605
+ 1857 0f04 20000000 		.word	buffer.2603
+ 1858 0f08 1C000000 		.word	read_pointer.2604
+ 1868              	.Lscope16:
+ 1869              		.bss
+ 1870              		.align	2
+ 1871              	content.2660:
+ 1872 01a0 00000000 		.space	4
+ 1874              		.align	2
+ 1875              	write_pointer.2659:
+ 1876 01a4 00000000 		.space	4
+ 1878              		.align	2
+ 1879              	read_pointer.2658:
+ 1880 01a8 00000000 		.space	4
+ 1882              	buffer.2657:
+ 1883 01ac 00000000 		.space	384
+ 1883      00000000 
+ 1883      00000000 
+ 1883      00000000 
+ 1883      00000000 
+ 1885              		.text
+ 1886              		.align	2
+ 1891              		.global	ringbuffer1
+ 1893              	ringbuffer1:
+ 470:uart.c        **** 
+ 471:uart.c        **** int ringbuffer1(unsigned char rw, unsigned char *data, unsigned int count)	//returns 1 when write/r
+ 472:uart.c        **** {
+ 1895              	.LM182:
+ 1896              		@ Function supports interworking.
+ 1897              		@ args = 0, pretend = 0, frame = 24
+ 1898              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1899 0f0c 0DC0A0E1 		mov	ip, sp
+ 1900 0f10 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1901 0f14 04B04CE2 		sub	fp, ip, #4
+ 1902 0f18 18D04DE2 		sub	sp, sp, #24
+ 1903 0f1c 0030A0E1 		mov	r3, r0
+ 1904 0f20 1C100BE5 		str	r1, [fp, #-28]
+ 1905 0f24 20200BE5 		str	r2, [fp, #-32]
+ 1906 0f28 18304BE5 		strb	r3, [fp, #-24]
+ 473:uart.c        ****     static volatile unsigned char buffer[RINGBUFFERSIZE];
+ 474:uart.c        **** //	static volatile unsigned int pfirst=0, plast=0;	//Pointers to first and last to read byte
+ 475:uart.c        **** 	static volatile unsigned int read_pointer, write_pointer;
+ 476:uart.c        **** 	static volatile unsigned int content=0;
+ 477:uart.c        **** 	unsigned int p=0;
+ 1908              	.LM183:
+ 1909 0f2c 0030A0E3 		mov	r3, #0
+ 1910 0f30 14300BE5 		str	r3, [fp, #-20]
+ 478:uart.c        ****     unsigned int p2=0;
+ 1912              	.LM184:
+ 1913 0f34 0030A0E3 		mov	r3, #0
+ 1914 0f38 10300BE5 		str	r3, [fp, #-16]
+ 479:uart.c        **** 
+ 480:uart.c        **** 	if(rw==RBWRITE)
+ 1916              	.LM185:
+ 1917 0f3c 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1918 0f40 010053E3 		cmp	r3, #1
+ 1919 0f44 2100001A 		bne	.L128
+ 481:uart.c        **** 	{
+ 482:uart.c        **** 		if(count<RINGBUFFERSIZE-content)	//enough space in buffer?
+ 1921              	.LM186:
+ 1922 0f48 98319FE5 		ldr	r3, .L150
+ 1923 0f4c 003093E5 		ldr	r3, [r3, #0]
+ 1924 0f50 062D63E2 		rsb	r2, r3, #384
+ 1925 0f54 20301BE5 		ldr	r3, [fp, #-32]
+ 1926 0f58 030052E1 		cmp	r2, r3
+ 1927 0f5c 5A00009A 		bls	.L136
+ 483:uart.c        **** 		{
+ 484:uart.c        **** 			while(p<count)
+ 1929              	.LM187:
+ 1930 0f60 0D0000EA 		b	.L132
+ 1931              	.L133:
+ 485:uart.c        **** 			{
+ 486:uart.c        **** 				buffer[write_pointer++]=data[p++];
+ 1933              	.LM188:
+ 1934 0f64 80319FE5 		ldr	r3, .L150+4
+ 1935 0f68 001093E5 		ldr	r1, [r3, #0]
+ 1936 0f6c 14201BE5 		ldr	r2, [fp, #-20]
+ 1937 0f70 1C301BE5 		ldr	r3, [fp, #-28]
+ 1938 0f74 033082E0 		add	r3, r2, r3
+ 1939 0f78 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1940 0f7c 6C219FE5 		ldr	r2, .L150+8
+ 1941 0f80 0130C2E7 		strb	r3, [r2, r1]
+ 1942 0f84 012081E2 		add	r2, r1, #1
+ 1943 0f88 5C319FE5 		ldr	r3, .L150+4
+ 1944 0f8c 002083E5 		str	r2, [r3, #0]
+ 1945 0f90 14301BE5 		ldr	r3, [fp, #-20]
+ 1946 0f94 013083E2 		add	r3, r3, #1
+ 1947 0f98 14300BE5 		str	r3, [fp, #-20]
+ 1948              	.L132:
+ 484:uart.c        **** 			while(p<count)
+ 1950              	.LM189:
+ 1951 0f9c 14201BE5 		ldr	r2, [fp, #-20]
+ 1952 0fa0 20301BE5 		ldr	r3, [fp, #-32]
+ 1953 0fa4 030052E1 		cmp	r2, r3
+ 1954 0fa8 EDFFFF3A 		bcc	.L133
+ 487:uart.c        **** 			}
+ 488:uart.c        ****             content+=count;
+ 1956              	.LM190:
+ 1957 0fac 34319FE5 		ldr	r3, .L150
+ 1958 0fb0 002093E5 		ldr	r2, [r3, #0]
+ 1959 0fb4 20301BE5 		ldr	r3, [fp, #-32]
+ 1960 0fb8 032082E0 		add	r2, r2, r3
+ 1961 0fbc 24319FE5 		ldr	r3, .L150
+ 1962 0fc0 002083E5 		str	r2, [r3, #0]
+ 489:uart.c        ****             return(1);
+ 1964              	.LM191:
+ 1965 0fc4 0130A0E3 		mov	r3, #1
+ 1966 0fc8 24300BE5 		str	r3, [fp, #-36]
+ 1967 0fcc 400000EA 		b	.L135
+ 1968              	.L128:
+ 490:uart.c        **** 		}
+ 491:uart.c        **** 	}
+ 492:uart.c        **** 	else if(rw==RBREAD)
+ 1970              	.LM192:
+ 1971 0fd0 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 1972 0fd4 000053E3 		cmp	r3, #0
+ 1973 0fd8 2B00001A 		bne	.L137
+ 493:uart.c        **** 	{
+ 494:uart.c        **** 		if(content>=count)
+ 1975              	.LM193:
+ 1976 0fdc 04319FE5 		ldr	r3, .L150
+ 1977 0fe0 002093E5 		ldr	r2, [r3, #0]
+ 1978 0fe4 20301BE5 		ldr	r3, [fp, #-32]
+ 1979 0fe8 030052E1 		cmp	r2, r3
+ 1980 0fec 3600003A 		bcc	.L136
+ 495:uart.c        **** 		{
+ 496:uart.c        **** 			while(p2<count)
+ 1982              	.LM194:
+ 1983 0ff0 0E0000EA 		b	.L141
+ 1984              	.L142:
+ 497:uart.c        **** 			{
+ 498:uart.c        **** 				data[p2++]=buffer[read_pointer++];
+ 1986              	.LM195:
+ 1987 0ff4 10201BE5 		ldr	r2, [fp, #-16]
+ 1988 0ff8 1C301BE5 		ldr	r3, [fp, #-28]
+ 1989 0ffc 032082E0 		add	r2, r2, r3
+ 1990 1000 EC309FE5 		ldr	r3, .L150+12
+ 1991 1004 001093E5 		ldr	r1, [r3, #0]
+ 1992 1008 E0309FE5 		ldr	r3, .L150+8
+ 1993 100c 0130D3E7 		ldrb	r3, [r3, r1]
+ 1994 1010 FF3003E2 		and	r3, r3, #255
+ 1995 1014 0030C2E5 		strb	r3, [r2, #0]
+ 1996 1018 10301BE5 		ldr	r3, [fp, #-16]
+ 1997 101c 013083E2 		add	r3, r3, #1
+ 1998 1020 10300BE5 		str	r3, [fp, #-16]
+ 1999 1024 012081E2 		add	r2, r1, #1
+ 2000 1028 C4309FE5 		ldr	r3, .L150+12
+ 2001 102c 002083E5 		str	r2, [r3, #0]
+ 2002              	.L141:
+ 496:uart.c        **** 			while(p2<count)
+ 2004              	.LM196:
+ 2005 1030 10201BE5 		ldr	r2, [fp, #-16]
+ 2006 1034 20301BE5 		ldr	r3, [fp, #-32]
+ 2007 1038 030052E1 		cmp	r2, r3
+ 2008 103c ECFFFF3A 		bcc	.L142
+ 499:uart.c        **** 			}
+ 500:uart.c        ****             content-=count;
+ 2010              	.LM197:
+ 2011 1040 A0309FE5 		ldr	r3, .L150
+ 2012 1044 002093E5 		ldr	r2, [r3, #0]
+ 2013 1048 20301BE5 		ldr	r3, [fp, #-32]
+ 2014 104c 022063E0 		rsb	r2, r3, r2
+ 2015 1050 90309FE5 		ldr	r3, .L150
+ 2016 1054 002083E5 		str	r2, [r3, #0]
+ 501:uart.c        ****             if(!content) //buffer empty
+ 2018              	.LM198:
+ 2019 1058 88309FE5 		ldr	r3, .L150
+ 2020 105c 003093E5 		ldr	r3, [r3, #0]
+ 2021 1060 000053E3 		cmp	r3, #0
+ 2022 1064 0500001A 		bne	.L144
+ 502:uart.c        ****             {
+ 503:uart.c        ****             	write_pointer=0;
+ 2024              	.LM199:
+ 2025 1068 7C209FE5 		ldr	r2, .L150+4
+ 2026 106c 0030A0E3 		mov	r3, #0
+ 2027 1070 003082E5 		str	r3, [r2, #0]
+ 504:uart.c        ****             	read_pointer=0;
+ 2029              	.LM200:
+ 2030 1074 78209FE5 		ldr	r2, .L150+12
+ 2031 1078 0030A0E3 		mov	r3, #0
+ 2032 107c 003082E5 		str	r3, [r2, #0]
+ 2033              	.L144:
+ 505:uart.c        ****             }
+ 506:uart.c        **** 			return(1);
+ 2035              	.LM201:
+ 2036 1080 0130A0E3 		mov	r3, #1
+ 2037 1084 24300BE5 		str	r3, [fp, #-36]
+ 2038 1088 110000EA 		b	.L135
+ 2039              	.L137:
+ 507:uart.c        **** 		}
+ 508:uart.c        **** 	}
+ 509:uart.c        ****         else if(rw==RBFREE)
+ 2041              	.LM202:
+ 2042 108c 18305BE5 		ldrb	r3, [fp, #-24]	@ zero_extendqisi2
+ 2043 1090 020053E3 		cmp	r3, #2
+ 2044 1094 0C00001A 		bne	.L136
+ 510:uart.c        ****         {
+ 511:uart.c        ****           if(content) return 0;
+ 2046              	.LM203:
+ 2047 1098 48309FE5 		ldr	r3, .L150
+ 2048 109c 003093E5 		ldr	r3, [r3, #0]
+ 2049 10a0 000053E3 		cmp	r3, #0
+ 2050 10a4 0200000A 		beq	.L147
+ 2051 10a8 0030A0E3 		mov	r3, #0
+ 2052 10ac 24300BE5 		str	r3, [fp, #-36]
+ 2053 10b0 070000EA 		b	.L135
+ 2054              	.L147:
+ 512:uart.c        ****           else return(RINGBUFFERSIZE-11);
+ 2056              	.LM204:
+ 2057 10b4 5D3FA0E3 		mov	r3, #372
+ 2058 10b8 24300BE5 		str	r3, [fp, #-36]
+ 2059 10bc 24301BE5 		ldr	r3, [fp, #-36]
+ 2060 10c0 013083E2 		add	r3, r3, #1
+ 2061 10c4 24300BE5 		str	r3, [fp, #-36]
+ 2062 10c8 010000EA 		b	.L135
+ 2063              	.L136:
+ 513:uart.c        ****         }
+ 514:uart.c        **** 
+ 515:uart.c        **** 	return(0);
+ 2065              	.LM205:
+ 2066 10cc 0030A0E3 		mov	r3, #0
+ 2067 10d0 24300BE5 		str	r3, [fp, #-36]
+ 2068              	.L135:
+ 2069 10d4 24301BE5 		ldr	r3, [fp, #-36]
+ 516:uart.c        **** }
+ 2071              	.LM206:
+ 2072 10d8 0300A0E1 		mov	r0, r3
+ 2073 10dc 0CD04BE2 		sub	sp, fp, #12
+ 2074 10e0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2075 10e4 1EFF2FE1 		bx	lr
+ 2076              	.L151:
+ 2077              		.align	2
+ 2078              	.L150:
+ 2079 10e8 A0010000 		.word	content.2660
+ 2080 10ec A4010000 		.word	write_pointer.2659
+ 2081 10f0 AC010000 		.word	buffer.2657
+ 2082 10f4 A8010000 		.word	read_pointer.2658
+ 2092              	.Lscope17:
+ 2093              		.comm	GPS_timeout,4,4
+ 2094              		.comm	SYSTEM_initialized,1,1
+ 2095              		.comm	send_buffer,16,1
+ 2096              		.comm	SSP_trans_cnt,4,4
+ 2097              		.comm	packets,1,1
+ 2098              		.comm	DataOutputsPerSecond,1,1
+ 2099              		.comm	uart_cnt,4,4
+ 2100              		.comm	current_chksum,2,2
+ 2101              		.comm	tx_buff,4,4
+ 2102              		.comm	UART_rxptr,4,4
+ 2103              		.comm	UART1_rxptr,4,4
+ 2104              		.comm	my_buffer,256,1
+ 2133              	.Letext0:
+ 2134              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 uart.c
-     /tmp/cc7eCfeP.s:143    .bss:00000000 data_requested
-     /tmp/cc7eCfeP.s:144    .bss:00000000 $d
-     /tmp/cc7eCfeP.s:148    .bss:00000001 chksum_to_check
-     /tmp/cc7eCfeP.s:154    .data:00000000 chksum_trigger
-     /tmp/cc7eCfeP.s:160    .bss:00000002 transmission_running
-     /tmp/cc7eCfeP.s:165    .bss:00000003 transmission1_running
-     /tmp/cc7eCfeP.s:170    .bss:00000004 trigger_transmission
-     /tmp/cc7eCfeP.s:175    .bss:00000005 baudrate1_change
-     /tmp/cc7eCfeP.s:180    .bss:00000006 UART_syncstate
-     /tmp/cc7eCfeP.s:185    .bss:00000007 UART1_syncstate
-     /tmp/cc7eCfeP.s:191    .bss:00000008 UART_rxcount
-     /tmp/cc7eCfeP.s:197    .bss:0000000c UART1_rxcount
-     /tmp/cc7eCfeP.s:202    .bss:00000010 UART_CalibDoneFlag
-     /tmp/cc7eCfeP.s:204    .bss:00000011 rb_busy
-     /tmp/cc7eCfeP.s:210    .data:00000001 startstring
-     /tmp/cc7eCfeP.s:217    .data:00000004 stopstring
-     /tmp/cc7eCfeP.s:222    .text:00000000 $a
-     /tmp/cc7eCfeP.s:226    .text:00000000 uart1ISR
-     /tmp/cc7eCfeP.s:1866   .text:00000ec4 ringbuffer1
-     /tmp/cc7eCfeP.s:949    .text:00000718 UART1WriteChar
-     /tmp/cc7eCfeP.s:310    .text:000000cc $d
-     /tmp/cc7eCfeP.s:318    .text:000000d0 $a
-     /tmp/cc7eCfeP.s:322    .text:000000d0 uart0ISR
-     /tmp/cc7eCfeP.s:1642   .text:00000cd8 ringbuffer
-     /tmp/cc7eCfeP.s:909    .text:000006c8 UARTWriteChar
-     /tmp/cc7eCfeP.s:436    .text:000001f8 $d
-     /tmp/cc7eCfeP.s:447    .text:00000218 $a
-     /tmp/cc7eCfeP.s:732    .text:0000052c $d
+     /tmp/ccSdQ39O.s:147    .bss:00000000 data_requested
+     /tmp/ccSdQ39O.s:148    .bss:00000000 $d
+     /tmp/ccSdQ39O.s:152    .bss:00000001 chksum_to_check
+     /tmp/ccSdQ39O.s:158    .data:00000000 chksum_trigger
+     /tmp/ccSdQ39O.s:164    .bss:00000002 transmission_running
+     /tmp/ccSdQ39O.s:169    .bss:00000003 transmission1_running
+     /tmp/ccSdQ39O.s:174    .bss:00000004 trigger_transmission
+     /tmp/ccSdQ39O.s:179    .bss:00000005 baudrate1_change
+     /tmp/ccSdQ39O.s:184    .bss:00000006 UART_syncstate
+     /tmp/ccSdQ39O.s:189    .bss:00000007 UART1_syncstate
+     /tmp/ccSdQ39O.s:195    .bss:00000008 UART_rxcount
+     /tmp/ccSdQ39O.s:201    .bss:0000000c UART1_rxcount
+     /tmp/ccSdQ39O.s:206    .bss:00000010 UART_CalibDoneFlag
+     /tmp/ccSdQ39O.s:208    .bss:00000011 rb_busy
+     /tmp/ccSdQ39O.s:214    .data:00000001 startstring
+     /tmp/ccSdQ39O.s:221    .data:00000004 stopstring
+     /tmp/ccSdQ39O.s:226    .text:00000000 $a
+     /tmp/ccSdQ39O.s:230    .text:00000000 uart1ISR
+     /tmp/ccSdQ39O.s:1893   .text:00000f0c ringbuffer1
+     /tmp/ccSdQ39O.s:976    .text:00000760 UART1WriteChar
+     /tmp/ccSdQ39O.s:314    .text:000000cc $d
+     /tmp/ccSdQ39O.s:322    .text:000000d0 $a
+     /tmp/ccSdQ39O.s:326    .text:000000d0 uart0ISR
+     /tmp/ccSdQ39O.s:1669   .text:00000d20 ringbuffer
+     /tmp/ccSdQ39O.s:936    .text:00000710 UARTWriteChar
+     /tmp/ccSdQ39O.s:440    .text:000001f8 $d
+     /tmp/ccSdQ39O.s:452    .text:0000021c $a
+     /tmp/ccSdQ39O.s:758    .text:00000570 $d
                             *COM*:00000100 my_buffer
-     /tmp/cc7eCfeP.s:758    .text:00000570 $a
-     /tmp/cc7eCfeP.s:763    .text:00000570 UARTInitialize
-     /tmp/cc7eCfeP.s:836    .text:0000061c UART1Initialize
-     /tmp/cc7eCfeP.s:988    .text:00000768 UARTReadChar
-     /tmp/cc7eCfeP.s:1025   .text:000007b0 UART1ReadChar
-     /tmp/cc7eCfeP.s:1063   .text:000007f8 __putchar
-     /tmp/cc7eCfeP.s:1103   .text:0000083c UART_send
-     /tmp/cc7eCfeP.s:1188   .text:000008f8 UART1_send
-     /tmp/cc7eCfeP.s:1254   .text:0000098c UART_send_ringbuffer
-     /tmp/cc7eCfeP.s:1299   .text:000009f0 $d
-     /tmp/cc7eCfeP.s:1305   .text:000009f4 $a
-     /tmp/cc7eCfeP.s:1309   .text:000009f4 UART1_send_ringbuffer
-     /tmp/cc7eCfeP.s:1354   .text:00000a58 $d
-     /tmp/cc7eCfeP.s:1360   .text:00000a5c $a
-     /tmp/cc7eCfeP.s:1367   .text:00000a5c UART_SendPacket
-     /tmp/cc7eCfeP.s:1550   .text:00000c44 crc16
-     /tmp/cc7eCfeP.s:1454   .text:00000b4c $d
-     /tmp/cc7eCfeP.s:1462   .text:00000b54 $a
-     /tmp/cc7eCfeP.s:1468   .text:00000b54 crc_update
-     /tmp/cc7eCfeP.s:1620   .bss:00000014 content.2586
-     /tmp/cc7eCfeP.s:1624   .bss:00000018 write_pointer.2585
-     /tmp/cc7eCfeP.s:1628   .bss:0000001c read_pointer.2584
-     /tmp/cc7eCfeP.s:1631   .bss:00000020 buffer.2583
-     /tmp/cc7eCfeP.s:1828   .text:00000eb4 $d
-     /tmp/cc7eCfeP.s:1844   .bss:000001a0 content.2640
-     /tmp/cc7eCfeP.s:1848   .bss:000001a4 write_pointer.2639
-     /tmp/cc7eCfeP.s:1852   .bss:000001a8 read_pointer.2638
-     /tmp/cc7eCfeP.s:1855   .bss:000001ac buffer.2637
-     /tmp/cc7eCfeP.s:1859   .text:00000ec4 $a
-     /tmp/cc7eCfeP.s:2052   .text:000010a0 $d
+     /tmp/ccSdQ39O.s:785    .text:000005b8 $a
+     /tmp/ccSdQ39O.s:790    .text:000005b8 UARTInitialize
+     /tmp/ccSdQ39O.s:863    .text:00000664 UART1Initialize
+     /tmp/ccSdQ39O.s:1015   .text:000007b0 UARTReadChar
+     /tmp/ccSdQ39O.s:1052   .text:000007f8 UART1ReadChar
+     /tmp/ccSdQ39O.s:1090   .text:00000840 __putchar
+     /tmp/ccSdQ39O.s:1130   .text:00000884 UART_send
+     /tmp/ccSdQ39O.s:1215   .text:00000940 UART1_send
+     /tmp/ccSdQ39O.s:1281   .text:000009d4 UART_send_ringbuffer
+     /tmp/ccSdQ39O.s:1326   .text:00000a38 $d
+     /tmp/ccSdQ39O.s:1332   .text:00000a3c $a
+     /tmp/ccSdQ39O.s:1336   .text:00000a3c UART1_send_ringbuffer
+     /tmp/ccSdQ39O.s:1381   .text:00000aa0 $d
+     /tmp/ccSdQ39O.s:1387   .text:00000aa4 $a
+     /tmp/ccSdQ39O.s:1394   .text:00000aa4 UART_SendPacket
+     /tmp/ccSdQ39O.s:1577   .text:00000c8c crc16
+     /tmp/ccSdQ39O.s:1481   .text:00000b94 $d
+     /tmp/ccSdQ39O.s:1489   .text:00000b9c $a
+     /tmp/ccSdQ39O.s:1495   .text:00000b9c crc_update
+     /tmp/ccSdQ39O.s:1647   .bss:00000014 content.2606
+     /tmp/ccSdQ39O.s:1651   .bss:00000018 write_pointer.2605
+     /tmp/ccSdQ39O.s:1655   .bss:0000001c read_pointer.2604
+     /tmp/ccSdQ39O.s:1658   .bss:00000020 buffer.2603
+     /tmp/ccSdQ39O.s:1855   .text:00000efc $d
+     /tmp/ccSdQ39O.s:1871   .bss:000001a0 content.2660
+     /tmp/ccSdQ39O.s:1875   .bss:000001a4 write_pointer.2659
+     /tmp/ccSdQ39O.s:1879   .bss:000001a8 read_pointer.2658
+     /tmp/ccSdQ39O.s:1882   .bss:000001ac buffer.2657
+     /tmp/ccSdQ39O.s:1886   .text:00000f0c $a
+     /tmp/ccSdQ39O.s:2079   .text:000010e8 $d
                             *COM*:00000004 GPS_timeout
                             *COM*:00000001 SYSTEM_initialized
                             *COM*:00000010 send_buffer
@@ -2189,5 +2216,6 @@ my_this
 my_setpoint
 receiveCmdData
 receivePositionWayPointData
+receiveLandSignal
 __udivsi3
 peripheralClockFrequency

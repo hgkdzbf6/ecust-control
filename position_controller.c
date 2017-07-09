@@ -44,27 +44,27 @@ float xyVelMax=400.0f;
 struct this_s my_this = {
 	.pidVX = {
 	    .init = {
-	      .kp = 0.3,
+	      .kp = 1.0,
 	      .ki = 0.4,
 	      .kd = 0,
 	    },
 	    .pid.dt = DT,
-		.pid.iLimit=200,
+		//.pid.iLimit=200,
 	  },
 
 	  .pidVY = {
 	    .init = {
-	      .kp = 0.3f,
+	      .kp = 1.0f,
 	      .ki =0.4 ,
 	      .kd = 0,
 	    },
 	    .pid.dt = DT,
-		.pid.iLimit=200,
+		//.pid.iLimit=200,
 	  },
 
   .pidVZ = {
     .init = {
-      .kp = 1.0f,
+      .kp = 0.5f,
       .ki = 0.05f,
       .kd = 0,
     },
@@ -72,7 +72,7 @@ struct this_s my_this = {
   },
   .pidX = {
     .init = {
-      .kp = 0.4,
+      .kp = 1.6f,
       .ki = 0,
       .kd = 0,
     },
@@ -88,7 +88,7 @@ struct this_s my_this = {
   },
   .pidZ = {
     .init = {
-      .kp = 0.8f,
+      .kp = 4.8f,
       .ki = 0,
       .kd = 0,
     },

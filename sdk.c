@@ -66,6 +66,8 @@ ParamDebug sendParamDebug={0};
 ParamDebug receiveParamDebug={0};
 PositionWayPointData sendPositionWayPointData={0};
 PositionWayPointData receivePositionWayPointData={0};
+LandSignal sendLandSignal={LAND_MODE_NONE};
+LandSignal receiveLandSignal={LAND_MODE_NONE};
 extern struct this_s my_this;
 CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
 int pack_id=0;
@@ -136,8 +138,15 @@ void fake_gps3(void ){
 		//my_state.attitude.yaw=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;
 		positionController(&calc_thrust,&calc_pitch,&calc_roll,&my_state);
 	}
-	output_thrust=calc_thrust;
-
+	if(receiveLandSignal.mode==LAND_MODE_NONE){
+		output_thrust=calc_thrust;
+	}else if(receiveLandSignal.mode==LAND_MODE_SLOW){
+		output_thrust=1600;
+	}else if(receiveLandSignal.mode==LAND_MODE_FAST){
+		output_thrust=1400;
+	}else if(receiveLandSignal.mode==LAND_MODE_STOP){
+		output_thrust=0;
+	}
 	WO_CTRL_Input.thrust=output_thrust;
 	WO_CTRL_Input.pitch=calc_pitch;
 	WO_CTRL_Input.roll=calc_roll;

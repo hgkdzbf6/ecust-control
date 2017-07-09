@@ -1,9 +1,9 @@
    1              		.file	"hardware.c"
    3              		.text
    4              	.Ltext0:
-  91              		.align	2
-  95              		.global	LED
-  97              	LED:
+  95              		.align	2
+  99              		.global	LED
+ 101              	LED:
    1:hardware.c    **** /*
    2:hardware.c    **** 
    3:hardware.c    **** Copyright (c) 2011, Ascending Technologies GmbH
@@ -42,72 +42,72 @@
   36:hardware.c    **** 
   37:hardware.c    **** void LED(unsigned char nr, unsigned char onoff) //set or reset LED 0..3
   38:hardware.c    **** {
-  99              	.LM0:
- 100              		@ Function supports interworking.
- 101              		@ args = 0, pretend = 0, frame = 8
- 102              		@ frame_needed = 1, uses_anonymous_args = 0
- 103 0000 0DC0A0E1 		mov	ip, sp
- 104 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 105 0008 04B04CE2 		sub	fp, ip, #4
- 106 000c 08D04DE2 		sub	sp, sp, #8
- 107 0010 0030A0E1 		mov	r3, r0
- 108 0014 0120A0E1 		mov	r2, r1
- 109 0018 10304BE5 		strb	r3, [fp, #-16]
- 110 001c 0230A0E1 		mov	r3, r2
- 111 0020 14304BE5 		strb	r3, [fp, #-20]
+ 103              	.LM0:
+ 104              		@ Function supports interworking.
+ 105              		@ args = 0, pretend = 0, frame = 8
+ 106              		@ frame_needed = 1, uses_anonymous_args = 0
+ 107 0000 0DC0A0E1 		mov	ip, sp
+ 108 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 109 0008 04B04CE2 		sub	fp, ip, #4
+ 110 000c 08D04DE2 		sub	sp, sp, #8
+ 111 0010 0030A0E1 		mov	r3, r0
+ 112 0014 0120A0E1 		mov	r2, r1
+ 113 0018 10304BE5 		strb	r3, [fp, #-16]
+ 114 001c 0230A0E1 		mov	r3, r2
+ 115 0020 14304BE5 		strb	r3, [fp, #-20]
   39:hardware.c    ****   if (nr>=2)
- 113              	.LM1:
- 114 0024 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
- 115 0028 010053E3 		cmp	r3, #1
- 116 002c 1300008A 		bhi	.L6
+ 117              	.LM1:
+ 118 0024 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 119 0028 010053E3 		cmp	r3, #1
+ 120 002c 1300008A 		bhi	.L6
   40:hardware.c    ****   	return;
   41:hardware.c    ****   if(onoff == OFF)
- 118              	.LM2:
- 119 0030 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
- 120 0034 000053E3 		cmp	r3, #0
- 121 0038 0800001A 		bne	.L4
+ 122              	.LM2:
+ 123 0030 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 124 0034 000053E3 		cmp	r3, #0
+ 125 0038 0800001A 		bne	.L4
   42:hardware.c    ****   {
   43:hardware.c    ****     IOSET1 = (1<<(24+nr));
- 123              	.LM3:
- 124 003c 0E22A0E3 		mov	r2, #-536870912
- 125 0040 0A2982E2 		add	r2, r2, #163840
- 126 0044 142082E2 		add	r2, r2, #20
- 127 0048 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
- 128 004c 181083E2 		add	r1, r3, #24
- 129 0050 0130A0E3 		mov	r3, #1
- 130 0054 1331A0E1 		mov	r3, r3, asl r1
- 131 0058 003082E5 		str	r3, [r2, #0]
- 132 005c 070000EA 		b	.L6
- 133              	.L4:
+ 127              	.LM3:
+ 128 003c 0E22A0E3 		mov	r2, #-536870912
+ 129 0040 0A2982E2 		add	r2, r2, #163840
+ 130 0044 142082E2 		add	r2, r2, #20
+ 131 0048 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 132 004c 181083E2 		add	r1, r3, #24
+ 133 0050 0130A0E3 		mov	r3, #1
+ 134 0054 1331A0E1 		mov	r3, r3, asl r1
+ 135 0058 003082E5 		str	r3, [r2, #0]
+ 136 005c 070000EA 		b	.L6
+ 137              	.L4:
   44:hardware.c    ****   }
   45:hardware.c    ****   else
   46:hardware.c    ****   {
   47:hardware.c    ****     IOCLR1 = (1<<(24+nr));
- 135              	.LM4:
- 136 0060 0E22A0E3 		mov	r2, #-536870912
- 137 0064 0A2982E2 		add	r2, r2, #163840
- 138 0068 1C2082E2 		add	r2, r2, #28
- 139 006c 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
- 140 0070 181083E2 		add	r1, r3, #24
- 141 0074 0130A0E3 		mov	r3, #1
- 142 0078 1331A0E1 		mov	r3, r3, asl r1
- 143 007c 003082E5 		str	r3, [r2, #0]
- 144              	.L6:
+ 139              	.LM4:
+ 140 0060 0E22A0E3 		mov	r2, #-536870912
+ 141 0064 0A2982E2 		add	r2, r2, #163840
+ 142 0068 1C2082E2 		add	r2, r2, #28
+ 143 006c 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 144 0070 181083E2 		add	r1, r3, #24
+ 145 0074 0130A0E3 		mov	r3, #1
+ 146 0078 1331A0E1 		mov	r3, r3, asl r1
+ 147 007c 003082E5 		str	r3, [r2, #0]
+ 148              	.L6:
   48:hardware.c    ****   }
   49:hardware.c    **** }
- 146              	.LM5:
- 147 0080 0CD04BE2 		sub	sp, fp, #12
- 148 0084 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 149 0088 1EFF2FE1 		bx	lr
- 151              	.Lscope0:
- 152              		.comm	GPS_timeout,4,4
- 153              		.comm	SYSTEM_initialized,1,1
- 157              	.Letext0:
- 158              		.ident	"GCC: (GNU) 4.1.1"
+ 150              	.LM5:
+ 151 0080 0CD04BE2 		sub	sp, fp, #12
+ 152 0084 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 153 0088 1EFF2FE1 		bx	lr
+ 155              	.Lscope0:
+ 156              		.comm	GPS_timeout,4,4
+ 157              		.comm	SYSTEM_initialized,1,1
+ 161              	.Letext0:
+ 162              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 hardware.c
-     /tmp/ccRREx4L.s:91     .text:00000000 $a
-     /tmp/ccRREx4L.s:97     .text:00000000 LED
+     /tmp/ccPFrGYH.s:95     .text:00000000 $a
+     /tmp/ccPFrGYH.s:101    .text:00000000 LED
                             *COM*:00000004 GPS_timeout
                             *COM*:00000001 SYSTEM_initialized
 

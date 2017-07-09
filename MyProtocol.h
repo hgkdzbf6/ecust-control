@@ -102,6 +102,17 @@ typedef struct __position_way_point_data{
 	float z;
 }PositionWayPointData;
 
+typedef enum __land_mode{
+	LAND_MODE_NONE,
+	LAND_MODE_SLOW,
+	LAND_MODE_FAST,
+	LAND_MODE_STOP,
+}LandMode;
+
+typedef struct __land_signal{
+	LandMode mode;
+}LandSignal;
+
 typedef enum __package_define{
 	PACKAGE_DEFINE_ALL,
 	PACKAGE_DEFINE_STATUS,
@@ -112,6 +123,7 @@ typedef enum __package_define{
 	PACKAGE_DEFINE_PARAM,
 	PACKAGE_DEFINE_CMD,
 	PACKAGE_DEFINE_POSITION_WAY_POINT,
+	PACKAGE_DEFINE_LAND,
 }PackageDefine;
 
 typedef struct __cmd_data{
@@ -126,6 +138,7 @@ typedef struct __cmd_data{
 #define PARAM_DEBUG_LENGTH ((unsigned char)(sizeof(ParamDebug)))
 #define CMD_DATA_LENGTH ((unsigned char)(sizeof(CmdData)))
 #define POSITION_WAY_POINT_LENGTH ((unsigned char)(sizeof(PositionWayPointData)))
+#define LAND_SIGNAL_LENGTH ((unsigned char)(sizeof(LandSignal)))
 
 typedef enum __parse_status{
 	PARSE_NOT_START,

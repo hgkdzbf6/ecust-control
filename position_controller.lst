@@ -37,7 +37,7 @@
   94      00000000 
   94      00000000 
   95 0048 0AD7233C 		.word	1008981770
-  96 004c 0000803F 		.word	1065353216
+  96 004c 0000003F 		.word	1056964608
   97 0050 CDCC4C3D 		.word	1028443341
   98 0054 00000000 		.word	0
   99 0058 00000000 		.space	8
@@ -50,76 +50,72 @@
  101 008c 0000C842 		.word	1120403456
  102 0090 00000000 		.space	4
  103 0094 0AD7233C 		.word	1008981770
- 104 0098 CDCC4C3F 		.word	1061997773
+ 104 0098 9A999940 		.word	1083808154
  105 009c 00000000 		.word	0
  106 00a0 00000000 		.word	0
  107 00a4 00000000 		.space	8
  107      00000000 
- 108 00ac 00000000 		.space	44
+ 108 00ac 00000000 		.space	52
  108      00000000 
  108      00000000 
  108      00000000 
  108      00000000 
- 109 00d8 00004843 		.word	1128792064
- 110 00dc 00000000 		.space	4
- 111 00e0 0AD7233C 		.word	1008981770
- 112 00e4 9A99993E 		.word	1050253722
- 113 00e8 CDCCCC3E 		.word	1053609165
- 114 00ec 00000000 		.word	0
- 115 00f0 00000000 		.space	8
- 115      00000000 
- 116 00f8 00000000 		.space	52
- 116      00000000 
- 116      00000000 
- 116      00000000 
- 116      00000000 
- 117 012c 0AD7233C 		.word	1008981770
- 118 0130 CDCCCC3E 		.word	1053609165
- 119 0134 00000000 		.word	0
- 120 0138 00000000 		.word	0
- 121 013c 00000000 		.space	8
- 121      00000000 
- 122 0144 00000000 		.space	44
- 122      00000000 
- 122      00000000 
- 122      00000000 
- 122      00000000 
- 123 0170 00004843 		.word	1128792064
- 124 0174 00000000 		.space	4
- 125 0178 0AD7233C 		.word	1008981770
- 126 017c 9A99993E 		.word	1050253722
- 127 0180 CDCCCC3E 		.word	1053609165
- 128 0184 00000000 		.word	0
- 129 0188 00000000 		.space	8
- 129      00000000 
- 130 0190 00000000 		.space	52
- 130      00000000 
- 130      00000000 
- 130      00000000 
- 130      00000000 
- 131 01c4 0AD7233C 		.word	1008981770
- 132 01c8 CDCCCC3F 		.word	1070386381
- 133 01cc 00000000 		.word	0
- 134 01d0 00000000 		.word	0
- 135 01d4 00000000 		.space	8
- 135      00000000 
- 136 01dc 3A07     		.short	1850
- 137 01de 5802     		.short	600
- 138              		.bss
+ 109 00e0 0AD7233C 		.word	1008981770
+ 110 00e4 0000803F 		.word	1065353216
+ 111 00e8 CDCCCC3E 		.word	1053609165
+ 112 00ec 00000000 		.word	0
+ 113 00f0 00000000 		.space	8
+ 113      00000000 
+ 114 00f8 00000000 		.space	52
+ 114      00000000 
+ 114      00000000 
+ 114      00000000 
+ 114      00000000 
+ 115 012c 0AD7233C 		.word	1008981770
+ 116 0130 CDCCCC3F 		.word	1070386381
+ 117 0134 00000000 		.word	0
+ 118 0138 00000000 		.word	0
+ 119 013c 00000000 		.space	8
+ 119      00000000 
+ 120 0144 00000000 		.space	52
+ 120      00000000 
+ 120      00000000 
+ 120      00000000 
+ 120      00000000 
+ 121 0178 0AD7233C 		.word	1008981770
+ 122 017c 0000803F 		.word	1065353216
+ 123 0180 CDCCCC3E 		.word	1053609165
+ 124 0184 00000000 		.word	0
+ 125 0188 00000000 		.space	8
+ 125      00000000 
+ 126 0190 00000000 		.space	52
+ 126      00000000 
+ 126      00000000 
+ 126      00000000 
+ 126      00000000 
+ 127 01c4 0AD7233C 		.word	1008981770
+ 128 01c8 CDCCCC3F 		.word	1070386381
+ 129 01cc 00000000 		.word	0
+ 130 01d0 00000000 		.word	0
+ 131 01d4 00000000 		.space	8
+ 131      00000000 
+ 132 01dc 3A07     		.short	1850
+ 133 01de 5802     		.short	600
+ 134              		.bss
+ 135              		.align	2
+ 136              	estimateMode.1455:
+ 137 0000 00000000 		.space	4
  139              		.align	2
- 140              	estimateMode.1455:
- 141 0000 00000000 		.space	4
- 143              		.align	2
- 144              	prev_estimatedZ.1454:
- 145 0004 00000000 		.space	4
- 147              		.global	__mulsf3
- 148              		.global	__subsf3
- 149              		.global	__addsf3
- 150              		.global	__eqsf2
- 151              		.text
- 152              		.align	2
- 159              		.global	positionEstimate
- 161              	positionEstimate:
+ 140              	prev_estimatedZ.1454:
+ 141 0004 00000000 		.space	4
+ 143              		.global	__mulsf3
+ 144              		.global	__subsf3
+ 145              		.global	__addsf3
+ 146              		.global	__eqsf2
+ 147              		.text
+ 148              		.align	2
+ 155              		.global	positionEstimate
+ 157              	positionEstimate:
    1:position_controller.c **** /**
    2:position_controller.c ****  *    ||          ____  _ __
    3:position_controller.c ****  * +------+      / __ )(_) /_______________ _____  ___
@@ -166,27 +162,27 @@
   44:position_controller.c **** struct this_s my_this = {
   45:position_controller.c **** 	.pidVX = {
   46:position_controller.c **** 	    .init = {
-  47:position_controller.c **** 	      .kp = 0.3,
+  47:position_controller.c **** 	      .kp = 1.0,
   48:position_controller.c **** 	      .ki = 0.4,
   49:position_controller.c **** 	      .kd = 0,
   50:position_controller.c **** 	    },
   51:position_controller.c **** 	    .pid.dt = DT,
-  52:position_controller.c **** 		.pid.iLimit=200,
+  52:position_controller.c **** 		//.pid.iLimit=200,
   53:position_controller.c **** 	  },
   54:position_controller.c **** 
   55:position_controller.c **** 	  .pidVY = {
   56:position_controller.c **** 	    .init = {
-  57:position_controller.c **** 	      .kp = 0.3f,
+  57:position_controller.c **** 	      .kp = 1.0f,
   58:position_controller.c **** 	      .ki =0.4 ,
   59:position_controller.c **** 	      .kd = 0,
   60:position_controller.c **** 	    },
   61:position_controller.c **** 	    .pid.dt = DT,
-  62:position_controller.c **** 		.pid.iLimit=200,
+  62:position_controller.c **** 		//.pid.iLimit=200,
   63:position_controller.c **** 	  },
   64:position_controller.c **** 
   65:position_controller.c ****   .pidVZ = {
   66:position_controller.c ****     .init = {
-  67:position_controller.c ****       .kp = 1.0f,
+  67:position_controller.c ****       .kp = 0.5f,
   68:position_controller.c ****       .ki = 0.05f,
   69:position_controller.c ****       .kd = 0,
   70:position_controller.c ****     },
@@ -194,7 +190,7 @@
   72:position_controller.c ****   },
   73:position_controller.c ****   .pidX = {
   74:position_controller.c ****     .init = {
-  75:position_controller.c ****       .kp = 0.4,
+  75:position_controller.c ****       .kp = 1.6f,
   76:position_controller.c ****       .ki = 0,
   77:position_controller.c ****       .kd = 0,
   78:position_controller.c ****     },
@@ -210,7 +206,7 @@
   88:position_controller.c ****   },
   89:position_controller.c ****   .pidZ = {
   90:position_controller.c ****     .init = {
-  91:position_controller.c ****       .kp = 0.8f,
+  91:position_controller.c ****       .kp = 4.8f,
   92:position_controller.c ****       .ki = 0,
   93:position_controller.c ****       .kd = 0,
   94:position_controller.c ****     },
@@ -229,521 +225,521 @@
  107:position_controller.c **** 		const long timestamp,
  108:position_controller.c **** 		EstimateParams* params,
  109:position_controller.c **** 		const float dt){
- 163              	.LM0:
- 164              		@ Function supports interworking.
- 165              		@ args = 4, pretend = 0, frame = 20
- 166              		@ frame_needed = 1, uses_anonymous_args = 0
- 167 0000 0DC0A0E1 		mov	ip, sp
- 168 0004 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
- 169 0008 04B04CE2 		sub	fp, ip, #4
- 170 000c 14D04DE2 		sub	sp, sp, #20
- 171 0010 18000BE5 		str	r0, [fp, #-24]
- 172 0014 1C100BE5 		str	r1, [fp, #-28]	@ float
- 173 0018 20200BE5 		str	r2, [fp, #-32]
- 174 001c 24300BE5 		str	r3, [fp, #-36]
+ 159              	.LM0:
+ 160              		@ Function supports interworking.
+ 161              		@ args = 4, pretend = 0, frame = 20
+ 162              		@ frame_needed = 1, uses_anonymous_args = 0
+ 163 0000 0DC0A0E1 		mov	ip, sp
+ 164 0004 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 165 0008 04B04CE2 		sub	fp, ip, #4
+ 166 000c 14D04DE2 		sub	sp, sp, #20
+ 167 0010 18000BE5 		str	r0, [fp, #-24]
+ 168 0014 1C100BE5 		str	r1, [fp, #-28]	@ float
+ 169 0018 20200BE5 		str	r2, [fp, #-32]
+ 170 001c 24300BE5 		str	r3, [fp, #-36]
  110:position_controller.c **** 	float filteredZ;
  111:position_controller.c **** 	static float prev_estimatedZ=0;
  112:position_controller.c **** 	static int estimateMode=0;
  113:position_controller.c **** 	if(estimate->timestamp==timestamp){
- 176              	.LM1:
- 177 0020 18301BE5 		ldr	r3, [fp, #-24]
- 178 0024 282093E5 		ldr	r2, [r3, #40]
- 179 0028 20301BE5 		ldr	r3, [fp, #-32]
- 180 002c 030052E1 		cmp	r2, r3
- 181 0030 2500001A 		bne	.L2
+ 172              	.LM1:
+ 173 0020 18301BE5 		ldr	r3, [fp, #-24]
+ 174 0024 282093E5 		ldr	r2, [r3, #40]
+ 175 0028 20301BE5 		ldr	r3, [fp, #-32]
+ 176 002c 030052E1 		cmp	r2, r3
+ 177 0030 2500001A 		bne	.L2
  114:position_controller.c **** 		filteredZ=(params->alpha)*params->estimatedZ
- 183              	.LM2:
- 184 0034 24301BE5 		ldr	r3, [fp, #-36]
- 185 0038 002093E5 		ldr	r2, [r3, #0]	@ float
- 186 003c 24301BE5 		ldr	r3, [fp, #-36]
- 187 0040 043093E5 		ldr	r3, [r3, #4]	@ float
- 188 0044 0200A0E1 		mov	r0, r2
- 189 0048 0310A0E1 		mov	r1, r3
- 190 004c FEFFFFEB 		bl	__mulsf3
- 191 0050 0030A0E1 		mov	r3, r0
- 192 0054 0340A0E1 		mov	r4, r3
- 193 0058 24301BE5 		ldr	r3, [fp, #-36]
- 194 005c 003093E5 		ldr	r3, [r3, #0]	@ float
- 195 0060 AC009FE5 		ldr	r0, .L9	@ float
- 196 0064 0310A0E1 		mov	r1, r3
- 197 0068 FEFFFFEB 		bl	__subsf3
- 198 006c 0030A0E1 		mov	r3, r0
- 199 0070 0300A0E1 		mov	r0, r3
- 200 0074 1C101BE5 		ldr	r1, [fp, #-28]	@ float
- 201 0078 FEFFFFEB 		bl	__mulsf3
- 202 007c 0030A0E1 		mov	r3, r0
- 203 0080 0400A0E1 		mov	r0, r4
- 204 0084 0310A0E1 		mov	r1, r3
- 205 0088 FEFFFFEB 		bl	__addsf3
- 206 008c 0030A0E1 		mov	r3, r0
- 207 0090 14300BE5 		str	r3, [fp, #-20]	@ float
+ 179              	.LM2:
+ 180 0034 24301BE5 		ldr	r3, [fp, #-36]
+ 181 0038 002093E5 		ldr	r2, [r3, #0]	@ float
+ 182 003c 24301BE5 		ldr	r3, [fp, #-36]
+ 183 0040 043093E5 		ldr	r3, [r3, #4]	@ float
+ 184 0044 0200A0E1 		mov	r0, r2
+ 185 0048 0310A0E1 		mov	r1, r3
+ 186 004c FEFFFFEB 		bl	__mulsf3
+ 187 0050 0030A0E1 		mov	r3, r0
+ 188 0054 0340A0E1 		mov	r4, r3
+ 189 0058 24301BE5 		ldr	r3, [fp, #-36]
+ 190 005c 003093E5 		ldr	r3, [r3, #0]	@ float
+ 191 0060 AC009FE5 		ldr	r0, .L9	@ float
+ 192 0064 0310A0E1 		mov	r1, r3
+ 193 0068 FEFFFFEB 		bl	__subsf3
+ 194 006c 0030A0E1 		mov	r3, r0
+ 195 0070 0300A0E1 		mov	r0, r3
+ 196 0074 1C101BE5 		ldr	r1, [fp, #-28]	@ float
+ 197 0078 FEFFFFEB 		bl	__mulsf3
+ 198 007c 0030A0E1 		mov	r3, r0
+ 199 0080 0400A0E1 		mov	r0, r4
+ 200 0084 0310A0E1 		mov	r1, r3
+ 201 0088 FEFFFFEB 		bl	__addsf3
+ 202 008c 0030A0E1 		mov	r3, r0
+ 203 0090 14300BE5 		str	r3, [fp, #-20]	@ float
  115:position_controller.c **** 				+(1.0f-params->alpha)*vicon_data;
  116:position_controller.c **** 		params->estimatedZ=filteredZ+params->estimatedVZ*dt;
- 209              	.LM3:
- 210 0094 24301BE5 		ldr	r3, [fp, #-36]
- 211 0098 083093E5 		ldr	r3, [r3, #8]	@ float
- 212 009c 0300A0E1 		mov	r0, r3
- 213 00a0 04109BE5 		ldr	r1, [fp, #4]	@ float
- 214 00a4 FEFFFFEB 		bl	__mulsf3
- 215 00a8 0030A0E1 		mov	r3, r0
- 216 00ac 0300A0E1 		mov	r0, r3
- 217 00b0 14101BE5 		ldr	r1, [fp, #-20]	@ float
- 218 00b4 FEFFFFEB 		bl	__addsf3
- 219 00b8 0030A0E1 		mov	r3, r0
- 220 00bc 0320A0E1 		mov	r2, r3
- 221 00c0 24301BE5 		ldr	r3, [fp, #-36]
- 222 00c4 042083E5 		str	r2, [r3, #4]	@ float
- 223 00c8 0E0000EA 		b	.L8
- 224              	.L2:
+ 205              	.LM3:
+ 206 0094 24301BE5 		ldr	r3, [fp, #-36]
+ 207 0098 083093E5 		ldr	r3, [r3, #8]	@ float
+ 208 009c 0300A0E1 		mov	r0, r3
+ 209 00a0 04109BE5 		ldr	r1, [fp, #4]	@ float
+ 210 00a4 FEFFFFEB 		bl	__mulsf3
+ 211 00a8 0030A0E1 		mov	r3, r0
+ 212 00ac 0300A0E1 		mov	r0, r3
+ 213 00b0 14101BE5 		ldr	r1, [fp, #-20]	@ float
+ 214 00b4 FEFFFFEB 		bl	__addsf3
+ 215 00b8 0030A0E1 		mov	r3, r0
+ 216 00bc 0320A0E1 		mov	r2, r3
+ 217 00c0 24301BE5 		ldr	r3, [fp, #-36]
+ 218 00c4 042083E5 		str	r2, [r3, #4]	@ float
+ 219 00c8 0E0000EA 		b	.L8
+ 220              	.L2:
  117:position_controller.c **** 	}else{
  118:position_controller.c **** 		if(params->estimatedZ==0.0f){
- 226              	.LM4:
- 227 00cc 24301BE5 		ldr	r3, [fp, #-36]
- 228 00d0 043093E5 		ldr	r3, [r3, #4]	@ float
- 229 00d4 0300A0E1 		mov	r0, r3
- 230 00d8 38109FE5 		ldr	r1, .L9+4	@ float
- 231 00dc FEFFFFEB 		bl	__eqsf2
- 232 00e0 0030A0E1 		mov	r3, r0
- 233 00e4 000053E3 		cmp	r3, #0
- 234 00e8 0000000A 		beq	.L7
- 235 00ec 020000EA 		b	.L5
- 236              	.L7:
+ 222              	.LM4:
+ 223 00cc 24301BE5 		ldr	r3, [fp, #-36]
+ 224 00d0 043093E5 		ldr	r3, [r3, #4]	@ float
+ 225 00d4 0300A0E1 		mov	r0, r3
+ 226 00d8 38109FE5 		ldr	r1, .L9+4	@ float
+ 227 00dc FEFFFFEB 		bl	__eqsf2
+ 228 00e0 0030A0E1 		mov	r3, r0
+ 229 00e4 000053E3 		cmp	r3, #0
+ 230 00e8 0000000A 		beq	.L7
+ 231 00ec 020000EA 		b	.L5
+ 232              	.L7:
  119:position_controller.c **** 			filteredZ=vicon_data;
- 238              	.LM5:
- 239 00f0 1C301BE5 		ldr	r3, [fp, #-28]	@ float
- 240 00f4 14300BE5 		str	r3, [fp, #-20]	@ float
- 241 00f8 020000EA 		b	.L8
- 242              	.L5:
+ 234              	.LM5:
+ 235 00f0 1C301BE5 		ldr	r3, [fp, #-28]	@ float
+ 236 00f4 14300BE5 		str	r3, [fp, #-20]	@ float
+ 237 00f8 020000EA 		b	.L8
+ 238              	.L5:
  120:position_controller.c **** 		}else{
  121:position_controller.c **** 			filteredZ=(params->alpha);
- 244              	.LM6:
- 245 00fc 24301BE5 		ldr	r3, [fp, #-36]
- 246 0100 003093E5 		ldr	r3, [r3, #0]	@ float
- 247 0104 14300BE5 		str	r3, [fp, #-20]	@ float
- 248              	.L8:
+ 240              	.LM6:
+ 241 00fc 24301BE5 		ldr	r3, [fp, #-36]
+ 242 0100 003093E5 		ldr	r3, [r3, #0]	@ float
+ 243 0104 14300BE5 		str	r3, [fp, #-20]	@ float
+ 244              	.L8:
  122:position_controller.c **** 		}
  123:position_controller.c **** 	}
  124:position_controller.c **** }
- 250              	.LM7:
- 251 0108 10D04BE2 		sub	sp, fp, #16
- 252 010c 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
- 253 0110 1EFF2FE1 		bx	lr
- 254              	.L10:
- 255              		.align	2
- 256              	.L9:
- 257 0114 0000803F 		.word	1065353216
- 258 0118 00000000 		.word	0
- 265              	.Lscope0:
- 266              		.align	2
- 268              		.global	positionControllerInit
- 270              	positionControllerInit:
+ 246              	.LM7:
+ 247 0108 10D04BE2 		sub	sp, fp, #16
+ 248 010c 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 249 0110 1EFF2FE1 		bx	lr
+ 250              	.L10:
+ 251              		.align	2
+ 252              	.L9:
+ 253 0114 0000803F 		.word	1065353216
+ 254 0118 00000000 		.word	0
+ 261              	.Lscope0:
+ 262              		.align	2
+ 264              		.global	positionControllerInit
+ 266              	positionControllerInit:
  125:position_controller.c **** void positionControllerInit ()
  126:position_controller.c **** {
- 272              	.LM8:
- 273              		@ Function supports interworking.
- 274              		@ args = 0, pretend = 0, frame = 0
- 275              		@ frame_needed = 1, uses_anonymous_args = 0
- 276 011c 0DC0A0E1 		mov	ip, sp
- 277 0120 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 278 0124 04B04CE2 		sub	fp, ip, #4
- 279 0128 08D04DE2 		sub	sp, sp, #8
+ 268              	.LM8:
+ 269              		@ Function supports interworking.
+ 270              		@ args = 0, pretend = 0, frame = 0
+ 271              		@ frame_needed = 1, uses_anonymous_args = 0
+ 272 011c 0DC0A0E1 		mov	ip, sp
+ 273 0120 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 274 0124 04B04CE2 		sub	fp, ip, #4
+ 275 0128 08D04DE2 		sub	sp, sp, #8
  127:position_controller.c ****   pidInit(&my_this.pidX.pid, my_this.pidX.setpoint, my_this.pidX.init.kp, my_this.pidX.init.ki, my_
- 281              	.LM9:
- 282 012c 84319FE5 		ldr	r3, .L13
- 283 0130 281193E5 		ldr	r1, [r3, #296]	@ float
- 284 0134 7C319FE5 		ldr	r3, .L13
- 285 0138 1CE193E5 		ldr	lr, [r3, #284]	@ float
- 286 013c 74319FE5 		ldr	r3, .L13
- 287 0140 20C193E5 		ldr	ip, [r3, #288]	@ float
- 288 0144 6C319FE5 		ldr	r3, .L13
- 289 0148 242193E5 		ldr	r2, [r3, #292]	@ float
- 290 014c 64319FE5 		ldr	r3, .L13
- 291 0150 183193E5 		ldr	r3, [r3, #280]	@ float
- 292 0154 00208DE5 		str	r2, [sp, #0]	@ float
- 293 0158 04308DE5 		str	r3, [sp, #4]	@ float
- 294 015c 58019FE5 		ldr	r0, .L13+4
- 295 0160 0E20A0E1 		mov	r2, lr
- 296 0164 0C30A0E1 		mov	r3, ip
- 297 0168 FEFFFFEB 		bl	pidInit
+ 277              	.LM9:
+ 278 012c 84319FE5 		ldr	r3, .L13
+ 279 0130 281193E5 		ldr	r1, [r3, #296]	@ float
+ 280 0134 7C319FE5 		ldr	r3, .L13
+ 281 0138 1CE193E5 		ldr	lr, [r3, #284]	@ float
+ 282 013c 74319FE5 		ldr	r3, .L13
+ 283 0140 20C193E5 		ldr	ip, [r3, #288]	@ float
+ 284 0144 6C319FE5 		ldr	r3, .L13
+ 285 0148 242193E5 		ldr	r2, [r3, #292]	@ float
+ 286 014c 64319FE5 		ldr	r3, .L13
+ 287 0150 183193E5 		ldr	r3, [r3, #280]	@ float
+ 288 0154 00208DE5 		str	r2, [sp, #0]	@ float
+ 289 0158 04308DE5 		str	r3, [sp, #4]	@ float
+ 290 015c 58019FE5 		ldr	r0, .L13+4
+ 291 0160 0E20A0E1 		mov	r2, lr
+ 292 0164 0C30A0E1 		mov	r3, ip
+ 293 0168 FEFFFFEB 		bl	pidInit
  128:position_controller.c ****       my_this.pidX.pid.dt);
  129:position_controller.c ****   pidInit(&my_this.pidY.pid, my_this.pidY.setpoint, my_this.pidY.init.kp, my_this.pidY.init.ki, my_
- 299              	.LM10:
- 300 016c 44319FE5 		ldr	r3, .L13
- 301 0170 C01193E5 		ldr	r1, [r3, #448]	@ float
- 302 0174 3C319FE5 		ldr	r3, .L13
- 303 0178 B4E193E5 		ldr	lr, [r3, #436]	@ float
- 304 017c 34319FE5 		ldr	r3, .L13
- 305 0180 B8C193E5 		ldr	ip, [r3, #440]	@ float
- 306 0184 2C319FE5 		ldr	r3, .L13
- 307 0188 BC2193E5 		ldr	r2, [r3, #444]	@ float
- 308 018c 24319FE5 		ldr	r3, .L13
- 309 0190 B03193E5 		ldr	r3, [r3, #432]	@ float
- 310 0194 00208DE5 		str	r2, [sp, #0]	@ float
- 311 0198 04308DE5 		str	r3, [sp, #4]	@ float
- 312 019c 1C019FE5 		ldr	r0, .L13+8
- 313 01a0 0E20A0E1 		mov	r2, lr
- 314 01a4 0C30A0E1 		mov	r3, ip
- 315 01a8 FEFFFFEB 		bl	pidInit
+ 295              	.LM10:
+ 296 016c 44319FE5 		ldr	r3, .L13
+ 297 0170 C01193E5 		ldr	r1, [r3, #448]	@ float
+ 298 0174 3C319FE5 		ldr	r3, .L13
+ 299 0178 B4E193E5 		ldr	lr, [r3, #436]	@ float
+ 300 017c 34319FE5 		ldr	r3, .L13
+ 301 0180 B8C193E5 		ldr	ip, [r3, #440]	@ float
+ 302 0184 2C319FE5 		ldr	r3, .L13
+ 303 0188 BC2193E5 		ldr	r2, [r3, #444]	@ float
+ 304 018c 24319FE5 		ldr	r3, .L13
+ 305 0190 B03193E5 		ldr	r3, [r3, #432]	@ float
+ 306 0194 00208DE5 		str	r2, [sp, #0]	@ float
+ 307 0198 04308DE5 		str	r3, [sp, #4]	@ float
+ 308 019c 1C019FE5 		ldr	r0, .L13+8
+ 309 01a0 0E20A0E1 		mov	r2, lr
+ 310 01a4 0C30A0E1 		mov	r3, ip
+ 311 01a8 FEFFFFEB 		bl	pidInit
  130:position_controller.c ****       my_this.pidY.pid.dt);
  131:position_controller.c ****   pidInit(&my_this.pidZ.pid, my_this.pidZ.setpoint, my_this.pidZ.init.kp, my_this.pidZ.init.ki, my_
- 317              	.LM11:
- 318 01ac 04319FE5 		ldr	r3, .L13
- 319 01b0 901093E5 		ldr	r1, [r3, #144]	@ float
- 320 01b4 FC309FE5 		ldr	r3, .L13
- 321 01b8 84E093E5 		ldr	lr, [r3, #132]	@ float
- 322 01bc F4309FE5 		ldr	r3, .L13
- 323 01c0 88C093E5 		ldr	ip, [r3, #136]	@ float
- 324 01c4 EC309FE5 		ldr	r3, .L13
- 325 01c8 8C2093E5 		ldr	r2, [r3, #140]	@ float
- 326 01cc E4309FE5 		ldr	r3, .L13
- 327 01d0 803093E5 		ldr	r3, [r3, #128]	@ float
- 328 01d4 00208DE5 		str	r2, [sp, #0]	@ float
- 329 01d8 04308DE5 		str	r3, [sp, #4]	@ float
- 330 01dc E0009FE5 		ldr	r0, .L13+12
- 331 01e0 0E20A0E1 		mov	r2, lr
- 332 01e4 0C30A0E1 		mov	r3, ip
- 333 01e8 FEFFFFEB 		bl	pidInit
+ 313              	.LM11:
+ 314 01ac 04319FE5 		ldr	r3, .L13
+ 315 01b0 901093E5 		ldr	r1, [r3, #144]	@ float
+ 316 01b4 FC309FE5 		ldr	r3, .L13
+ 317 01b8 84E093E5 		ldr	lr, [r3, #132]	@ float
+ 318 01bc F4309FE5 		ldr	r3, .L13
+ 319 01c0 88C093E5 		ldr	ip, [r3, #136]	@ float
+ 320 01c4 EC309FE5 		ldr	r3, .L13
+ 321 01c8 8C2093E5 		ldr	r2, [r3, #140]	@ float
+ 322 01cc E4309FE5 		ldr	r3, .L13
+ 323 01d0 803093E5 		ldr	r3, [r3, #128]	@ float
+ 324 01d4 00208DE5 		str	r2, [sp, #0]	@ float
+ 325 01d8 04308DE5 		str	r3, [sp, #4]	@ float
+ 326 01dc E0009FE5 		ldr	r0, .L13+12
+ 327 01e0 0E20A0E1 		mov	r2, lr
+ 328 01e4 0C30A0E1 		mov	r3, ip
+ 329 01e8 FEFFFFEB 		bl	pidInit
  132:position_controller.c ****       my_this.pidZ.pid.dt);
  133:position_controller.c **** 
  134:position_controller.c ****   pidInit(&my_this.pidVX.pid, my_this.pidVX.setpoint, my_this.pidVX.init.kp, my_this.pidVX.init.ki,
- 335              	.LM12:
- 336 01ec C4309FE5 		ldr	r3, .L13
- 337 01f0 DC1093E5 		ldr	r1, [r3, #220]	@ float
- 338 01f4 BC309FE5 		ldr	r3, .L13
- 339 01f8 D0E093E5 		ldr	lr, [r3, #208]	@ float
- 340 01fc B4309FE5 		ldr	r3, .L13
- 341 0200 D4C093E5 		ldr	ip, [r3, #212]	@ float
- 342 0204 AC309FE5 		ldr	r3, .L13
- 343 0208 D82093E5 		ldr	r2, [r3, #216]	@ float
- 344 020c A4309FE5 		ldr	r3, .L13
- 345 0210 CC3093E5 		ldr	r3, [r3, #204]	@ float
- 346 0214 00208DE5 		str	r2, [sp, #0]	@ float
- 347 0218 04308DE5 		str	r3, [sp, #4]	@ float
- 348 021c A4009FE5 		ldr	r0, .L13+16
- 349 0220 0E20A0E1 		mov	r2, lr
- 350 0224 0C30A0E1 		mov	r3, ip
- 351 0228 FEFFFFEB 		bl	pidInit
+ 331              	.LM12:
+ 332 01ec C4309FE5 		ldr	r3, .L13
+ 333 01f0 DC1093E5 		ldr	r1, [r3, #220]	@ float
+ 334 01f4 BC309FE5 		ldr	r3, .L13
+ 335 01f8 D0E093E5 		ldr	lr, [r3, #208]	@ float
+ 336 01fc B4309FE5 		ldr	r3, .L13
+ 337 0200 D4C093E5 		ldr	ip, [r3, #212]	@ float
+ 338 0204 AC309FE5 		ldr	r3, .L13
+ 339 0208 D82093E5 		ldr	r2, [r3, #216]	@ float
+ 340 020c A4309FE5 		ldr	r3, .L13
+ 341 0210 CC3093E5 		ldr	r3, [r3, #204]	@ float
+ 342 0214 00208DE5 		str	r2, [sp, #0]	@ float
+ 343 0218 04308DE5 		str	r3, [sp, #4]	@ float
+ 344 021c A4009FE5 		ldr	r0, .L13+16
+ 345 0220 0E20A0E1 		mov	r2, lr
+ 346 0224 0C30A0E1 		mov	r3, ip
+ 347 0228 FEFFFFEB 		bl	pidInit
  135:position_controller.c ****       my_this.pidVX.pid.dt);
  136:position_controller.c ****   pidInit(&my_this.pidVY.pid, my_this.pidVY.setpoint, my_this.pidVY.init.kp, my_this.pidVY.init.ki,
- 353              	.LM13:
- 354 022c 84309FE5 		ldr	r3, .L13
- 355 0230 741193E5 		ldr	r1, [r3, #372]	@ float
- 356 0234 7C309FE5 		ldr	r3, .L13
- 357 0238 68E193E5 		ldr	lr, [r3, #360]	@ float
- 358 023c 74309FE5 		ldr	r3, .L13
- 359 0240 6CC193E5 		ldr	ip, [r3, #364]	@ float
- 360 0244 6C309FE5 		ldr	r3, .L13
- 361 0248 702193E5 		ldr	r2, [r3, #368]	@ float
- 362 024c 64309FE5 		ldr	r3, .L13
- 363 0250 643193E5 		ldr	r3, [r3, #356]	@ float
- 364 0254 00208DE5 		str	r2, [sp, #0]	@ float
- 365 0258 04308DE5 		str	r3, [sp, #4]	@ float
- 366 025c 68009FE5 		ldr	r0, .L13+20
- 367 0260 0E20A0E1 		mov	r2, lr
- 368 0264 0C30A0E1 		mov	r3, ip
- 369 0268 FEFFFFEB 		bl	pidInit
+ 349              	.LM13:
+ 350 022c 84309FE5 		ldr	r3, .L13
+ 351 0230 741193E5 		ldr	r1, [r3, #372]	@ float
+ 352 0234 7C309FE5 		ldr	r3, .L13
+ 353 0238 68E193E5 		ldr	lr, [r3, #360]	@ float
+ 354 023c 74309FE5 		ldr	r3, .L13
+ 355 0240 6CC193E5 		ldr	ip, [r3, #364]	@ float
+ 356 0244 6C309FE5 		ldr	r3, .L13
+ 357 0248 702193E5 		ldr	r2, [r3, #368]	@ float
+ 358 024c 64309FE5 		ldr	r3, .L13
+ 359 0250 643193E5 		ldr	r3, [r3, #356]	@ float
+ 360 0254 00208DE5 		str	r2, [sp, #0]	@ float
+ 361 0258 04308DE5 		str	r3, [sp, #4]	@ float
+ 362 025c 68009FE5 		ldr	r0, .L13+20
+ 363 0260 0E20A0E1 		mov	r2, lr
+ 364 0264 0C30A0E1 		mov	r3, ip
+ 365 0268 FEFFFFEB 		bl	pidInit
  137:position_controller.c ****       my_this.pidVY.pid.dt);
  138:position_controller.c ****   pidInit(&my_this.pidVZ.pid, my_this.pidVZ.setpoint, my_this.pidVZ.init.kp, my_this.pidVZ.init.ki,
- 371              	.LM14:
- 372 026c 44309FE5 		ldr	r3, .L13
- 373 0270 441093E5 		ldr	r1, [r3, #68]	@ float
- 374 0274 3C309FE5 		ldr	r3, .L13
- 375 0278 38E093E5 		ldr	lr, [r3, #56]	@ float
- 376 027c 34309FE5 		ldr	r3, .L13
- 377 0280 3CC093E5 		ldr	ip, [r3, #60]	@ float
- 378 0284 2C309FE5 		ldr	r3, .L13
- 379 0288 402093E5 		ldr	r2, [r3, #64]	@ float
- 380 028c 24309FE5 		ldr	r3, .L13
- 381 0290 343093E5 		ldr	r3, [r3, #52]	@ float
- 382 0294 00208DE5 		str	r2, [sp, #0]	@ float
- 383 0298 04308DE5 		str	r3, [sp, #4]	@ float
- 384 029c 14009FE5 		ldr	r0, .L13
- 385 02a0 0E20A0E1 		mov	r2, lr
- 386 02a4 0C30A0E1 		mov	r3, ip
- 387 02a8 FEFFFFEB 		bl	pidInit
+ 367              	.LM14:
+ 368 026c 44309FE5 		ldr	r3, .L13
+ 369 0270 441093E5 		ldr	r1, [r3, #68]	@ float
+ 370 0274 3C309FE5 		ldr	r3, .L13
+ 371 0278 38E093E5 		ldr	lr, [r3, #56]	@ float
+ 372 027c 34309FE5 		ldr	r3, .L13
+ 373 0280 3CC093E5 		ldr	ip, [r3, #60]	@ float
+ 374 0284 2C309FE5 		ldr	r3, .L13
+ 375 0288 402093E5 		ldr	r2, [r3, #64]	@ float
+ 376 028c 24309FE5 		ldr	r3, .L13
+ 377 0290 343093E5 		ldr	r3, [r3, #52]	@ float
+ 378 0294 00208DE5 		str	r2, [sp, #0]	@ float
+ 379 0298 04308DE5 		str	r3, [sp, #4]	@ float
+ 380 029c 14009FE5 		ldr	r0, .L13
+ 381 02a0 0E20A0E1 		mov	r2, lr
+ 382 02a4 0C30A0E1 		mov	r3, ip
+ 383 02a8 FEFFFFEB 		bl	pidInit
  139:position_controller.c ****       my_this.pidVZ.pid.dt);
  140:position_controller.c **** 
  141:position_controller.c **** }
- 389              	.LM15:
- 390 02ac 0CD04BE2 		sub	sp, fp, #12
- 391 02b0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 392 02b4 1EFF2FE1 		bx	lr
- 393              	.L14:
- 394              		.align	2
- 395              	.L13:
- 396 02b8 00000000 		.word	my_this
- 397 02bc E4000000 		.word	my_this+228
- 398 02c0 7C010000 		.word	my_this+380
- 399 02c4 4C000000 		.word	my_this+76
- 400 02c8 98000000 		.word	my_this+152
- 401 02cc 30010000 		.word	my_this+304
- 403              	.Lscope1:
- 404              		.align	2
- 410              		.global	runPid
- 412              	runPid:
+ 385              	.LM15:
+ 386 02ac 0CD04BE2 		sub	sp, fp, #12
+ 387 02b0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 388 02b4 1EFF2FE1 		bx	lr
+ 389              	.L14:
+ 390              		.align	2
+ 391              	.L13:
+ 392 02b8 00000000 		.word	my_this
+ 393 02bc E4000000 		.word	my_this+228
+ 394 02c0 7C010000 		.word	my_this+380
+ 395 02c4 4C000000 		.word	my_this+76
+ 396 02c8 98000000 		.word	my_this+152
+ 397 02cc 30010000 		.word	my_this+304
+ 399              	.Lscope1:
+ 400              		.align	2
+ 406              		.global	runPid
+ 408              	runPid:
  142:position_controller.c **** 
  143:position_controller.c **** float runPid(float input, struct pidAxis_s *axis,  float setpoint, float dt) {
- 414              	.LM16:
- 415              		@ Function supports interworking.
- 416              		@ args = 0, pretend = 0, frame = 16
- 417              		@ frame_needed = 1, uses_anonymous_args = 0
- 418 02d0 0DC0A0E1 		mov	ip, sp
- 419 02d4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 420 02d8 04B04CE2 		sub	fp, ip, #4
- 421 02dc 10D04DE2 		sub	sp, sp, #16
- 422 02e0 10000BE5 		str	r0, [fp, #-16]	@ float
- 423 02e4 14100BE5 		str	r1, [fp, #-20]
- 424 02e8 18200BE5 		str	r2, [fp, #-24]	@ float
- 425 02ec 1C300BE5 		str	r3, [fp, #-28]	@ float
+ 410              	.LM16:
+ 411              		@ Function supports interworking.
+ 412              		@ args = 0, pretend = 0, frame = 16
+ 413              		@ frame_needed = 1, uses_anonymous_args = 0
+ 414 02d0 0DC0A0E1 		mov	ip, sp
+ 415 02d4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 416 02d8 04B04CE2 		sub	fp, ip, #4
+ 417 02dc 10D04DE2 		sub	sp, sp, #16
+ 418 02e0 10000BE5 		str	r0, [fp, #-16]	@ float
+ 419 02e4 14100BE5 		str	r1, [fp, #-20]
+ 420 02e8 18200BE5 		str	r2, [fp, #-24]	@ float
+ 421 02ec 1C300BE5 		str	r3, [fp, #-28]	@ float
  144:position_controller.c ****   axis->setpoint = setpoint;
- 427              	.LM17:
- 428 02f0 14201BE5 		ldr	r2, [fp, #-20]
- 429 02f4 18301BE5 		ldr	r3, [fp, #-24]	@ float
- 430 02f8 443082E5 		str	r3, [r2, #68]	@ float
+ 423              	.LM17:
+ 424 02f0 14201BE5 		ldr	r2, [fp, #-20]
+ 425 02f4 18301BE5 		ldr	r3, [fp, #-24]	@ float
+ 426 02f8 443082E5 		str	r3, [r2, #68]	@ float
  145:position_controller.c ****   pidSetDesired(&(axis->pid), axis->setpoint);
- 432              	.LM18:
- 433 02fc 14201BE5 		ldr	r2, [fp, #-20]
- 434 0300 14301BE5 		ldr	r3, [fp, #-20]
- 435 0304 443093E5 		ldr	r3, [r3, #68]	@ float
- 436 0308 0200A0E1 		mov	r0, r2
- 437 030c 0310A0E1 		mov	r1, r3
- 438 0310 FEFFFFEB 		bl	pidSetDesired
+ 428              	.LM18:
+ 429 02fc 14201BE5 		ldr	r2, [fp, #-20]
+ 430 0300 14301BE5 		ldr	r3, [fp, #-20]
+ 431 0304 443093E5 		ldr	r3, [r3, #68]	@ float
+ 432 0308 0200A0E1 		mov	r0, r2
+ 433 030c 0310A0E1 		mov	r1, r3
+ 434 0310 FEFFFFEB 		bl	pidSetDesired
  146:position_controller.c ****   return pidUpdate(&(axis->pid), input, 1);
- 440              	.LM19:
- 441 0314 14301BE5 		ldr	r3, [fp, #-20]
- 442 0318 0300A0E1 		mov	r0, r3
- 443 031c 10101BE5 		ldr	r1, [fp, #-16]	@ float
- 444 0320 0120A0E3 		mov	r2, #1
- 445 0324 FEFFFFEB 		bl	pidUpdate
- 446 0328 0030A0E1 		mov	r3, r0
+ 436              	.LM19:
+ 437 0314 14301BE5 		ldr	r3, [fp, #-20]
+ 438 0318 0300A0E1 		mov	r0, r3
+ 439 031c 10101BE5 		ldr	r1, [fp, #-16]	@ float
+ 440 0320 0120A0E3 		mov	r2, #1
+ 441 0324 FEFFFFEB 		bl	pidUpdate
+ 442 0328 0030A0E1 		mov	r3, r0
  147:position_controller.c **** }
- 448              	.LM20:
- 449 032c 0300A0E1 		mov	r0, r3
- 450 0330 0CD04BE2 		sub	sp, fp, #12
- 451 0334 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 452 0338 1EFF2FE1 		bx	lr
- 454              	.Lscope2:
- 455              		.bss
+ 444              	.LM20:
+ 445 032c 0300A0E1 		mov	r0, r3
+ 446 0330 0CD04BE2 		sub	sp, fp, #12
+ 447 0334 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 448 0338 1EFF2FE1 		bx	lr
+ 450              	.Lscope2:
+ 451              		.bss
+ 452              		.align	2
+ 453              	acc_get_pos.1524:
+ 454 0008 00000000 		.space	4
  456              		.align	2
- 457              	acc_get_pos.1524:
- 458 0008 00000000 		.space	4
+ 457              	acc_get_vel.1523:
+ 458 000c 00000000 		.space	4
  460              		.align	2
- 461              	acc_get_vel.1523:
- 462 000c 00000000 		.space	4
- 464              		.align	2
- 465              	result.1522:
- 466 0010 00000000 		.space	4
- 468              		.global	__floatsisf
- 469              		.global	__divsf3
- 470              		.text
- 471              		.align	2
- 476              		.global	data_fusion
- 478              	data_fusion:
+ 461              	result.1522:
+ 462 0010 00000000 		.space	4
+ 464              		.global	__floatsisf
+ 465              		.global	__divsf3
+ 466              		.text
+ 467              		.align	2
+ 472              		.global	data_fusion
+ 474              	data_fusion:
  148:position_controller.c **** float data_fusion(int flag,float vicon_z,int acc_z){
- 480              	.LM21:
- 481              		@ Function supports interworking.
- 482              		@ args = 0, pretend = 0, frame = 16
- 483              		@ frame_needed = 1, uses_anonymous_args = 0
- 484 033c 0DC0A0E1 		mov	ip, sp
- 485 0340 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 486 0344 04B04CE2 		sub	fp, ip, #4
- 487 0348 10D04DE2 		sub	sp, sp, #16
- 488 034c 14000BE5 		str	r0, [fp, #-20]
- 489 0350 18100BE5 		str	r1, [fp, #-24]	@ float
- 490 0354 1C200BE5 		str	r2, [fp, #-28]
+ 476              	.LM21:
+ 477              		@ Function supports interworking.
+ 478              		@ args = 0, pretend = 0, frame = 16
+ 479              		@ frame_needed = 1, uses_anonymous_args = 0
+ 480 033c 0DC0A0E1 		mov	ip, sp
+ 481 0340 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 482 0344 04B04CE2 		sub	fp, ip, #4
+ 483 0348 10D04DE2 		sub	sp, sp, #16
+ 484 034c 14000BE5 		str	r0, [fp, #-20]
+ 485 0350 18100BE5 		str	r1, [fp, #-24]	@ float
+ 486 0354 1C200BE5 		str	r2, [fp, #-28]
  149:position_controller.c **** 	static float result=0;
  150:position_controller.c **** 	static float acc_get_vel=0;
  151:position_controller.c **** 	static float acc_get_pos=0;
  152:position_controller.c **** 	float acc;
  153:position_controller.c **** 	acc=(acc_z-10000)/GRAVITY_ACC;
- 492              	.LM22:
- 493 0358 1C301BE5 		ldr	r3, [fp, #-28]
- 494 035c 273C43E2 		sub	r3, r3, #9984
- 495 0360 103043E2 		sub	r3, r3, #16
- 496 0364 0300A0E1 		mov	r0, r3
- 497 0368 FEFFFFEB 		bl	__floatsisf
- 498 036c 0030A0E1 		mov	r3, r0
- 499 0370 0300A0E1 		mov	r0, r3
- 500 0374 FC109FE5 		ldr	r1, .L23	@ float
- 501 0378 FEFFFFEB 		bl	__divsf3
- 502 037c 0030A0E1 		mov	r3, r0
- 503 0380 10300BE5 		str	r3, [fp, #-16]	@ float
+ 488              	.LM22:
+ 489 0358 1C301BE5 		ldr	r3, [fp, #-28]
+ 490 035c 273C43E2 		sub	r3, r3, #9984
+ 491 0360 103043E2 		sub	r3, r3, #16
+ 492 0364 0300A0E1 		mov	r0, r3
+ 493 0368 FEFFFFEB 		bl	__floatsisf
+ 494 036c 0030A0E1 		mov	r3, r0
+ 495 0370 0300A0E1 		mov	r0, r3
+ 496 0374 FC109FE5 		ldr	r1, .L23	@ float
+ 497 0378 FEFFFFEB 		bl	__divsf3
+ 498 037c 0030A0E1 		mov	r3, r0
+ 499 0380 10300BE5 		str	r3, [fp, #-16]	@ float
  154:position_controller.c **** 	if(flag==1){
- 505              	.LM23:
- 506 0384 14301BE5 		ldr	r3, [fp, #-20]
- 507 0388 010053E3 		cmp	r3, #1
- 508 038c 0900001A 		bne	.L18
+ 501              	.LM23:
+ 502 0384 14301BE5 		ldr	r3, [fp, #-20]
+ 503 0388 010053E3 		cmp	r3, #1
+ 504 038c 0900001A 		bne	.L18
  155:position_controller.c **** 		result=vicon_z;
- 510              	.LM24:
- 511 0390 E4209FE5 		ldr	r2, .L23+4
- 512 0394 18301BE5 		ldr	r3, [fp, #-24]	@ float
- 513 0398 003082E5 		str	r3, [r2, #0]	@ float
+ 506              	.LM24:
+ 507 0390 E4209FE5 		ldr	r2, .L23+4
+ 508 0394 18301BE5 		ldr	r3, [fp, #-24]	@ float
+ 509 0398 003082E5 		str	r3, [r2, #0]	@ float
  156:position_controller.c **** 		acc_get_vel=0;
- 515              	.LM25:
- 516 039c DC209FE5 		ldr	r2, .L23+8
- 517 03a0 DC309FE5 		ldr	r3, .L23+12	@ float
- 518 03a4 003082E5 		str	r3, [r2, #0]	@ float
+ 511              	.LM25:
+ 512 039c DC209FE5 		ldr	r2, .L23+8
+ 513 03a0 DC309FE5 		ldr	r3, .L23+12	@ float
+ 514 03a4 003082E5 		str	r3, [r2, #0]	@ float
  157:position_controller.c **** 		acc_get_pos=0;
- 520              	.LM26:
- 521 03a8 D8209FE5 		ldr	r2, .L23+16
- 522 03ac D0309FE5 		ldr	r3, .L23+12	@ float
- 523 03b0 003082E5 		str	r3, [r2, #0]	@ float
- 524 03b4 290000EA 		b	.L20
- 525              	.L18:
+ 516              	.LM26:
+ 517 03a8 D8209FE5 		ldr	r2, .L23+16
+ 518 03ac D0309FE5 		ldr	r3, .L23+12	@ float
+ 519 03b0 003082E5 		str	r3, [r2, #0]	@ float
+ 520 03b4 290000EA 		b	.L20
+ 521              	.L18:
  158:position_controller.c **** 	}else if(flag==0){
- 527              	.LM27:
- 528 03b8 14301BE5 		ldr	r3, [fp, #-20]
- 529 03bc 000053E3 		cmp	r3, #0
- 530 03c0 2600001A 		bne	.L20
+ 523              	.LM27:
+ 524 03b8 14301BE5 		ldr	r3, [fp, #-20]
+ 525 03bc 000053E3 		cmp	r3, #0
+ 526 03c0 2600001A 		bne	.L20
  159:position_controller.c **** 		acc_get_vel+=acc_z*DT;
- 532              	.LM28:
- 533 03c4 1C001BE5 		ldr	r0, [fp, #-28]
- 534 03c8 FEFFFFEB 		bl	__floatsisf
- 535 03cc 0030A0E1 		mov	r3, r0
- 536 03d0 0300A0E1 		mov	r0, r3
- 537 03d4 B0109FE5 		ldr	r1, .L23+20	@ float
- 538 03d8 FEFFFFEB 		bl	__mulsf3
- 539 03dc 0030A0E1 		mov	r3, r0
- 540 03e0 0320A0E1 		mov	r2, r3
- 541 03e4 94309FE5 		ldr	r3, .L23+8
- 542 03e8 003093E5 		ldr	r3, [r3, #0]	@ float
- 543 03ec 0200A0E1 		mov	r0, r2
- 544 03f0 0310A0E1 		mov	r1, r3
- 545 03f4 FEFFFFEB 		bl	__addsf3
- 546 03f8 0030A0E1 		mov	r3, r0
- 547 03fc 0320A0E1 		mov	r2, r3
- 548 0400 78309FE5 		ldr	r3, .L23+8
- 549 0404 002083E5 		str	r2, [r3, #0]	@ float
+ 528              	.LM28:
+ 529 03c4 1C001BE5 		ldr	r0, [fp, #-28]
+ 530 03c8 FEFFFFEB 		bl	__floatsisf
+ 531 03cc 0030A0E1 		mov	r3, r0
+ 532 03d0 0300A0E1 		mov	r0, r3
+ 533 03d4 B0109FE5 		ldr	r1, .L23+20	@ float
+ 534 03d8 FEFFFFEB 		bl	__mulsf3
+ 535 03dc 0030A0E1 		mov	r3, r0
+ 536 03e0 0320A0E1 		mov	r2, r3
+ 537 03e4 94309FE5 		ldr	r3, .L23+8
+ 538 03e8 003093E5 		ldr	r3, [r3, #0]	@ float
+ 539 03ec 0200A0E1 		mov	r0, r2
+ 540 03f0 0310A0E1 		mov	r1, r3
+ 541 03f4 FEFFFFEB 		bl	__addsf3
+ 542 03f8 0030A0E1 		mov	r3, r0
+ 543 03fc 0320A0E1 		mov	r2, r3
+ 544 0400 78309FE5 		ldr	r3, .L23+8
+ 545 0404 002083E5 		str	r2, [r3, #0]	@ float
  160:position_controller.c **** 		acc_get_pos+=acc_get_vel;
- 551              	.LM29:
- 552 0408 78309FE5 		ldr	r3, .L23+16
- 553 040c 002093E5 		ldr	r2, [r3, #0]	@ float
- 554 0410 68309FE5 		ldr	r3, .L23+8
- 555 0414 003093E5 		ldr	r3, [r3, #0]	@ float
- 556 0418 0200A0E1 		mov	r0, r2
- 557 041c 0310A0E1 		mov	r1, r3
- 558 0420 FEFFFFEB 		bl	__addsf3
- 559 0424 0030A0E1 		mov	r3, r0
- 560 0428 0320A0E1 		mov	r2, r3
- 561 042c 54309FE5 		ldr	r3, .L23+16
- 562 0430 002083E5 		str	r2, [r3, #0]	@ float
+ 547              	.LM29:
+ 548 0408 78309FE5 		ldr	r3, .L23+16
+ 549 040c 002093E5 		ldr	r2, [r3, #0]	@ float
+ 550 0410 68309FE5 		ldr	r3, .L23+8
+ 551 0414 003093E5 		ldr	r3, [r3, #0]	@ float
+ 552 0418 0200A0E1 		mov	r0, r2
+ 553 041c 0310A0E1 		mov	r1, r3
+ 554 0420 FEFFFFEB 		bl	__addsf3
+ 555 0424 0030A0E1 		mov	r3, r0
+ 556 0428 0320A0E1 		mov	r2, r3
+ 557 042c 54309FE5 		ldr	r3, .L23+16
+ 558 0430 002083E5 		str	r2, [r3, #0]	@ float
  161:position_controller.c **** 		result+=acc_get_pos;
- 564              	.LM30:
- 565 0434 40309FE5 		ldr	r3, .L23+4
- 566 0438 002093E5 		ldr	r2, [r3, #0]	@ float
- 567 043c 44309FE5 		ldr	r3, .L23+16
- 568 0440 003093E5 		ldr	r3, [r3, #0]	@ float
- 569 0444 0200A0E1 		mov	r0, r2
- 570 0448 0310A0E1 		mov	r1, r3
- 571 044c FEFFFFEB 		bl	__addsf3
- 572 0450 0030A0E1 		mov	r3, r0
- 573 0454 0320A0E1 		mov	r2, r3
- 574 0458 1C309FE5 		ldr	r3, .L23+4
- 575 045c 002083E5 		str	r2, [r3, #0]	@ float
- 576              	.L20:
+ 560              	.LM30:
+ 561 0434 40309FE5 		ldr	r3, .L23+4
+ 562 0438 002093E5 		ldr	r2, [r3, #0]	@ float
+ 563 043c 44309FE5 		ldr	r3, .L23+16
+ 564 0440 003093E5 		ldr	r3, [r3, #0]	@ float
+ 565 0444 0200A0E1 		mov	r0, r2
+ 566 0448 0310A0E1 		mov	r1, r3
+ 567 044c FEFFFFEB 		bl	__addsf3
+ 568 0450 0030A0E1 		mov	r3, r0
+ 569 0454 0320A0E1 		mov	r2, r3
+ 570 0458 1C309FE5 		ldr	r3, .L23+4
+ 571 045c 002083E5 		str	r2, [r3, #0]	@ float
+ 572              	.L20:
  162:position_controller.c **** 	}
  163:position_controller.c **** 	return result;
- 578              	.LM31:
- 579 0460 14309FE5 		ldr	r3, .L23+4
- 580 0464 003093E5 		ldr	r3, [r3, #0]	@ float
+ 574              	.LM31:
+ 575 0460 14309FE5 		ldr	r3, .L23+4
+ 576 0464 003093E5 		ldr	r3, [r3, #0]	@ float
  164:position_controller.c **** }
- 582              	.LM32:
- 583 0468 0300A0E1 		mov	r0, r3
- 584 046c 0CD04BE2 		sub	sp, fp, #12
- 585 0470 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 586 0474 1EFF2FE1 		bx	lr
- 587              	.L24:
- 588              		.align	2
- 589              	.L23:
- 590 0478 58391C41 		.word	1092368728
- 591 047c 10000000 		.word	result.1522
- 592 0480 0C000000 		.word	acc_get_vel.1523
- 593 0484 00000000 		.word	0
- 594 0488 08000000 		.word	acc_get_pos.1524
- 595 048c 0AD7233C 		.word	1008981770
- 603              	.Lscope3:
- 604              		.data
- 605              		.align	2
- 608              	y_temp.1552:
- 609 01e0 18FCFFFF 		.word	-1000
- 611              		.global	__gtsf2
- 612              		.global	__ltsf2
- 613              		.text
- 614              		.align	2
- 620              		.global	positionController
- 622              	positionController:
+ 578              	.LM32:
+ 579 0468 0300A0E1 		mov	r0, r3
+ 580 046c 0CD04BE2 		sub	sp, fp, #12
+ 581 0470 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 582 0474 1EFF2FE1 		bx	lr
+ 583              	.L24:
+ 584              		.align	2
+ 585              	.L23:
+ 586 0478 58391C41 		.word	1092368728
+ 587 047c 10000000 		.word	result.1522
+ 588 0480 0C000000 		.word	acc_get_vel.1523
+ 589 0484 00000000 		.word	0
+ 590 0488 08000000 		.word	acc_get_pos.1524
+ 591 048c 0AD7233C 		.word	1008981770
+ 599              	.Lscope3:
+ 600              		.data
+ 601              		.align	2
+ 604              	y_temp.1552:
+ 605 01e0 18FCFFFF 		.word	-1000
+ 607              		.global	__gtsf2
+ 608              		.global	__ltsf2
+ 609              		.text
+ 610              		.align	2
+ 616              		.global	positionController
+ 618              	positionController:
  165:position_controller.c **** void positionController(float* thrust,float* pitch,float* roll,
  166:position_controller.c ****                                                              const state_t *state)
  167:position_controller.c **** {
- 624              	.LM33:
- 625              		@ Function supports interworking.
- 626              		@ args = 0, pretend = 0, frame = 40
- 627              		@ frame_needed = 1, uses_anonymous_args = 0
- 628 0490 0DC0A0E1 		mov	ip, sp
- 629 0494 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
- 630 0498 04B04CE2 		sub	fp, ip, #4
- 631 049c 28D04DE2 		sub	sp, sp, #40
- 632 04a0 24000BE5 		str	r0, [fp, #-36]
- 633 04a4 28100BE5 		str	r1, [fp, #-40]
- 634 04a8 2C200BE5 		str	r2, [fp, #-44]
- 635 04ac 30300BE5 		str	r3, [fp, #-48]
+ 620              	.LM33:
+ 621              		@ Function supports interworking.
+ 622              		@ args = 0, pretend = 0, frame = 40
+ 623              		@ frame_needed = 1, uses_anonymous_args = 0
+ 624 0490 0DC0A0E1 		mov	ip, sp
+ 625 0494 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 626 0498 04B04CE2 		sub	fp, ip, #4
+ 627 049c 28D04DE2 		sub	sp, sp, #40
+ 628 04a0 24000BE5 		str	r0, [fp, #-36]
+ 629 04a4 28100BE5 		str	r1, [fp, #-40]
+ 630 04a8 2C200BE5 		str	r2, [fp, #-44]
+ 631 04ac 30300BE5 		str	r3, [fp, #-48]
  168:position_controller.c **** 	float thrustRaw;
  169:position_controller.c **** 	static int y_temp=-1000;
  170:position_controller.c **** 	my_this.pidX.pid.outputLimit = xyVelMax  * velMaxOverhead;
- 637              	.LM34:
- 638 04b0 28349FE5 		ldr	r3, .L35
- 639 04b4 002093E5 		ldr	r2, [r3, #0]	@ float
- 640 04b8 24349FE5 		ldr	r3, .L35+4
- 641 04bc 003093E5 		ldr	r3, [r3, #0]	@ float
- 642 04c0 0200A0E1 		mov	r0, r2
- 643 04c4 0310A0E1 		mov	r1, r3
- 644 04c8 FEFFFFEB 		bl	__mulsf3
- 645 04cc 0030A0E1 		mov	r3, r0
- 646 04d0 0320A0E1 		mov	r2, r3
- 647 04d4 0C349FE5 		ldr	r3, .L35+8
- 648 04d8 142183E5 		str	r2, [r3, #276]	@ float
+ 633              	.LM34:
+ 634 04b0 28349FE5 		ldr	r3, .L35
+ 635 04b4 002093E5 		ldr	r2, [r3, #0]	@ float
+ 636 04b8 24349FE5 		ldr	r3, .L35+4
+ 637 04bc 003093E5 		ldr	r3, [r3, #0]	@ float
+ 638 04c0 0200A0E1 		mov	r0, r2
+ 639 04c4 0310A0E1 		mov	r1, r3
+ 640 04c8 FEFFFFEB 		bl	__mulsf3
+ 641 04cc 0030A0E1 		mov	r3, r0
+ 642 04d0 0320A0E1 		mov	r2, r3
+ 643 04d4 0C349FE5 		ldr	r3, .L35+8
+ 644 04d8 142183E5 		str	r2, [r3, #276]	@ float
  171:position_controller.c **** 	my_this.pidY.pid.outputLimit =  xyVelMax  * velMaxOverhead;
- 650              	.LM35:
- 651 04dc FC339FE5 		ldr	r3, .L35
- 652 04e0 002093E5 		ldr	r2, [r3, #0]	@ float
- 653 04e4 F8339FE5 		ldr	r3, .L35+4
- 654 04e8 003093E5 		ldr	r3, [r3, #0]	@ float
- 655 04ec 0200A0E1 		mov	r0, r2
- 656 04f0 0310A0E1 		mov	r1, r3
- 657 04f4 FEFFFFEB 		bl	__mulsf3
- 658 04f8 0030A0E1 		mov	r3, r0
- 659 04fc 0320A0E1 		mov	r2, r3
- 660 0500 E0339FE5 		ldr	r3, .L35+8
- 661 0504 AC2183E5 		str	r2, [r3, #428]	@ float
+ 646              	.LM35:
+ 647 04dc FC339FE5 		ldr	r3, .L35
+ 648 04e0 002093E5 		ldr	r2, [r3, #0]	@ float
+ 649 04e4 F8339FE5 		ldr	r3, .L35+4
+ 650 04e8 003093E5 		ldr	r3, [r3, #0]	@ float
+ 651 04ec 0200A0E1 		mov	r0, r2
+ 652 04f0 0310A0E1 		mov	r1, r3
+ 653 04f4 FEFFFFEB 		bl	__mulsf3
+ 654 04f8 0030A0E1 		mov	r3, r0
+ 655 04fc 0320A0E1 		mov	r2, r3
+ 656 0500 E0339FE5 		ldr	r3, .L35+8
+ 657 0504 AC2183E5 		str	r2, [r3, #428]	@ float
  172:position_controller.c ****     my_this.pidZ.pid.outputLimit = max(zVelMax, 200.0f)  * velMaxOverhead;
- 663              	.LM36:
- 664 0508 DC339FE5 		ldr	r3, .L35+12
- 665 050c 003093E5 		ldr	r3, [r3, #0]	@ float
- 666 0510 0300A0E1 		mov	r0, r3
- 667 0514 D4139FE5 		ldr	r1, .L35+16	@ float
- 668 0518 FEFFFFEB 		bl	__gtsf2
- 669 051c 0030A0E1 		mov	r3, r0
- 670 0520 000053E3 		cmp	r3, #0
- 671 0524 000000CA 		bgt	.L28
- 672 0528 030000EA 		b	.L26
- 673              	.L28:
- 674 052c B8339FE5 		ldr	r3, .L35+12
- 675 0530 003093E5 		ldr	r3, [r3, #0]	@ float
- 676 0534 38300BE5 		str	r3, [fp, #-56]	@ float
- 677 0538 010000EA 		b	.L29
- 678              	.L26:
- 679 053c AC239FE5 		ldr	r2, .L35+16	@ float
- 680 0540 38200BE5 		str	r2, [fp, #-56]	@ float
- 681              	.L29:
- 682 0544 98339FE5 		ldr	r3, .L35+4
- 683 0548 003093E5 		ldr	r3, [r3, #0]	@ float
- 684 054c 38001BE5 		ldr	r0, [fp, #-56]	@ float
- 685 0550 0310A0E1 		mov	r1, r3
- 686 0554 FEFFFFEB 		bl	__mulsf3
- 687 0558 0030A0E1 		mov	r3, r0
- 688 055c 0320A0E1 		mov	r2, r3
- 689 0560 80339FE5 		ldr	r3, .L35+8
- 690 0564 7C2083E5 		str	r2, [r3, #124]	@ float
+ 659              	.LM36:
+ 660 0508 DC339FE5 		ldr	r3, .L35+12
+ 661 050c 003093E5 		ldr	r3, [r3, #0]	@ float
+ 662 0510 0300A0E1 		mov	r0, r3
+ 663 0514 D4139FE5 		ldr	r1, .L35+16	@ float
+ 664 0518 FEFFFFEB 		bl	__gtsf2
+ 665 051c 0030A0E1 		mov	r3, r0
+ 666 0520 000053E3 		cmp	r3, #0
+ 667 0524 000000CA 		bgt	.L28
+ 668 0528 030000EA 		b	.L26
+ 669              	.L28:
+ 670 052c B8339FE5 		ldr	r3, .L35+12
+ 671 0530 003093E5 		ldr	r3, [r3, #0]	@ float
+ 672 0534 38300BE5 		str	r3, [fp, #-56]	@ float
+ 673 0538 010000EA 		b	.L29
+ 674              	.L26:
+ 675 053c AC239FE5 		ldr	r2, .L35+16	@ float
+ 676 0540 38200BE5 		str	r2, [fp, #-56]	@ float
+ 677              	.L29:
+ 678 0544 98339FE5 		ldr	r3, .L35+4
+ 679 0548 003093E5 		ldr	r3, [r3, #0]	@ float
+ 680 054c 38001BE5 		ldr	r0, [fp, #-56]	@ float
+ 681 0550 0310A0E1 		mov	r1, r3
+ 682 0554 FEFFFFEB 		bl	__mulsf3
+ 683 0558 0030A0E1 		mov	r3, r0
+ 684 055c 0320A0E1 		mov	r2, r3
+ 685 0560 80339FE5 		ldr	r3, .L35+8
+ 686 0564 7C2083E5 		str	r2, [r3, #124]	@ float
  173:position_controller.c **** 
  174:position_controller.c **** //    float cosyaw = cosf(state->attitude.yaw * DEG_TO_RAD);
  175:position_controller.c **** //    float sinyaw = sinf(state->attitude.yaw * DEG_TO_RAD);
@@ -751,33 +747,33 @@
  177:position_controller.c **** //    float bodyvy = my_setpoint.velocity.y;
  178:position_controller.c **** 
  179:position_controller.c ****     my_setpoint.velocity.x = runPid(state->position.x, &my_this.pidX, my_setpoint.position.x, DT);
- 692              	.LM37:
- 693 0568 30301BE5 		ldr	r3, [fp, #-48]
- 694 056c 002093E5 		ldr	r2, [r3, #0]	@ float
- 695 0570 7C339FE5 		ldr	r3, .L35+20
- 696 0574 003093E5 		ldr	r3, [r3, #0]	@ float
- 697 0578 0200A0E1 		mov	r0, r2
- 698 057c 74139FE5 		ldr	r1, .L35+24
- 699 0580 0320A0E1 		mov	r2, r3
- 700 0584 70339FE5 		ldr	r3, .L35+28	@ float
- 701 0588 FEFFFFEB 		bl	runPid
- 702 058c 0020A0E1 		mov	r2, r0
- 703 0590 5C339FE5 		ldr	r3, .L35+20
- 704 0594 0C2083E5 		str	r2, [r3, #12]	@ float
+ 688              	.LM37:
+ 689 0568 30301BE5 		ldr	r3, [fp, #-48]
+ 690 056c 002093E5 		ldr	r2, [r3, #0]	@ float
+ 691 0570 7C339FE5 		ldr	r3, .L35+20
+ 692 0574 003093E5 		ldr	r3, [r3, #0]	@ float
+ 693 0578 0200A0E1 		mov	r0, r2
+ 694 057c 74139FE5 		ldr	r1, .L35+24
+ 695 0580 0320A0E1 		mov	r2, r3
+ 696 0584 70339FE5 		ldr	r3, .L35+28	@ float
+ 697 0588 FEFFFFEB 		bl	runPid
+ 698 058c 0020A0E1 		mov	r2, r0
+ 699 0590 5C339FE5 		ldr	r3, .L35+20
+ 700 0594 0C2083E5 		str	r2, [r3, #12]	@ float
  180:position_controller.c ****     my_setpoint.velocity.y = runPid(state->position.y, &my_this.pidY, my_setpoint.position.y, DT);
- 706              	.LM38:
- 707 0598 30301BE5 		ldr	r3, [fp, #-48]
- 708 059c 042093E5 		ldr	r2, [r3, #4]	@ float
- 709 05a0 4C339FE5 		ldr	r3, .L35+20
- 710 05a4 043093E5 		ldr	r3, [r3, #4]	@ float
- 711 05a8 0200A0E1 		mov	r0, r2
- 712 05ac 4C139FE5 		ldr	r1, .L35+32
- 713 05b0 0320A0E1 		mov	r2, r3
- 714 05b4 40339FE5 		ldr	r3, .L35+28	@ float
- 715 05b8 FEFFFFEB 		bl	runPid
- 716 05bc 0020A0E1 		mov	r2, r0
- 717 05c0 2C339FE5 		ldr	r3, .L35+20
- 718 05c4 102083E5 		str	r2, [r3, #16]	@ float
+ 702              	.LM38:
+ 703 0598 30301BE5 		ldr	r3, [fp, #-48]
+ 704 059c 042093E5 		ldr	r2, [r3, #4]	@ float
+ 705 05a0 4C339FE5 		ldr	r3, .L35+20
+ 706 05a4 043093E5 		ldr	r3, [r3, #4]	@ float
+ 707 05a8 0200A0E1 		mov	r0, r2
+ 708 05ac 4C139FE5 		ldr	r1, .L35+32
+ 709 05b0 0320A0E1 		mov	r2, r3
+ 710 05b4 40339FE5 		ldr	r3, .L35+28	@ float
+ 711 05b8 FEFFFFEB 		bl	runPid
+ 712 05bc 0020A0E1 		mov	r2, r0
+ 713 05c0 2C339FE5 		ldr	r3, .L35+20
+ 714 05c4 102083E5 		str	r2, [r3, #16]	@ float
  181:position_controller.c **** //    my_setpoint.velocity.x=0;
  182:position_controller.c **** //    if(y_temp++>400){
  183:position_controller.c **** //    	my_setpoint.velocity.y=500;
@@ -786,336 +782,336 @@
  186:position_controller.c **** //    }
  187:position_controller.c **** //    if(y_temp>800)y_temp=0;
  188:position_controller.c ****     my_setpoint.velocity.z = runPid(state->position.z, &my_this.pidZ, my_setpoint.position.z, DT);
- 720              	.LM39:
- 721 05c8 30301BE5 		ldr	r3, [fp, #-48]
- 722 05cc 082093E5 		ldr	r2, [r3, #8]	@ float
- 723 05d0 1C339FE5 		ldr	r3, .L35+20
- 724 05d4 083093E5 		ldr	r3, [r3, #8]	@ float
- 725 05d8 0200A0E1 		mov	r0, r2
- 726 05dc 20139FE5 		ldr	r1, .L35+36
- 727 05e0 0320A0E1 		mov	r2, r3
- 728 05e4 10339FE5 		ldr	r3, .L35+28	@ float
- 729 05e8 FEFFFFEB 		bl	runPid
- 730 05ec 0020A0E1 		mov	r2, r0
- 731 05f0 FC329FE5 		ldr	r3, .L35+20
- 732 05f4 142083E5 		str	r2, [r3, #20]	@ float
+ 716              	.LM39:
+ 717 05c8 30301BE5 		ldr	r3, [fp, #-48]
+ 718 05cc 082093E5 		ldr	r2, [r3, #8]	@ float
+ 719 05d0 1C339FE5 		ldr	r3, .L35+20
+ 720 05d4 083093E5 		ldr	r3, [r3, #8]	@ float
+ 721 05d8 0200A0E1 		mov	r0, r2
+ 722 05dc 20139FE5 		ldr	r1, .L35+36
+ 723 05e0 0320A0E1 		mov	r2, r3
+ 724 05e4 10339FE5 		ldr	r3, .L35+28	@ float
+ 725 05e8 FEFFFFEB 		bl	runPid
+ 726 05ec 0020A0E1 		mov	r2, r0
+ 727 05f0 FC329FE5 		ldr	r3, .L35+20
+ 728 05f4 142083E5 		str	r2, [r3, #20]	@ float
  189:position_controller.c **** 
  190:position_controller.c ****     my_this.pidVX.pid.outputLimit = rpLimit * rpLimitOverhead;
- 734              	.LM40:
- 735 05f8 08339FE5 		ldr	r3, .L35+40
- 736 05fc 002093E5 		ldr	r2, [r3, #0]	@ float
- 737 0600 04339FE5 		ldr	r3, .L35+44
- 738 0604 003093E5 		ldr	r3, [r3, #0]	@ float
- 739 0608 0200A0E1 		mov	r0, r2
- 740 060c 0310A0E1 		mov	r1, r3
- 741 0610 FEFFFFEB 		bl	__mulsf3
- 742 0614 0030A0E1 		mov	r3, r0
- 743 0618 0320A0E1 		mov	r2, r3
- 744 061c C4329FE5 		ldr	r3, .L35+8
- 745 0620 C82083E5 		str	r2, [r3, #200]	@ float
+ 730              	.LM40:
+ 731 05f8 08339FE5 		ldr	r3, .L35+40
+ 732 05fc 002093E5 		ldr	r2, [r3, #0]	@ float
+ 733 0600 04339FE5 		ldr	r3, .L35+44
+ 734 0604 003093E5 		ldr	r3, [r3, #0]	@ float
+ 735 0608 0200A0E1 		mov	r0, r2
+ 736 060c 0310A0E1 		mov	r1, r3
+ 737 0610 FEFFFFEB 		bl	__mulsf3
+ 738 0614 0030A0E1 		mov	r3, r0
+ 739 0618 0320A0E1 		mov	r2, r3
+ 740 061c C4329FE5 		ldr	r3, .L35+8
+ 741 0620 C82083E5 		str	r2, [r3, #200]	@ float
  191:position_controller.c ****     my_this.pidVY.pid.outputLimit = rpLimit * rpLimitOverhead;
- 747              	.LM41:
- 748 0624 DC329FE5 		ldr	r3, .L35+40
- 749 0628 002093E5 		ldr	r2, [r3, #0]	@ float
- 750 062c D8329FE5 		ldr	r3, .L35+44
- 751 0630 003093E5 		ldr	r3, [r3, #0]	@ float
- 752 0634 0200A0E1 		mov	r0, r2
- 753 0638 0310A0E1 		mov	r1, r3
- 754 063c FEFFFFEB 		bl	__mulsf3
- 755 0640 0030A0E1 		mov	r3, r0
- 756 0644 0320A0E1 		mov	r2, r3
- 757 0648 98329FE5 		ldr	r3, .L35+8
- 758 064c 602183E5 		str	r2, [r3, #352]	@ float
+ 743              	.LM41:
+ 744 0624 DC329FE5 		ldr	r3, .L35+40
+ 745 0628 002093E5 		ldr	r2, [r3, #0]	@ float
+ 746 062c D8329FE5 		ldr	r3, .L35+44
+ 747 0630 003093E5 		ldr	r3, [r3, #0]	@ float
+ 748 0634 0200A0E1 		mov	r0, r2
+ 749 0638 0310A0E1 		mov	r1, r3
+ 750 063c FEFFFFEB 		bl	__mulsf3
+ 751 0640 0030A0E1 		mov	r3, r0
+ 752 0644 0320A0E1 		mov	r2, r3
+ 753 0648 98329FE5 		ldr	r3, .L35+8
+ 754 064c 602183E5 		str	r2, [r3, #352]	@ float
  192:position_controller.c ****     my_this.pidVZ.pid.outputLimit =250.0f;
- 760              	.LM42:
- 761 0650 90229FE5 		ldr	r2, .L35+8
- 762 0654 B4329FE5 		ldr	r3, .L35+48	@ float
- 763 0658 303082E5 		str	r3, [r2, #48]	@ float
+ 756              	.LM42:
+ 757 0650 90229FE5 		ldr	r2, .L35+8
+ 758 0654 B4329FE5 		ldr	r3, .L35+48	@ float
+ 759 0658 303082E5 		str	r3, [r2, #48]	@ float
  193:position_controller.c **** 
  194:position_controller.c ****     float rollRaw  = runPid(state->velocity.x, &my_this.pidVX, my_setpoint.velocity.x, DT);
- 765              	.LM43:
- 766 065c 30301BE5 		ldr	r3, [fp, #-48]
- 767 0660 0C2093E5 		ldr	r2, [r3, #12]	@ float
- 768 0664 88329FE5 		ldr	r3, .L35+20
- 769 0668 0C3093E5 		ldr	r3, [r3, #12]	@ float
- 770 066c 0200A0E1 		mov	r0, r2
- 771 0670 9C129FE5 		ldr	r1, .L35+52
- 772 0674 0320A0E1 		mov	r2, r3
- 773 0678 7C329FE5 		ldr	r3, .L35+28	@ float
- 774 067c FEFFFFEB 		bl	runPid
- 775 0680 0030A0E1 		mov	r3, r0
- 776 0684 1C300BE5 		str	r3, [fp, #-28]	@ float
+ 761              	.LM43:
+ 762 065c 30301BE5 		ldr	r3, [fp, #-48]
+ 763 0660 0C2093E5 		ldr	r2, [r3, #12]	@ float
+ 764 0664 88329FE5 		ldr	r3, .L35+20
+ 765 0668 0C3093E5 		ldr	r3, [r3, #12]	@ float
+ 766 066c 0200A0E1 		mov	r0, r2
+ 767 0670 9C129FE5 		ldr	r1, .L35+52
+ 768 0674 0320A0E1 		mov	r2, r3
+ 769 0678 7C329FE5 		ldr	r3, .L35+28	@ float
+ 770 067c FEFFFFEB 		bl	runPid
+ 771 0680 0030A0E1 		mov	r3, r0
+ 772 0684 1C300BE5 		str	r3, [fp, #-28]	@ float
  195:position_controller.c ****       float pitchRaw = runPid(state->velocity.y, &my_this.pidVY, my_setpoint.velocity.y, DT);
- 778              	.LM44:
- 779 0688 30301BE5 		ldr	r3, [fp, #-48]
- 780 068c 102093E5 		ldr	r2, [r3, #16]	@ float
- 781 0690 5C329FE5 		ldr	r3, .L35+20
- 782 0694 103093E5 		ldr	r3, [r3, #16]	@ float
- 783 0698 0200A0E1 		mov	r0, r2
- 784 069c 74129FE5 		ldr	r1, .L35+56
- 785 06a0 0320A0E1 		mov	r2, r3
- 786 06a4 50329FE5 		ldr	r3, .L35+28	@ float
- 787 06a8 FEFFFFEB 		bl	runPid
- 788 06ac 0030A0E1 		mov	r3, r0
- 789 06b0 18300BE5 		str	r3, [fp, #-24]	@ float
+ 774              	.LM44:
+ 775 0688 30301BE5 		ldr	r3, [fp, #-48]
+ 776 068c 102093E5 		ldr	r2, [r3, #16]	@ float
+ 777 0690 5C329FE5 		ldr	r3, .L35+20
+ 778 0694 103093E5 		ldr	r3, [r3, #16]	@ float
+ 779 0698 0200A0E1 		mov	r0, r2
+ 780 069c 74129FE5 		ldr	r1, .L35+56
+ 781 06a0 0320A0E1 		mov	r2, r3
+ 782 06a4 50329FE5 		ldr	r3, .L35+28	@ float
+ 783 06a8 FEFFFFEB 		bl	runPid
+ 784 06ac 0030A0E1 		mov	r3, r0
+ 785 06b0 18300BE5 		str	r3, [fp, #-24]	@ float
  196:position_controller.c **** 
  197:position_controller.c ****      float yawRad = state->attitude.yaw ;
- 791              	.LM45:
- 792 06b4 30301BE5 		ldr	r3, [fp, #-48]
- 793 06b8 243093E5 		ldr	r3, [r3, #36]	@ float
- 794 06bc 14300BE5 		str	r3, [fp, #-20]	@ float
+ 787              	.LM45:
+ 788 06b4 30301BE5 		ldr	r3, [fp, #-48]
+ 789 06b8 243093E5 		ldr	r3, [r3, #36]	@ float
+ 790 06bc 14300BE5 		str	r3, [fp, #-20]	@ float
  198:position_controller.c ****      // float yawRad = 0 ;
  199:position_controller.c ****       *pitch = -(rollRaw  * cosf(yawRad)) - (pitchRaw * sinf(yawRad));
- 796              	.LM46:
- 797 06c0 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 798 06c4 FEFFFFEB 		bl	cosf
- 799 06c8 0030A0E1 		mov	r3, r0
- 800 06cc 0300A0E1 		mov	r0, r3
- 801 06d0 1C101BE5 		ldr	r1, [fp, #-28]	@ float
- 802 06d4 FEFFFFEB 		bl	__mulsf3
- 803 06d8 0030A0E1 		mov	r3, r0
- 804 06dc 024123E2 		eor	r4, r3, #-2147483648
- 805 06e0 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 806 06e4 FEFFFFEB 		bl	sinf
- 807 06e8 0030A0E1 		mov	r3, r0
- 808 06ec 0300A0E1 		mov	r0, r3
- 809 06f0 18101BE5 		ldr	r1, [fp, #-24]	@ float
- 810 06f4 FEFFFFEB 		bl	__mulsf3
- 811 06f8 0030A0E1 		mov	r3, r0
- 812 06fc 0400A0E1 		mov	r0, r4
- 813 0700 0310A0E1 		mov	r1, r3
- 814 0704 FEFFFFEB 		bl	__subsf3
- 815 0708 0030A0E1 		mov	r3, r0
- 816 070c 0320A0E1 		mov	r2, r3
- 817 0710 28301BE5 		ldr	r3, [fp, #-40]
- 818 0714 002083E5 		str	r2, [r3, #0]	@ float
+ 792              	.LM46:
+ 793 06c0 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 794 06c4 FEFFFFEB 		bl	cosf
+ 795 06c8 0030A0E1 		mov	r3, r0
+ 796 06cc 0300A0E1 		mov	r0, r3
+ 797 06d0 1C101BE5 		ldr	r1, [fp, #-28]	@ float
+ 798 06d4 FEFFFFEB 		bl	__mulsf3
+ 799 06d8 0030A0E1 		mov	r3, r0
+ 800 06dc 024123E2 		eor	r4, r3, #-2147483648
+ 801 06e0 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 802 06e4 FEFFFFEB 		bl	sinf
+ 803 06e8 0030A0E1 		mov	r3, r0
+ 804 06ec 0300A0E1 		mov	r0, r3
+ 805 06f0 18101BE5 		ldr	r1, [fp, #-24]	@ float
+ 806 06f4 FEFFFFEB 		bl	__mulsf3
+ 807 06f8 0030A0E1 		mov	r3, r0
+ 808 06fc 0400A0E1 		mov	r0, r4
+ 809 0700 0310A0E1 		mov	r1, r3
+ 810 0704 FEFFFFEB 		bl	__subsf3
+ 811 0708 0030A0E1 		mov	r3, r0
+ 812 070c 0320A0E1 		mov	r2, r3
+ 813 0710 28301BE5 		ldr	r3, [fp, #-40]
+ 814 0714 002083E5 		str	r2, [r3, #0]	@ float
  200:position_controller.c ****       *roll  = -(pitchRaw * cosf(yawRad)) + (rollRaw  * sinf(yawRad));
- 820              	.LM47:
- 821 0718 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 822 071c FEFFFFEB 		bl	sinf
- 823 0720 0030A0E1 		mov	r3, r0
- 824 0724 0300A0E1 		mov	r0, r3
- 825 0728 1C101BE5 		ldr	r1, [fp, #-28]	@ float
- 826 072c FEFFFFEB 		bl	__mulsf3
- 827 0730 0030A0E1 		mov	r3, r0
- 828 0734 0340A0E1 		mov	r4, r3
- 829 0738 14001BE5 		ldr	r0, [fp, #-20]	@ float
- 830 073c FEFFFFEB 		bl	cosf
- 831 0740 0030A0E1 		mov	r3, r0
- 832 0744 0300A0E1 		mov	r0, r3
- 833 0748 18101BE5 		ldr	r1, [fp, #-24]	@ float
- 834 074c FEFFFFEB 		bl	__mulsf3
- 835 0750 0030A0E1 		mov	r3, r0
- 836 0754 0400A0E1 		mov	r0, r4
- 837 0758 0310A0E1 		mov	r1, r3
- 838 075c FEFFFFEB 		bl	__subsf3
- 839 0760 0030A0E1 		mov	r3, r0
- 840 0764 0320A0E1 		mov	r2, r3
- 841 0768 2C301BE5 		ldr	r3, [fp, #-44]
- 842 076c 002083E5 		str	r2, [r3, #0]	@ float
+ 816              	.LM47:
+ 817 0718 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 818 071c FEFFFFEB 		bl	sinf
+ 819 0720 0030A0E1 		mov	r3, r0
+ 820 0724 0300A0E1 		mov	r0, r3
+ 821 0728 1C101BE5 		ldr	r1, [fp, #-28]	@ float
+ 822 072c FEFFFFEB 		bl	__mulsf3
+ 823 0730 0030A0E1 		mov	r3, r0
+ 824 0734 0340A0E1 		mov	r4, r3
+ 825 0738 14001BE5 		ldr	r0, [fp, #-20]	@ float
+ 826 073c FEFFFFEB 		bl	cosf
+ 827 0740 0030A0E1 		mov	r3, r0
+ 828 0744 0300A0E1 		mov	r0, r3
+ 829 0748 18101BE5 		ldr	r1, [fp, #-24]	@ float
+ 830 074c FEFFFFEB 		bl	__mulsf3
+ 831 0750 0030A0E1 		mov	r3, r0
+ 832 0754 0400A0E1 		mov	r0, r4
+ 833 0758 0310A0E1 		mov	r1, r3
+ 834 075c FEFFFFEB 		bl	__subsf3
+ 835 0760 0030A0E1 		mov	r3, r0
+ 836 0764 0320A0E1 		mov	r2, r3
+ 837 0768 2C301BE5 		ldr	r3, [fp, #-44]
+ 838 076c 002083E5 		str	r2, [r3, #0]	@ float
  201:position_controller.c **** 
  202:position_controller.c ****       *roll  = constrain(*roll,  -rpLimit, rpLimit);
- 844              	.LM48:
- 845 0770 2C301BE5 		ldr	r3, [fp, #-44]
- 846 0774 001093E5 		ldr	r1, [r3, #0]	@ float
- 847 0778 88319FE5 		ldr	r3, .L35+40
- 848 077c 003093E5 		ldr	r3, [r3, #0]	@ float
- 849 0780 022123E2 		eor	r2, r3, #-2147483648
- 850 0784 7C319FE5 		ldr	r3, .L35+40
- 851 0788 003093E5 		ldr	r3, [r3, #0]	@ float
- 852 078c 0100A0E1 		mov	r0, r1
- 853 0790 0210A0E1 		mov	r1, r2
- 854 0794 0320A0E1 		mov	r2, r3
- 855 0798 FEFFFFEB 		bl	constrain
- 856 079c 0020A0E1 		mov	r2, r0
- 857 07a0 2C301BE5 		ldr	r3, [fp, #-44]
- 858 07a4 002083E5 		str	r2, [r3, #0]	@ float
+ 840              	.LM48:
+ 841 0770 2C301BE5 		ldr	r3, [fp, #-44]
+ 842 0774 001093E5 		ldr	r1, [r3, #0]	@ float
+ 843 0778 88319FE5 		ldr	r3, .L35+40
+ 844 077c 003093E5 		ldr	r3, [r3, #0]	@ float
+ 845 0780 022123E2 		eor	r2, r3, #-2147483648
+ 846 0784 7C319FE5 		ldr	r3, .L35+40
+ 847 0788 003093E5 		ldr	r3, [r3, #0]	@ float
+ 848 078c 0100A0E1 		mov	r0, r1
+ 849 0790 0210A0E1 		mov	r1, r2
+ 850 0794 0320A0E1 		mov	r2, r3
+ 851 0798 FEFFFFEB 		bl	constrain
+ 852 079c 0020A0E1 		mov	r2, r0
+ 853 07a0 2C301BE5 		ldr	r3, [fp, #-44]
+ 854 07a4 002083E5 		str	r2, [r3, #0]	@ float
  203:position_controller.c ****       *pitch = constrain(*pitch, -rpLimit, rpLimit);
- 860              	.LM49:
- 861 07a8 28301BE5 		ldr	r3, [fp, #-40]
- 862 07ac 001093E5 		ldr	r1, [r3, #0]	@ float
- 863 07b0 50319FE5 		ldr	r3, .L35+40
- 864 07b4 003093E5 		ldr	r3, [r3, #0]	@ float
- 865 07b8 022123E2 		eor	r2, r3, #-2147483648
- 866 07bc 44319FE5 		ldr	r3, .L35+40
- 867 07c0 003093E5 		ldr	r3, [r3, #0]	@ float
- 868 07c4 0100A0E1 		mov	r0, r1
- 869 07c8 0210A0E1 		mov	r1, r2
- 870 07cc 0320A0E1 		mov	r2, r3
- 871 07d0 FEFFFFEB 		bl	constrain
- 872 07d4 0020A0E1 		mov	r2, r0
- 873 07d8 28301BE5 		ldr	r3, [fp, #-40]
- 874 07dc 002083E5 		str	r2, [r3, #0]	@ float
+ 856              	.LM49:
+ 857 07a8 28301BE5 		ldr	r3, [fp, #-40]
+ 858 07ac 001093E5 		ldr	r1, [r3, #0]	@ float
+ 859 07b0 50319FE5 		ldr	r3, .L35+40
+ 860 07b4 003093E5 		ldr	r3, [r3, #0]	@ float
+ 861 07b8 022123E2 		eor	r2, r3, #-2147483648
+ 862 07bc 44319FE5 		ldr	r3, .L35+40
+ 863 07c0 003093E5 		ldr	r3, [r3, #0]	@ float
+ 864 07c4 0100A0E1 		mov	r0, r1
+ 865 07c8 0210A0E1 		mov	r1, r2
+ 866 07cc 0320A0E1 		mov	r2, r3
+ 867 07d0 FEFFFFEB 		bl	constrain
+ 868 07d4 0020A0E1 		mov	r2, r0
+ 869 07d8 28301BE5 		ldr	r3, [fp, #-40]
+ 870 07dc 002083E5 		str	r2, [r3, #0]	@ float
  204:position_controller.c **** 
  205:position_controller.c ****     // Thrust
  206:position_controller.c ****     thrustRaw = runPid(state->velocity.z, &my_this.pidVZ, my_setpoint.velocity.z, DT);
- 876              	.LM50:
- 877 07e0 30301BE5 		ldr	r3, [fp, #-48]
- 878 07e4 142093E5 		ldr	r2, [r3, #20]	@ float
- 879 07e8 04319FE5 		ldr	r3, .L35+20
- 880 07ec 143093E5 		ldr	r3, [r3, #20]	@ float
- 881 07f0 0200A0E1 		mov	r0, r2
- 882 07f4 EC109FE5 		ldr	r1, .L35+8
- 883 07f8 0320A0E1 		mov	r2, r3
- 884 07fc F8309FE5 		ldr	r3, .L35+28	@ float
- 885 0800 FEFFFFEB 		bl	runPid
- 886 0804 0030A0E1 		mov	r3, r0
- 887 0808 20300BE5 		str	r3, [fp, #-32]	@ float
+ 872              	.LM50:
+ 873 07e0 30301BE5 		ldr	r3, [fp, #-48]
+ 874 07e4 142093E5 		ldr	r2, [r3, #20]	@ float
+ 875 07e8 04319FE5 		ldr	r3, .L35+20
+ 876 07ec 143093E5 		ldr	r3, [r3, #20]	@ float
+ 877 07f0 0200A0E1 		mov	r0, r2
+ 878 07f4 EC109FE5 		ldr	r1, .L35+8
+ 879 07f8 0320A0E1 		mov	r2, r3
+ 880 07fc F8309FE5 		ldr	r3, .L35+28	@ float
+ 881 0800 FEFFFFEB 		bl	runPid
+ 882 0804 0030A0E1 		mov	r3, r0
+ 883 0808 20300BE5 		str	r3, [fp, #-32]	@ float
  207:position_controller.c ****     // Scale the thrust and add feed forward term
  208:position_controller.c ****     *thrust = thrustRaw + my_this.thrustBase;
- 889              	.LM51:
- 890 080c D4209FE5 		ldr	r2, .L35+8
- 891 0810 723FA0E3 		mov	r3, #456
- 892 0814 B33092E1 		ldrh	r3, [r2, r3]
- 893 0818 0300A0E1 		mov	r0, r3
- 894 081c FEFFFFEB 		bl	__floatsisf
- 895 0820 0030A0E1 		mov	r3, r0
- 896 0824 0300A0E1 		mov	r0, r3
- 897 0828 20101BE5 		ldr	r1, [fp, #-32]	@ float
- 898 082c FEFFFFEB 		bl	__addsf3
- 899 0830 0030A0E1 		mov	r3, r0
- 900 0834 0320A0E1 		mov	r2, r3
- 901 0838 24301BE5 		ldr	r3, [fp, #-36]
- 902 083c 002083E5 		str	r2, [r3, #0]	@ float
+ 885              	.LM51:
+ 886 080c D4209FE5 		ldr	r2, .L35+8
+ 887 0810 723FA0E3 		mov	r3, #456
+ 888 0814 B33092E1 		ldrh	r3, [r2, r3]
+ 889 0818 0300A0E1 		mov	r0, r3
+ 890 081c FEFFFFEB 		bl	__floatsisf
+ 891 0820 0030A0E1 		mov	r3, r0
+ 892 0824 0300A0E1 		mov	r0, r3
+ 893 0828 20101BE5 		ldr	r1, [fp, #-32]	@ float
+ 894 082c FEFFFFEB 		bl	__addsf3
+ 895 0830 0030A0E1 		mov	r3, r0
+ 896 0834 0320A0E1 		mov	r2, r3
+ 897 0838 24301BE5 		ldr	r3, [fp, #-36]
+ 898 083c 002083E5 		str	r2, [r3, #0]	@ float
  209:position_controller.c ****     // Check for minimum thrust
  210:position_controller.c ****     if (*thrust < my_this.thrustMin) {
- 904              	.LM52:
- 905 0840 24301BE5 		ldr	r3, [fp, #-36]
- 906 0844 004093E5 		ldr	r4, [r3, #0]	@ float
- 907 0848 98209FE5 		ldr	r2, .L35+8
- 908 084c 723FA0E3 		mov	r3, #456
- 909 0850 023083E2 		add	r3, r3, #2
- 910 0854 B33092E1 		ldrh	r3, [r2, r3]
- 911 0858 0300A0E1 		mov	r0, r3
- 912 085c FEFFFFEB 		bl	__floatsisf
- 913 0860 0030A0E1 		mov	r3, r0
- 914 0864 0400A0E1 		mov	r0, r4
- 915 0868 0310A0E1 		mov	r1, r3
- 916 086c FEFFFFEB 		bl	__ltsf2
- 917 0870 0030A0E1 		mov	r3, r0
- 918 0874 000053E3 		cmp	r3, #0
- 919 0878 000000BA 		blt	.L32
- 920 087c 140000EA 		b	.L34
- 921              	.L32:
+ 900              	.LM52:
+ 901 0840 24301BE5 		ldr	r3, [fp, #-36]
+ 902 0844 004093E5 		ldr	r4, [r3, #0]	@ float
+ 903 0848 98209FE5 		ldr	r2, .L35+8
+ 904 084c 723FA0E3 		mov	r3, #456
+ 905 0850 023083E2 		add	r3, r3, #2
+ 906 0854 B33092E1 		ldrh	r3, [r2, r3]
+ 907 0858 0300A0E1 		mov	r0, r3
+ 908 085c FEFFFFEB 		bl	__floatsisf
+ 909 0860 0030A0E1 		mov	r3, r0
+ 910 0864 0400A0E1 		mov	r0, r4
+ 911 0868 0310A0E1 		mov	r1, r3
+ 912 086c FEFFFFEB 		bl	__ltsf2
+ 913 0870 0030A0E1 		mov	r3, r0
+ 914 0874 000053E3 		cmp	r3, #0
+ 915 0878 000000BA 		blt	.L32
+ 916 087c 140000EA 		b	.L34
+ 917              	.L32:
  211:position_controller.c ****       *thrust = my_this.thrustMin;
- 923              	.LM53:
- 924 0880 60209FE5 		ldr	r2, .L35+8
- 925 0884 723FA0E3 		mov	r3, #456
- 926 0888 023083E2 		add	r3, r3, #2
- 927 088c B34092E1 		ldrh	r4, [r2, r3]
- 928 0890 0438A0E1 		mov	r3, r4, asl #16
- 929 0894 4338A0E1 		mov	r3, r3, asr #16
- 930 0898 0300A0E1 		mov	r0, r3
- 931 089c FEFFFFEB 		bl	__floatsisf
- 932 08a0 34000BE5 		str	r0, [fp, #-52]	@ float
- 933 08a4 0438A0E1 		mov	r3, r4, asl #16
- 934 08a8 4338A0E1 		mov	r3, r3, asr #16
- 935 08ac 000053E3 		cmp	r3, #0
- 936 08b0 040000AA 		bge	.L33
- 937 08b4 34001BE5 		ldr	r0, [fp, #-52]	@ float
- 938 08b8 5C109FE5 		ldr	r1, .L35+60	@ float
- 939 08bc FEFFFFEB 		bl	__addsf3
- 940 08c0 0030A0E1 		mov	r3, r0
- 941 08c4 34300BE5 		str	r3, [fp, #-52]	@ float
- 942              	.L33:
- 943 08c8 24301BE5 		ldr	r3, [fp, #-36]
- 944 08cc 34201BE5 		ldr	r2, [fp, #-52]	@ float
- 945 08d0 002083E5 		str	r2, [r3, #0]	@ float
- 946              	.L34:
+ 919              	.LM53:
+ 920 0880 60209FE5 		ldr	r2, .L35+8
+ 921 0884 723FA0E3 		mov	r3, #456
+ 922 0888 023083E2 		add	r3, r3, #2
+ 923 088c B34092E1 		ldrh	r4, [r2, r3]
+ 924 0890 0438A0E1 		mov	r3, r4, asl #16
+ 925 0894 4338A0E1 		mov	r3, r3, asr #16
+ 926 0898 0300A0E1 		mov	r0, r3
+ 927 089c FEFFFFEB 		bl	__floatsisf
+ 928 08a0 34000BE5 		str	r0, [fp, #-52]	@ float
+ 929 08a4 0438A0E1 		mov	r3, r4, asl #16
+ 930 08a8 4338A0E1 		mov	r3, r3, asr #16
+ 931 08ac 000053E3 		cmp	r3, #0
+ 932 08b0 040000AA 		bge	.L33
+ 933 08b4 34001BE5 		ldr	r0, [fp, #-52]	@ float
+ 934 08b8 5C109FE5 		ldr	r1, .L35+60	@ float
+ 935 08bc FEFFFFEB 		bl	__addsf3
+ 936 08c0 0030A0E1 		mov	r3, r0
+ 937 08c4 34300BE5 		str	r3, [fp, #-52]	@ float
+ 938              	.L33:
+ 939 08c8 24301BE5 		ldr	r3, [fp, #-36]
+ 940 08cc 34201BE5 		ldr	r2, [fp, #-52]	@ float
+ 941 08d0 002083E5 		str	r2, [r3, #0]	@ float
+ 942              	.L34:
  212:position_controller.c ****     }
  213:position_controller.c **** }
- 948              	.LM54:
- 949 08d4 10D04BE2 		sub	sp, fp, #16
- 950 08d8 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
- 951 08dc 1EFF2FE1 		bx	lr
- 952              	.L36:
- 953              		.align	2
- 954              	.L35:
- 955 08e0 00000000 		.word	xyVelMax
- 956 08e4 00000000 		.word	velMaxOverhead
- 957 08e8 00000000 		.word	my_this
- 958 08ec 00000000 		.word	zVelMax
- 959 08f0 00004843 		.word	1128792064
- 960 08f4 00000000 		.word	my_setpoint
- 961 08f8 E4000000 		.word	my_this+228
- 962 08fc 0AD7233C 		.word	1008981770
- 963 0900 7C010000 		.word	my_this+380
- 964 0904 4C000000 		.word	my_this+76
- 965 0908 00000000 		.word	rpLimit
- 966 090c 00000000 		.word	rpLimitOverhead
- 967 0910 00007A43 		.word	1132068864
- 968 0914 98000000 		.word	my_this+152
- 969 0918 30010000 		.word	my_this+304
- 970 091c 00008047 		.word	1199570944
- 979              	.Lscope4:
- 980              		.align	2
- 982              		.global	positionControllerResetAllPID
- 984              	positionControllerResetAllPID:
+ 944              	.LM54:
+ 945 08d4 10D04BE2 		sub	sp, fp, #16
+ 946 08d8 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 947 08dc 1EFF2FE1 		bx	lr
+ 948              	.L36:
+ 949              		.align	2
+ 950              	.L35:
+ 951 08e0 00000000 		.word	xyVelMax
+ 952 08e4 00000000 		.word	velMaxOverhead
+ 953 08e8 00000000 		.word	my_this
+ 954 08ec 00000000 		.word	zVelMax
+ 955 08f0 00004843 		.word	1128792064
+ 956 08f4 00000000 		.word	my_setpoint
+ 957 08f8 E4000000 		.word	my_this+228
+ 958 08fc 0AD7233C 		.word	1008981770
+ 959 0900 7C010000 		.word	my_this+380
+ 960 0904 4C000000 		.word	my_this+76
+ 961 0908 00000000 		.word	rpLimit
+ 962 090c 00000000 		.word	rpLimitOverhead
+ 963 0910 00007A43 		.word	1132068864
+ 964 0914 98000000 		.word	my_this+152
+ 965 0918 30010000 		.word	my_this+304
+ 966 091c 00008047 		.word	1199570944
+ 975              	.Lscope4:
+ 976              		.align	2
+ 978              		.global	positionControllerResetAllPID
+ 980              	positionControllerResetAllPID:
  214:position_controller.c **** 
  215:position_controller.c **** void positionControllerResetAllPID()
  216:position_controller.c **** {
- 986              	.LM55:
- 987              		@ Function supports interworking.
- 988              		@ args = 0, pretend = 0, frame = 0
- 989              		@ frame_needed = 1, uses_anonymous_args = 0
- 990 0920 0DC0A0E1 		mov	ip, sp
- 991 0924 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 992 0928 04B04CE2 		sub	fp, ip, #4
+ 982              	.LM55:
+ 983              		@ Function supports interworking.
+ 984              		@ args = 0, pretend = 0, frame = 0
+ 985              		@ frame_needed = 1, uses_anonymous_args = 0
+ 986 0920 0DC0A0E1 		mov	ip, sp
+ 987 0924 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 988 0928 04B04CE2 		sub	fp, ip, #4
  217:position_controller.c ****   pidReset(&my_this.pidZ.pid);
- 994              	.LM56:
- 995 092c 14009FE5 		ldr	r0, .L39
- 996 0930 FEFFFFEB 		bl	pidReset
+ 990              	.LM56:
+ 991 092c 14009FE5 		ldr	r0, .L39
+ 992 0930 FEFFFFEB 		bl	pidReset
  218:position_controller.c ****   pidReset(&my_this.pidVZ.pid);
- 998              	.LM57:
- 999 0934 10009FE5 		ldr	r0, .L39+4
- 1000 0938 FEFFFFEB 		bl	pidReset
+ 994              	.LM57:
+ 995 0934 10009FE5 		ldr	r0, .L39+4
+ 996 0938 FEFFFFEB 		bl	pidReset
  219:position_controller.c **** }
- 1002              	.LM58:
- 1003 093c 0CD04BE2 		sub	sp, fp, #12
- 1004 0940 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1005 0944 1EFF2FE1 		bx	lr
- 1006              	.L40:
- 1007              		.align	2
- 1008              	.L39:
- 1009 0948 4C000000 		.word	my_this+76
- 1010 094c 00000000 		.word	my_this
- 1012              	.Lscope5:
- 1021              	.Letext0:
- 1022              		.ident	"GCC: (GNU) 4.1.1"
+ 998              	.LM58:
+ 999 093c 0CD04BE2 		sub	sp, fp, #12
+ 1000 0940 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1001 0944 1EFF2FE1 		bx	lr
+ 1002              	.L40:
+ 1003              		.align	2
+ 1004              	.L39:
+ 1005 0948 4C000000 		.word	my_this+76
+ 1006 094c 00000000 		.word	my_this
+ 1008              	.Lscope5:
+ 1017              	.Letext0:
+ 1018              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 position_controller.c
-     /tmp/ccR8oeYj.s:55     .data:00000000 rpLimit
-     /tmp/ccR8oeYj.s:52     .data:00000000 $d
-     /tmp/ccR8oeYj.s:61     .data:00000004 rpLimitOverhead
-     /tmp/ccR8oeYj.s:67     .data:00000008 xyVelMax
-     /tmp/ccR8oeYj.s:73     .data:0000000c zVelMax
-     /tmp/ccR8oeYj.s:79     .data:00000010 velMaxOverhead
-     /tmp/ccR8oeYj.s:86     .rodata:00000000 thrustScale
-     /tmp/ccR8oeYj.s:83     .rodata:00000000 $d
-     /tmp/ccR8oeYj.s:93     .data:00000014 my_this
-     /tmp/ccR8oeYj.s:139    .bss:00000000 $d
-     /tmp/ccR8oeYj.s:140    .bss:00000000 estimateMode.1455
-     /tmp/ccR8oeYj.s:144    .bss:00000004 prev_estimatedZ.1454
-     /tmp/ccR8oeYj.s:152    .text:00000000 $a
-     /tmp/ccR8oeYj.s:161    .text:00000000 positionEstimate
-     /tmp/ccR8oeYj.s:257    .text:00000114 $d
-     /tmp/ccR8oeYj.s:266    .text:0000011c $a
-     /tmp/ccR8oeYj.s:270    .text:0000011c positionControllerInit
-     /tmp/ccR8oeYj.s:396    .text:000002b8 $d
-     /tmp/ccR8oeYj.s:404    .text:000002d0 $a
-     /tmp/ccR8oeYj.s:412    .text:000002d0 runPid
-     /tmp/ccR8oeYj.s:457    .bss:00000008 acc_get_pos.1524
-     /tmp/ccR8oeYj.s:461    .bss:0000000c acc_get_vel.1523
-     /tmp/ccR8oeYj.s:465    .bss:00000010 result.1522
-     /tmp/ccR8oeYj.s:478    .text:0000033c data_fusion
-     /tmp/ccR8oeYj.s:590    .text:00000478 $d
-     /tmp/ccR8oeYj.s:608    .data:000001e0 y_temp.1552
-     /tmp/ccR8oeYj.s:614    .text:00000490 $a
-     /tmp/ccR8oeYj.s:622    .text:00000490 positionController
-     /tmp/ccR8oeYj.s:955    .text:000008e0 $d
-     /tmp/ccR8oeYj.s:980    .text:00000920 $a
-     /tmp/ccR8oeYj.s:984    .text:00000920 positionControllerResetAllPID
-     /tmp/ccR8oeYj.s:1009   .text:00000948 $d
+     /tmp/ccAVY0K3.s:55     .data:00000000 rpLimit
+     /tmp/ccAVY0K3.s:52     .data:00000000 $d
+     /tmp/ccAVY0K3.s:61     .data:00000004 rpLimitOverhead
+     /tmp/ccAVY0K3.s:67     .data:00000008 xyVelMax
+     /tmp/ccAVY0K3.s:73     .data:0000000c zVelMax
+     /tmp/ccAVY0K3.s:79     .data:00000010 velMaxOverhead
+     /tmp/ccAVY0K3.s:86     .rodata:00000000 thrustScale
+     /tmp/ccAVY0K3.s:83     .rodata:00000000 $d
+     /tmp/ccAVY0K3.s:93     .data:00000014 my_this
+     /tmp/ccAVY0K3.s:135    .bss:00000000 $d
+     /tmp/ccAVY0K3.s:136    .bss:00000000 estimateMode.1455
+     /tmp/ccAVY0K3.s:140    .bss:00000004 prev_estimatedZ.1454
+     /tmp/ccAVY0K3.s:148    .text:00000000 $a
+     /tmp/ccAVY0K3.s:157    .text:00000000 positionEstimate
+     /tmp/ccAVY0K3.s:253    .text:00000114 $d
+     /tmp/ccAVY0K3.s:262    .text:0000011c $a
+     /tmp/ccAVY0K3.s:266    .text:0000011c positionControllerInit
+     /tmp/ccAVY0K3.s:392    .text:000002b8 $d
+     /tmp/ccAVY0K3.s:400    .text:000002d0 $a
+     /tmp/ccAVY0K3.s:408    .text:000002d0 runPid
+     /tmp/ccAVY0K3.s:453    .bss:00000008 acc_get_pos.1524
+     /tmp/ccAVY0K3.s:457    .bss:0000000c acc_get_vel.1523
+     /tmp/ccAVY0K3.s:461    .bss:00000010 result.1522
+     /tmp/ccAVY0K3.s:474    .text:0000033c data_fusion
+     /tmp/ccAVY0K3.s:586    .text:00000478 $d
+     /tmp/ccAVY0K3.s:604    .data:000001e0 y_temp.1552
+     /tmp/ccAVY0K3.s:610    .text:00000490 $a
+     /tmp/ccAVY0K3.s:618    .text:00000490 positionController
+     /tmp/ccAVY0K3.s:951    .text:000008e0 $d
+     /tmp/ccAVY0K3.s:976    .text:00000920 $a
+     /tmp/ccAVY0K3.s:980    .text:00000920 positionControllerResetAllPID
+     /tmp/ccAVY0K3.s:1005   .text:00000948 $d
 
 UNDEFINED SYMBOLS
 __mulsf3

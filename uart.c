@@ -83,6 +83,8 @@ extern DebugData sendDebugData;
 extern DebugData receiveDebugData;
 extern PositionWayPointData sendPositionWayPointData;
 extern PositionWayPointData receivePositionWayPointData;
+extern LandSignal sendLandSignal;
+extern LandSignal receiveLandSignal;
 extern int vicon_count;
 extern int receive_valid_data_flag;
 extern struct this_s my_this ;
@@ -225,6 +227,10 @@ void uart0ISR(void) __irq
 				my_setpoint.position.y=receivePositionWayPointData.y;
 				my_setpoint.position.z=receivePositionWayPointData.z;
 				receiveCmdData.cmd=PACKAGE_DEFINE_POSITION_WAY_POINT;
+			case PACKAGE_DEFINE_LAND:
+				memcpy(&receiveLandSignal,
+						&allDataBuffer,getPackageLength(pack_id));
+				receiveCmdData.cmd=PACKAGE_DEFINE_LAND;
 			default:
 				break;
 			}

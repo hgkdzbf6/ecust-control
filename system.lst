@@ -1,9 +1,9 @@
    1              		.file	"system.c"
    3              		.text
    4              	.Ltext0:
- 101              		.align	2
- 103              		.global	init
- 105              	init:
+ 105              		.align	2
+ 107              		.global	init
+ 109              	init:
    1:system.c      **** /*
    2:system.c      **** 
    3:system.c      **** Copyright (c) 2011, Ascending Technologies GmbH
@@ -46,125 +46,125 @@
   40:system.c      **** 
   41:system.c      **** void init(void)
   42:system.c      **** {
- 107              	.LM0:
- 108              		@ Function supports interworking.
- 109              		@ args = 0, pretend = 0, frame = 0
- 110              		@ frame_needed = 1, uses_anonymous_args = 0
- 111 0000 0DC0A0E1 		mov	ip, sp
- 112 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 113 0008 04B04CE2 		sub	fp, ip, #4
+ 111              	.LM0:
+ 112              		@ Function supports interworking.
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 1, uses_anonymous_args = 0
+ 115 0000 0DC0A0E1 		mov	ip, sp
+ 116 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 117 0008 04B04CE2 		sub	fp, ip, #4
   43:system.c      ****   MAMCR = 0x02;  //Memory Acceleration enabled
- 115              	.LM1:
- 116 000c 0E32A0E3 		mov	r3, #-536870912
- 117 0010 7F3983E2 		add	r3, r3, #2080768
- 118 0014 0220A0E3 		mov	r2, #2
- 119 0018 002083E5 		str	r2, [r3, #0]
+ 119              	.LM1:
+ 120 000c 0E32A0E3 		mov	r3, #-536870912
+ 121 0010 7F3983E2 		add	r3, r3, #2080768
+ 122 0014 0220A0E3 		mov	r2, #2
+ 123 0018 002083E5 		str	r2, [r3, #0]
   44:system.c      ****   MAMTIM = 0x04;
- 121              	.LM2:
- 122 001c 4E32A0E3 		mov	r3, #-536870908
- 123 0020 7F3983E2 		add	r3, r3, #2080768
- 124 0024 0420A0E3 		mov	r2, #4
- 125 0028 002083E5 		str	r2, [r3, #0]
+ 125              	.LM2:
+ 126 001c 4E32A0E3 		mov	r3, #-536870908
+ 127 0020 7F3983E2 		add	r3, r3, #2080768
+ 128 0024 0420A0E3 		mov	r2, #4
+ 129 0028 002083E5 		str	r2, [r3, #0]
   45:system.c      ****   VPBDIV = 0x01;  //0x01: peripheral frequency == cpu frequency, 0x00: per. freq. = crystal freq.
- 127              	.LM3:
- 128 002c 0E32A0E3 		mov	r3, #-536870912
- 129 0030 7F3983E2 		add	r3, r3, #2080768
- 130 0034 013C83E2 		add	r3, r3, #256
- 131 0038 0120A0E3 		mov	r2, #1
- 132 003c 002083E5 		str	r2, [r3, #0]
+ 131              	.LM3:
+ 132 002c 0E32A0E3 		mov	r3, #-536870912
+ 133 0030 7F3983E2 		add	r3, r3, #2080768
+ 134 0034 013C83E2 		add	r3, r3, #256
+ 135 0038 0120A0E3 		mov	r2, #1
+ 136 003c 002083E5 		str	r2, [r3, #0]
   46:system.c      ****   pll_init();
- 134              	.LM4:
- 135 0040 FEFFFFEB 		bl	pll_init
+ 138              	.LM4:
+ 139 0040 FEFFFFEB 		bl	pll_init
   47:system.c      ****   pll_feed();
- 137              	.LM5:
- 138 0044 FEFFFFEB 		bl	pll_feed
+ 141              	.LM5:
+ 142 0044 FEFFFFEB 		bl	pll_feed
   48:system.c      ****   init_ports();
- 140              	.LM6:
- 141 0048 FEFFFFEB 		bl	init_ports
+ 144              	.LM6:
+ 145 0048 FEFFFFEB 		bl	init_ports
   49:system.c      ****   UARTInitialize(57600);	//debug / command
- 143              	.LM7:
- 144 004c E10CA0E3 		mov	r0, #57600
- 145 0050 FEFFFFEB 		bl	UARTInitialize
+ 147              	.LM7:
+ 148 004c E10CA0E3 		mov	r0, #57600
+ 149 0050 FEFFFFEB 		bl	UARTInitialize
   50:system.c      ****   UART1Initialize(57600);	//57600 Servo / GPS, 38400 "indoor GPS"
- 147              	.LM8:
- 148 0054 E10CA0E3 		mov	r0, #57600
- 149 0058 FEFFFFEB 		bl	UART1Initialize
+ 151              	.LM8:
+ 152 0054 E10CA0E3 		mov	r0, #57600
+ 153 0058 FEFFFFEB 		bl	UART1Initialize
   51:system.c      ****   init_spi();
- 151              	.LM9:
- 152 005c FEFFFFEB 		bl	init_spi
+ 155              	.LM9:
+ 156 005c FEFFFFEB 		bl	init_spi
   52:system.c      ****   init_spi1();
- 154              	.LM10:
- 155 0060 FEFFFFEB 		bl	init_spi1
+ 158              	.LM10:
+ 159 0060 FEFFFFEB 		bl	init_spi1
   53:system.c      ****   init_timer0();
- 157              	.LM11:
- 158 0064 FEFFFFEB 		bl	init_timer0
+ 161              	.LM11:
+ 162 0064 FEFFFFEB 		bl	init_timer0
   54:system.c      **** //  I2CInit(I2CMASTER);
   55:system.c      ****   PWM_Init();
- 160              	.LM12:
- 161 0068 FEFFFFEB 		bl	PWM_Init
+ 164              	.LM12:
+ 165 0068 FEFFFFEB 		bl	PWM_Init
   56:system.c      ****   ADCInit(ADC_CLK);
- 163              	.LM13:
- 164 006c 3D09A0E3 		mov	r0, #999424
- 165 0070 090D80E2 		add	r0, r0, #576
- 166 0074 FEFFFFEB 		bl	ADCInit
+ 167              	.LM13:
+ 168 006c 3D09A0E3 		mov	r0, #999424
+ 169 0070 090D80E2 		add	r0, r0, #576
+ 170 0074 FEFFFFEB 		bl	ADCInit
   57:system.c      ****   init_interrupts();
- 168              	.LM14:
- 169 0078 FEFFFFEB 		bl	init_interrupts
+ 172              	.LM14:
+ 173 0078 FEFFFFEB 		bl	init_interrupts
   58:system.c      ****  }
- 171              	.LM15:
- 172 007c 0CD04BE2 		sub	sp, fp, #12
- 173 0080 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 174 0084 1EFF2FE1 		bx	lr
- 176              	.Lscope0:
- 177              		.align	2
- 179              		.global	init_interrupts
- 181              	init_interrupts:
+ 175              	.LM15:
+ 176 007c 0CD04BE2 		sub	sp, fp, #12
+ 177 0080 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 178 0084 1EFF2FE1 		bx	lr
+ 180              	.Lscope0:
+ 181              		.align	2
+ 183              		.global	init_interrupts
+ 185              	init_interrupts:
   59:system.c      **** 
   60:system.c      **** void init_interrupts(void)
   61:system.c      **** {
- 183              	.LM16:
- 184              		@ Function supports interworking.
- 185              		@ args = 0, pretend = 0, frame = 0
- 186              		@ frame_needed = 1, uses_anonymous_args = 0
- 187 0088 0DC0A0E1 		mov	ip, sp
- 188 008c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 189 0090 04B04CE2 		sub	fp, ip, #4
+ 187              	.LM16:
+ 188              		@ Function supports interworking.
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 1, uses_anonymous_args = 0
+ 191 0088 0DC0A0E1 		mov	ip, sp
+ 192 008c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 193 0090 04B04CE2 		sub	fp, ip, #4
   62:system.c      ****   init_VIC();
- 191              	.LM17:
- 192 0094 FEFFFFEB 		bl	init_VIC
+ 195              	.LM17:
+ 196 0094 FEFFFFEB 		bl	init_VIC
   63:system.c      **** 
   64:system.c      ****   //Timer0 interrupt
   65:system.c      ****   install_irq( TIMER0_INT, (void *) timer0ISR );
- 194              	.LM18:
- 195 0098 0400A0E3 		mov	r0, #4
- 196 009c 80109FE5 		ldr	r1, .L5
- 197 00a0 FEFFFFEB 		bl	install_irq
+ 198              	.LM18:
+ 199 0098 0400A0E3 		mov	r0, #4
+ 200 009c 80109FE5 		ldr	r1, .L5
+ 201 00a0 FEFFFFEB 		bl	install_irq
   66:system.c      **** 
   67:system.c      ****   //UART1 interrupt
   68:system.c      ****   install_irq( UART1_INT, (void *) uart1ISR );
- 199              	.LM19:
- 200 00a4 0700A0E3 		mov	r0, #7
- 201 00a8 78109FE5 		ldr	r1, .L5+4
- 202 00ac FEFFFFEB 		bl	install_irq
+ 203              	.LM19:
+ 204 00a4 0700A0E3 		mov	r0, #7
+ 205 00a8 78109FE5 		ldr	r1, .L5+4
+ 206 00ac FEFFFFEB 		bl	install_irq
   69:system.c      ****   U1IER = 3; //=3; enable THRE and RX interrupt
- 204              	.LM20:
- 205 00b0 4E32A0E3 		mov	r3, #-536870908
- 206 00b4 013883E2 		add	r3, r3, #65536
- 207 00b8 0320A0E3 		mov	r2, #3
- 208 00bc 002083E5 		str	r2, [r3, #0]
+ 208              	.LM20:
+ 209 00b0 4E32A0E3 		mov	r3, #-536870908
+ 210 00b4 013883E2 		add	r3, r3, #65536
+ 211 00b8 0320A0E3 		mov	r2, #3
+ 212 00bc 002083E5 		str	r2, [r3, #0]
   70:system.c      **** 
   71:system.c      ****   //UART0 interrupt
   72:system.c      ****   install_irq( UART0_INT, (void *) uart0ISR );
- 210              	.LM21:
- 211 00c0 0600A0E3 		mov	r0, #6
- 212 00c4 60109FE5 		ldr	r1, .L5+8
- 213 00c8 FEFFFFEB 		bl	install_irq
+ 214              	.LM21:
+ 215 00c0 0600A0E3 		mov	r0, #6
+ 216 00c4 60109FE5 		ldr	r1, .L5+8
+ 217 00c8 FEFFFFEB 		bl	install_irq
   73:system.c      ****   U0IER = 3; //=3; enable THRE and RX interrupt
- 215              	.LM22:
- 216 00cc 0339A0E3 		mov	r3, #49152
- 217 00d0 4E3283E2 		add	r3, r3, #-536870908
- 218 00d4 0320A0E3 		mov	r2, #3
- 219 00d8 002083E5 		str	r2, [r3, #0]
+ 219              	.LM22:
+ 220 00cc 0339A0E3 		mov	r3, #49152
+ 221 00d0 4E3283E2 		add	r3, r3, #-536870908
+ 222 00d4 0320A0E3 		mov	r2, #3
+ 223 00d8 002083E5 		str	r2, [r3, #0]
   74:system.c      **** 
   75:system.c      ****   //I2C0 interrupt
   76:system.c      **** //  install_irq( I2C0_INT, (void *) I2C0MasterHandler );
@@ -172,57 +172,57 @@
   78:system.c      **** 
   79:system.c      ****   //SSP interrupt
   80:system.c      ****   install_irq( SPI1_INT, (void *) SSPHandler );
- 221              	.LM23:
- 222 00dc 0B00A0E3 		mov	r0, #11
- 223 00e0 48109FE5 		ldr	r1, .L5+12
- 224 00e4 FEFFFFEB 		bl	install_irq
+ 225              	.LM23:
+ 226 00dc 0B00A0E3 		mov	r0, #11
+ 227 00e0 48109FE5 		ldr	r1, .L5+12
+ 228 00e4 FEFFFFEB 		bl	install_irq
   81:system.c      ****   /* Set SSPINMS registers to enable interrupts */
   82:system.c      ****   /* enable all interrupts, Rx overrun, Rx timeout, RX FIFO half full int,
   83:system.c      ****   TX FIFO half empty int */
   84:system.c      ****   SSPIMSC = SSPIMSC_TXIM | SSPIMSC_RXIM | SSPIMSC_RORIM;// | SSPIMSC_RTIM;
- 226              	.LM24:
- 227 00e8 0E32A0E3 		mov	r3, #-536870912
- 228 00ec 1A3983E2 		add	r3, r3, #425984
- 229 00f0 143083E2 		add	r3, r3, #20
- 230 00f4 0D20A0E3 		mov	r2, #13
- 231 00f8 002083E5 		str	r2, [r3, #0]
+ 230              	.LM24:
+ 231 00e8 0E32A0E3 		mov	r3, #-536870912
+ 232 00ec 1A3983E2 		add	r3, r3, #425984
+ 233 00f0 143083E2 		add	r3, r3, #20
+ 234 00f4 0D20A0E3 		mov	r2, #13
+ 235 00f8 002083E5 		str	r2, [r3, #0]
   85:system.c      ****   /* SSP Enabled */
   86:system.c      ****   SSPCR1 |= SSPCR1_SSE;
- 233              	.LM25:
- 234 00fc 4E22A0E3 		mov	r2, #-536870908
- 235 0100 1A2982E2 		add	r2, r2, #425984
- 236 0104 4E32A0E3 		mov	r3, #-536870908
- 237 0108 1A3983E2 		add	r3, r3, #425984
- 238 010c 003093E5 		ldr	r3, [r3, #0]
- 239 0110 023083E3 		orr	r3, r3, #2
- 240 0114 003082E5 		str	r3, [r2, #0]
+ 237              	.LM25:
+ 238 00fc 4E22A0E3 		mov	r2, #-536870908
+ 239 0100 1A2982E2 		add	r2, r2, #425984
+ 240 0104 4E32A0E3 		mov	r3, #-536870908
+ 241 0108 1A3983E2 		add	r3, r3, #425984
+ 242 010c 003093E5 		ldr	r3, [r3, #0]
+ 243 0110 023083E3 		orr	r3, r3, #2
+ 244 0114 003082E5 		str	r3, [r2, #0]
   87:system.c      **** }
- 242              	.LM26:
- 243 0118 0CD04BE2 		sub	sp, fp, #12
- 244 011c 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 245 0120 1EFF2FE1 		bx	lr
- 246              	.L6:
- 247              		.align	2
- 248              	.L5:
- 249 0124 00000000 		.word	timer0ISR
- 250 0128 00000000 		.word	uart1ISR
- 251 012c 00000000 		.word	uart0ISR
- 252 0130 00000000 		.word	SSPHandler
- 254              	.Lscope1:
- 255              		.align	2
- 257              		.global	init_ports
- 259              	init_ports:
+ 246              	.LM26:
+ 247 0118 0CD04BE2 		sub	sp, fp, #12
+ 248 011c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 249 0120 1EFF2FE1 		bx	lr
+ 250              	.L6:
+ 251              		.align	2
+ 252              	.L5:
+ 253 0124 00000000 		.word	timer0ISR
+ 254 0128 00000000 		.word	uart1ISR
+ 255 012c 00000000 		.word	uart0ISR
+ 256 0130 00000000 		.word	SSPHandler
+ 258              	.Lscope1:
+ 259              		.align	2
+ 261              		.global	init_ports
+ 263              	init_ports:
   88:system.c      **** 
   89:system.c      **** 
   90:system.c      **** void init_ports(void)
   91:system.c      **** {
- 261              	.LM27:
- 262              		@ Function supports interworking.
- 263              		@ args = 0, pretend = 0, frame = 0
- 264              		@ frame_needed = 1, uses_anonymous_args = 0
- 265 0134 0DC0A0E1 		mov	ip, sp
- 266 0138 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 267 013c 04B04CE2 		sub	fp, ip, #4
+ 265              	.LM27:
+ 266              		@ Function supports interworking.
+ 267              		@ args = 0, pretend = 0, frame = 0
+ 268              		@ frame_needed = 1, uses_anonymous_args = 0
+ 269 0134 0DC0A0E1 		mov	ip, sp
+ 270 0138 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 271 013c 04B04CE2 		sub	fp, ip, #4
   92:system.c      **** /* PINSEL0
   93:system.c      ****  *
   94:system.c      ****  * PORT0:
@@ -258,11 +258,11 @@
  124:system.c      ****  */
  125:system.c      **** 
  126:system.c      ****  	PINSEL0=0x30C51555;
- 269              	.LM28:
- 270 0140 0E32A0E3 		mov	r3, #-536870912
- 271 0144 0B3983E2 		add	r3, r3, #180224
- 272 0148 84209FE5 		ldr	r2, .L9
- 273 014c 002083E5 		str	r2, [r3, #0]
+ 273              	.LM28:
+ 274 0140 0E32A0E3 		mov	r3, #-536870912
+ 275 0144 0B3983E2 		add	r3, r3, #180224
+ 276 0148 84209FE5 		ldr	r2, .L9
+ 277 014c 002083E5 		str	r2, [r3, #0]
  127:system.c      **** 
  128:system.c      ****  /* PINSEL1
  129:system.c      ****   *
@@ -294,34 +294,34 @@
  155:system.c      ****   * Byte3_io_dir=0x00
  156:system.c      ****   */
  157:system.c      ****  PINSEL1 = 0x150406A8;
- 275              	.LM29:
- 276 0150 4E32A0E3 		mov	r3, #-536870908
- 277 0154 0B3983E2 		add	r3, r3, #180224
- 278 0158 78209FE5 		ldr	r2, .L9+4
- 279 015c 002083E5 		str	r2, [r3, #0]
+ 279              	.LM29:
+ 280 0150 4E32A0E3 		mov	r3, #-536870908
+ 281 0154 0B3983E2 		add	r3, r3, #180224
+ 282 0158 78209FE5 		ldr	r2, .L9+4
+ 283 015c 002083E5 		str	r2, [r3, #0]
  158:system.c      **** 
  159:system.c      ****  PINSEL2 = 0x00000004;
- 281              	.LM30:
- 282 0160 0E32A0E3 		mov	r3, #-536870912
- 283 0164 0B3983E2 		add	r3, r3, #180224
- 284 0168 143083E2 		add	r3, r3, #20
- 285 016c 0420A0E3 		mov	r2, #4
- 286 0170 002083E5 		str	r2, [r3, #0]
+ 285              	.LM30:
+ 286 0160 0E32A0E3 		mov	r3, #-536870912
+ 287 0164 0B3983E2 		add	r3, r3, #180224
+ 288 0168 143083E2 		add	r3, r3, #20
+ 289 016c 0420A0E3 		mov	r2, #4
+ 290 0170 002083E5 		str	r2, [r3, #0]
  160:system.c      **** 
  161:system.c      ****  IODIR0 = 0x0030B480;
- 288              	.LM31:
- 289 0174 8E22A0E3 		mov	r2, #-536870904
- 290 0178 0A2982E2 		add	r2, r2, #163840
- 291 017c C239A0E3 		mov	r3, #3178496
- 292 0180 D23D83E2 		add	r3, r3, #13440
- 293 0184 003082E5 		str	r3, [r2, #0]
+ 292              	.LM31:
+ 293 0174 8E22A0E3 		mov	r2, #-536870904
+ 294 0178 0A2982E2 		add	r2, r2, #163840
+ 295 017c C239A0E3 		mov	r3, #3178496
+ 296 0180 D23D83E2 		add	r3, r3, #13440
+ 297 0184 003082E5 		str	r3, [r2, #0]
  162:system.c      **** 
  163:system.c      ****  IOSET0 = (1<<EXT_NCS)|(1<<11); //all nCS high
- 295              	.LM32:
- 296 0188 4E32A0E3 		mov	r3, #-536870908
- 297 018c 0A3983E2 		add	r3, r3, #163840
- 298 0190 222DA0E3 		mov	r2, #2176
- 299 0194 002083E5 		str	r2, [r3, #0]
+ 299              	.LM32:
+ 300 0188 4E32A0E3 		mov	r3, #-536870908
+ 301 018c 0A3983E2 		add	r3, r3, #163840
+ 302 0190 222DA0E3 		mov	r2, #2176
+ 303 0194 002083E5 		str	r2, [r3, #0]
  164:system.c      ****  //IOSET0 = (1<<LL_nCS);	//CS LL_Controller
  165:system.c      **** 
  166:system.c      **** /* P1.16: IO_1/IO_out	=> FET for camera power supply
@@ -334,532 +334,532 @@
  173:system.c      ****  */
  174:system.c      **** 
  175:system.c      ****  IODIR1 = 0x03030000;
- 301              	.LM33:
- 302 0198 0E22A0E3 		mov	r2, #-536870912
- 303 019c 0A2982E2 		add	r2, r2, #163840
- 304 01a0 182082E2 		add	r2, r2, #24
- 305 01a4 0334A0E3 		mov	r3, #50331648
- 306 01a8 033883E2 		add	r3, r3, #196608
- 307 01ac 003082E5 		str	r3, [r2, #0]
+ 305              	.LM33:
+ 306 0198 0E22A0E3 		mov	r2, #-536870912
+ 307 019c 0A2982E2 		add	r2, r2, #163840
+ 308 01a0 182082E2 		add	r2, r2, #24
+ 309 01a4 0334A0E3 		mov	r3, #50331648
+ 310 01a8 033883E2 		add	r3, r3, #196608
+ 311 01ac 003082E5 		str	r3, [r2, #0]
  176:system.c      ****  IOSET1 = ((1<<24)|(1<<16)); //turn off LED1, turn beeper off
- 309              	.LM34:
- 310 01b0 0E22A0E3 		mov	r2, #-536870912
- 311 01b4 0A2982E2 		add	r2, r2, #163840
- 312 01b8 142082E2 		add	r2, r2, #20
- 313 01bc 0134A0E3 		mov	r3, #16777216
- 314 01c0 013883E2 		add	r3, r3, #65536
- 315 01c4 003082E5 		str	r3, [r2, #0]
+ 313              	.LM34:
+ 314 01b0 0E22A0E3 		mov	r2, #-536870912
+ 315 01b4 0A2982E2 		add	r2, r2, #163840
+ 316 01b8 142082E2 		add	r2, r2, #20
+ 317 01bc 0134A0E3 		mov	r3, #16777216
+ 318 01c0 013883E2 		add	r3, r3, #65536
+ 319 01c4 003082E5 		str	r3, [r2, #0]
  177:system.c      **** 
  178:system.c      **** }
- 317              	.LM35:
- 318 01c8 0CD04BE2 		sub	sp, fp, #12
- 319 01cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 320 01d0 1EFF2FE1 		bx	lr
- 321              	.L10:
- 322              		.align	2
- 323              	.L9:
- 324 01d4 5515C530 		.word	818222421
- 325 01d8 A8060415 		.word	352585384
- 327              	.Lscope2:
- 328              		.align	2
- 330              		.global	init_timer0
- 332              	init_timer0:
+ 321              	.LM35:
+ 322 01c8 0CD04BE2 		sub	sp, fp, #12
+ 323 01cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 324 01d0 1EFF2FE1 		bx	lr
+ 325              	.L10:
+ 326              		.align	2
+ 327              	.L9:
+ 328 01d4 5515C530 		.word	818222421
+ 329 01d8 A8060415 		.word	352585384
+ 331              	.Lscope2:
+ 332              		.align	2
+ 334              		.global	init_timer0
+ 336              	init_timer0:
  179:system.c      **** 
  180:system.c      **** void init_timer0(void)
  181:system.c      **** {
- 334              	.LM36:
- 335              		@ Function supports interworking.
- 336              		@ args = 0, pretend = 0, frame = 0
- 337              		@ frame_needed = 1, uses_anonymous_args = 0
- 338 01dc 0DC0A0E1 		mov	ip, sp
- 339 01e0 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
- 340 01e4 04B04CE2 		sub	fp, ip, #4
+ 338              	.LM36:
+ 339              		@ Function supports interworking.
+ 340              		@ args = 0, pretend = 0, frame = 0
+ 341              		@ frame_needed = 1, uses_anonymous_args = 0
+ 342 01dc 0DC0A0E1 		mov	ip, sp
+ 343 01e0 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 344 01e4 04B04CE2 		sub	fp, ip, #4
  182:system.c      ****   T0TC=0;
- 342              	.LM37:
- 343 01e8 0139A0E3 		mov	r3, #16384
- 344 01ec 8E3283E2 		add	r3, r3, #-536870904
- 345 01f0 0020A0E3 		mov	r2, #0
- 346 01f4 002083E5 		str	r2, [r3, #0]
+ 346              	.LM37:
+ 347 01e8 0139A0E3 		mov	r3, #16384
+ 348 01ec 8E3283E2 		add	r3, r3, #-536870904
+ 349 01f0 0020A0E3 		mov	r2, #0
+ 350 01f4 002083E5 		str	r2, [r3, #0]
  183:system.c      ****   T0TCR=0x0;    //Reset timer0
- 348              	.LM38:
- 349 01f8 0139A0E3 		mov	r3, #16384
- 350 01fc 4E3283E2 		add	r3, r3, #-536870908
- 351 0200 0020A0E3 		mov	r2, #0
- 352 0204 002083E5 		str	r2, [r3, #0]
+ 352              	.LM38:
+ 353 01f8 0139A0E3 		mov	r3, #16384
+ 354 01fc 4E3283E2 		add	r3, r3, #-536870908
+ 355 0200 0020A0E3 		mov	r2, #0
+ 356 0204 002083E5 		str	r2, [r3, #0]
  184:system.c      ****   T0MCR=0x3;    //Interrupt on match MR0 and reset counter
- 354              	.LM39:
- 355 0208 0E32A0E3 		mov	r3, #-536870912
- 356 020c 013983E2 		add	r3, r3, #16384
- 357 0210 143083E2 		add	r3, r3, #20
- 358 0214 0320A0E3 		mov	r2, #3
- 359 0218 002083E5 		str	r2, [r3, #0]
+ 358              	.LM39:
+ 359 0208 0E32A0E3 		mov	r3, #-536870912
+ 360 020c 013983E2 		add	r3, r3, #16384
+ 361 0210 143083E2 		add	r3, r3, #20
+ 362 0214 0320A0E3 		mov	r2, #3
+ 363 0218 002083E5 		str	r2, [r3, #0]
  185:system.c      ****   T0PR=0;
- 361              	.LM40:
- 362 021c 0139A0E3 		mov	r3, #16384
- 363 0220 CE3283E2 		add	r3, r3, #-536870900
- 364 0224 0020A0E3 		mov	r2, #0
- 365 0228 002083E5 		str	r2, [r3, #0]
+ 365              	.LM40:
+ 366 021c 0139A0E3 		mov	r3, #16384
+ 367 0220 CE3283E2 		add	r3, r3, #-536870900
+ 368 0224 0020A0E3 		mov	r2, #0
+ 369 0228 002083E5 		str	r2, [r3, #0]
  186:system.c      ****   T0PC=0;     //Prescale Counter = 0
- 367              	.LM41:
- 368 022c 0E32A0E3 		mov	r3, #-536870912
- 369 0230 013983E2 		add	r3, r3, #16384
- 370 0234 103083E2 		add	r3, r3, #16
- 371 0238 0020A0E3 		mov	r2, #0
- 372 023c 002083E5 		str	r2, [r3, #0]
+ 371              	.LM41:
+ 372 022c 0E32A0E3 		mov	r3, #-536870912
+ 373 0230 013983E2 		add	r3, r3, #16384
+ 374 0234 103083E2 		add	r3, r3, #16
+ 375 0238 0020A0E3 		mov	r2, #0
+ 376 023c 002083E5 		str	r2, [r3, #0]
  187:system.c      ****   T0MR0=peripheralClockFrequency()/ControllerCyclesPerSecond; // /200 => 200 Hz Period
- 374              	.LM42:
- 375 0240 0E42A0E3 		mov	r4, #-536870912
- 376 0244 014984E2 		add	r4, r4, #16384
- 377 0248 184084E2 		add	r4, r4, #24
- 378 024c FEFFFFEB 		bl	peripheralClockFrequency
- 379 0250 0020A0E1 		mov	r2, r0
- 380 0254 24309FE5 		ldr	r3, .L13
- 381 0258 921383E0 		umull	r1, r3, r2, r3
- 382 025c 2333A0E1 		mov	r3, r3, lsr #6
- 383 0260 003084E5 		str	r3, [r4, #0]
+ 378              	.LM42:
+ 379 0240 0E42A0E3 		mov	r4, #-536870912
+ 380 0244 014984E2 		add	r4, r4, #16384
+ 381 0248 184084E2 		add	r4, r4, #24
+ 382 024c FEFFFFEB 		bl	peripheralClockFrequency
+ 383 0250 0020A0E1 		mov	r2, r0
+ 384 0254 24309FE5 		ldr	r3, .L13
+ 385 0258 921383E0 		umull	r1, r3, r2, r3
+ 386 025c 2333A0E1 		mov	r3, r3, lsr #6
+ 387 0260 003084E5 		str	r3, [r4, #0]
  188:system.c      ****   T0TCR=0x1;   //Set timer0
- 385              	.LM43:
- 386 0264 0139A0E3 		mov	r3, #16384
- 387 0268 4E3283E2 		add	r3, r3, #-536870908
- 388 026c 0120A0E3 		mov	r2, #1
- 389 0270 002083E5 		str	r2, [r3, #0]
+ 389              	.LM43:
+ 390 0264 0139A0E3 		mov	r3, #16384
+ 391 0268 4E3283E2 		add	r3, r3, #-536870908
+ 392 026c 0120A0E3 		mov	r2, #1
+ 393 0270 002083E5 		str	r2, [r3, #0]
  189:system.c      **** }
- 391              	.LM44:
- 392 0274 10D04BE2 		sub	sp, fp, #16
- 393 0278 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
- 394 027c 1EFF2FE1 		bx	lr
- 395              	.L14:
- 396              		.align	2
- 397              	.L13:
- 398 0280 D34D6210 		.word	274877907
- 400              	.Lscope3:
- 401              		.align	2
- 403              		.global	PWM_Init
- 405              	PWM_Init:
+ 395              	.LM44:
+ 396 0274 10D04BE2 		sub	sp, fp, #16
+ 397 0278 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 398 027c 1EFF2FE1 		bx	lr
+ 399              	.L14:
+ 400              		.align	2
+ 401              	.L13:
+ 402 0280 D34D6210 		.word	274877907
+ 404              	.Lscope3:
+ 405              		.align	2
+ 407              		.global	PWM_Init
+ 409              	PWM_Init:
  190:system.c      **** 
  191:system.c      **** void PWM_Init( void )
  192:system.c      **** {
- 407              	.LM45:
- 408              		@ Function supports interworking.
- 409              		@ args = 0, pretend = 0, frame = 0
- 410              		@ frame_needed = 1, uses_anonymous_args = 0
- 411 0284 0DC0A0E1 		mov	ip, sp
- 412 0288 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 413 028c 04B04CE2 		sub	fp, ip, #4
+ 411              	.LM45:
+ 412              		@ Function supports interworking.
+ 413              		@ args = 0, pretend = 0, frame = 0
+ 414              		@ frame_needed = 1, uses_anonymous_args = 0
+ 415 0284 0DC0A0E1 		mov	ip, sp
+ 416 0288 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 417 028c 04B04CE2 		sub	fp, ip, #4
  193:system.c      ****   //  match_counter = 0;
  194:system.c      ****   //  PINSEL0 = 0x000A800A;	/* set GPIOs for all PWMs */
  195:system.c      ****   //  PINSEL1 = 0x00000400;
  196:system.c      ****     PWMTCR = TCR_RESET;		/* Counter Reset */
- 415              	.LM46:
- 416 0290 4E32A0E3 		mov	r3, #-536870908
- 417 0294 053983E2 		add	r3, r3, #81920
- 418 0298 0220A0E3 		mov	r2, #2
- 419 029c 002083E5 		str	r2, [r3, #0]
+ 419              	.LM46:
+ 420 0290 4E32A0E3 		mov	r3, #-536870908
+ 421 0294 053983E2 		add	r3, r3, #81920
+ 422 0298 0220A0E3 		mov	r2, #2
+ 423 029c 002083E5 		str	r2, [r3, #0]
  197:system.c      **** 
  198:system.c      ****     PWMPR = 0x00;		/* count frequency:Fpclk */
- 421              	.LM47:
- 422 02a0 CE32A0E3 		mov	r3, #-536870900
- 423 02a4 053983E2 		add	r3, r3, #81920
- 424 02a8 0020A0E3 		mov	r2, #0
- 425 02ac 002083E5 		str	r2, [r3, #0]
+ 425              	.LM47:
+ 426 02a0 CE32A0E3 		mov	r3, #-536870900
+ 427 02a4 053983E2 		add	r3, r3, #81920
+ 428 02a8 0020A0E3 		mov	r2, #0
+ 429 02ac 002083E5 		str	r2, [r3, #0]
  199:system.c      ****     PWMMCR = PWMMR0R;	/* interrupt on PWMMR0, reset on PWMMR0, reset
- 427              	.LM48:
- 428 02b0 0E32A0E3 		mov	r3, #-536870912
- 429 02b4 053983E2 		add	r3, r3, #81920
- 430 02b8 143083E2 		add	r3, r3, #20
- 431 02bc 0220A0E3 		mov	r2, #2
- 432 02c0 002083E5 		str	r2, [r3, #0]
+ 431              	.LM48:
+ 432 02b0 0E32A0E3 		mov	r3, #-536870912
+ 433 02b4 053983E2 		add	r3, r3, #81920
+ 434 02b8 143083E2 		add	r3, r3, #20
+ 435 02bc 0220A0E3 		mov	r2, #2
+ 436 02c0 002083E5 		str	r2, [r3, #0]
  200:system.c      **** 				TC if PWM0 matches */
  201:system.c      ****     PWMMR0 = 1179648 ;
- 434              	.LM49:
- 435 02c4 0E32A0E3 		mov	r3, #-536870912
- 436 02c8 053983E2 		add	r3, r3, #81920
- 437 02cc 183083E2 		add	r3, r3, #24
- 438 02d0 1228A0E3 		mov	r2, #1179648
- 439 02d4 002083E5 		str	r2, [r3, #0]
+ 438              	.LM49:
+ 439 02c4 0E32A0E3 		mov	r3, #-536870912
+ 440 02c8 053983E2 		add	r3, r3, #81920
+ 441 02cc 183083E2 		add	r3, r3, #24
+ 442 02d0 1228A0E3 		mov	r2, #1179648
+ 443 02d4 002083E5 		str	r2, [r3, #0]
  202:system.c      ****     PWMMR5 = 88470;
- 441              	.LM50:
- 442 02d8 0E22A0E3 		mov	r2, #-536870912
- 443 02dc 052982E2 		add	r2, r2, #81920
- 444 02e0 442082E2 		add	r2, r2, #68
- 445 02e4 563BA0E3 		mov	r3, #88064
- 446 02e8 653F83E2 		add	r3, r3, #404
- 447 02ec 023083E2 		add	r3, r3, #2
- 448 02f0 003082E5 		str	r3, [r2, #0]
+ 445              	.LM50:
+ 446 02d8 0E22A0E3 		mov	r2, #-536870912
+ 447 02dc 052982E2 		add	r2, r2, #81920
+ 448 02e0 442082E2 		add	r2, r2, #68
+ 449 02e4 563BA0E3 		mov	r3, #88064
+ 450 02e8 653F83E2 		add	r3, r3, #404
+ 451 02ec 023083E2 		add	r3, r3, #2
+ 452 02f0 003082E5 		str	r3, [r2, #0]
  203:system.c      **** 
  204:system.c      ****     /* all PWM latch enabled */
  205:system.c      ****     PWMLER = LER5_EN;
- 450              	.LM51:
- 451 02f4 0E32A0E3 		mov	r3, #-536870912
- 452 02f8 053983E2 		add	r3, r3, #81920
- 453 02fc 503083E2 		add	r3, r3, #80
- 454 0300 2020A0E3 		mov	r2, #32
- 455 0304 002083E5 		str	r2, [r3, #0]
+ 454              	.LM51:
+ 455 02f4 0E32A0E3 		mov	r3, #-536870912
+ 456 02f8 053983E2 		add	r3, r3, #81920
+ 457 02fc 503083E2 		add	r3, r3, #80
+ 458 0300 2020A0E3 		mov	r2, #32
+ 459 0304 002083E5 		str	r2, [r3, #0]
  206:system.c      **** 
  207:system.c      ****         /* All single edge, all enable */
  208:system.c      ****     PWMPCR = PWMENA1 | PWMENA2 | PWMENA3 | PWMENA4 | PWMENA5 | PWMENA6;
- 457              	.LM52:
- 458 0308 0E32A0E3 		mov	r3, #-536870912
- 459 030c 053983E2 		add	r3, r3, #81920
- 460 0310 4C3083E2 		add	r3, r3, #76
- 461 0314 7E2CA0E3 		mov	r2, #32256
- 462 0318 002083E5 		str	r2, [r3, #0]
+ 461              	.LM52:
+ 462 0308 0E32A0E3 		mov	r3, #-536870912
+ 463 030c 053983E2 		add	r3, r3, #81920
+ 464 0310 4C3083E2 		add	r3, r3, #76
+ 465 0314 7E2CA0E3 		mov	r2, #32256
+ 466 0318 002083E5 		str	r2, [r3, #0]
  209:system.c      ****     PWMTCR = TCR_CNT_EN | TCR_PWM_EN;	/* counter enable, PWM enable */
- 464              	.LM53:
- 465 031c 4E32A0E3 		mov	r3, #-536870908
- 466 0320 053983E2 		add	r3, r3, #81920
- 467 0324 0920A0E3 		mov	r2, #9
- 468 0328 002083E5 		str	r2, [r3, #0]
+ 468              	.LM53:
+ 469 031c 4E32A0E3 		mov	r3, #-536870908
+ 470 0320 053983E2 		add	r3, r3, #81920
+ 471 0324 0920A0E3 		mov	r2, #9
+ 472 0328 002083E5 		str	r2, [r3, #0]
  210:system.c      **** }
- 470              	.LM54:
- 471 032c 0CD04BE2 		sub	sp, fp, #12
- 472 0330 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 473 0334 1EFF2FE1 		bx	lr
- 475              	.Lscope4:
- 476              		.align	2
- 478              		.global	init_spi
- 480              	init_spi:
+ 474              	.LM54:
+ 475 032c 0CD04BE2 		sub	sp, fp, #12
+ 476 0330 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 477 0334 1EFF2FE1 		bx	lr
+ 479              	.Lscope4:
+ 480              		.align	2
+ 482              		.global	init_spi
+ 484              	init_spi:
  211:system.c      **** 
  212:system.c      **** 
  213:system.c      **** void init_spi(void)
  214:system.c      **** {
- 482              	.LM55:
- 483              		@ Function supports interworking.
- 484              		@ args = 0, pretend = 0, frame = 0
- 485              		@ frame_needed = 1, uses_anonymous_args = 0
- 486 0338 0DC0A0E1 		mov	ip, sp
- 487 033c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 488 0340 04B04CE2 		sub	fp, ip, #4
+ 486              	.LM55:
+ 487              		@ Function supports interworking.
+ 488              		@ args = 0, pretend = 0, frame = 0
+ 489              		@ frame_needed = 1, uses_anonymous_args = 0
+ 490 0338 0DC0A0E1 		mov	ip, sp
+ 491 033c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 492 0340 04B04CE2 		sub	fp, ip, #4
  215:system.c      ****   S0SPCCR=0x04; //30 clock-cycles (~60MHz) = 1 SPI cycle => SPI @ 2MHz
- 490              	.LM56:
- 491 0344 CE32A0E3 		mov	r3, #-536870900
- 492 0348 023883E2 		add	r3, r3, #131072
- 493 034c 0420A0E3 		mov	r2, #4
- 494 0350 002083E5 		str	r2, [r3, #0]
+ 494              	.LM56:
+ 495 0344 CE32A0E3 		mov	r3, #-536870900
+ 496 0348 023883E2 		add	r3, r3, #131072
+ 497 034c 0420A0E3 		mov	r2, #4
+ 498 0350 002083E5 		str	r2, [r3, #0]
  216:system.c      ****   S0SPCR=0x20;  //LPC is Master
- 496              	.LM57:
- 497 0354 0E32A0E3 		mov	r3, #-536870912
- 498 0358 023883E2 		add	r3, r3, #131072
- 499 035c 2020A0E3 		mov	r2, #32
- 500 0360 002083E5 		str	r2, [r3, #0]
+ 500              	.LM57:
+ 501 0354 0E32A0E3 		mov	r3, #-536870912
+ 502 0358 023883E2 		add	r3, r3, #131072
+ 503 035c 2020A0E3 		mov	r2, #32
+ 504 0360 002083E5 		str	r2, [r3, #0]
  217:system.c      **** }
- 502              	.LM58:
- 503 0364 0CD04BE2 		sub	sp, fp, #12
- 504 0368 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 505 036c 1EFF2FE1 		bx	lr
- 507              	.Lscope5:
- 508              		.align	2
- 510              		.global	init_spi1
- 512              	init_spi1:
+ 506              	.LM58:
+ 507 0364 0CD04BE2 		sub	sp, fp, #12
+ 508 0368 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 509 036c 1EFF2FE1 		bx	lr
+ 511              	.Lscope5:
+ 512              		.align	2
+ 514              		.global	init_spi1
+ 516              	init_spi1:
  218:system.c      **** 
  219:system.c      **** void init_spi1(void)
  220:system.c      **** {
- 514              	.LM59:
- 515              		@ Function supports interworking.
- 516              		@ args = 0, pretend = 0, frame = 4
- 517              		@ frame_needed = 1, uses_anonymous_args = 0
- 518 0370 0DC0A0E1 		mov	ip, sp
- 519 0374 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 520 0378 04B04CE2 		sub	fp, ip, #4
- 521 037c 04D04DE2 		sub	sp, sp, #4
+ 518              	.LM59:
+ 519              		@ Function supports interworking.
+ 520              		@ args = 0, pretend = 0, frame = 4
+ 521              		@ frame_needed = 1, uses_anonymous_args = 0
+ 522 0370 0DC0A0E1 		mov	ip, sp
+ 523 0374 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 524 0378 04B04CE2 		sub	fp, ip, #4
+ 525 037c 04D04DE2 		sub	sp, sp, #4
  221:system.c      **** 	unsigned char i, Dummy;
  222:system.c      **** 
  223:system.c      ****     /* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0, and SCR is 3 */
  224:system.c      ****     SSPCR0 = 0x040F;
- 523              	.LM60:
- 524 0380 0E22A0E3 		mov	r2, #-536870912
- 525 0384 1A2982E2 		add	r2, r2, #425984
- 526 0388 013BA0E3 		mov	r3, #1024
- 527 038c 0F3083E2 		add	r3, r3, #15
- 528 0390 003082E5 		str	r3, [r2, #0]
+ 527              	.LM60:
+ 528 0380 0E22A0E3 		mov	r2, #-536870912
+ 529 0384 1A2982E2 		add	r2, r2, #425984
+ 530 0388 013BA0E3 		mov	r3, #1024
+ 531 038c 0F3083E2 		add	r3, r3, #15
+ 532 0390 003082E5 		str	r3, [r2, #0]
  225:system.c      **** 
  226:system.c      ****     /* SSPCPSR clock prescale register, master mode, minimum divisor is 0x02 */
  227:system.c      ****     SSPCPSR = 0x1B;
- 530              	.LM61:
- 531 0394 0E32A0E3 		mov	r3, #-536870912
- 532 0398 1A3983E2 		add	r3, r3, #425984
- 533 039c 103083E2 		add	r3, r3, #16
- 534 03a0 1B20A0E3 		mov	r2, #27
- 535 03a4 002083E5 		str	r2, [r3, #0]
+ 534              	.LM61:
+ 535 0394 0E32A0E3 		mov	r3, #-536870912
+ 536 0398 1A3983E2 		add	r3, r3, #425984
+ 537 039c 103083E2 		add	r3, r3, #16
+ 538 03a0 1B20A0E3 		mov	r2, #27
+ 539 03a4 002083E5 		str	r2, [r3, #0]
  228:system.c      **** 
  229:system.c      ****     for ( i = 0; i < FIFOSIZE; i++ )
- 537              	.LM62:
- 538 03a8 0030A0E3 		mov	r3, #0
- 539 03ac 0E304BE5 		strb	r3, [fp, #-14]
- 540 03b0 060000EA 		b	.L20
- 541              	.L21:
+ 541              	.LM62:
+ 542 03a8 0030A0E3 		mov	r3, #0
+ 543 03ac 0E304BE5 		strb	r3, [fp, #-14]
+ 544 03b0 060000EA 		b	.L20
+ 545              	.L21:
  230:system.c      ****     {
  231:system.c      **** 	Dummy = SSPDR;		/* clear the RxFIFO */
- 543              	.LM63:
- 544 03b4 8E32A0E3 		mov	r3, #-536870904
- 545 03b8 1A3983E2 		add	r3, r3, #425984
- 546 03bc 003093E5 		ldr	r3, [r3, #0]
- 547 03c0 0D304BE5 		strb	r3, [fp, #-13]
+ 547              	.LM63:
+ 548 03b4 8E32A0E3 		mov	r3, #-536870904
+ 549 03b8 1A3983E2 		add	r3, r3, #425984
+ 550 03bc 003093E5 		ldr	r3, [r3, #0]
+ 551 03c0 0D304BE5 		strb	r3, [fp, #-13]
  229:system.c      ****     for ( i = 0; i < FIFOSIZE; i++ )
- 549              	.LM64:
- 550 03c4 0E305BE5 		ldrb	r3, [fp, #-14]
- 551 03c8 013083E2 		add	r3, r3, #1
- 552 03cc 0E304BE5 		strb	r3, [fp, #-14]
- 553              	.L20:
- 554 03d0 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
- 555 03d4 070053E3 		cmp	r3, #7
- 556 03d8 F5FFFF9A 		bls	.L21
+ 553              	.LM64:
+ 554 03c4 0E305BE5 		ldrb	r3, [fp, #-14]
+ 555 03c8 013083E2 		add	r3, r3, #1
+ 556 03cc 0E304BE5 		strb	r3, [fp, #-14]
+ 557              	.L20:
+ 558 03d0 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 559 03d4 070053E3 		cmp	r3, #7
+ 560 03d8 F5FFFF9A 		bls	.L21
  232:system.c      ****     }
  233:system.c      **** 
  234:system.c      ****     /*all ints deactivated*/
  235:system.c      **** 	SSPIMSC = 0;
- 558              	.LM65:
- 559 03dc 0E32A0E3 		mov	r3, #-536870912
- 560 03e0 1A3983E2 		add	r3, r3, #425984
- 561 03e4 143083E2 		add	r3, r3, #20
- 562 03e8 0020A0E3 		mov	r2, #0
- 563 03ec 002083E5 		str	r2, [r3, #0]
+ 562              	.LM65:
+ 563 03dc 0E32A0E3 		mov	r3, #-536870912
+ 564 03e0 1A3983E2 		add	r3, r3, #425984
+ 565 03e4 143083E2 		add	r3, r3, #20
+ 566 03e8 0020A0E3 		mov	r2, #0
+ 567 03ec 002083E5 		str	r2, [r3, #0]
  236:system.c      **** 
  237:system.c      ****     /* Device select as master, SSP Enabled */
  238:system.c      ****     SSPCR1 = 0x00;// | SSPCR1_SSE;
- 565              	.LM66:
- 566 03f0 4E32A0E3 		mov	r3, #-536870908
- 567 03f4 1A3983E2 		add	r3, r3, #425984
- 568 03f8 0020A0E3 		mov	r2, #0
- 569 03fc 002083E5 		str	r2, [r3, #0]
+ 569              	.LM66:
+ 570 03f0 4E32A0E3 		mov	r3, #-536870908
+ 571 03f4 1A3983E2 		add	r3, r3, #425984
+ 572 03f8 0020A0E3 		mov	r2, #0
+ 573 03fc 002083E5 		str	r2, [r3, #0]
  239:system.c      **** 
  240:system.c      ****     return;
  241:system.c      **** 
  242:system.c      **** 
  243:system.c      **** }
- 571              	.LM67:
- 572 0400 0CD04BE2 		sub	sp, fp, #12
- 573 0404 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 574 0408 1EFF2FE1 		bx	lr
- 580              	.Lscope6:
- 581              		.align	2
- 583              		.global	pll_init
- 585              	pll_init:
+ 575              	.LM67:
+ 576 0400 0CD04BE2 		sub	sp, fp, #12
+ 577 0404 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 578 0408 1EFF2FE1 		bx	lr
+ 584              	.Lscope6:
+ 585              		.align	2
+ 587              		.global	pll_init
+ 589              	pll_init:
  244:system.c      **** 
  245:system.c      **** void pll_init(void)
  246:system.c      **** {
- 587              	.LM68:
- 588              		@ Function supports interworking.
- 589              		@ args = 0, pretend = 0, frame = 0
- 590              		@ frame_needed = 1, uses_anonymous_args = 0
- 591 040c 0DC0A0E1 		mov	ip, sp
- 592 0410 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 593 0414 04B04CE2 		sub	fp, ip, #4
+ 591              	.LM68:
+ 592              		@ Function supports interworking.
+ 593              		@ args = 0, pretend = 0, frame = 0
+ 594              		@ frame_needed = 1, uses_anonymous_args = 0
+ 595 040c 0DC0A0E1 		mov	ip, sp
+ 596 0410 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 597 0414 04B04CE2 		sub	fp, ip, #4
  247:system.c      ****   PLLCFG=0x23;    //0b00100011; => M=4,0690; P=2;
- 595              	.LM69:
- 596 0418 0E32A0E3 		mov	r3, #-536870912
- 597 041c 7F3983E2 		add	r3, r3, #2080768
- 598 0420 843083E2 		add	r3, r3, #132
- 599 0424 2320A0E3 		mov	r2, #35
- 600 0428 002083E5 		str	r2, [r3, #0]
+ 599              	.LM69:
+ 600 0418 0E32A0E3 		mov	r3, #-536870912
+ 601 041c 7F3983E2 		add	r3, r3, #2080768
+ 602 0420 843083E2 		add	r3, r3, #132
+ 603 0424 2320A0E3 		mov	r2, #35
+ 604 0428 002083E5 		str	r2, [r3, #0]
  248:system.c      ****   PLLCON=0x03;    //PLLE=1, PLLC=1 => PLL enabled as system clock
- 602              	.LM70:
- 603 042c 0E32A0E3 		mov	r3, #-536870912
- 604 0430 7F3983E2 		add	r3, r3, #2080768
- 605 0434 803083E2 		add	r3, r3, #128
- 606 0438 0320A0E3 		mov	r2, #3
- 607 043c 002083E5 		str	r2, [r3, #0]
+ 606              	.LM70:
+ 607 042c 0E32A0E3 		mov	r3, #-536870912
+ 608 0430 7F3983E2 		add	r3, r3, #2080768
+ 609 0434 803083E2 		add	r3, r3, #128
+ 610 0438 0320A0E3 		mov	r2, #3
+ 611 043c 002083E5 		str	r2, [r3, #0]
  249:system.c      **** }
- 609              	.LM71:
- 610 0440 0CD04BE2 		sub	sp, fp, #12
- 611 0444 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 612 0448 1EFF2FE1 		bx	lr
- 614              	.Lscope7:
- 615              		.align	2
- 617              		.global	pll_feed
- 619              	pll_feed:
+ 613              	.LM71:
+ 614 0440 0CD04BE2 		sub	sp, fp, #12
+ 615 0444 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 616 0448 1EFF2FE1 		bx	lr
+ 618              	.Lscope7:
+ 619              		.align	2
+ 621              		.global	pll_feed
+ 623              	pll_feed:
  250:system.c      **** 
  251:system.c      **** void pll_feed(void)
  252:system.c      **** {
- 621              	.LM72:
- 622              		@ Function supports interworking.
- 623              		@ args = 0, pretend = 0, frame = 0
- 624              		@ frame_needed = 1, uses_anonymous_args = 0
- 625 044c 0DC0A0E1 		mov	ip, sp
- 626 0450 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 627 0454 04B04CE2 		sub	fp, ip, #4
+ 625              	.LM72:
+ 626              		@ Function supports interworking.
+ 627              		@ args = 0, pretend = 0, frame = 0
+ 628              		@ frame_needed = 1, uses_anonymous_args = 0
+ 629 044c 0DC0A0E1 		mov	ip, sp
+ 630 0450 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 631 0454 04B04CE2 		sub	fp, ip, #4
  253:system.c      ****   PLLFEED=0xAA;
- 629              	.LM73:
- 630 0458 0E32A0E3 		mov	r3, #-536870912
- 631 045c 7F3983E2 		add	r3, r3, #2080768
- 632 0460 8C3083E2 		add	r3, r3, #140
- 633 0464 AA20A0E3 		mov	r2, #170
- 634 0468 002083E5 		str	r2, [r3, #0]
+ 633              	.LM73:
+ 634 0458 0E32A0E3 		mov	r3, #-536870912
+ 635 045c 7F3983E2 		add	r3, r3, #2080768
+ 636 0460 8C3083E2 		add	r3, r3, #140
+ 637 0464 AA20A0E3 		mov	r2, #170
+ 638 0468 002083E5 		str	r2, [r3, #0]
  254:system.c      ****   PLLFEED=0x55;
- 636              	.LM74:
- 637 046c 0E32A0E3 		mov	r3, #-536870912
- 638 0470 7F3983E2 		add	r3, r3, #2080768
- 639 0474 8C3083E2 		add	r3, r3, #140
- 640 0478 5520A0E3 		mov	r2, #85
- 641 047c 002083E5 		str	r2, [r3, #0]
+ 640              	.LM74:
+ 641 046c 0E32A0E3 		mov	r3, #-536870912
+ 642 0470 7F3983E2 		add	r3, r3, #2080768
+ 643 0474 8C3083E2 		add	r3, r3, #140
+ 644 0478 5520A0E3 		mov	r2, #85
+ 645 047c 002083E5 		str	r2, [r3, #0]
  255:system.c      **** }
- 643              	.LM75:
- 644 0480 0CD04BE2 		sub	sp, fp, #12
- 645 0484 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 646 0488 1EFF2FE1 		bx	lr
- 648              	.Lscope8:
- 649              		.align	2
- 651              		.global	processorClockFrequency
- 653              	processorClockFrequency:
+ 647              	.LM75:
+ 648 0480 0CD04BE2 		sub	sp, fp, #12
+ 649 0484 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 650 0488 1EFF2FE1 		bx	lr
+ 652              	.Lscope8:
+ 653              		.align	2
+ 655              		.global	processorClockFrequency
+ 657              	processorClockFrequency:
  256:system.c      **** 
  257:system.c      **** unsigned int processorClockFrequency(void)
  258:system.c      **** {
- 655              	.LM76:
- 656              		@ Function supports interworking.
- 657              		@ args = 0, pretend = 0, frame = 0
- 658              		@ frame_needed = 1, uses_anonymous_args = 0
- 659 048c 0DC0A0E1 		mov	ip, sp
- 660 0490 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 661 0494 04B04CE2 		sub	fp, ip, #4
+ 659              	.LM76:
+ 660              		@ Function supports interworking.
+ 661              		@ args = 0, pretend = 0, frame = 0
+ 662              		@ frame_needed = 1, uses_anonymous_args = 0
+ 663 048c 0DC0A0E1 		mov	ip, sp
+ 664 0490 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 665 0494 04B04CE2 		sub	fp, ip, #4
  259:system.c      ****   return 58982400;
- 663              	.LM77:
- 664 0498 E137A0E3 		mov	r3, #58982400
+ 667              	.LM77:
+ 668 0498 E137A0E3 		mov	r3, #58982400
  260:system.c      **** }
- 666              	.LM78:
- 667 049c 0300A0E1 		mov	r0, r3
- 668 04a0 0CD04BE2 		sub	sp, fp, #12
- 669 04a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 670 04a8 1EFF2FE1 		bx	lr
- 672              	.Lscope9:
- 673              		.global	__udivsi3
- 674              		.align	2
- 676              		.global	peripheralClockFrequency
- 678              	peripheralClockFrequency:
+ 670              	.LM78:
+ 671 049c 0300A0E1 		mov	r0, r3
+ 672 04a0 0CD04BE2 		sub	sp, fp, #12
+ 673 04a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 674 04a8 1EFF2FE1 		bx	lr
+ 676              	.Lscope9:
+ 677              		.global	__udivsi3
+ 678              		.align	2
+ 680              		.global	peripheralClockFrequency
+ 682              	peripheralClockFrequency:
  261:system.c      **** 
  262:system.c      **** unsigned int peripheralClockFrequency(void)
  263:system.c      **** {
- 680              	.LM79:
- 681              		@ Function supports interworking.
- 682              		@ args = 0, pretend = 0, frame = 8
- 683              		@ frame_needed = 1, uses_anonymous_args = 0
- 684 04ac 0DC0A0E1 		mov	ip, sp
- 685 04b0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 686 04b4 04B04CE2 		sub	fp, ip, #4
- 687 04b8 08D04DE2 		sub	sp, sp, #8
+ 684              	.LM79:
+ 685              		@ Function supports interworking.
+ 686              		@ args = 0, pretend = 0, frame = 8
+ 687              		@ frame_needed = 1, uses_anonymous_args = 0
+ 688 04ac 0DC0A0E1 		mov	ip, sp
+ 689 04b0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 690 04b4 04B04CE2 		sub	fp, ip, #4
+ 691 04b8 08D04DE2 		sub	sp, sp, #8
  264:system.c      ****   unsigned int divider;
  265:system.c      ****   switch (VPBDIV & 3)
- 689              	.LM80:
- 690 04bc 0E32A0E3 		mov	r3, #-536870912
- 691 04c0 7F3983E2 		add	r3, r3, #2080768
- 692 04c4 013C83E2 		add	r3, r3, #256
- 693 04c8 003093E5 		ldr	r3, [r3, #0]
- 694 04cc 033003E2 		and	r3, r3, #3
- 695 04d0 14300BE5 		str	r3, [fp, #-20]
- 696 04d4 14301BE5 		ldr	r3, [fp, #-20]
- 697 04d8 010053E3 		cmp	r3, #1
- 698 04dc 0900000A 		beq	.L33
- 699 04e0 14301BE5 		ldr	r3, [fp, #-20]
- 700 04e4 010053E3 		cmp	r3, #1
- 701 04e8 0300003A 		bcc	.L32
- 702 04ec 14301BE5 		ldr	r3, [fp, #-20]
- 703 04f0 020053E3 		cmp	r3, #2
- 704 04f4 0600000A 		beq	.L34
- 705 04f8 070000EA 		b	.L31
- 706              	.L32:
+ 693              	.LM80:
+ 694 04bc 0E32A0E3 		mov	r3, #-536870912
+ 695 04c0 7F3983E2 		add	r3, r3, #2080768
+ 696 04c4 013C83E2 		add	r3, r3, #256
+ 697 04c8 003093E5 		ldr	r3, [r3, #0]
+ 698 04cc 033003E2 		and	r3, r3, #3
+ 699 04d0 14300BE5 		str	r3, [fp, #-20]
+ 700 04d4 14301BE5 		ldr	r3, [fp, #-20]
+ 701 04d8 010053E3 		cmp	r3, #1
+ 702 04dc 0900000A 		beq	.L33
+ 703 04e0 14301BE5 		ldr	r3, [fp, #-20]
+ 704 04e4 010053E3 		cmp	r3, #1
+ 705 04e8 0300003A 		bcc	.L32
+ 706 04ec 14301BE5 		ldr	r3, [fp, #-20]
+ 707 04f0 020053E3 		cmp	r3, #2
+ 708 04f4 0600000A 		beq	.L34
+ 709 04f8 070000EA 		b	.L31
+ 710              	.L32:
  266:system.c      ****     {
  267:system.c      ****       case 0:
  268:system.c      ****         divider = 4;
- 708              	.LM81:
- 709 04fc 0430A0E3 		mov	r3, #4
- 710 0500 10300BE5 		str	r3, [fp, #-16]
+ 712              	.LM81:
+ 713 04fc 0430A0E3 		mov	r3, #4
+ 714 0500 10300BE5 		str	r3, [fp, #-16]
  269:system.c      ****         break;
- 712              	.LM82:
- 713 0504 040000EA 		b	.L31
- 714              	.L33:
+ 716              	.LM82:
+ 717 0504 040000EA 		b	.L31
+ 718              	.L33:
  270:system.c      ****       case 1:
  271:system.c      ****         divider = 1;
- 716              	.LM83:
- 717 0508 0130A0E3 		mov	r3, #1
- 718 050c 10300BE5 		str	r3, [fp, #-16]
+ 720              	.LM83:
+ 721 0508 0130A0E3 		mov	r3, #1
+ 722 050c 10300BE5 		str	r3, [fp, #-16]
  272:system.c      ****         break;
- 720              	.LM84:
- 721 0510 010000EA 		b	.L31
- 722              	.L34:
+ 724              	.LM84:
+ 725 0510 010000EA 		b	.L31
+ 726              	.L34:
  273:system.c      ****       case 2:
  274:system.c      ****         divider = 2;
- 724              	.LM85:
- 725 0514 0230A0E3 		mov	r3, #2
- 726 0518 10300BE5 		str	r3, [fp, #-16]
- 727              	.L31:
+ 728              	.LM85:
+ 729 0514 0230A0E3 		mov	r3, #2
+ 730 0518 10300BE5 		str	r3, [fp, #-16]
+ 731              	.L31:
  275:system.c      ****         break;
  276:system.c      ****     }
  277:system.c      ****   return processorClockFrequency() / divider;
- 729              	.LM86:
- 730 051c FEFFFFEB 		bl	processorClockFrequency
- 731 0520 0030A0E1 		mov	r3, r0
- 732 0524 0300A0E1 		mov	r0, r3
- 733 0528 10101BE5 		ldr	r1, [fp, #-16]
- 734 052c FEFFFFEB 		bl	__udivsi3
- 735 0530 0030A0E1 		mov	r3, r0
+ 733              	.LM86:
+ 734 051c FEFFFFEB 		bl	processorClockFrequency
+ 735 0520 0030A0E1 		mov	r3, r0
+ 736 0524 0300A0E1 		mov	r0, r3
+ 737 0528 10101BE5 		ldr	r1, [fp, #-16]
+ 738 052c FEFFFFEB 		bl	__udivsi3
+ 739 0530 0030A0E1 		mov	r3, r0
  278:system.c      **** }
- 737              	.LM87:
- 738 0534 0300A0E1 		mov	r0, r3
- 739 0538 0CD04BE2 		sub	sp, fp, #12
- 740 053c 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 741 0540 1EFF2FE1 		bx	lr
- 746              	.Lscope10:
- 747              		.align	2
- 750              		.global	delay
- 752              	delay:
+ 741              	.LM87:
+ 742 0534 0300A0E1 		mov	r0, r3
+ 743 0538 0CD04BE2 		sub	sp, fp, #12
+ 744 053c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 745 0540 1EFF2FE1 		bx	lr
+ 750              	.Lscope10:
+ 751              		.align	2
+ 754              		.global	delay
+ 756              	delay:
  279:system.c      **** 
  280:system.c      **** void delay(int n)
  281:system.c      **** {
- 754              	.LM88:
- 755              		@ Function supports interworking.
- 756              		@ args = 0, pretend = 0, frame = 8
- 757              		@ frame_needed = 1, uses_anonymous_args = 0
- 758 0544 0DC0A0E1 		mov	ip, sp
- 759 0548 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 760 054c 04B04CE2 		sub	fp, ip, #4
- 761 0550 08D04DE2 		sub	sp, sp, #8
- 762 0554 14000BE5 		str	r0, [fp, #-20]
+ 758              	.LM88:
+ 759              		@ Function supports interworking.
+ 760              		@ args = 0, pretend = 0, frame = 8
+ 761              		@ frame_needed = 1, uses_anonymous_args = 0
+ 762 0544 0DC0A0E1 		mov	ip, sp
+ 763 0548 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 764 054c 04B04CE2 		sub	fp, ip, #4
+ 765 0550 08D04DE2 		sub	sp, sp, #8
+ 766 0554 14000BE5 		str	r0, [fp, #-20]
  282:system.c      ****   volatile int i;
  283:system.c      ****   for (i = 0; i < n; ++i);
- 764              	.LM89:
- 765 0558 0030A0E3 		mov	r3, #0
- 766 055c 10300BE5 		str	r3, [fp, #-16]
- 767 0560 020000EA 		b	.L37
- 768              	.L38:
- 769 0564 10301BE5 		ldr	r3, [fp, #-16]
- 770 0568 013083E2 		add	r3, r3, #1
- 771 056c 10300BE5 		str	r3, [fp, #-16]
- 772              	.L37:
- 773 0570 10201BE5 		ldr	r2, [fp, #-16]
- 774 0574 14301BE5 		ldr	r3, [fp, #-20]
- 775 0578 030052E1 		cmp	r2, r3
- 776 057c F8FFFFBA 		blt	.L38
+ 768              	.LM89:
+ 769 0558 0030A0E3 		mov	r3, #0
+ 770 055c 10300BE5 		str	r3, [fp, #-16]
+ 771 0560 020000EA 		b	.L37
+ 772              	.L38:
+ 773 0564 10301BE5 		ldr	r3, [fp, #-16]
+ 774 0568 013083E2 		add	r3, r3, #1
+ 775 056c 10300BE5 		str	r3, [fp, #-16]
+ 776              	.L37:
+ 777 0570 10201BE5 		ldr	r2, [fp, #-16]
+ 778 0574 14301BE5 		ldr	r3, [fp, #-20]
+ 779 0578 030052E1 		cmp	r2, r3
+ 780 057c F8FFFFBA 		blt	.L38
  284:system.c      **** }
- 778              	.LM90:
- 779 0580 0CD04BE2 		sub	sp, fp, #12
- 780 0584 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 781 0588 1EFF2FE1 		bx	lr
- 786              	.Lscope11:
- 787              		.comm	GPS_timeout,4,4
- 788              		.comm	SYSTEM_initialized,1,1
- 789              		.comm	SSP_trans_cnt,4,4
- 794              	.Letext0:
- 795              		.ident	"GCC: (GNU) 4.1.1"
+ 782              	.LM90:
+ 783 0580 0CD04BE2 		sub	sp, fp, #12
+ 784 0584 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 785 0588 1EFF2FE1 		bx	lr
+ 790              	.Lscope11:
+ 791              		.comm	GPS_timeout,4,4
+ 792              		.comm	SYSTEM_initialized,1,1
+ 793              		.comm	SSP_trans_cnt,4,4
+ 798              	.Letext0:
+ 799              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 system.c
-     /tmp/ccbwk7gM.s:101    .text:00000000 $a
-     /tmp/ccbwk7gM.s:105    .text:00000000 init
-     /tmp/ccbwk7gM.s:585    .text:0000040c pll_init
-     /tmp/ccbwk7gM.s:619    .text:0000044c pll_feed
-     /tmp/ccbwk7gM.s:259    .text:00000134 init_ports
-     /tmp/ccbwk7gM.s:480    .text:00000338 init_spi
-     /tmp/ccbwk7gM.s:512    .text:00000370 init_spi1
-     /tmp/ccbwk7gM.s:332    .text:000001dc init_timer0
-     /tmp/ccbwk7gM.s:405    .text:00000284 PWM_Init
-     /tmp/ccbwk7gM.s:181    .text:00000088 init_interrupts
-     /tmp/ccbwk7gM.s:249    .text:00000124 $d
-     /tmp/ccbwk7gM.s:255    .text:00000134 $a
-     /tmp/ccbwk7gM.s:324    .text:000001d4 $d
-     /tmp/ccbwk7gM.s:328    .text:000001dc $a
-     /tmp/ccbwk7gM.s:678    .text:000004ac peripheralClockFrequency
-     /tmp/ccbwk7gM.s:398    .text:00000280 $d
-     /tmp/ccbwk7gM.s:401    .text:00000284 $a
-     /tmp/ccbwk7gM.s:653    .text:0000048c processorClockFrequency
-     /tmp/ccbwk7gM.s:752    .text:00000544 delay
+     /tmp/cchNbE1G.s:105    .text:00000000 $a
+     /tmp/cchNbE1G.s:109    .text:00000000 init
+     /tmp/cchNbE1G.s:589    .text:0000040c pll_init
+     /tmp/cchNbE1G.s:623    .text:0000044c pll_feed
+     /tmp/cchNbE1G.s:263    .text:00000134 init_ports
+     /tmp/cchNbE1G.s:484    .text:00000338 init_spi
+     /tmp/cchNbE1G.s:516    .text:00000370 init_spi1
+     /tmp/cchNbE1G.s:336    .text:000001dc init_timer0
+     /tmp/cchNbE1G.s:409    .text:00000284 PWM_Init
+     /tmp/cchNbE1G.s:185    .text:00000088 init_interrupts
+     /tmp/cchNbE1G.s:253    .text:00000124 $d
+     /tmp/cchNbE1G.s:259    .text:00000134 $a
+     /tmp/cchNbE1G.s:328    .text:000001d4 $d
+     /tmp/cchNbE1G.s:332    .text:000001dc $a
+     /tmp/cchNbE1G.s:682    .text:000004ac peripheralClockFrequency
+     /tmp/cchNbE1G.s:402    .text:00000280 $d
+     /tmp/cchNbE1G.s:405    .text:00000284 $a
+     /tmp/cchNbE1G.s:657    .text:0000048c processorClockFrequency
+     /tmp/cchNbE1G.s:756    .text:00000544 delay
                             *COM*:00000004 GPS_timeout
                             *COM*:00000001 SYSTEM_initialized
                             *COM*:00000004 SSP_trans_cnt
