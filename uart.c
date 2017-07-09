@@ -227,10 +227,12 @@ void uart0ISR(void) __irq
 				my_setpoint.position.y=receivePositionWayPointData.y;
 				my_setpoint.position.z=receivePositionWayPointData.z;
 				receiveCmdData.cmd=PACKAGE_DEFINE_POSITION_WAY_POINT;
+				break;
 			case PACKAGE_DEFINE_LAND:
 				memcpy(&receiveLandSignal,
 						&allDataBuffer,getPackageLength(pack_id));
 				receiveCmdData.cmd=PACKAGE_DEFINE_LAND;
+				break;
 			default:
 				break;
 			}
