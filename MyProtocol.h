@@ -96,6 +96,12 @@ typedef struct __fusion_Data{
 	int fusion_dheight;
 }FusionData;
 
+typedef struct __position_way_point_data{
+	float x;
+	float y;
+	float z;
+}PositionWayPointData;
+
 typedef enum __package_define{
 	PACKAGE_DEFINE_ALL,
 	PACKAGE_DEFINE_STATUS,
@@ -104,7 +110,8 @@ typedef enum __package_define{
 	PACKAGE_DEFINE_FUSION,
 	PACKAGE_DEFINE_DEBUG,
 	PACKAGE_DEFINE_PARAM,
-	PACKAGE_DEFINE_CMD
+	PACKAGE_DEFINE_CMD,
+	PACKAGE_DEFINE_POSITION_WAY_POINT,
 }PackageDefine;
 
 typedef struct __cmd_data{
@@ -118,6 +125,7 @@ typedef struct __cmd_data{
 #define DEBUG_DATA_LENGTH ((unsigned char)(sizeof(DebugData)))
 #define PARAM_DEBUG_LENGTH ((unsigned char)(sizeof(ParamDebug)))
 #define CMD_DATA_LENGTH ((unsigned char)(sizeof(CmdData)))
+#define POSITION_WAY_POINT_LENGTH ((unsigned char)(sizeof(PositionWayPointData)))
 
 typedef enum __parse_status{
 	PARSE_NOT_START,
@@ -161,9 +169,7 @@ void send_single(int fd,unsigned char c);
 ReceiveState my_receive(int fd,void* buffer,void* data,
 		int* id,unsigned char check);
 int receive_single(int fd,unsigned char* result);
-
 unsigned char getPackageLength(PackageDefine pd);
-
 extern long signed int (*read_callback)(int,void*,unsigned long);
 extern long signed int (*write_callback)(int,const void*,unsigned long int);
 #endif /* MYPROTOCOL_H_ */

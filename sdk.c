@@ -64,6 +64,8 @@ DebugData sendDebugData={0};
 DebugData receiveDebugData={0};
 ParamDebug sendParamDebug={0};
 ParamDebug receiveParamDebug={0};
+PositionWayPointData sendPositionWayPointData={0};
+PositionWayPointData receivePositionWayPointData={0};
 extern struct this_s my_this;
 CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
 int pack_id=0;

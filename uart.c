@@ -81,6 +81,8 @@ extern ParamDebug sendParamDebug;
 extern ParamDebug receiveParamDebug;
 extern DebugData sendDebugData;
 extern DebugData receiveDebugData;
+extern PositionWayPointData sendPositionWayPointData;
+extern PositionWayPointData receivePositionWayPointData;
 extern int vicon_count;
 extern int receive_valid_data_flag;
 extern struct this_s my_this ;
@@ -216,6 +218,13 @@ void uart0ISR(void) __irq
 				memcpy(&receiveCmdData,
 						&allDataBuffer,getPackageLength(pack_id));
 				break;
+			case PACKAGE_DEFINE_POSITION_WAY_POINT:
+				memcpy(&receivePositionWayPointData,
+						&allDataBuffer,getPackageLength(pack_id));
+				my_setpoint.position.x=receivePositionWayPointData.x;
+				my_setpoint.position.y=receivePositionWayPointData.y;
+				my_setpoint.position.z=receivePositionWayPointData.z;
+				receiveCmdData.cmd=PACKAGE_DEFINE_POSITION_WAY_POINT;
 			default:
 				break;
 			}

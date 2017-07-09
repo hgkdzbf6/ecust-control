@@ -120,7 +120,6 @@ ReceiveState my_receive(
 	*id=-1;
 	return RECEIVE_STATE_NOT_COMPLETED;
 }
-
 unsigned char getPackageLength(PackageDefine pd){
 	switch(pd){
 	case PACKAGE_DEFINE_STATUS:
@@ -137,6 +136,8 @@ unsigned char getPackageLength(PackageDefine pd){
 		return PARAM_DEBUG_LENGTH;
 	case PACKAGE_DEFINE_CMD:
 		return CMD_DATA_LENGTH;
+	case PACKAGE_DEFINE_POSITION_WAY_POINT:
+			return POSITION_WAY_POINT_LENGTH;
 	default:
 		return -1;
 	}

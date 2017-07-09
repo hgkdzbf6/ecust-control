@@ -81,6 +81,8 @@ extern MyViconData receivedViconData;
 extern DebugData sendDebugData;
 extern DebugData receiveDebugData;
 extern ParamDebug sendParamDebug;
+extern PositionWayPointData sendPositionWayPointData;
+extern PositionWayPointData receivePositionWayPointData;
 extern CmdData receiveCmdData;
 extern state_t my_setpoint;
 extern state_t my_state;
@@ -287,6 +289,14 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			my_send(1,PACKAGE_DEFINE_PARAM,
 					getPackageLength(PACKAGE_DEFINE_PARAM),
 					&sendParamDebug,1);
+			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
+		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_POSITION_WAY_POINT){
+			sendPositionWayPointData.x=my_setpoint.position.x;
+			sendPositionWayPointData.y=my_setpoint.position.y;
+			sendPositionWayPointData.z=my_setpoint.position.z;
+			my_send(1,PACKAGE_DEFINE_POSITION_WAY_POINT,
+					getPackageLength(PACKAGE_DEFINE_POSITION_WAY_POINT),
+					&sendPositionWayPointData,1);
 			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
 		}
 	}
