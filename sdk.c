@@ -141,7 +141,12 @@ void fake_gps3(void ){
 	if(receiveLandSignal.mode==LAND_MODE_NONE){
 		output_thrust=calc_thrust;
 	}else if(receiveLandSignal.mode==LAND_MODE_SLOW){
-		output_thrust=1600;
+		if(my_state.position.z>200){
+			my_setpoint.position.z=150;
+		}else{
+			output_thrust=0;
+			WO_CTRL_Input.yaw=2047;
+		}
 	}else if(receiveLandSignal.mode==LAND_MODE_FAST){
 		output_thrust=1400;
 	}else if(receiveLandSignal.mode==LAND_MODE_STOP){

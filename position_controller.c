@@ -98,7 +98,7 @@ struct this_s my_this = {
     },
   },
 
-  .thrustBase = 1850,
+  .thrustBase = 1890,
   .thrustMin  = 600,
 };
 

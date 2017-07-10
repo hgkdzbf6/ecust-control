@@ -99,7 +99,7 @@
  130 01d0 00000000 		.word	0
  131 01d4 00000000 		.space	8
  131      00000000 
- 132 01dc 3A07     		.short	1850
+ 132 01dc 6207     		.short	1890
  133 01de 5802     		.short	600
  134              		.bss
  135              		.align	2
@@ -216,7 +216,7 @@
   98:position_controller.c ****     },
   99:position_controller.c ****   },
  100:position_controller.c **** 
- 101:position_controller.c ****   .thrustBase = 1850,
+ 101:position_controller.c ****   .thrustBase = 1890,
  102:position_controller.c ****   .thrustMin  = 600,
  103:position_controller.c **** };
  104:position_controller.c **** 
@@ -1080,38 +1080,38 @@
  1018              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 position_controller.c
-     /tmp/ccAVY0K3.s:55     .data:00000000 rpLimit
-     /tmp/ccAVY0K3.s:52     .data:00000000 $d
-     /tmp/ccAVY0K3.s:61     .data:00000004 rpLimitOverhead
-     /tmp/ccAVY0K3.s:67     .data:00000008 xyVelMax
-     /tmp/ccAVY0K3.s:73     .data:0000000c zVelMax
-     /tmp/ccAVY0K3.s:79     .data:00000010 velMaxOverhead
-     /tmp/ccAVY0K3.s:86     .rodata:00000000 thrustScale
-     /tmp/ccAVY0K3.s:83     .rodata:00000000 $d
-     /tmp/ccAVY0K3.s:93     .data:00000014 my_this
-     /tmp/ccAVY0K3.s:135    .bss:00000000 $d
-     /tmp/ccAVY0K3.s:136    .bss:00000000 estimateMode.1455
-     /tmp/ccAVY0K3.s:140    .bss:00000004 prev_estimatedZ.1454
-     /tmp/ccAVY0K3.s:148    .text:00000000 $a
-     /tmp/ccAVY0K3.s:157    .text:00000000 positionEstimate
-     /tmp/ccAVY0K3.s:253    .text:00000114 $d
-     /tmp/ccAVY0K3.s:262    .text:0000011c $a
-     /tmp/ccAVY0K3.s:266    .text:0000011c positionControllerInit
-     /tmp/ccAVY0K3.s:392    .text:000002b8 $d
-     /tmp/ccAVY0K3.s:400    .text:000002d0 $a
-     /tmp/ccAVY0K3.s:408    .text:000002d0 runPid
-     /tmp/ccAVY0K3.s:453    .bss:00000008 acc_get_pos.1524
-     /tmp/ccAVY0K3.s:457    .bss:0000000c acc_get_vel.1523
-     /tmp/ccAVY0K3.s:461    .bss:00000010 result.1522
-     /tmp/ccAVY0K3.s:474    .text:0000033c data_fusion
-     /tmp/ccAVY0K3.s:586    .text:00000478 $d
-     /tmp/ccAVY0K3.s:604    .data:000001e0 y_temp.1552
-     /tmp/ccAVY0K3.s:610    .text:00000490 $a
-     /tmp/ccAVY0K3.s:618    .text:00000490 positionController
-     /tmp/ccAVY0K3.s:951    .text:000008e0 $d
-     /tmp/ccAVY0K3.s:976    .text:00000920 $a
-     /tmp/ccAVY0K3.s:980    .text:00000920 positionControllerResetAllPID
-     /tmp/ccAVY0K3.s:1005   .text:00000948 $d
+     /tmp/ccpEu8II.s:55     .data:00000000 rpLimit
+     /tmp/ccpEu8II.s:52     .data:00000000 $d
+     /tmp/ccpEu8II.s:61     .data:00000004 rpLimitOverhead
+     /tmp/ccpEu8II.s:67     .data:00000008 xyVelMax
+     /tmp/ccpEu8II.s:73     .data:0000000c zVelMax
+     /tmp/ccpEu8II.s:79     .data:00000010 velMaxOverhead
+     /tmp/ccpEu8II.s:86     .rodata:00000000 thrustScale
+     /tmp/ccpEu8II.s:83     .rodata:00000000 $d
+     /tmp/ccpEu8II.s:93     .data:00000014 my_this
+     /tmp/ccpEu8II.s:135    .bss:00000000 $d
+     /tmp/ccpEu8II.s:136    .bss:00000000 estimateMode.1455
+     /tmp/ccpEu8II.s:140    .bss:00000004 prev_estimatedZ.1454
+     /tmp/ccpEu8II.s:148    .text:00000000 $a
+     /tmp/ccpEu8II.s:157    .text:00000000 positionEstimate
+     /tmp/ccpEu8II.s:253    .text:00000114 $d
+     /tmp/ccpEu8II.s:262    .text:0000011c $a
+     /tmp/ccpEu8II.s:266    .text:0000011c positionControllerInit
+     /tmp/ccpEu8II.s:392    .text:000002b8 $d
+     /tmp/ccpEu8II.s:400    .text:000002d0 $a
+     /tmp/ccpEu8II.s:408    .text:000002d0 runPid
+     /tmp/ccpEu8II.s:453    .bss:00000008 acc_get_pos.1524
+     /tmp/ccpEu8II.s:457    .bss:0000000c acc_get_vel.1523
+     /tmp/ccpEu8II.s:461    .bss:00000010 result.1522
+     /tmp/ccpEu8II.s:474    .text:0000033c data_fusion
+     /tmp/ccpEu8II.s:586    .text:00000478 $d
+     /tmp/ccpEu8II.s:604    .data:000001e0 y_temp.1552
+     /tmp/ccpEu8II.s:610    .text:00000490 $a
+     /tmp/ccpEu8II.s:618    .text:00000490 positionController
+     /tmp/ccpEu8II.s:951    .text:000008e0 $d
+     /tmp/ccpEu8II.s:976    .text:00000920 $a
+     /tmp/ccpEu8II.s:980    .text:00000920 positionControllerResetAllPID
+     /tmp/ccpEu8II.s:1005   .text:00000948 $d
 
 UNDEFINED SYMBOLS
 __mulsf3
