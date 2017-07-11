@@ -113,6 +113,27 @@ typedef struct __land_signal{
 	LandMode mode;
 }LandSignal;
 
+typedef struct __my_normal_send_data{
+	int timestamp;
+	float x;
+	float y;
+	float z;
+	float vx;
+	float vy;
+	float vz;
+	float yaw;
+
+	float sp_x;
+	float sp_y;
+	float sp_z;
+
+	int sp_flag;
+	float debug_1;
+	float debug_2;
+	float debug_3;
+	float debug_4;
+}NormalData;
+
 typedef enum __package_define{
 	PACKAGE_DEFINE_ALL,
 	PACKAGE_DEFINE_STATUS,
@@ -124,7 +145,10 @@ typedef enum __package_define{
 	PACKAGE_DEFINE_CMD,
 	PACKAGE_DEFINE_POSITION_WAY_POINT,
 	PACKAGE_DEFINE_LAND,
+	PACKAGE_DEFINE_NOMAL_DATA,
 }PackageDefine;
+
+typedef NormalData SqlData;
 
 typedef struct __cmd_data{
 	int cmd;
@@ -139,6 +163,7 @@ typedef struct __cmd_data{
 #define CMD_DATA_LENGTH ((unsigned char)(sizeof(CmdData)))
 #define POSITION_WAY_POINT_LENGTH ((unsigned char)(sizeof(PositionWayPointData)))
 #define LAND_SIGNAL_LENGTH ((unsigned char)(sizeof(LandSignal)))
+#define NORMAL_DATA_LENGTH ((unsigned char)(sizeof(NormalData)))
 
 typedef enum __parse_status{
 	PARSE_NOT_START,
@@ -156,15 +181,6 @@ typedef struct __package_info{
 	unsigned char len;
 }PackageInfo;
 #define BUFFER_LENGTH 255
-
-//remote control only
-typedef struct __my_sql_data{
-	MyViconData viconData;
-	SystemState state;
-	float set_position;
-	float set_velocity;
-	float calc_thrust;
-}SqlData;
 
 void my_send(int fd
 		,PackageDefine pd

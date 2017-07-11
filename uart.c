@@ -92,6 +92,8 @@ extern state_t my_state;
 extern int output_thrust;
 extern CmdData receiveCmdData;
 extern int pack_id;
+extern int use_way_point_flag;
+extern NormalData receiveNormalData;
 extern int vicon_tp;
 
 void uart1ISR(void) __irq
@@ -232,6 +234,32 @@ void uart0ISR(void) __irq
 				memcpy(&receiveLandSignal,
 						&allDataBuffer,getPackageLength(pack_id));
 				receiveCmdData.cmd=PACKAGE_DEFINE_LAND;
+				break;
+			case PACKAGE_DEFINE_NOMAL_DATA:
+				memcpy(&receiveNormalData,
+						&allDataBuffer,getPackageLength(pack_id));
+				my_state.position.x=receiveNormalData.x;
+				my_state.position.y=receiveNormalData.y;
+				my_state.position.z=receiveNormalData.z;
+				my_state.velocity.x=receiveNormalData.vx;
+				my_state.velocity.y=receiveNormalData.vy;
+				my_state.velocity.z=receiveNormalData.vz;
+				my_state.attitude.yaw=receiveNormalData.yaw;
+				use_way_point_flag=receiveNormalData.sp_flag;
+				if(use_way_point_flag==1){
+					my_setpoint.position.x=receiveNormalData.sp_x;
+					my_setpoint.position.y=receiveNormalData.sp_y;
+					my_setpoint.position.z=receiveNormalData.sp_z;
+				}else if(use_way_point_flag==0){
+					my_setpoint.position.x=0;
+					my_setpoint.position.y=0;
+					my_setpoint.position.z=750;
+				}else if(use_way_point_flag==2){
+
+				}
+				vicon_tp=receiveNormalData.timestamp;
+				vicon_count++;
+				receiveCmdData.cmd=PACKAGE_DEFINE_NOMAL_DATA;
 				break;
 			default:
 				break;

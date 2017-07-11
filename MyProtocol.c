@@ -140,6 +140,8 @@ unsigned char getPackageLength(PackageDefine pd){
 			return POSITION_WAY_POINT_LENGTH;
 	case PACKAGE_DEFINE_LAND:
 			return LAND_SIGNAL_LENGTH;
+	case PACKAGE_DEFINE_NOMAL_DATA:
+			return NORMAL_DATA_LENGTH;
 	default:
 		return -1;
 	}

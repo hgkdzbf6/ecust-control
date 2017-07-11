@@ -5,7 +5,7 @@
   51              		.data
   52              		.align	2
   55              	rpLimit:
-  56 0000 00004844 		.word	1145569280
+  56 0000 0000FA43 		.word	1140457472
   57              		.global	rpLimitOverhead
   58              		.align	2
   61              	rpLimitOverhead:
@@ -13,7 +13,7 @@
   63              		.global	xyVelMax
   64              		.align	2
   67              	xyVelMax:
-  68 0008 0000C843 		.word	1137180672
+  68 0008 00004844 		.word	1145569280
   69              		.global	zVelMax
   70              		.align	2
   73              	zVelMax:
@@ -147,10 +147,10 @@
   29:position_controller.c **** #include "position_controller.h"
   30:position_controller.c **** 
   31:position_controller.c **** // Maximum roll/pitch angle permited
-  32:position_controller.c **** float rpLimit  = 800.0f;
+  32:position_controller.c **** float rpLimit  = 500.0f;
   33:position_controller.c **** float rpLimitOverhead = 1.10f;
   34:position_controller.c **** // Velocity maximums
-  35:position_controller.c **** float xyVelMax=400.0f;
+  35:position_controller.c **** float xyVelMax=800.0f;
   36:position_controller.c ****  float zVelMax  = 10.0f;
   37:position_controller.c ****  float velMaxOverhead = 1.10f;
   38:position_controller.c ****  const float thrustScale = 1000.0f;
@@ -1080,38 +1080,38 @@
  1018              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 position_controller.c
-     /tmp/ccpEu8II.s:55     .data:00000000 rpLimit
-     /tmp/ccpEu8II.s:52     .data:00000000 $d
-     /tmp/ccpEu8II.s:61     .data:00000004 rpLimitOverhead
-     /tmp/ccpEu8II.s:67     .data:00000008 xyVelMax
-     /tmp/ccpEu8II.s:73     .data:0000000c zVelMax
-     /tmp/ccpEu8II.s:79     .data:00000010 velMaxOverhead
-     /tmp/ccpEu8II.s:86     .rodata:00000000 thrustScale
-     /tmp/ccpEu8II.s:83     .rodata:00000000 $d
-     /tmp/ccpEu8II.s:93     .data:00000014 my_this
-     /tmp/ccpEu8II.s:135    .bss:00000000 $d
-     /tmp/ccpEu8II.s:136    .bss:00000000 estimateMode.1455
-     /tmp/ccpEu8II.s:140    .bss:00000004 prev_estimatedZ.1454
-     /tmp/ccpEu8II.s:148    .text:00000000 $a
-     /tmp/ccpEu8II.s:157    .text:00000000 positionEstimate
-     /tmp/ccpEu8II.s:253    .text:00000114 $d
-     /tmp/ccpEu8II.s:262    .text:0000011c $a
-     /tmp/ccpEu8II.s:266    .text:0000011c positionControllerInit
-     /tmp/ccpEu8II.s:392    .text:000002b8 $d
-     /tmp/ccpEu8II.s:400    .text:000002d0 $a
-     /tmp/ccpEu8II.s:408    .text:000002d0 runPid
-     /tmp/ccpEu8II.s:453    .bss:00000008 acc_get_pos.1524
-     /tmp/ccpEu8II.s:457    .bss:0000000c acc_get_vel.1523
-     /tmp/ccpEu8II.s:461    .bss:00000010 result.1522
-     /tmp/ccpEu8II.s:474    .text:0000033c data_fusion
-     /tmp/ccpEu8II.s:586    .text:00000478 $d
-     /tmp/ccpEu8II.s:604    .data:000001e0 y_temp.1552
-     /tmp/ccpEu8II.s:610    .text:00000490 $a
-     /tmp/ccpEu8II.s:618    .text:00000490 positionController
-     /tmp/ccpEu8II.s:951    .text:000008e0 $d
-     /tmp/ccpEu8II.s:976    .text:00000920 $a
-     /tmp/ccpEu8II.s:980    .text:00000920 positionControllerResetAllPID
-     /tmp/ccpEu8II.s:1005   .text:00000948 $d
+     /tmp/cck6xqCf.s:55     .data:00000000 rpLimit
+     /tmp/cck6xqCf.s:52     .data:00000000 $d
+     /tmp/cck6xqCf.s:61     .data:00000004 rpLimitOverhead
+     /tmp/cck6xqCf.s:67     .data:00000008 xyVelMax
+     /tmp/cck6xqCf.s:73     .data:0000000c zVelMax
+     /tmp/cck6xqCf.s:79     .data:00000010 velMaxOverhead
+     /tmp/cck6xqCf.s:86     .rodata:00000000 thrustScale
+     /tmp/cck6xqCf.s:83     .rodata:00000000 $d
+     /tmp/cck6xqCf.s:93     .data:00000014 my_this
+     /tmp/cck6xqCf.s:135    .bss:00000000 $d
+     /tmp/cck6xqCf.s:136    .bss:00000000 estimateMode.1455
+     /tmp/cck6xqCf.s:140    .bss:00000004 prev_estimatedZ.1454
+     /tmp/cck6xqCf.s:148    .text:00000000 $a
+     /tmp/cck6xqCf.s:157    .text:00000000 positionEstimate
+     /tmp/cck6xqCf.s:253    .text:00000114 $d
+     /tmp/cck6xqCf.s:262    .text:0000011c $a
+     /tmp/cck6xqCf.s:266    .text:0000011c positionControllerInit
+     /tmp/cck6xqCf.s:392    .text:000002b8 $d
+     /tmp/cck6xqCf.s:400    .text:000002d0 $a
+     /tmp/cck6xqCf.s:408    .text:000002d0 runPid
+     /tmp/cck6xqCf.s:453    .bss:00000008 acc_get_pos.1524
+     /tmp/cck6xqCf.s:457    .bss:0000000c acc_get_vel.1523
+     /tmp/cck6xqCf.s:461    .bss:00000010 result.1522
+     /tmp/cck6xqCf.s:474    .text:0000033c data_fusion
+     /tmp/cck6xqCf.s:586    .text:00000478 $d
+     /tmp/cck6xqCf.s:604    .data:000001e0 y_temp.1552
+     /tmp/cck6xqCf.s:610    .text:00000490 $a
+     /tmp/cck6xqCf.s:618    .text:00000490 positionController
+     /tmp/cck6xqCf.s:951    .text:000008e0 $d
+     /tmp/cck6xqCf.s:976    .text:00000920 $a
+     /tmp/cck6xqCf.s:980    .text:00000920 positionControllerResetAllPID
+     /tmp/cck6xqCf.s:1005   .text:00000948 $d
 
 UNDEFINED SYMBOLS
 __mulsf3

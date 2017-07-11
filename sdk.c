@@ -70,6 +70,8 @@ LandSignal sendLandSignal={LAND_MODE_NONE};
 LandSignal receiveLandSignal={LAND_MODE_NONE};
 extern struct this_s my_this;
 CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
+NormalData sendNormalData={0};
+NormalData receiveNormalData={0};
 int pack_id=0;
 
 
@@ -80,6 +82,7 @@ float calc_thrust;
 float calc_pitch;
 float calc_roll;
 int receive_valid_data_flag=0;
+int use_way_point_flag=0;
 volatile int output_thrust=1850;
 
 state_t my_state={
@@ -119,6 +122,7 @@ state_t my_setpoint={
 void fake_gps3(void ){
 	static int temp=1;
 	static int freq=0;
+	static int stop_flag=0;
 
 	WO_SDK.ctrl_mode=0x02;
 	WO_SDK.ctrl_enabled=1;
@@ -131,7 +135,7 @@ void fake_gps3(void ){
 		positionControllerInit();
 		my_this.pidVZ.setpoint=(float)RO_ALL_Data.angle_yaw/1000.0f*DEG_TO_RAD;
 	}
-	if(freq++==10){
+	if(freq++>=10){
 		freq=1;
 		my_state.attitude.pitch=(float)RO_ALL_Data.angle_pitch/1000.0f*DEG_TO_RAD;
 		my_state.attitude.roll=(float)RO_ALL_Data.angle_roll/1000.0f*DEG_TO_RAD;
@@ -139,22 +143,29 @@ void fake_gps3(void ){
 		positionController(&calc_thrust,&calc_pitch,&calc_roll,&my_state);
 	}
 	if(receiveLandSignal.mode==LAND_MODE_NONE){
+		WO_CTRL_Input.ctrl=0x0F;
 		output_thrust=calc_thrust;
+		WO_CTRL_Input.thrust=output_thrust;
+		WO_CTRL_Input.pitch=calc_pitch;
+		WO_CTRL_Input.roll=calc_roll;
 	}else if(receiveLandSignal.mode==LAND_MODE_SLOW){
+		stop_flag++;
 		if(my_state.position.z>200){
-			my_setpoint.position.z=150;
-		}else{
-			output_thrust=0;
-			WO_CTRL_Input.yaw=2047;
+			my_setpoint.position.z=-150;
+			my_this.thrustBase=1700;
+			WO_CTRL_Input.thrust=output_thrust;
 		}
-	}else if(receiveLandSignal.mode==LAND_MODE_FAST){
-		output_thrust=1400;
-	}else if(receiveLandSignal.mode==LAND_MODE_STOP){
-		output_thrust=0;
+		if(stop_flag>4000){
+			WO_CTRL_Input.thrust=1600;
+		}
+		if(stop_flag>6000){
+			WO_CTRL_Input.thrust=0;
+		}
+		//WO_CTRL_Input.thrust=0;
+		//WO_CTRL_Input.yaw=2047;
+		WO_CTRL_Input.pitch=calc_pitch;
+		WO_CTRL_Input.roll=calc_roll;
 	}
-	WO_CTRL_Input.thrust=output_thrust;
-	WO_CTRL_Input.pitch=calc_pitch;
-	WO_CTRL_Input.roll=calc_roll;
 
 }
 /* SDK_mainloop(void) is triggered @ 1kHz.

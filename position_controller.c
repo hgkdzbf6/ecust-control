@@ -29,10 +29,10 @@
 #include "position_controller.h"
 
 // Maximum roll/pitch angle permited
-float rpLimit  = 800.0f;
+float rpLimit  = 500.0f;
 float rpLimitOverhead = 1.10f;
 // Velocity maximums
-float xyVelMax=400.0f;
+float xyVelMax=800.0f;
  float zVelMax  = 10.0f;
  float velMaxOverhead = 1.10f;
  const float thrustScale = 1000.0f;

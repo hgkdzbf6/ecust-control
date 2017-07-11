@@ -97,6 +97,9 @@ extern int receive_valid_data_flag;
 extern int vicon_tp;
 extern float calc_pitch;
 extern float calc_roll;
+extern NormalData sendNormalData;
+extern NormalData receiveNormalData;
+extern int use_way_point_flag;
 
 void timer0ISR(void) __irq
 {
@@ -170,7 +173,8 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 {
     static unsigned char led_cnt=0, led_state=1;
 	unsigned char t;
-
+	static int mainloop_test=0;
+	mainloop_test++;
 	//blink red led if no GPS lock available
 	led_cnt++;
 	if((GPS_Data.status&0xFF)==0x03)
@@ -291,7 +295,7 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			my_send(1,PACKAGE_DEFINE_PARAM,
 					getPackageLength(PACKAGE_DEFINE_PARAM),
 					&sendParamDebug,1);
-			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
+			receiveCmdData.cmd=PACKAGE_DEFINE_NOMAL_DATA;
 		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_POSITION_WAY_POINT){
 			sendPositionWayPointData.x=my_setpoint.position.x;
 			sendPositionWayPointData.y=my_setpoint.position.y;
@@ -299,13 +303,36 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			my_send(1,PACKAGE_DEFINE_POSITION_WAY_POINT,
 					getPackageLength(PACKAGE_DEFINE_POSITION_WAY_POINT),
 					&sendPositionWayPointData,1);
-			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
+			receiveCmdData.cmd=PACKAGE_DEFINE_NOMAL_DATA;
 		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_LAND){
 			sendLandSignal.mode=receiveLandSignal.mode;
 			my_send(1,PACKAGE_DEFINE_LAND,
 					getPackageLength(PACKAGE_DEFINE_LAND),
 					&sendLandSignal,1);
-			receiveCmdData.cmd=PACKAGE_DEFINE_DEBUG;
+			receiveCmdData.cmd=PACKAGE_DEFINE_NOMAL_DATA;
+		}else if(receiveCmdData.cmd==PACKAGE_DEFINE_NOMAL_DATA){
+			sendNormalData.timestamp=vicon_tp;
+			sendNormalData.x=my_state.position.x;
+			sendNormalData.y=my_state.position.y;
+			sendNormalData.z=my_state.position.z;
+			sendNormalData.vx=my_state.velocity.x;
+			sendNormalData.vy=my_state.velocity.y;
+			sendNormalData.vz=my_state.velocity.z;
+			sendNormalData.yaw=my_state.attitude.yaw;
+
+			sendNormalData.sp_x=my_setpoint.position.x;
+			sendNormalData.sp_y=my_setpoint.position.y;
+			sendNormalData.sp_z=my_setpoint.position.z;
+			sendNormalData.sp_flag=use_way_point_flag;
+
+			sendNormalData.debug_1=mainloop_test;
+			sendNormalData.debug_2=0;
+			sendNormalData.debug_3=0;
+			sendNormalData.debug_4=0;
+			my_send(1,PACKAGE_DEFINE_NOMAL_DATA,
+					getPackageLength(PACKAGE_DEFINE_NOMAL_DATA),
+					&sendNormalData,1);
+			mainloop_test=0;
 		}
 	}
 	//handle gps data reception
