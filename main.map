@@ -191,7 +191,7 @@ LOAD /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/
 LOAD /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a
 END GROUP
 
-.text           0x00000000    0x1327c
+.text           0x00000000    0x13284
  *(.vectorg)
  .vectorg       0x00000000       0x98 Common_WinARM/src/Startup.o
                 0x00000050                __IRQ_Wrapper
@@ -287,297 +287,297 @@ END GROUP
                 0x00006b00                processorClockFrequency
                 0x00006b20                peripheralClockFrequency
                 0x00006bb8                delay
- .text          0x00006c00     0x126c uart.o
+ .text          0x00006c00     0x1274 uart.o
                 0x00006c00                uart1ISR
                 0x00006cd0                uart0ISR
-                0x0000732c                UARTInitialize
-                0x000073d8                UART1Initialize
-                0x00007484                UARTWriteChar
-                0x000074d4                UART1WriteChar
-                0x00007524                UARTReadChar
-                0x0000756c                UART1ReadChar
-                0x000075b4                __putchar
-                0x000075f8                UART_send
-                0x000076b4                UART1_send
-                0x00007748                UART_send_ringbuffer
-                0x000077b0                UART1_send_ringbuffer
-                0x00007818                UART_SendPacket
-                0x00007910                crc_update
-                0x00007a00                crc16
-                0x00007a94                ringbuffer
-                0x00007c80                ringbuffer1
- .text          0x00007e6c      0x2b4 syscalls.o
-                0x00007e6c                _read_r
-                0x00007f4c                _write_r
-                0x00007fe8                _close_r
-                0x00008014                _lseek_r
-                0x00008048                _fstat_r
-                0x00008084                isatty
-                0x000080ac                _sbrk_r
- .text          0x00008120      0x750 i2c.o
-                0x00008120                I2C0MasterHandler
-                0x000085bc                I2C0_send_motordata
-                0x00008668                I2CStart
-                0x000086fc                I2CStop
-                0x00008758                I2CInit
-                0x000087e0                I2CEngine
- .text          0x00008870      0x2d0 Common_WinARM/src/irq.o
-                0x00008890                init_VIC
-                0x00008954                install_irq
-                0x00008a48                uninstall_irq
- .text          0x00008b40      0x3ec adc.o
-                0x00008b40                ADCInit
-                0x00008bc8                ADC0Read
-                0x00008d04                ADC1Read
-                0x00008e0c                ADC0triggerSampling
-                0x00008e50                ADC0getSamplingResults
- .text          0x00008f2c      0x420 ssp.o
-                0x00008f2c                SSPHandler
-                0x00009104                LL_write_init
-                0x00009144                LL_write
- .text          0x0000934c      0x48c pelican_ptu.o
-                0x0000934c                PTU_init
-                0x00009418                PTU_update
-                0x00009610                SERVO_pitch_move
-                0x000096f8                SERVO_roll_move
- .text          0x000097d8       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
-                0x000097d8                memcpy
- .text          0x00009834       0x60 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
-                0x00009834                memset
- .text          0x00009894       0x8c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
-                0x00009894                __udivsi3
-                0x00009894                __aeabi_uidiv
-                0x00009910                __aeabi_uidivmod
- .text          0x00009920       0xa4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
-                0x00009920                __aeabi_idiv
-                0x00009920                __divsi3
-                0x000099b4                __aeabi_idivmod
- .text          0x000099c4        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
-                0x000099c4                __aeabi_ldiv0
-                0x000099c4                __div0
-                0x000099c4                __aeabi_idiv0
- .text          0x000099c8      0x430 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
-                0x000099c8                __aeabi_drsub
-                0x000099d0                __aeabi_dsub
-                0x000099d0                __subdf3
-                0x000099d4                __adddf3
-                0x000099d4                __aeabi_dadd
-                0x00009ce4                __aeabi_ui2d
-                0x00009ce4                __floatunsidf
-                0x00009d0c                __floatsidf
-                0x00009d0c                __aeabi_i2d
-                0x00009d38                __extendsfdf2
-                0x00009d38                __aeabi_f2d
-                0x00009d78                __aeabi_ul2d
-                0x00009d78                __floatundidf
-                0x00009d8c                __floatdidf
-                0x00009d8c                __aeabi_l2d
- .text          0x00009df8      0x49c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
-                0x00009df8                __aeabi_dmul
-                0x00009df8                __muldf3
-                0x0000a088                __aeabi_ddiv
-                0x0000a088                __divdf3
- .text          0x0000a294      0x140 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
-                0x0000a294                __gtdf2
-                0x0000a294                __gedf2
-                0x0000a29c                __ltdf2
-                0x0000a29c                __ledf2
-                0x0000a2a4                __cmpdf2
-                0x0000a2a4                __eqdf2
-                0x0000a2a4                __nedf2
-                0x0000a328                __aeabi_cdrcmple
-                0x0000a344                __aeabi_cdcmple
-                0x0000a344                __aeabi_cdcmpeq
-                0x0000a35c                __aeabi_dcmpeq
-                0x0000a374                __aeabi_dcmplt
-                0x0000a38c                __aeabi_dcmple
-                0x0000a3a4                __aeabi_dcmpge
-                0x0000a3bc                __aeabi_dcmpgt
- .text          0x0000a3d4       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
-                0x0000a3d4                __fixdfsi
-                0x0000a3d4                __aeabi_d2iz
- .text          0x0000a430      0x2ac /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
-                0x0000a430                __aeabi_frsub
-                0x0000a438                __subsf3
-                0x0000a438                __aeabi_fsub
-                0x0000a43c                __aeabi_fadd
-                0x0000a43c                __addsf3
-                0x0000a5f8                __aeabi_ui2f
-                0x0000a5f8                __floatunsisf
-                0x0000a600                __aeabi_i2f
-                0x0000a600                __floatsisf
-                0x0000a620                __floatundisf
-                0x0000a620                __aeabi_ul2f
-                0x0000a630                __floatdisf
-                0x0000a630                __aeabi_l2f
- .text          0x0000a6dc      0x2f8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
-                0x0000a6dc                __mulsf3
-                0x0000a6dc                __aeabi_fmul
-                0x0000a874                __divsf3
-                0x0000a874                __aeabi_fdiv
- .text          0x0000a9d4      0x110 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
-                0x0000a9d4                __gtsf2
-                0x0000a9d4                __gesf2
-                0x0000a9dc                __lesf2
-                0x0000a9dc                __ltsf2
-                0x0000a9e4                __nesf2
-                0x0000a9e4                __eqsf2
-                0x0000a9e4                __cmpsf2
-                0x0000aa44                __aeabi_cfrcmple
-                0x0000aa54                __aeabi_cfcmple
-                0x0000aa54                __aeabi_cfcmpeq
-                0x0000aa6c                __aeabi_fcmpeq
-                0x0000aa84                __aeabi_fcmplt
-                0x0000aa9c                __aeabi_fcmple
-                0x0000aab4                __aeabi_fcmpge
-                0x0000aacc                __aeabi_fcmpgt
- .text          0x0000aae4       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
-                0x0000aae4                __fixsfsi
-                0x0000aae4                __aeabi_f2iz
- .text          0x0000ab40     0x3250 .//libdeclination.a(declination.o)
-                0x0000d584                geomag
-                0x0000d5ec                geomg1
-                0x0000d65c                getDeclination
- .text          0x0000dd90     0x1e88 .//libublox.a(ublox.o)
-                0x0000dd90                uBloxSendMessage
-                0x0000dfa8                pollMessageRate
-                0x0000e000                setMessageRate
-                0x0000e064                uBloxResetConfiguration
-                0x0000e100                uBloxHandleMessage
-                0x0000e8b8                uBloxReceiveHandler
-                0x0000ef7c                uBloxReceiveEngine
- .text          0x0000fc18       0xb8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
-                0x0000fc18                cos
- .text          0x0000fcd0       0xbc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
-                0x0000fcd0                sin
- .text          0x0000fd8c       0x88 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_cos.o)
-                0x0000fd8c                cosf
- .text          0x0000fe14       0x88 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_sin.o)
-                0x0000fe14                sinf
- .text          0x0000fe9c       0xd0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
-                0x0000fe9c                atan2
- .text          0x0000ff6c       0xc4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
-                0x0000ff6c                sqrt
- .text          0x00010030      0x220 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
-                0x00010030                __ieee754_atan2
- .text          0x00010250      0x440 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
-                0x00010250                __ieee754_rem_pio2
- .text          0x00010690      0x1d8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
-                0x00010690                __ieee754_sqrt
- .text          0x00010868      0x308 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(ef_rem_pio2.o)
-                0x00010868                __ieee754_rem_pio2f
- .text          0x00010b70      0x28c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
-                0x00010b70                __kernel_cos
- .text          0x00010dfc      0x89c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
-                0x00010dfc                __kernel_rem_pio2
- .text          0x00011698      0x180 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
-                0x00011698                __kernel_sin
- .text          0x00011818      0x1ac /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_cos.o)
-                0x00011818                __kernel_cosf
- .text          0x000119c4      0x6fc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_rem_pio2.o)
-                0x000119c4                __kernel_rem_pio2f
- .text          0x000120c0      0x10c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_sin.o)
-                0x000120c0                __kernel_sinf
- .text          0x000121cc      0x380 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
-                0x000121cc                atan
- .text          0x0001254c       0x18 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
-                0x0001254c                fabs
- .text          0x00012564      0x16c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
-                0x00012564                floor
- .text          0x000126d0       0x1c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
-                0x000126d0                isnan
- .text          0x000126ec        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
- .text          0x000126ec        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
-                0x000126ec                matherr
- .text          0x000126f0      0x130 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
-                0x000126f0                scalbn
- .text          0x00012820        0xc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_fabs.o)
-                0x00012820                fabsf
- .text          0x0001282c       0x9c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_floor.o)
-                0x0001282c                floorf
- .text          0x000128c8       0xd8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_scalbn.o)
-                0x000128c8                scalbnf
- .text          0x000129a0       0x24 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
-                0x000129a0                copysign
- .text          0x000129c4       0x14 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_copysign.o)
-                0x000129c4                copysignf
- .text          0x000129d8       0xa0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
-                0x000129d8                __aeabi_d2f
-                0x000129d8                __truncdfsf2
- .text          0x00012a78        0xc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
-                0x00012a78                __errno
- .text          0x00012a84        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
+                0x00007334                UARTInitialize
+                0x000073e0                UART1Initialize
+                0x0000748c                UARTWriteChar
+                0x000074dc                UART1WriteChar
+                0x0000752c                UARTReadChar
+                0x00007574                UART1ReadChar
+                0x000075bc                __putchar
+                0x00007600                UART_send
+                0x000076bc                UART1_send
+                0x00007750                UART_send_ringbuffer
+                0x000077b8                UART1_send_ringbuffer
+                0x00007820                UART_SendPacket
+                0x00007918                crc_update
+                0x00007a08                crc16
+                0x00007a9c                ringbuffer
+                0x00007c88                ringbuffer1
+ .text          0x00007e74      0x2b4 syscalls.o
+                0x00007e74                _read_r
+                0x00007f54                _write_r
+                0x00007ff0                _close_r
+                0x0000801c                _lseek_r
+                0x00008050                _fstat_r
+                0x0000808c                isatty
+                0x000080b4                _sbrk_r
+ .text          0x00008128      0x750 i2c.o
+                0x00008128                I2C0MasterHandler
+                0x000085c4                I2C0_send_motordata
+                0x00008670                I2CStart
+                0x00008704                I2CStop
+                0x00008760                I2CInit
+                0x000087e8                I2CEngine
+ .text          0x00008878      0x2d0 Common_WinARM/src/irq.o
+                0x00008898                init_VIC
+                0x0000895c                install_irq
+                0x00008a50                uninstall_irq
+ .text          0x00008b48      0x3ec adc.o
+                0x00008b48                ADCInit
+                0x00008bd0                ADC0Read
+                0x00008d0c                ADC1Read
+                0x00008e14                ADC0triggerSampling
+                0x00008e58                ADC0getSamplingResults
+ .text          0x00008f34      0x420 ssp.o
+                0x00008f34                SSPHandler
+                0x0000910c                LL_write_init
+                0x0000914c                LL_write
+ .text          0x00009354      0x48c pelican_ptu.o
+                0x00009354                PTU_init
+                0x00009420                PTU_update
+                0x00009618                SERVO_pitch_move
+                0x00009700                SERVO_roll_move
+ .text          0x000097e0       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+                0x000097e0                memcpy
+ .text          0x0000983c       0x60 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+                0x0000983c                memset
+ .text          0x0000989c       0x8c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_udivsi3.o)
+                0x0000989c                __udivsi3
+                0x0000989c                __aeabi_uidiv
+                0x00009918                __aeabi_uidivmod
+ .text          0x00009928       0xa4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_divsi3.o)
+                0x00009928                __aeabi_idiv
+                0x00009928                __divsi3
+                0x000099bc                __aeabi_idivmod
+ .text          0x000099cc        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_dvmd_tls.o)
+                0x000099cc                __aeabi_ldiv0
+                0x000099cc                __div0
+                0x000099cc                __aeabi_idiv0
+ .text          0x000099d0      0x430 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubdf3.o)
+                0x000099d0                __aeabi_drsub
+                0x000099d8                __aeabi_dsub
+                0x000099d8                __subdf3
+                0x000099dc                __adddf3
+                0x000099dc                __aeabi_dadd
+                0x00009cec                __aeabi_ui2d
+                0x00009cec                __floatunsidf
+                0x00009d14                __floatsidf
+                0x00009d14                __aeabi_i2d
+                0x00009d40                __extendsfdf2
+                0x00009d40                __aeabi_f2d
+                0x00009d80                __aeabi_ul2d
+                0x00009d80                __floatundidf
+                0x00009d94                __floatdidf
+                0x00009d94                __aeabi_l2d
+ .text          0x00009e00      0x49c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivdf3.o)
+                0x00009e00                __aeabi_dmul
+                0x00009e00                __muldf3
+                0x0000a090                __aeabi_ddiv
+                0x0000a090                __divdf3
+ .text          0x0000a29c      0x140 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpdf2.o)
+                0x0000a29c                __gtdf2
+                0x0000a29c                __gedf2
+                0x0000a2a4                __ltdf2
+                0x0000a2a4                __ledf2
+                0x0000a2ac                __cmpdf2
+                0x0000a2ac                __eqdf2
+                0x0000a2ac                __nedf2
+                0x0000a330                __aeabi_cdrcmple
+                0x0000a34c                __aeabi_cdcmple
+                0x0000a34c                __aeabi_cdcmpeq
+                0x0000a364                __aeabi_dcmpeq
+                0x0000a37c                __aeabi_dcmplt
+                0x0000a394                __aeabi_dcmple
+                0x0000a3ac                __aeabi_dcmpge
+                0x0000a3c4                __aeabi_dcmpgt
+ .text          0x0000a3dc       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixdfsi.o)
+                0x0000a3dc                __fixdfsi
+                0x0000a3dc                __aeabi_d2iz
+ .text          0x0000a438      0x2ac /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_addsubsf3.o)
+                0x0000a438                __aeabi_frsub
+                0x0000a440                __subsf3
+                0x0000a440                __aeabi_fsub
+                0x0000a444                __aeabi_fadd
+                0x0000a444                __addsf3
+                0x0000a600                __aeabi_ui2f
+                0x0000a600                __floatunsisf
+                0x0000a608                __aeabi_i2f
+                0x0000a608                __floatsisf
+                0x0000a628                __floatundisf
+                0x0000a628                __aeabi_ul2f
+                0x0000a638                __floatdisf
+                0x0000a638                __aeabi_l2f
+ .text          0x0000a6e4      0x2f8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_muldivsf3.o)
+                0x0000a6e4                __mulsf3
+                0x0000a6e4                __aeabi_fmul
+                0x0000a87c                __divsf3
+                0x0000a87c                __aeabi_fdiv
+ .text          0x0000a9dc      0x110 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_cmpsf2.o)
+                0x0000a9dc                __gtsf2
+                0x0000a9dc                __gesf2
+                0x0000a9e4                __lesf2
+                0x0000a9e4                __ltsf2
+                0x0000a9ec                __nesf2
+                0x0000a9ec                __eqsf2
+                0x0000a9ec                __cmpsf2
+                0x0000aa4c                __aeabi_cfrcmple
+                0x0000aa5c                __aeabi_cfcmple
+                0x0000aa5c                __aeabi_cfcmpeq
+                0x0000aa74                __aeabi_fcmpeq
+                0x0000aa8c                __aeabi_fcmplt
+                0x0000aaa4                __aeabi_fcmple
+                0x0000aabc                __aeabi_fcmpge
+                0x0000aad4                __aeabi_fcmpgt
+ .text          0x0000aaec       0x5c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_fixsfsi.o)
+                0x0000aaec                __fixsfsi
+                0x0000aaec                __aeabi_f2iz
+ .text          0x0000ab48     0x3250 .//libdeclination.a(declination.o)
+                0x0000d58c                geomag
+                0x0000d5f4                geomg1
+                0x0000d664                getDeclination
+ .text          0x0000dd98     0x1e88 .//libublox.a(ublox.o)
+                0x0000dd98                uBloxSendMessage
+                0x0000dfb0                pollMessageRate
+                0x0000e008                setMessageRate
+                0x0000e06c                uBloxResetConfiguration
+                0x0000e108                uBloxHandleMessage
+                0x0000e8c0                uBloxReceiveHandler
+                0x0000ef84                uBloxReceiveEngine
+ .text          0x0000fc20       0xb8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_cos.o)
+                0x0000fc20                cos
+ .text          0x0000fcd8       0xbc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_sin.o)
+                0x0000fcd8                sin
+ .text          0x0000fd94       0x88 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_cos.o)
+                0x0000fd94                cosf
+ .text          0x0000fe1c       0x88 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_sin.o)
+                0x0000fe1c                sinf
+ .text          0x0000fea4       0xd0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+                0x0000fea4                atan2
+ .text          0x0000ff74       0xc4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+                0x0000ff74                sqrt
+ .text          0x00010038      0x220 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_atan2.o)
+                0x00010038                __ieee754_atan2
+ .text          0x00010258      0x440 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+                0x00010258                __ieee754_rem_pio2
+ .text          0x00010698      0x1d8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_sqrt.o)
+                0x00010698                __ieee754_sqrt
+ .text          0x00010870      0x308 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(ef_rem_pio2.o)
+                0x00010870                __ieee754_rem_pio2f
+ .text          0x00010b78      0x28c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_cos.o)
+                0x00010b78                __kernel_cos
+ .text          0x00010e04      0x89c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+                0x00010e04                __kernel_rem_pio2
+ .text          0x000116a0      0x180 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_sin.o)
+                0x000116a0                __kernel_sin
+ .text          0x00011820      0x1ac /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_cos.o)
+                0x00011820                __kernel_cosf
+ .text          0x000119cc      0x6fc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_rem_pio2.o)
+                0x000119cc                __kernel_rem_pio2f
+ .text          0x000120c8      0x10c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_sin.o)
+                0x000120c8                __kernel_sinf
+ .text          0x000121d4      0x380 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+                0x000121d4                atan
+ .text          0x00012554       0x18 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_fabs.o)
+                0x00012554                fabs
+ .text          0x0001256c      0x16c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_floor.o)
+                0x0001256c                floor
+ .text          0x000126d8       0x1c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_isnan.o)
+                0x000126d8                isnan
+ .text          0x000126f4        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+ .text          0x000126f4        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_matherr.o)
+                0x000126f4                matherr
+ .text          0x000126f8      0x130 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_scalbn.o)
+                0x000126f8                scalbn
+ .text          0x00012828        0xc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_fabs.o)
+                0x00012828                fabsf
+ .text          0x00012834       0x9c /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_floor.o)
+                0x00012834                floorf
+ .text          0x000128d0       0xd8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_scalbn.o)
+                0x000128d0                scalbnf
+ .text          0x000129a8       0x24 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_copysign.o)
+                0x000129a8                copysign
+ .text          0x000129cc       0x14 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(sf_copysign.o)
+                0x000129cc                copysignf
+ .text          0x000129e0       0xa0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/thumb/interwork/libgcc.a(_truncdfsf2.o)
+                0x000129e0                __aeabi_d2f
+                0x000129e0                __truncdfsf2
+ .text          0x00012a80        0xc /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(errno.o)
+                0x00012a80                __errno
+ .text          0x00012a8c        0x0 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
  *(.gnu.linkonce.t.*)
  *(.glue_7)
- .glue_7        0x00012a84       0x78 linker stubs
-                0x00012a84                __cos_from_arm
-                0x00012a90                __memcpy_from_arm
-                0x00012a9c                __memset_from_arm
-                0x00012aa8                __cosf_from_arm
-                0x00012ab4                __sinf_from_arm
-                0x00012ac0                ____divsi3_from_arm
-                0x00012acc                ____udivsi3_from_arm
-                0x00012ad8                __sqrt_from_arm
-                0x00012ae4                __sin_from_arm
-                0x00012af0                __atan2_from_arm
- *fill*         0x00012afc        0x4 00
- .glue_7.stub   0x00012b00       0x90 linker stubs
+ .glue_7        0x00012a8c       0x78 linker stubs
+                0x00012a8c                __cos_from_arm
+                0x00012a98                __memcpy_from_arm
+                0x00012aa4                __memset_from_arm
+                0x00012ab0                __cosf_from_arm
+                0x00012abc                __sinf_from_arm
+                0x00012ac8                ____divsi3_from_arm
+                0x00012ad4                ____udivsi3_from_arm
+                0x00012ae0                __sqrt_from_arm
+                0x00012aec                __sin_from_arm
+                0x00012af8                __atan2_from_arm
+ *fill*         0x00012b04        0x4 00
+ .glue_7.stub   0x00012b08       0x90 linker stubs
  *(.glue_7t)
  .glue_7t       0x00000000        0x0 linker stubs
  *(.gcc_except_table)
  *(.rodata)
- .rodata        0x00012b90        0x4 position_controller.o
-                0x00012b90                thrustScale
- .rodata        0x00012b94       0xe2 .//libublox.a(ublox.o)
- *fill*         0x00012c76        0x2 00
- .rodata        0x00012c78        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
- .rodata        0x00012c80        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
- .rodata        0x00012c88      0x188 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
- .rodata        0x00012e10      0x398 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(ef_rem_pio2.o)
- .rodata        0x000131a8       0x50 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
- .rodata        0x000131f8       0x38 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_rem_pio2.o)
- .rodata        0x00013230       0x40 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
- .rodata        0x00013270        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
-                0x00013270                __fdlib_version
- .rodata        0x00013274        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
-                0x00013274                _global_impure_ptr
+ .rodata        0x00012b98        0x4 position_controller.o
+                0x00012b98                thrustScale
+ .rodata        0x00012b9c       0xe2 .//libublox.a(ublox.o)
+ *fill*         0x00012c7e        0x2 00
+ .rodata        0x00012c80        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_atan2.o)
+ .rodata        0x00012c88        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(w_sqrt.o)
+ .rodata        0x00012c90      0x188 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(e_rem_pio2.o)
+ .rodata        0x00012e18      0x398 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(ef_rem_pio2.o)
+ .rodata        0x000131b0       0x50 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(k_rem_pio2.o)
+ .rodata        0x00013200       0x38 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(kf_rem_pio2.o)
+ .rodata        0x00013238       0x40 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_atan.o)
+ .rodata        0x00013278        0x4 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libm.a(s_lib_ver.o)
+                0x00013278                __fdlib_version
+ .rodata        0x0001327c        0x8 /usr/local/arm7/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/thumb/interwork/libg.a(impure.o)
+                0x0001327c                _global_impure_ptr
  *(.rodata*)
  *(.gnu.linkonce.r.*)
-                0x0001327c                . = ALIGN (0x4)
+                0x00013284                . = ALIGN (0x4)
 
-.vfp11_veneer   0x0001327c        0x0
+.vfp11_veneer   0x00013284        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x0001327c        0x0
+.v4_bx          0x00013284        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
-.iplt           0x0001327c        0x0
+.iplt           0x00013284        0x0
  .iplt          0x00000000        0x0 Common_WinARM/src/Startup.o
 
-.rel.dyn        0x0001327c        0x0
+.rel.dyn        0x00013284        0x0
  .rel.iplt      0x00000000        0x0 Common_WinARM/src/Startup.o
-                0x0001327c                . = ALIGN (0x4)
+                0x00013284                . = ALIGN (0x4)
 
-.ctors          0x0001327c        0x0
-                0x0001327c                PROVIDE (__ctors_start__, .)
+.ctors          0x00013284        0x0
+                0x00013284                PROVIDE (__ctors_start__, .)
  *(SORT(.ctors.*))
  *(.ctors)
-                0x0001327c                . = ALIGN (0x4)
-                0x0001327c                PROVIDE (__ctors_end__, .)
-                0x0001327c                . = ALIGN (0x4)
+                0x00013284                . = ALIGN (0x4)
+                0x00013284                PROVIDE (__ctors_end__, .)
+                0x00013284                . = ALIGN (0x4)
 
-.dtors          0x0001327c        0x0
-                0x0001327c                PROVIDE (__dtors_start__, .)
+.dtors          0x00013284        0x0
+                0x00013284                PROVIDE (__dtors_start__, .)
  *(SORT(.dtors.*))
  *(.dtors)
-                0x0001327c                . = ALIGN (0x4)
-                0x0001327c                PROVIDE (__dtors_end__, .)
-                0x0001327c                . = ALIGN (0x4)
-                0x0001327c                . = ALIGN (0x4)
-                0x0001327c                _etext = .
-                0x0001327c                PROVIDE (etext, .)
+                0x00013284                . = ALIGN (0x4)
+                0x00013284                PROVIDE (__dtors_end__, .)
+                0x00013284                . = ALIGN (0x4)
+                0x00013284                . = ALIGN (0x4)
+                0x00013284                _etext = .
+                0x00013284                PROVIDE (etext, .)
 
-.data           0x40000000      0xb80 load address 0x0001327c
+.data           0x40000000      0xb80 load address 0x00013284
                 0x40000000                _data = .
  *(.vectmapped)
                 0x40000000                . = ALIGN (0x4)
@@ -674,13 +674,13 @@ END GROUP
  *(.gnu.linkonce.d*)
                 0x40000b80                . = ALIGN (0x4)
 
-.igot.plt       0x40000b80        0x0 load address 0x00013dfc
+.igot.plt       0x40000b80        0x0 load address 0x00013e04
  .igot.plt      0x00000000        0x0 Common_WinARM/src/Startup.o
                 0x40000b80                . = ALIGN (0x4)
                 0x40000b80                _edata = .
                 0x40000b80                PROVIDE (edata, .)
 
-.bss            0x40000b80     0x1cc0 load address 0x00013dfc
+.bss            0x40000b80     0x1cc0 load address 0x00013e04
                 0x40000b80                __bss_start = .
                 0x40000b80                __bss_start__ = .
  *(.bss)

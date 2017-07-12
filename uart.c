@@ -251,9 +251,9 @@ void uart0ISR(void) __irq
 					my_setpoint.position.y=receiveNormalData.sp_y;
 					my_setpoint.position.z=receiveNormalData.sp_z;
 				}else if(use_way_point_flag==0){
-					my_setpoint.position.x=0;
-					my_setpoint.position.y=0;
-					my_setpoint.position.z=750;
+					my_setpoint.position.x=receiveNormalData.sp_x;
+					my_setpoint.position.y=receiveNormalData.sp_y;
+					my_setpoint.position.z=receiveNormalData.sp_z;
 				}else if(use_way_point_flag==2){
 
 				}
