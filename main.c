@@ -98,9 +98,10 @@ extern int vicon_tp;
 extern float calc_pitch;
 extern float calc_roll;
 extern NormalData sendNormalData;
+extern DebugArray sendDebugArray;
 extern NormalData receiveNormalData;
 extern int use_way_point_flag;
-
+extern float change_vicon_x;
 void timer0ISR(void) __irq
 {
   T0IR = 0x01;      //Clear the timer 0 interrupt
@@ -326,13 +327,17 @@ void mainloop(void) //mainloop is triggered at 1 kHz
 			sendNormalData.sp_flag=use_way_point_flag;
 
 			sendNormalData.debug_1=mainloop_test;
-			sendNormalData.debug_2=0;
-			sendNormalData.debug_3=0;
-			sendNormalData.debug_4=0;
+			sendNormalData.debug_2=my_setpoint.velocity.x;
+			sendNormalData.debug_3=my_setpoint.velocity.y;
+			sendNormalData.debug_4=change_vicon_x;//change_vicon_x;
 			my_send(1,PACKAGE_DEFINE_NOMAL_DATA,
 					getPackageLength(PACKAGE_DEFINE_NOMAL_DATA),
 					&sendNormalData,1);
 			mainloop_test=0;
+		}else if (receiveCmdData.cmd==PACKAGE_DEFINE_DEBUG_ARRAY){
+			my_send(1,PACKAGE_DEFINE_DEBUG_ARRAY,
+					getPackageLength(PACKAGE_DEFINE_DEBUG_ARRAY),
+					&sendDebugArray,1);
 		}
 	}
 	//handle gps data reception

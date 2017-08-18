@@ -1,9 +1,9 @@
    1              		.file	"MyProtocol.c"
    3              		.text
    4              	.Ltext0:
-  88              		.align	2
-  95              		.global	my_send
-  97              	my_send:
+  90              		.align	2
+  97              		.global	my_send
+  99              	my_send:
    1:MyProtocol.c  **** /*
    2:MyProtocol.c  ****  * MyProtocol.cpp
    3:MyProtocol.c  ****  *
@@ -19,240 +19,240 @@
   13:MyProtocol.c  **** 		,unsigned char pl
   14:MyProtocol.c  **** 		,void* data
   15:MyProtocol.c  **** 		,unsigned char check){
-  99              	.LM0:
- 100              		@ Function supports interworking.
- 101              		@ args = 4, pretend = 0, frame = 28
- 102              		@ frame_needed = 1, uses_anonymous_args = 0
- 103 0000 0DC0A0E1 		mov	ip, sp
- 104 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 105 0008 04B04CE2 		sub	fp, ip, #4
- 106 000c 1CD04DE2 		sub	sp, sp, #28
- 107 0010 18000BE5 		str	r0, [fp, #-24]
- 108 0014 1C100BE5 		str	r1, [fp, #-28]
- 109 0018 24300BE5 		str	r3, [fp, #-36]
- 110 001c 04109BE5 		ldr	r1, [fp, #4]
- 111 0020 0230A0E1 		mov	r3, r2
- 112 0024 20304BE5 		strb	r3, [fp, #-32]
- 113 0028 0130A0E1 		mov	r3, r1
- 114 002c 28304BE5 		strb	r3, [fp, #-40]
+ 101              	.LM0:
+ 102              		@ Function supports interworking.
+ 103              		@ args = 4, pretend = 0, frame = 28
+ 104              		@ frame_needed = 1, uses_anonymous_args = 0
+ 105 0000 0DC0A0E1 		mov	ip, sp
+ 106 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 107 0008 04B04CE2 		sub	fp, ip, #4
+ 108 000c 1CD04DE2 		sub	sp, sp, #28
+ 109 0010 18000BE5 		str	r0, [fp, #-24]
+ 110 0014 1C100BE5 		str	r1, [fp, #-28]
+ 111 0018 24300BE5 		str	r3, [fp, #-36]
+ 112 001c 04109BE5 		ldr	r1, [fp, #4]
+ 113 0020 0230A0E1 		mov	r3, r2
+ 114 0024 20304BE5 		strb	r3, [fp, #-32]
+ 115 0028 0130A0E1 		mov	r3, r1
+ 116 002c 28304BE5 		strb	r3, [fp, #-40]
   16:MyProtocol.c  **** 	int i=0;
- 116              	.LM1:
- 117 0030 0030A0E3 		mov	r3, #0
- 118 0034 14300BE5 		str	r3, [fp, #-20]
+ 118              	.LM1:
+ 119 0030 0030A0E3 		mov	r3, #0
+ 120 0034 14300BE5 		str	r3, [fp, #-20]
   17:MyProtocol.c  **** 	unsigned char t;
   18:MyProtocol.c  **** 	unsigned char crc;
   19:MyProtocol.c  **** 	//send header
   20:MyProtocol.c  **** 	send_single(fd,254);
- 120              	.LM2:
- 121 0038 18001BE5 		ldr	r0, [fp, #-24]
- 122 003c FE10A0E3 		mov	r1, #254
- 123 0040 FEFFFFEB 		bl	send_single
+ 122              	.LM2:
+ 123 0038 18001BE5 		ldr	r0, [fp, #-24]
+ 124 003c FE10A0E3 		mov	r1, #254
+ 125 0040 FEFFFFEB 		bl	send_single
   21:MyProtocol.c  **** 	//send package define
   22:MyProtocol.c  **** 	send_single(fd,(unsigned char)pd);
- 125              	.LM3:
- 126 0044 1C301BE5 		ldr	r3, [fp, #-28]
- 127 0048 FF3003E2 		and	r3, r3, #255
- 128 004c 18001BE5 		ldr	r0, [fp, #-24]
- 129 0050 0310A0E1 		mov	r1, r3
- 130 0054 FEFFFFEB 		bl	send_single
+ 127              	.LM3:
+ 128 0044 1C301BE5 		ldr	r3, [fp, #-28]
+ 129 0048 FF3003E2 		and	r3, r3, #255
+ 130 004c 18001BE5 		ldr	r0, [fp, #-24]
+ 131 0050 0310A0E1 		mov	r1, r3
+ 132 0054 FEFFFFEB 		bl	send_single
   23:MyProtocol.c  **** 	//send package length
   24:MyProtocol.c  **** 	send_single(fd,pl);
- 132              	.LM4:
- 133 0058 20305BE5 		ldrb	r3, [fp, #-32]	@ zero_extendqisi2
- 134 005c 18001BE5 		ldr	r0, [fp, #-24]
- 135 0060 0310A0E1 		mov	r1, r3
- 136 0064 FEFFFFEB 		bl	send_single
+ 134              	.LM4:
+ 135 0058 20305BE5 		ldrb	r3, [fp, #-32]	@ zero_extendqisi2
+ 136 005c 18001BE5 		ldr	r0, [fp, #-24]
+ 137 0060 0310A0E1 		mov	r1, r3
+ 138 0064 FEFFFFEB 		bl	send_single
   25:MyProtocol.c  **** 	if(check==0){
- 138              	.LM5:
- 139 0068 28305BE5 		ldrb	r3, [fp, #-40]	@ zero_extendqisi2
- 140 006c 000053E3 		cmp	r3, #0
- 141 0070 1300001A 		bne	.L2
+ 140              	.LM5:
+ 141 0068 28305BE5 		ldrb	r3, [fp, #-40]	@ zero_extendqisi2
+ 142 006c 000053E3 		cmp	r3, #0
+ 143 0070 1300001A 		bne	.L2
   26:MyProtocol.c  **** 		for(i=0;i<pl;i++){
- 143              	.LM6:
- 144 0074 0030A0E3 		mov	r3, #0
- 145 0078 14300BE5 		str	r3, [fp, #-20]
- 146 007c 0B0000EA 		b	.L4
- 147              	.L5:
+ 145              	.LM6:
+ 146 0074 0030A0E3 		mov	r3, #0
+ 147 0078 14300BE5 		str	r3, [fp, #-20]
+ 148 007c 0B0000EA 		b	.L4
+ 149              	.L5:
   27:MyProtocol.c  **** 			t=*((unsigned char*)data+i);
- 149              	.LM7:
- 150 0080 24201BE5 		ldr	r2, [fp, #-36]
- 151 0084 14301BE5 		ldr	r3, [fp, #-20]
- 152 0088 033082E0 		add	r3, r2, r3
- 153 008c 0030D3E5 		ldrb	r3, [r3, #0]
- 154 0090 0E304BE5 		strb	r3, [fp, #-14]
+ 151              	.LM7:
+ 152 0080 24201BE5 		ldr	r2, [fp, #-36]
+ 153 0084 14301BE5 		ldr	r3, [fp, #-20]
+ 154 0088 033082E0 		add	r3, r2, r3
+ 155 008c 0030D3E5 		ldrb	r3, [r3, #0]
+ 156 0090 0E304BE5 		strb	r3, [fp, #-14]
   28:MyProtocol.c  **** 			send_single(fd,t);
- 156              	.LM8:
- 157 0094 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
- 158 0098 18001BE5 		ldr	r0, [fp, #-24]
- 159 009c 0310A0E1 		mov	r1, r3
- 160 00a0 FEFFFFEB 		bl	send_single
+ 158              	.LM8:
+ 159 0094 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 160 0098 18001BE5 		ldr	r0, [fp, #-24]
+ 161 009c 0310A0E1 		mov	r1, r3
+ 162 00a0 FEFFFFEB 		bl	send_single
   26:MyProtocol.c  **** 		for(i=0;i<pl;i++){
- 162              	.LM9:
- 163 00a4 14301BE5 		ldr	r3, [fp, #-20]
- 164 00a8 013083E2 		add	r3, r3, #1
- 165 00ac 14300BE5 		str	r3, [fp, #-20]
- 166              	.L4:
- 167 00b0 20205BE5 		ldrb	r2, [fp, #-32]	@ zero_extendqisi2
- 168 00b4 14301BE5 		ldr	r3, [fp, #-20]
- 169 00b8 030052E1 		cmp	r2, r3
- 170 00bc EFFFFFCA 		bgt	.L5
- 171 00c0 1D0000EA 		b	.L7
- 172              	.L2:
+ 164              	.LM9:
+ 165 00a4 14301BE5 		ldr	r3, [fp, #-20]
+ 166 00a8 013083E2 		add	r3, r3, #1
+ 167 00ac 14300BE5 		str	r3, [fp, #-20]
+ 168              	.L4:
+ 169 00b0 20205BE5 		ldrb	r2, [fp, #-32]	@ zero_extendqisi2
+ 170 00b4 14301BE5 		ldr	r3, [fp, #-20]
+ 171 00b8 030052E1 		cmp	r2, r3
+ 172 00bc EFFFFFCA 		bgt	.L5
+ 173 00c0 1D0000EA 		b	.L7
+ 174              	.L2:
   29:MyProtocol.c  **** 		}
   30:MyProtocol.c  **** 	}else{
   31:MyProtocol.c  **** 		crc=254+pd+pl;
- 174              	.LM10:
- 175 00c4 1C301BE5 		ldr	r3, [fp, #-28]
- 176 00c8 FF2003E2 		and	r2, r3, #255
- 177 00cc 20305BE5 		ldrb	r3, [fp, #-32]
- 178 00d0 033082E0 		add	r3, r2, r3
- 179 00d4 FF3003E2 		and	r3, r3, #255
- 180 00d8 023043E2 		sub	r3, r3, #2
- 181 00dc 0D304BE5 		strb	r3, [fp, #-13]
+ 176              	.LM10:
+ 177 00c4 1C301BE5 		ldr	r3, [fp, #-28]
+ 178 00c8 FF2003E2 		and	r2, r3, #255
+ 179 00cc 20305BE5 		ldrb	r3, [fp, #-32]
+ 180 00d0 033082E0 		add	r3, r2, r3
+ 181 00d4 FF3003E2 		and	r3, r3, #255
+ 182 00d8 023043E2 		sub	r3, r3, #2
+ 183 00dc 0D304BE5 		strb	r3, [fp, #-13]
   32:MyProtocol.c  **** 		for(i=0;i<pl;i++){
- 183              	.LM11:
- 184 00e0 0030A0E3 		mov	r3, #0
- 185 00e4 14300BE5 		str	r3, [fp, #-20]
- 186 00e8 0F0000EA 		b	.L8
- 187              	.L9:
+ 185              	.LM11:
+ 186 00e0 0030A0E3 		mov	r3, #0
+ 187 00e4 14300BE5 		str	r3, [fp, #-20]
+ 188 00e8 0F0000EA 		b	.L8
+ 189              	.L9:
   33:MyProtocol.c  **** 			t=*((unsigned char*)data+i);
- 189              	.LM12:
- 190 00ec 24201BE5 		ldr	r2, [fp, #-36]
- 191 00f0 14301BE5 		ldr	r3, [fp, #-20]
- 192 00f4 033082E0 		add	r3, r2, r3
- 193 00f8 0030D3E5 		ldrb	r3, [r3, #0]
- 194 00fc 0E304BE5 		strb	r3, [fp, #-14]
+ 191              	.LM12:
+ 192 00ec 24201BE5 		ldr	r2, [fp, #-36]
+ 193 00f0 14301BE5 		ldr	r3, [fp, #-20]
+ 194 00f4 033082E0 		add	r3, r2, r3
+ 195 00f8 0030D3E5 		ldrb	r3, [r3, #0]
+ 196 00fc 0E304BE5 		strb	r3, [fp, #-14]
   34:MyProtocol.c  **** 			send_single(fd,t);
- 196              	.LM13:
- 197 0100 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
- 198 0104 18001BE5 		ldr	r0, [fp, #-24]
- 199 0108 0310A0E1 		mov	r1, r3
- 200 010c FEFFFFEB 		bl	send_single
+ 198              	.LM13:
+ 199 0100 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 200 0104 18001BE5 		ldr	r0, [fp, #-24]
+ 201 0108 0310A0E1 		mov	r1, r3
+ 202 010c FEFFFFEB 		bl	send_single
   35:MyProtocol.c  **** 			crc+=t;
- 202              	.LM14:
- 203 0110 0D205BE5 		ldrb	r2, [fp, #-13]
- 204 0114 0E305BE5 		ldrb	r3, [fp, #-14]
- 205 0118 033082E0 		add	r3, r2, r3
- 206 011c 0D304BE5 		strb	r3, [fp, #-13]
+ 204              	.LM14:
+ 205 0110 0D205BE5 		ldrb	r2, [fp, #-13]
+ 206 0114 0E305BE5 		ldrb	r3, [fp, #-14]
+ 207 0118 033082E0 		add	r3, r2, r3
+ 208 011c 0D304BE5 		strb	r3, [fp, #-13]
   32:MyProtocol.c  **** 		for(i=0;i<pl;i++){
- 208              	.LM15:
- 209 0120 14301BE5 		ldr	r3, [fp, #-20]
- 210 0124 013083E2 		add	r3, r3, #1
- 211 0128 14300BE5 		str	r3, [fp, #-20]
- 212              	.L8:
- 213 012c 20205BE5 		ldrb	r2, [fp, #-32]	@ zero_extendqisi2
- 214 0130 14301BE5 		ldr	r3, [fp, #-20]
- 215 0134 030052E1 		cmp	r2, r3
- 216 0138 EBFFFFCA 		bgt	.L9
- 217              	.L7:
+ 210              	.LM15:
+ 211 0120 14301BE5 		ldr	r3, [fp, #-20]
+ 212 0124 013083E2 		add	r3, r3, #1
+ 213 0128 14300BE5 		str	r3, [fp, #-20]
+ 214              	.L8:
+ 215 012c 20205BE5 		ldrb	r2, [fp, #-32]	@ zero_extendqisi2
+ 216 0130 14301BE5 		ldr	r3, [fp, #-20]
+ 217 0134 030052E1 		cmp	r2, r3
+ 218 0138 EBFFFFCA 		bgt	.L9
+ 219              	.L7:
   36:MyProtocol.c  **** 		}
   37:MyProtocol.c  **** 	}
   38:MyProtocol.c  **** 	if(check==0){
- 219              	.LM16:
- 220 013c 28305BE5 		ldrb	r3, [fp, #-40]	@ zero_extendqisi2
- 221 0140 000053E3 		cmp	r3, #0
- 222 0144 0300001A 		bne	.L10
+ 221              	.LM16:
+ 222 013c 28305BE5 		ldrb	r3, [fp, #-40]	@ zero_extendqisi2
+ 223 0140 000053E3 		cmp	r3, #0
+ 224 0144 0300001A 		bne	.L10
   39:MyProtocol.c  **** 		send_single(fd,0);
- 224              	.LM17:
- 225 0148 18001BE5 		ldr	r0, [fp, #-24]
- 226 014c 0010A0E3 		mov	r1, #0
- 227 0150 FEFFFFEB 		bl	send_single
- 228 0154 030000EA 		b	.L13
- 229              	.L10:
+ 226              	.LM17:
+ 227 0148 18001BE5 		ldr	r0, [fp, #-24]
+ 228 014c 0010A0E3 		mov	r1, #0
+ 229 0150 FEFFFFEB 		bl	send_single
+ 230 0154 030000EA 		b	.L13
+ 231              	.L10:
   40:MyProtocol.c  **** 	}else{
   41:MyProtocol.c  **** 		send_single(fd,crc);
- 231              	.LM18:
- 232 0158 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
- 233 015c 18001BE5 		ldr	r0, [fp, #-24]
- 234 0160 0310A0E1 		mov	r1, r3
- 235 0164 FEFFFFEB 		bl	send_single
- 236              	.L13:
+ 233              	.LM18:
+ 234 0158 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 235 015c 18001BE5 		ldr	r0, [fp, #-24]
+ 236 0160 0310A0E1 		mov	r1, r3
+ 237 0164 FEFFFFEB 		bl	send_single
+ 238              	.L13:
   42:MyProtocol.c  **** 	}
   43:MyProtocol.c  **** }
- 238              	.LM19:
- 239 0168 0CD04BE2 		sub	sp, fp, #12
- 240 016c 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 241 0170 1EFF2FE1 		bx	lr
- 249              	.Lscope0:
- 250              		.align	2
- 254              		.global	send_single
- 256              	send_single:
+ 240              	.LM19:
+ 241 0168 0CD04BE2 		sub	sp, fp, #12
+ 242 016c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 243 0170 1EFF2FE1 		bx	lr
+ 251              	.Lscope0:
+ 252              		.align	2
+ 256              		.global	send_single
+ 258              	send_single:
   44:MyProtocol.c  **** 
   45:MyProtocol.c  **** void send_single(int fd,unsigned char c){
- 258              	.LM20:
- 259              		@ Function supports interworking.
- 260              		@ args = 0, pretend = 0, frame = 8
- 261              		@ frame_needed = 1, uses_anonymous_args = 0
- 262 0174 0DC0A0E1 		mov	ip, sp
- 263 0178 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 264 017c 04B04CE2 		sub	fp, ip, #4
- 265 0180 08D04DE2 		sub	sp, sp, #8
- 266 0184 10000BE5 		str	r0, [fp, #-16]
- 267 0188 0130A0E1 		mov	r3, r1
- 268 018c 14304BE5 		strb	r3, [fp, #-20]
+ 260              	.LM20:
+ 261              		@ Function supports interworking.
+ 262              		@ args = 0, pretend = 0, frame = 8
+ 263              		@ frame_needed = 1, uses_anonymous_args = 0
+ 264 0174 0DC0A0E1 		mov	ip, sp
+ 265 0178 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 266 017c 04B04CE2 		sub	fp, ip, #4
+ 267 0180 08D04DE2 		sub	sp, sp, #8
+ 268 0184 10000BE5 		str	r0, [fp, #-16]
+ 269 0188 0130A0E1 		mov	r3, r1
+ 270 018c 14304BE5 		strb	r3, [fp, #-20]
   46:MyProtocol.c  **** 	UARTWriteChar(c);//read_callback(fd,&c,1);
- 270              	.LM21:
- 271 0190 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
- 272 0194 0300A0E1 		mov	r0, r3
- 273 0198 FEFFFFEB 		bl	UARTWriteChar
+ 272              	.LM21:
+ 273 0190 14305BE5 		ldrb	r3, [fp, #-20]	@ zero_extendqisi2
+ 274 0194 0300A0E1 		mov	r0, r3
+ 275 0198 FEFFFFEB 		bl	UARTWriteChar
   47:MyProtocol.c  **** }
- 275              	.LM22:
- 276 019c 0CD04BE2 		sub	sp, fp, #12
- 277 01a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 278 01a4 1EFF2FE1 		bx	lr
- 280              	.Lscope1:
- 281              		.align	2
- 285              		.global	receive_single
- 287              	receive_single:
+ 277              	.LM22:
+ 278 019c 0CD04BE2 		sub	sp, fp, #12
+ 279 01a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 280 01a4 1EFF2FE1 		bx	lr
+ 282              	.Lscope1:
+ 283              		.align	2
+ 287              		.global	receive_single
+ 289              	receive_single:
   48:MyProtocol.c  **** 
   49:MyProtocol.c  **** int receive_single(int fd,unsigned char* result){
- 289              	.LM23:
- 290              		@ Function supports interworking.
- 291              		@ args = 0, pretend = 0, frame = 8
- 292              		@ frame_needed = 1, uses_anonymous_args = 0
- 293 01a8 0DC0A0E1 		mov	ip, sp
- 294 01ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 295 01b0 04B04CE2 		sub	fp, ip, #4
- 296 01b4 08D04DE2 		sub	sp, sp, #8
- 297 01b8 10000BE5 		str	r0, [fp, #-16]
- 298 01bc 14100BE5 		str	r1, [fp, #-20]
+ 291              	.LM23:
+ 292              		@ Function supports interworking.
+ 293              		@ args = 0, pretend = 0, frame = 8
+ 294              		@ frame_needed = 1, uses_anonymous_args = 0
+ 295 01a8 0DC0A0E1 		mov	ip, sp
+ 296 01ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 297 01b0 04B04CE2 		sub	fp, ip, #4
+ 298 01b4 08D04DE2 		sub	sp, sp, #8
+ 299 01b8 10000BE5 		str	r0, [fp, #-16]
+ 300 01bc 14100BE5 		str	r1, [fp, #-20]
   50:MyProtocol.c  **** 	*result=(unsigned char)fd;
- 300              	.LM24:
- 301 01c0 10301BE5 		ldr	r3, [fp, #-16]
- 302 01c4 FF3003E2 		and	r3, r3, #255
- 303 01c8 14201BE5 		ldr	r2, [fp, #-20]
- 304 01cc 0030C2E5 		strb	r3, [r2, #0]
+ 302              	.LM24:
+ 303 01c0 10301BE5 		ldr	r3, [fp, #-16]
+ 304 01c4 FF3003E2 		and	r3, r3, #255
+ 305 01c8 14201BE5 		ldr	r2, [fp, #-20]
+ 306 01cc 0030C2E5 		strb	r3, [r2, #0]
   51:MyProtocol.c  **** 	return 1;
- 306              	.LM25:
- 307 01d0 0130A0E3 		mov	r3, #1
+ 308              	.LM25:
+ 309 01d0 0130A0E3 		mov	r3, #1
   52:MyProtocol.c  **** }
- 309              	.LM26:
- 310 01d4 0300A0E1 		mov	r0, r3
- 311 01d8 0CD04BE2 		sub	sp, fp, #12
- 312 01dc 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 313 01e0 1EFF2FE1 		bx	lr
- 315              	.Lscope2:
- 316              		.bss
- 317              	crc.1797:
- 318 0000 00       		.space	1
- 320              	i.1796:
- 321 0001 00       		.space	1
- 323              	len.1795:
- 324 0002 00       		.space	1
- 326              	my_index.1794:
- 327 0003 00       		.space	1
- 329              	t.1793:
- 330 0004 00       		.space	1
- 332 0005 000000   		.align	2
- 333              	flag.1792:
- 334 0008 00000000 		.space	4
- 336              		.align	2
- 337              	status.1791:
- 338 000c 00000000 		.space	4
- 340              		.text
- 341              		.align	2
- 348              		.global	my_receive
- 350              	my_receive:
+ 311              	.LM26:
+ 312 01d4 0300A0E1 		mov	r0, r3
+ 313 01d8 0CD04BE2 		sub	sp, fp, #12
+ 314 01dc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 315 01e0 1EFF2FE1 		bx	lr
+ 317              	.Lscope2:
+ 318              		.bss
+ 319              	crc.1802:
+ 320 0000 00       		.space	1
+ 322              	i.1801:
+ 323 0001 00       		.space	1
+ 325              	len.1800:
+ 326 0002 00       		.space	1
+ 328              	my_index.1799:
+ 329 0003 00       		.space	1
+ 331              	t.1798:
+ 332 0004 00       		.space	1
+ 334 0005 000000   		.align	2
+ 335              	flag.1797:
+ 336 0008 00000000 		.space	4
+ 338              		.align	2
+ 339              	status.1796:
+ 340 000c 00000000 		.space	4
+ 342              		.text
+ 343              		.align	2
+ 350              		.global	my_receive
+ 352              	my_receive:
   53:MyProtocol.c  **** 
   54:MyProtocol.c  **** //return 0: package is not completed
   55:MyProtocol.c  **** //return 1:package is available
@@ -262,20 +262,20 @@
   59:MyProtocol.c  **** 		void* data,
   60:MyProtocol.c  **** 		int* id,
   61:MyProtocol.c  **** 		unsigned char check){
- 352              	.LM27:
- 353              		@ Function supports interworking.
- 354              		@ args = 4, pretend = 0, frame = 24
- 355              		@ frame_needed = 1, uses_anonymous_args = 0
- 356 01e4 0DC0A0E1 		mov	ip, sp
- 357 01e8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 358 01ec 04B04CE2 		sub	fp, ip, #4
- 359 01f0 18D04DE2 		sub	sp, sp, #24
- 360 01f4 10000BE5 		str	r0, [fp, #-16]
- 361 01f8 14100BE5 		str	r1, [fp, #-20]
- 362 01fc 18200BE5 		str	r2, [fp, #-24]
- 363 0200 1C300BE5 		str	r3, [fp, #-28]
- 364 0204 04309BE5 		ldr	r3, [fp, #4]
- 365 0208 20304BE5 		strb	r3, [fp, #-32]
+ 354              	.LM27:
+ 355              		@ Function supports interworking.
+ 356              		@ args = 4, pretend = 0, frame = 24
+ 357              		@ frame_needed = 1, uses_anonymous_args = 0
+ 358 01e4 0DC0A0E1 		mov	ip, sp
+ 359 01e8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 360 01ec 04B04CE2 		sub	fp, ip, #4
+ 361 01f0 18D04DE2 		sub	sp, sp, #24
+ 362 01f4 10000BE5 		str	r0, [fp, #-16]
+ 363 01f8 14100BE5 		str	r1, [fp, #-20]
+ 364 01fc 18200BE5 		str	r2, [fp, #-24]
+ 365 0200 1C300BE5 		str	r3, [fp, #-28]
+ 366 0204 04309BE5 		ldr	r3, [fp, #4]
+ 367 0208 20304BE5 		strb	r3, [fp, #-32]
   62:MyProtocol.c  **** 	//character store temporally
   63:MyProtocol.c  **** 	static int status;
   64:MyProtocol.c  **** 	static ParseStatus flag=PARSE_NOT_START;
@@ -287,461 +287,469 @@
   70:MyProtocol.c  **** 	static unsigned char i=0;
   71:MyProtocol.c  **** 	static unsigned char crc;
   72:MyProtocol.c  **** 	status=receive_single(fd,&t);
- 367              	.LM28:
- 368 020c 10001BE5 		ldr	r0, [fp, #-16]
- 369 0210 2C139FE5 		ldr	r1, .L41
- 370 0214 FEFFFFEB 		bl	receive_single
- 371 0218 0020A0E1 		mov	r2, r0
- 372 021c 24339FE5 		ldr	r3, .L41+4
- 373 0220 002083E5 		str	r2, [r3, #0]
+ 369              	.LM28:
+ 370 020c 10001BE5 		ldr	r0, [fp, #-16]
+ 371 0210 2C139FE5 		ldr	r1, .L41
+ 372 0214 FEFFFFEB 		bl	receive_single
+ 373 0218 0020A0E1 		mov	r2, r0
+ 374 021c 24339FE5 		ldr	r3, .L41+4
+ 375 0220 002083E5 		str	r2, [r3, #0]
   73:MyProtocol.c  **** 	if(status!=0){
- 375              	.LM29:
- 376 0224 1C339FE5 		ldr	r3, .L41+4
- 377 0228 003093E5 		ldr	r3, [r3, #0]
- 378 022c 000053E3 		cmp	r3, #0
- 379 0230 B900000A 		beq	.L19
+ 377              	.LM29:
+ 378 0224 1C339FE5 		ldr	r3, .L41+4
+ 379 0228 003093E5 		ldr	r3, [r3, #0]
+ 380 022c 000053E3 		cmp	r3, #0
+ 381 0230 B900000A 		beq	.L19
   74:MyProtocol.c  **** 		//some data received
   75:MyProtocol.c  **** 		if(t==254&&flag==PARSE_NOT_START){
- 381              	.LM30:
- 382 0234 08339FE5 		ldr	r3, .L41
- 383 0238 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 384 023c FE0053E3 		cmp	r3, #254
- 385 0240 0A00001A 		bne	.L21
- 386 0244 00339FE5 		ldr	r3, .L41+8
- 387 0248 003093E5 		ldr	r3, [r3, #0]
- 388 024c 000053E3 		cmp	r3, #0
- 389 0250 0600001A 		bne	.L21
+ 383              	.LM30:
+ 384 0234 08339FE5 		ldr	r3, .L41
+ 385 0238 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 386 023c FE0053E3 		cmp	r3, #254
+ 387 0240 0A00001A 		bne	.L21
+ 388 0244 00339FE5 		ldr	r3, .L41+8
+ 389 0248 003093E5 		ldr	r3, [r3, #0]
+ 390 024c 000053E3 		cmp	r3, #0
+ 391 0250 0600001A 		bne	.L21
   76:MyProtocol.c  **** 			crc=254;
- 391              	.LM31:
- 392 0254 F4229FE5 		ldr	r2, .L41+12
- 393 0258 0130E0E3 		mvn	r3, #1
- 394 025c 0030C2E5 		strb	r3, [r2, #0]
+ 393              	.LM31:
+ 394 0254 F4229FE5 		ldr	r2, .L41+12
+ 395 0258 0130E0E3 		mvn	r3, #1
+ 396 025c 0030C2E5 		strb	r3, [r2, #0]
   77:MyProtocol.c  **** 			flag=PARSE_READ_ID;
- 396              	.LM32:
- 397 0260 E4229FE5 		ldr	r2, .L41+8
- 398 0264 0130A0E3 		mov	r3, #1
- 399 0268 003082E5 		str	r3, [r2, #0]
+ 398              	.LM32:
+ 399 0260 E4229FE5 		ldr	r2, .L41+8
+ 400 0264 0130A0E3 		mov	r3, #1
+ 401 0268 003082E5 		str	r3, [r2, #0]
   75:MyProtocol.c  **** 		if(t==254&&flag==PARSE_NOT_START){
- 401              	.LM33:
- 402 026c 5F0000EA 		b	.L24
- 403              	.L21:
+ 403              	.LM33:
+ 404 026c 5F0000EA 		b	.L24
+ 405              	.L21:
   78:MyProtocol.c  **** 		}else if(flag==PARSE_READ_ID){
- 405              	.LM34:
- 406 0270 D4329FE5 		ldr	r3, .L41+8
- 407 0274 003093E5 		ldr	r3, [r3, #0]
- 408 0278 010053E3 		cmp	r3, #1
- 409 027c 0F00001A 		bne	.L25
+ 407              	.LM34:
+ 408 0270 D4329FE5 		ldr	r3, .L41+8
+ 409 0274 003093E5 		ldr	r3, [r3, #0]
+ 410 0278 010053E3 		cmp	r3, #1
+ 411 027c 0F00001A 		bne	.L25
   79:MyProtocol.c  **** 			my_index=t;
- 411              	.LM35:
- 412 0280 BC329FE5 		ldr	r3, .L41
- 413 0284 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 414 0288 C4229FE5 		ldr	r2, .L41+16
- 415 028c 0030C2E5 		strb	r3, [r2, #0]
+ 413              	.LM35:
+ 414 0280 BC329FE5 		ldr	r3, .L41
+ 415 0284 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 416 0288 C4229FE5 		ldr	r2, .L41+16
+ 417 028c 0030C2E5 		strb	r3, [r2, #0]
   80:MyProtocol.c  **** 			crc+=t;
- 417              	.LM36:
- 418 0290 B8329FE5 		ldr	r3, .L41+12
- 419 0294 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
- 420 0298 A4329FE5 		ldr	r3, .L41
- 421 029c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 422 02a0 033082E0 		add	r3, r2, r3
- 423 02a4 FF3003E2 		and	r3, r3, #255
- 424 02a8 A0229FE5 		ldr	r2, .L41+12
- 425 02ac 0030C2E5 		strb	r3, [r2, #0]
+ 419              	.LM36:
+ 420 0290 B8329FE5 		ldr	r3, .L41+12
+ 421 0294 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 422 0298 A4329FE5 		ldr	r3, .L41
+ 423 029c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 424 02a0 033082E0 		add	r3, r2, r3
+ 425 02a4 FF3003E2 		and	r3, r3, #255
+ 426 02a8 A0229FE5 		ldr	r2, .L41+12
+ 427 02ac 0030C2E5 		strb	r3, [r2, #0]
   81:MyProtocol.c  **** 			flag=PARSE_READ_LEN;
- 427              	.LM37:
- 428 02b0 94229FE5 		ldr	r2, .L41+8
- 429 02b4 0230A0E3 		mov	r3, #2
- 430 02b8 003082E5 		str	r3, [r2, #0]
- 431 02bc 4B0000EA 		b	.L24
- 432              	.L25:
+ 429              	.LM37:
+ 430 02b0 94229FE5 		ldr	r2, .L41+8
+ 431 02b4 0230A0E3 		mov	r3, #2
+ 432 02b8 003082E5 		str	r3, [r2, #0]
+ 433 02bc 4B0000EA 		b	.L24
+ 434              	.L25:
   82:MyProtocol.c  **** 		}else if(flag==PARSE_READ_LEN){
- 434              	.LM38:
- 435 02c0 84329FE5 		ldr	r3, .L41+8
- 436 02c4 003093E5 		ldr	r3, [r3, #0]
- 437 02c8 020053E3 		cmp	r3, #2
- 438 02cc 1200001A 		bne	.L27
+ 436              	.LM38:
+ 437 02c0 84329FE5 		ldr	r3, .L41+8
+ 438 02c4 003093E5 		ldr	r3, [r3, #0]
+ 439 02c8 020053E3 		cmp	r3, #2
+ 440 02cc 1200001A 		bne	.L27
   83:MyProtocol.c  **** 			len=t;
- 440              	.LM39:
- 441 02d0 6C329FE5 		ldr	r3, .L41
- 442 02d4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 443 02d8 78229FE5 		ldr	r2, .L41+20
- 444 02dc 0030C2E5 		strb	r3, [r2, #0]
+ 442              	.LM39:
+ 443 02d0 6C329FE5 		ldr	r3, .L41
+ 444 02d4 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 445 02d8 78229FE5 		ldr	r2, .L41+20
+ 446 02dc 0030C2E5 		strb	r3, [r2, #0]
   84:MyProtocol.c  **** 			i=0;
- 446              	.LM40:
- 447 02e0 74229FE5 		ldr	r2, .L41+24
- 448 02e4 0030A0E3 		mov	r3, #0
- 449 02e8 0030C2E5 		strb	r3, [r2, #0]
+ 448              	.LM40:
+ 449 02e0 74229FE5 		ldr	r2, .L41+24
+ 450 02e4 0030A0E3 		mov	r3, #0
+ 451 02e8 0030C2E5 		strb	r3, [r2, #0]
   85:MyProtocol.c  **** 			crc+=t;
- 451              	.LM41:
- 452 02ec 5C329FE5 		ldr	r3, .L41+12
- 453 02f0 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
- 454 02f4 48329FE5 		ldr	r3, .L41
- 455 02f8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 456 02fc 033082E0 		add	r3, r2, r3
- 457 0300 FF3003E2 		and	r3, r3, #255
- 458 0304 44229FE5 		ldr	r2, .L41+12
- 459 0308 0030C2E5 		strb	r3, [r2, #0]
+ 453              	.LM41:
+ 454 02ec 5C329FE5 		ldr	r3, .L41+12
+ 455 02f0 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 456 02f4 48329FE5 		ldr	r3, .L41
+ 457 02f8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 458 02fc 033082E0 		add	r3, r2, r3
+ 459 0300 FF3003E2 		and	r3, r3, #255
+ 460 0304 44229FE5 		ldr	r2, .L41+12
+ 461 0308 0030C2E5 		strb	r3, [r2, #0]
   86:MyProtocol.c  **** 			flag=PARSE_READ_DATA;
- 461              	.LM42:
- 462 030c 38229FE5 		ldr	r2, .L41+8
- 463 0310 0330A0E3 		mov	r3, #3
- 464 0314 003082E5 		str	r3, [r2, #0]
- 465 0318 340000EA 		b	.L24
- 466              	.L27:
+ 463              	.LM42:
+ 464 030c 38229FE5 		ldr	r2, .L41+8
+ 465 0310 0330A0E3 		mov	r3, #3
+ 466 0314 003082E5 		str	r3, [r2, #0]
+ 467 0318 340000EA 		b	.L24
+ 468              	.L27:
   87:MyProtocol.c  **** 		}else if(flag==PARSE_READ_DATA){
- 468              	.LM43:
- 469 031c 28329FE5 		ldr	r3, .L41+8
- 470 0320 003093E5 		ldr	r3, [r3, #0]
- 471 0324 030053E3 		cmp	r3, #3
- 472 0328 1F00001A 		bne	.L29
+ 470              	.LM43:
+ 471 031c 28329FE5 		ldr	r3, .L41+8
+ 472 0320 003093E5 		ldr	r3, [r3, #0]
+ 473 0324 030053E3 		cmp	r3, #3
+ 474 0328 1F00001A 		bne	.L29
   88:MyProtocol.c  **** 			memset(((unsigned char*)buffer+i),t,1);
- 474              	.LM44:
- 475 032c 28329FE5 		ldr	r3, .L41+24
- 476 0330 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 477 0334 0320A0E1 		mov	r2, r3
- 478 0338 14301BE5 		ldr	r3, [fp, #-20]
- 479 033c 032082E0 		add	r2, r2, r3
- 480 0340 FC319FE5 		ldr	r3, .L41
- 481 0344 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 482 0348 0030C2E5 		strb	r3, [r2, #0]
+ 476              	.LM44:
+ 477 032c 28329FE5 		ldr	r3, .L41+24
+ 478 0330 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 479 0334 0320A0E1 		mov	r2, r3
+ 480 0338 14301BE5 		ldr	r3, [fp, #-20]
+ 481 033c 032082E0 		add	r2, r2, r3
+ 482 0340 FC319FE5 		ldr	r3, .L41
+ 483 0344 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 484 0348 0030C2E5 		strb	r3, [r2, #0]
   89:MyProtocol.c  **** 			i++;
- 484              	.LM45:
- 485 034c 08329FE5 		ldr	r3, .L41+24
- 486 0350 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 487 0354 013083E2 		add	r3, r3, #1
- 488 0358 FF3003E2 		and	r3, r3, #255
- 489 035c F8219FE5 		ldr	r2, .L41+24
- 490 0360 0030C2E5 		strb	r3, [r2, #0]
+ 486              	.LM45:
+ 487 034c 08329FE5 		ldr	r3, .L41+24
+ 488 0350 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 489 0354 013083E2 		add	r3, r3, #1
+ 490 0358 FF3003E2 		and	r3, r3, #255
+ 491 035c F8219FE5 		ldr	r2, .L41+24
+ 492 0360 0030C2E5 		strb	r3, [r2, #0]
   90:MyProtocol.c  **** 			crc+=t;
- 492              	.LM46:
- 493 0364 E4319FE5 		ldr	r3, .L41+12
- 494 0368 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
- 495 036c D0319FE5 		ldr	r3, .L41
- 496 0370 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 497 0374 033082E0 		add	r3, r2, r3
- 498 0378 FF3003E2 		and	r3, r3, #255
- 499 037c CC219FE5 		ldr	r2, .L41+12
- 500 0380 0030C2E5 		strb	r3, [r2, #0]
+ 494              	.LM46:
+ 495 0364 E4319FE5 		ldr	r3, .L41+12
+ 496 0368 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 497 036c D0319FE5 		ldr	r3, .L41
+ 498 0370 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 499 0374 033082E0 		add	r3, r2, r3
+ 500 0378 FF3003E2 		and	r3, r3, #255
+ 501 037c CC219FE5 		ldr	r2, .L41+12
+ 502 0380 0030C2E5 		strb	r3, [r2, #0]
   91:MyProtocol.c  **** 			if(i==len){
- 502              	.LM47:
- 503 0384 D0319FE5 		ldr	r3, .L41+24
- 504 0388 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
- 505 038c C4319FE5 		ldr	r3, .L41+20
- 506 0390 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 507 0394 030052E1 		cmp	r2, r3
- 508 0398 1400001A 		bne	.L24
+ 504              	.LM47:
+ 505 0384 D0319FE5 		ldr	r3, .L41+24
+ 506 0388 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 507 038c C4319FE5 		ldr	r3, .L41+20
+ 508 0390 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 509 0394 030052E1 		cmp	r2, r3
+ 510 0398 1400001A 		bne	.L24
   92:MyProtocol.c  **** 				flag=PARSE_CHECK;
- 510              	.LM48:
- 511 039c A8219FE5 		ldr	r2, .L41+8
- 512 03a0 0430A0E3 		mov	r3, #4
- 513 03a4 003082E5 		str	r3, [r2, #0]
- 514 03a8 100000EA 		b	.L24
- 515              	.L29:
+ 512              	.LM48:
+ 513 039c A8219FE5 		ldr	r2, .L41+8
+ 514 03a0 0430A0E3 		mov	r3, #4
+ 515 03a4 003082E5 		str	r3, [r2, #0]
+ 516 03a8 100000EA 		b	.L24
+ 517              	.L29:
   93:MyProtocol.c  **** 			}
   94:MyProtocol.c  **** 		}else if(flag==PARSE_CHECK){
- 517              	.LM49:
- 518 03ac 98319FE5 		ldr	r3, .L41+8
- 519 03b0 003093E5 		ldr	r3, [r3, #0]
- 520 03b4 040053E3 		cmp	r3, #4
- 521 03b8 0C00001A 		bne	.L24
+ 519              	.LM49:
+ 520 03ac 98319FE5 		ldr	r3, .L41+8
+ 521 03b0 003093E5 		ldr	r3, [r3, #0]
+ 522 03b4 040053E3 		cmp	r3, #4
+ 523 03b8 0C00001A 		bne	.L24
   95:MyProtocol.c  **** 			//need to check?
   96:MyProtocol.c  **** 			//if check==0, t=0, so crc=0 ,and it also can be tested
   97:MyProtocol.c  **** 			if(t==crc){
- 523              	.LM50:
- 524 03bc 80319FE5 		ldr	r3, .L41
- 525 03c0 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
- 526 03c4 84319FE5 		ldr	r3, .L41+12
- 527 03c8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 528 03cc 030052E1 		cmp	r2, r3
- 529 03d0 0300001A 		bne	.L34
+ 525              	.LM50:
+ 526 03bc 80319FE5 		ldr	r3, .L41
+ 527 03c0 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 528 03c4 84319FE5 		ldr	r3, .L41+12
+ 529 03c8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 530 03cc 030052E1 		cmp	r2, r3
+ 531 03d0 0300001A 		bne	.L34
   98:MyProtocol.c  **** 				flag=PARSE_SUCCEED;
- 531              	.LM51:
- 532 03d4 70219FE5 		ldr	r2, .L41+8
- 533 03d8 0530A0E3 		mov	r3, #5
- 534 03dc 003082E5 		str	r3, [r2, #0]
- 535 03e0 020000EA 		b	.L24
- 536              	.L34:
+ 533              	.LM51:
+ 534 03d4 70219FE5 		ldr	r2, .L41+8
+ 535 03d8 0530A0E3 		mov	r3, #5
+ 536 03dc 003082E5 		str	r3, [r2, #0]
+ 537 03e0 020000EA 		b	.L24
+ 538              	.L34:
   99:MyProtocol.c  **** 			}else{
  100:MyProtocol.c  **** 				//printf("%x    %x\n",crc,t);
  101:MyProtocol.c  **** 				flag=PARSE_FAIL;
- 538              	.LM52:
- 539 03e4 60219FE5 		ldr	r2, .L41+8
- 540 03e8 0630A0E3 		mov	r3, #6
- 541 03ec 003082E5 		str	r3, [r2, #0]
- 542              	.L24:
+ 540              	.LM52:
+ 541 03e4 60219FE5 		ldr	r2, .L41+8
+ 542 03e8 0630A0E3 		mov	r3, #6
+ 543 03ec 003082E5 		str	r3, [r2, #0]
+ 544              	.L24:
  102:MyProtocol.c  **** 			}
  103:MyProtocol.c  **** 		}
  104:MyProtocol.c  **** 		if(flag==PARSE_SUCCEED){
- 544              	.LM53:
- 545 03f0 54319FE5 		ldr	r3, .L41+8
- 546 03f4 003093E5 		ldr	r3, [r3, #0]
- 547 03f8 050053E3 		cmp	r3, #5
- 548 03fc 2600001A 		bne	.L36
+ 546              	.LM53:
+ 547 03f0 54319FE5 		ldr	r3, .L41+8
+ 548 03f4 003093E5 		ldr	r3, [r3, #0]
+ 549 03f8 050053E3 		cmp	r3, #5
+ 550 03fc 2600001A 		bne	.L36
  105:MyProtocol.c  **** 			//need to check?
  106:MyProtocol.c  **** 			memcpy(data,buffer,len);
- 550              	.LM54:
- 551 0400 50319FE5 		ldr	r3, .L41+20
- 552 0404 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 553 0408 0310A0E1 		mov	r1, r3
- 554 040c 18301BE5 		ldr	r3, [fp, #-24]
- 555 0410 14201BE5 		ldr	r2, [fp, #-20]
- 556 0414 01C0A0E1 		mov	ip, r1
- 557 0418 0300A0E1 		mov	r0, r3
- 558 041c 0210A0E1 		mov	r1, r2
- 559 0420 0C20A0E1 		mov	r2, ip
- 560 0424 FEFFFFEB 		bl	memcpy
+ 552              	.LM54:
+ 553 0400 50319FE5 		ldr	r3, .L41+20
+ 554 0404 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 555 0408 0310A0E1 		mov	r1, r3
+ 556 040c 18301BE5 		ldr	r3, [fp, #-24]
+ 557 0410 14201BE5 		ldr	r2, [fp, #-20]
+ 558 0414 01C0A0E1 		mov	ip, r1
+ 559 0418 0300A0E1 		mov	r0, r3
+ 560 041c 0210A0E1 		mov	r1, r2
+ 561 0420 0C20A0E1 		mov	r2, ip
+ 562 0424 FEFFFFEB 		bl	memcpy
  107:MyProtocol.c  **** 			*id=my_index;
- 562              	.LM55:
- 563 0428 24319FE5 		ldr	r3, .L41+16
- 564 042c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 565 0430 0320A0E1 		mov	r2, r3
- 566 0434 1C301BE5 		ldr	r3, [fp, #-28]
- 567 0438 002083E5 		str	r2, [r3, #0]
+ 564              	.LM55:
+ 565 0428 24319FE5 		ldr	r3, .L41+16
+ 566 042c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 567 0430 0320A0E1 		mov	r2, r3
+ 568 0434 1C301BE5 		ldr	r3, [fp, #-28]
+ 569 0438 002083E5 		str	r2, [r3, #0]
  108:MyProtocol.c  **** 			status=0;flag=PARSE_NOT_START;t=0;
- 569              	.LM56:
- 570 043c 04219FE5 		ldr	r2, .L41+4
- 571 0440 0030A0E3 		mov	r3, #0
- 572 0444 003082E5 		str	r3, [r2, #0]
- 573 0448 FC209FE5 		ldr	r2, .L41+8
- 574 044c 0030A0E3 		mov	r3, #0
- 575 0450 003082E5 		str	r3, [r2, #0]
- 576 0454 E8209FE5 		ldr	r2, .L41
- 577 0458 0030A0E3 		mov	r3, #0
- 578 045c 0030C2E5 		strb	r3, [r2, #0]
+ 571              	.LM56:
+ 572 043c 04219FE5 		ldr	r2, .L41+4
+ 573 0440 0030A0E3 		mov	r3, #0
+ 574 0444 003082E5 		str	r3, [r2, #0]
+ 575 0448 FC209FE5 		ldr	r2, .L41+8
+ 576 044c 0030A0E3 		mov	r3, #0
+ 577 0450 003082E5 		str	r3, [r2, #0]
+ 578 0454 E8209FE5 		ldr	r2, .L41
+ 579 0458 0030A0E3 		mov	r3, #0
+ 580 045c 0030C2E5 		strb	r3, [r2, #0]
  109:MyProtocol.c  **** 			my_index=0;len=0;i=0;crc=0;
- 580              	.LM57:
- 581 0460 EC209FE5 		ldr	r2, .L41+16
- 582 0464 0030A0E3 		mov	r3, #0
- 583 0468 0030C2E5 		strb	r3, [r2, #0]
- 584 046c E4209FE5 		ldr	r2, .L41+20
- 585 0470 0030A0E3 		mov	r3, #0
- 586 0474 0030C2E5 		strb	r3, [r2, #0]
- 587 0478 DC209FE5 		ldr	r2, .L41+24
- 588 047c 0030A0E3 		mov	r3, #0
- 589 0480 0030C2E5 		strb	r3, [r2, #0]
- 590 0484 C4209FE5 		ldr	r2, .L41+12
- 591 0488 0030A0E3 		mov	r3, #0
- 592 048c 0030C2E5 		strb	r3, [r2, #0]
+ 582              	.LM57:
+ 583 0460 EC209FE5 		ldr	r2, .L41+16
+ 584 0464 0030A0E3 		mov	r3, #0
+ 585 0468 0030C2E5 		strb	r3, [r2, #0]
+ 586 046c E4209FE5 		ldr	r2, .L41+20
+ 587 0470 0030A0E3 		mov	r3, #0
+ 588 0474 0030C2E5 		strb	r3, [r2, #0]
+ 589 0478 DC209FE5 		ldr	r2, .L41+24
+ 590 047c 0030A0E3 		mov	r3, #0
+ 591 0480 0030C2E5 		strb	r3, [r2, #0]
+ 592 0484 C4209FE5 		ldr	r2, .L41+12
+ 593 0488 0030A0E3 		mov	r3, #0
+ 594 048c 0030C2E5 		strb	r3, [r2, #0]
  110:MyProtocol.c  **** 			return RECEIVE_STATE_SUCCESS;
- 594              	.LM58:
- 595 0490 0230A0E3 		mov	r3, #2
- 596 0494 24300BE5 		str	r3, [fp, #-36]
- 597 0498 240000EA 		b	.L38
- 598              	.L36:
+ 596              	.LM58:
+ 597 0490 0230A0E3 		mov	r3, #2
+ 598 0494 24300BE5 		str	r3, [fp, #-36]
+ 599 0498 240000EA 		b	.L38
+ 600              	.L36:
  111:MyProtocol.c  **** 		}else if(flag==PARSE_FAIL){
- 600              	.LM59:
- 601 049c A8309FE5 		ldr	r3, .L41+8
- 602 04a0 003093E5 		ldr	r3, [r3, #0]
- 603 04a4 060053E3 		cmp	r3, #6
- 604 04a8 1B00001A 		bne	.L19
+ 602              	.LM59:
+ 603 049c A8309FE5 		ldr	r3, .L41+8
+ 604 04a0 003093E5 		ldr	r3, [r3, #0]
+ 605 04a4 060053E3 		cmp	r3, #6
+ 606 04a8 1B00001A 		bne	.L19
  112:MyProtocol.c  **** 			//need to check?
  113:MyProtocol.c  **** 			//memcpy(data,buffer,len);
  114:MyProtocol.c  **** 			memset(data,0,len);
- 606              	.LM60:
- 607 04ac A4309FE5 		ldr	r3, .L41+20
- 608 04b0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 609 04b4 0320A0E1 		mov	r2, r3
- 610 04b8 18301BE5 		ldr	r3, [fp, #-24]
- 611 04bc 0300A0E1 		mov	r0, r3
- 612 04c0 0010A0E3 		mov	r1, #0
- 613 04c4 FEFFFFEB 		bl	memset
+ 608              	.LM60:
+ 609 04ac A4309FE5 		ldr	r3, .L41+20
+ 610 04b0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 611 04b4 0320A0E1 		mov	r2, r3
+ 612 04b8 18301BE5 		ldr	r3, [fp, #-24]
+ 613 04bc 0300A0E1 		mov	r0, r3
+ 614 04c0 0010A0E3 		mov	r1, #0
+ 615 04c4 FEFFFFEB 		bl	memset
  115:MyProtocol.c  **** 			status=0;flag=PARSE_NOT_START;t=0;
- 615              	.LM61:
- 616 04c8 78209FE5 		ldr	r2, .L41+4
- 617 04cc 0030A0E3 		mov	r3, #0
- 618 04d0 003082E5 		str	r3, [r2, #0]
- 619 04d4 70209FE5 		ldr	r2, .L41+8
- 620 04d8 0030A0E3 		mov	r3, #0
- 621 04dc 003082E5 		str	r3, [r2, #0]
- 622 04e0 5C209FE5 		ldr	r2, .L41
- 623 04e4 0030A0E3 		mov	r3, #0
- 624 04e8 0030C2E5 		strb	r3, [r2, #0]
+ 617              	.LM61:
+ 618 04c8 78209FE5 		ldr	r2, .L41+4
+ 619 04cc 0030A0E3 		mov	r3, #0
+ 620 04d0 003082E5 		str	r3, [r2, #0]
+ 621 04d4 70209FE5 		ldr	r2, .L41+8
+ 622 04d8 0030A0E3 		mov	r3, #0
+ 623 04dc 003082E5 		str	r3, [r2, #0]
+ 624 04e0 5C209FE5 		ldr	r2, .L41
+ 625 04e4 0030A0E3 		mov	r3, #0
+ 626 04e8 0030C2E5 		strb	r3, [r2, #0]
  116:MyProtocol.c  **** 			my_index=0;len=0;i=0;crc=0;
- 626              	.LM62:
- 627 04ec 60209FE5 		ldr	r2, .L41+16
- 628 04f0 0030A0E3 		mov	r3, #0
- 629 04f4 0030C2E5 		strb	r3, [r2, #0]
- 630 04f8 58209FE5 		ldr	r2, .L41+20
- 631 04fc 0030A0E3 		mov	r3, #0
- 632 0500 0030C2E5 		strb	r3, [r2, #0]
- 633 0504 50209FE5 		ldr	r2, .L41+24
- 634 0508 0030A0E3 		mov	r3, #0
- 635 050c 0030C2E5 		strb	r3, [r2, #0]
- 636 0510 38209FE5 		ldr	r2, .L41+12
- 637 0514 0030A0E3 		mov	r3, #0
- 638 0518 0030C2E5 		strb	r3, [r2, #0]
- 639              	.L19:
+ 628              	.LM62:
+ 629 04ec 60209FE5 		ldr	r2, .L41+16
+ 630 04f0 0030A0E3 		mov	r3, #0
+ 631 04f4 0030C2E5 		strb	r3, [r2, #0]
+ 632 04f8 58209FE5 		ldr	r2, .L41+20
+ 633 04fc 0030A0E3 		mov	r3, #0
+ 634 0500 0030C2E5 		strb	r3, [r2, #0]
+ 635 0504 50209FE5 		ldr	r2, .L41+24
+ 636 0508 0030A0E3 		mov	r3, #0
+ 637 050c 0030C2E5 		strb	r3, [r2, #0]
+ 638 0510 38209FE5 		ldr	r2, .L41+12
+ 639 0514 0030A0E3 		mov	r3, #0
+ 640 0518 0030C2E5 		strb	r3, [r2, #0]
+ 641              	.L19:
  117:MyProtocol.c  **** 		}
  118:MyProtocol.c  **** 		//printf("%d  %d  %d  %d\n",crc,len,i,t);
  119:MyProtocol.c  **** 	}
  120:MyProtocol.c  **** 	*id=-1;
- 641              	.LM63:
- 642 051c 1C201BE5 		ldr	r2, [fp, #-28]
- 643 0520 0030E0E3 		mvn	r3, #0
- 644 0524 003082E5 		str	r3, [r2, #0]
+ 643              	.LM63:
+ 644 051c 1C201BE5 		ldr	r2, [fp, #-28]
+ 645 0520 0030E0E3 		mvn	r3, #0
+ 646 0524 003082E5 		str	r3, [r2, #0]
  121:MyProtocol.c  **** 	return RECEIVE_STATE_NOT_COMPLETED;
- 646              	.LM64:
- 647 0528 0030A0E3 		mov	r3, #0
- 648 052c 24300BE5 		str	r3, [fp, #-36]
- 649              	.L38:
- 650 0530 24301BE5 		ldr	r3, [fp, #-36]
+ 648              	.LM64:
+ 649 0528 0030A0E3 		mov	r3, #0
+ 650 052c 24300BE5 		str	r3, [fp, #-36]
+ 651              	.L38:
+ 652 0530 24301BE5 		ldr	r3, [fp, #-36]
  122:MyProtocol.c  **** }
- 652              	.LM65:
- 653 0534 0300A0E1 		mov	r0, r3
- 654 0538 0CD04BE2 		sub	sp, fp, #12
- 655 053c 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 656 0540 1EFF2FE1 		bx	lr
- 657              	.L42:
- 658              		.align	2
- 659              	.L41:
- 660 0544 04000000 		.word	t.1793
- 661 0548 0C000000 		.word	status.1791
- 662 054c 08000000 		.word	flag.1792
- 663 0550 00000000 		.word	crc.1797
- 664 0554 03000000 		.word	my_index.1794
- 665 0558 02000000 		.word	len.1795
- 666 055c 01000000 		.word	i.1796
- 678              	.Lscope3:
- 679              		.align	2
- 682              		.global	getPackageLength
- 684              	getPackageLength:
+ 654              	.LM65:
+ 655 0534 0300A0E1 		mov	r0, r3
+ 656 0538 0CD04BE2 		sub	sp, fp, #12
+ 657 053c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 658 0540 1EFF2FE1 		bx	lr
+ 659              	.L42:
+ 660              		.align	2
+ 661              	.L41:
+ 662 0544 04000000 		.word	t.1798
+ 663 0548 0C000000 		.word	status.1796
+ 664 054c 08000000 		.word	flag.1797
+ 665 0550 00000000 		.word	crc.1802
+ 666 0554 03000000 		.word	my_index.1799
+ 667 0558 02000000 		.word	len.1800
+ 668 055c 01000000 		.word	i.1801
+ 680              	.Lscope3:
+ 681              		.align	2
+ 684              		.global	getPackageLength
+ 686              	getPackageLength:
  123:MyProtocol.c  **** unsigned char getPackageLength(PackageDefine pd){
- 686              	.LM66:
- 687              		@ Function supports interworking.
- 688              		@ args = 0, pretend = 0, frame = 8
- 689              		@ frame_needed = 1, uses_anonymous_args = 0
- 690 0560 0DC0A0E1 		mov	ip, sp
- 691 0564 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 692 0568 04B04CE2 		sub	fp, ip, #4
- 693 056c 08D04DE2 		sub	sp, sp, #8
- 694 0570 10000BE5 		str	r0, [fp, #-16]
+ 688              	.LM66:
+ 689              		@ Function supports interworking.
+ 690              		@ args = 0, pretend = 0, frame = 8
+ 691              		@ frame_needed = 1, uses_anonymous_args = 0
+ 692 0560 0DC0A0E1 		mov	ip, sp
+ 693 0564 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 694 0568 04B04CE2 		sub	fp, ip, #4
+ 695 056c 08D04DE2 		sub	sp, sp, #8
+ 696 0570 10000BE5 		str	r0, [fp, #-16]
  124:MyProtocol.c  **** 	switch(pd){
- 696              	.LM67:
- 697 0574 10301BE5 		ldr	r3, [fp, #-16]
- 698 0578 013043E2 		sub	r3, r3, #1
- 699 057c 090053E3 		cmp	r3, #9
- 700 0580 03F19F97 		ldrls	pc, [pc, r3, asl #2]
- 701 0584 270000EA 		b	.L44
- 702              		.align	2
- 703              	.L55:
- 704 0588 B0050000 		.word	.L45
- 705 058c BC050000 		.word	.L46
- 706 0590 C8050000 		.word	.L47
- 707 0594 D4050000 		.word	.L48
- 708 0598 E0050000 		.word	.L49
- 709 059c EC050000 		.word	.L50
- 710 05a0 F8050000 		.word	.L51
- 711 05a4 04060000 		.word	.L52
- 712 05a8 10060000 		.word	.L53
- 713 05ac 1C060000 		.word	.L54
- 714              	.L45:
+ 698              	.LM67:
+ 699 0574 10301BE5 		ldr	r3, [fp, #-16]
+ 700 0578 013043E2 		sub	r3, r3, #1
+ 701 057c 0A0053E3 		cmp	r3, #10
+ 702 0580 03F19F97 		ldrls	pc, [pc, r3, asl #2]
+ 703 0584 2B0000EA 		b	.L44
+ 704              		.align	2
+ 705              	.L56:
+ 706 0588 B4050000 		.word	.L45
+ 707 058c C0050000 		.word	.L46
+ 708 0590 CC050000 		.word	.L47
+ 709 0594 D8050000 		.word	.L48
+ 710 0598 E4050000 		.word	.L49
+ 711 059c F0050000 		.word	.L50
+ 712 05a0 FC050000 		.word	.L51
+ 713 05a4 08060000 		.word	.L52
+ 714 05a8 14060000 		.word	.L53
+ 715 05ac 20060000 		.word	.L54
+ 716 05b0 2C060000 		.word	.L55
+ 717              	.L45:
  125:MyProtocol.c  **** 	case PACKAGE_DEFINE_STATUS:
  126:MyProtocol.c  **** 		return SYSTEM_STATE_LENGTH;
- 716              	.LM68:
- 717 05b0 0C30A0E3 		mov	r3, #12
- 718 05b4 14300BE5 		str	r3, [fp, #-20]
- 719 05b8 1C0000EA 		b	.L56
- 720              	.L46:
+ 719              	.LM68:
+ 720 05b4 0C30A0E3 		mov	r3, #12
+ 721 05b8 14300BE5 		str	r3, [fp, #-20]
+ 722 05bc 1F0000EA 		b	.L57
+ 723              	.L46:
  127:MyProtocol.c  **** 	case PACKAGE_DEFINE_VICON:
  128:MyProtocol.c  **** 		return VICON_DATA_LENGTH;
- 722              	.LM69:
- 723 05bc 2830A0E3 		mov	r3, #40
- 724 05c0 14300BE5 		str	r3, [fp, #-20]
- 725 05c4 190000EA 		b	.L56
- 726              	.L47:
+ 725              	.LM69:
+ 726 05c0 2830A0E3 		mov	r3, #40
+ 727 05c4 14300BE5 		str	r3, [fp, #-20]
+ 728 05c8 1C0000EA 		b	.L57
+ 729              	.L47:
  129:MyProtocol.c  **** 	case PACKAGE_DEFINE_SENSOR:
  130:MyProtocol.c  **** 		return SENSOR_DATA_LENGTH;
- 728              	.LM70:
- 729 05c8 0C30A0E3 		mov	r3, #12
- 730 05cc 14300BE5 		str	r3, [fp, #-20]
- 731 05d0 160000EA 		b	.L56
- 732              	.L48:
+ 731              	.LM70:
+ 732 05cc 0C30A0E3 		mov	r3, #12
+ 733 05d0 14300BE5 		str	r3, [fp, #-20]
+ 734 05d4 190000EA 		b	.L57
+ 735              	.L48:
  131:MyProtocol.c  **** 	case PACKAGE_DEFINE_FUSION:
  132:MyProtocol.c  **** 		return FUSION_DATA_LENGTH;
- 734              	.LM71:
- 735 05d4 0830A0E3 		mov	r3, #8
- 736 05d8 14300BE5 		str	r3, [fp, #-20]
- 737 05dc 130000EA 		b	.L56
- 738              	.L49:
+ 737              	.LM71:
+ 738 05d8 0830A0E3 		mov	r3, #8
+ 739 05dc 14300BE5 		str	r3, [fp, #-20]
+ 740 05e0 160000EA 		b	.L57
+ 741              	.L49:
  133:MyProtocol.c  **** 	case PACKAGE_DEFINE_DEBUG:
  134:MyProtocol.c  **** 		return DEBUG_DATA_LENGTH;
- 740              	.LM72:
- 741 05e0 4030A0E3 		mov	r3, #64
- 742 05e4 14300BE5 		str	r3, [fp, #-20]
- 743 05e8 100000EA 		b	.L56
- 744              	.L50:
+ 743              	.LM72:
+ 744 05e4 4030A0E3 		mov	r3, #64
+ 745 05e8 14300BE5 		str	r3, [fp, #-20]
+ 746 05ec 130000EA 		b	.L57
+ 747              	.L50:
  135:MyProtocol.c  **** 	case PACKAGE_DEFINE_PARAM:
  136:MyProtocol.c  **** 		return PARAM_DEBUG_LENGTH;
- 746              	.LM73:
- 747 05ec 2430A0E3 		mov	r3, #36
- 748 05f0 14300BE5 		str	r3, [fp, #-20]
- 749 05f4 0D0000EA 		b	.L56
- 750              	.L51:
+ 749              	.LM73:
+ 750 05f0 2430A0E3 		mov	r3, #36
+ 751 05f4 14300BE5 		str	r3, [fp, #-20]
+ 752 05f8 100000EA 		b	.L57
+ 753              	.L51:
  137:MyProtocol.c  **** 	case PACKAGE_DEFINE_CMD:
  138:MyProtocol.c  **** 		return CMD_DATA_LENGTH;
- 752              	.LM74:
- 753 05f8 0430A0E3 		mov	r3, #4
- 754 05fc 14300BE5 		str	r3, [fp, #-20]
- 755 0600 0A0000EA 		b	.L56
- 756              	.L52:
+ 755              	.LM74:
+ 756 05fc 0430A0E3 		mov	r3, #4
+ 757 0600 14300BE5 		str	r3, [fp, #-20]
+ 758 0604 0D0000EA 		b	.L57
+ 759              	.L52:
  139:MyProtocol.c  **** 	case PACKAGE_DEFINE_POSITION_WAY_POINT:
- 140:MyProtocol.c  **** 			return POSITION_WAY_POINT_LENGTH;
- 758              	.LM75:
- 759 0604 0C30A0E3 		mov	r3, #12
- 760 0608 14300BE5 		str	r3, [fp, #-20]
- 761 060c 070000EA 		b	.L56
- 762              	.L53:
+ 140:MyProtocol.c  **** 		return POSITION_WAY_POINT_LENGTH;
+ 761              	.LM75:
+ 762 0608 0C30A0E3 		mov	r3, #12
+ 763 060c 14300BE5 		str	r3, [fp, #-20]
+ 764 0610 0A0000EA 		b	.L57
+ 765              	.L53:
  141:MyProtocol.c  **** 	case PACKAGE_DEFINE_LAND:
- 142:MyProtocol.c  **** 			return LAND_SIGNAL_LENGTH;
- 764              	.LM76:
- 765 0610 0430A0E3 		mov	r3, #4
- 766 0614 14300BE5 		str	r3, [fp, #-20]
- 767 0618 040000EA 		b	.L56
- 768              	.L54:
+ 142:MyProtocol.c  **** 		return LAND_SIGNAL_LENGTH;
+ 767              	.LM76:
+ 768 0614 0430A0E3 		mov	r3, #4
+ 769 0618 14300BE5 		str	r3, [fp, #-20]
+ 770 061c 070000EA 		b	.L57
+ 771              	.L54:
  143:MyProtocol.c  **** 	case PACKAGE_DEFINE_NOMAL_DATA:
- 144:MyProtocol.c  **** 			return NORMAL_DATA_LENGTH;
- 770              	.LM77:
- 771 061c 4030A0E3 		mov	r3, #64
- 772 0620 14300BE5 		str	r3, [fp, #-20]
- 773 0624 010000EA 		b	.L56
- 774              	.L44:
- 145:MyProtocol.c  **** 	default:
- 146:MyProtocol.c  **** 		return -1;
- 776              	.LM78:
- 777 0628 FF30A0E3 		mov	r3, #255
- 778 062c 14300BE5 		str	r3, [fp, #-20]
- 779              	.L56:
- 780 0630 14301BE5 		ldr	r3, [fp, #-20]
- 147:MyProtocol.c  **** 	}
- 148:MyProtocol.c  **** }
- 782              	.LM79:
- 783 0634 0300A0E1 		mov	r0, r3
- 784 0638 0CD04BE2 		sub	sp, fp, #12
- 785 063c 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 786 0640 1EFF2FE1 		bx	lr
- 788              	.Lscope4:
- 790              	.Letext0:
- 791              		.ident	"GCC: (GNU) 4.1.1"
+ 144:MyProtocol.c  **** 		return NORMAL_DATA_LENGTH;
+ 773              	.LM77:
+ 774 0620 4030A0E3 		mov	r3, #64
+ 775 0624 14300BE5 		str	r3, [fp, #-20]
+ 776 0628 040000EA 		b	.L57
+ 777              	.L55:
+ 145:MyProtocol.c  **** 	case PACKAGE_DEFINE_DEBUG_ARRAY:
+ 146:MyProtocol.c  **** 		return DEBUG_ARRAY_LENGTH;
+ 779              	.LM78:
+ 780 062c A030A0E3 		mov	r3, #160
+ 781 0630 14300BE5 		str	r3, [fp, #-20]
+ 782 0634 010000EA 		b	.L57
+ 783              	.L44:
+ 147:MyProtocol.c  **** 	default:
+ 148:MyProtocol.c  **** 		return -1;
+ 785              	.LM79:
+ 786 0638 FF30A0E3 		mov	r3, #255
+ 787 063c 14300BE5 		str	r3, [fp, #-20]
+ 788              	.L57:
+ 789 0640 14301BE5 		ldr	r3, [fp, #-20]
+ 149:MyProtocol.c  **** 	}
+ 150:MyProtocol.c  **** }
+ 791              	.LM80:
+ 792 0644 0300A0E1 		mov	r0, r3
+ 793 0648 0CD04BE2 		sub	sp, fp, #12
+ 794 064c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 795 0650 1EFF2FE1 		bx	lr
+ 797              	.Lscope4:
+ 799              	.Letext0:
+ 800              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 MyProtocol.c
-     /tmp/ccLGqpQP.s:88     .text:00000000 $a
-     /tmp/ccLGqpQP.s:97     .text:00000000 my_send
-     /tmp/ccLGqpQP.s:256    .text:00000174 send_single
-     /tmp/ccLGqpQP.s:287    .text:000001a8 receive_single
-     /tmp/ccLGqpQP.s:317    .bss:00000000 crc.1797
-     /tmp/ccLGqpQP.s:318    .bss:00000000 $d
-     /tmp/ccLGqpQP.s:320    .bss:00000001 i.1796
-     /tmp/ccLGqpQP.s:323    .bss:00000002 len.1795
-     /tmp/ccLGqpQP.s:326    .bss:00000003 my_index.1794
-     /tmp/ccLGqpQP.s:329    .bss:00000004 t.1793
-     /tmp/ccLGqpQP.s:333    .bss:00000008 flag.1792
-     /tmp/ccLGqpQP.s:337    .bss:0000000c status.1791
-     /tmp/ccLGqpQP.s:350    .text:000001e4 my_receive
-     /tmp/ccLGqpQP.s:660    .text:00000544 $d
-     /tmp/ccLGqpQP.s:679    .text:00000560 $a
-     /tmp/ccLGqpQP.s:684    .text:00000560 getPackageLength
-     /tmp/ccLGqpQP.s:704    .text:00000588 $d
-     /tmp/ccLGqpQP.s:717    .text:000005b0 $a
+     /tmp/ccF9ELCV.s:90     .text:00000000 $a
+     /tmp/ccF9ELCV.s:99     .text:00000000 my_send
+     /tmp/ccF9ELCV.s:258    .text:00000174 send_single
+     /tmp/ccF9ELCV.s:289    .text:000001a8 receive_single
+     /tmp/ccF9ELCV.s:319    .bss:00000000 crc.1802
+     /tmp/ccF9ELCV.s:320    .bss:00000000 $d
+     /tmp/ccF9ELCV.s:322    .bss:00000001 i.1801
+     /tmp/ccF9ELCV.s:325    .bss:00000002 len.1800
+     /tmp/ccF9ELCV.s:328    .bss:00000003 my_index.1799
+     /tmp/ccF9ELCV.s:331    .bss:00000004 t.1798
+     /tmp/ccF9ELCV.s:335    .bss:00000008 flag.1797
+     /tmp/ccF9ELCV.s:339    .bss:0000000c status.1796
+     /tmp/ccF9ELCV.s:352    .text:000001e4 my_receive
+     /tmp/ccF9ELCV.s:662    .text:00000544 $d
+     /tmp/ccF9ELCV.s:681    .text:00000560 $a
+     /tmp/ccF9ELCV.s:686    .text:00000560 getPackageLength
+     /tmp/ccF9ELCV.s:706    .text:00000588 $d
+     /tmp/ccF9ELCV.s:720    .text:000005b4 $a
 
 UNDEFINED SYMBOLS
 UARTWriteChar

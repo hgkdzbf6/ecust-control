@@ -8,6 +8,8 @@
 #ifndef COMMON_HEADER_H_
 #define COMMON_HEADER_H_
 
+#define BALL_MODE
+
 #define MY_PI 3.1415926535898
 #define RAD_TO_DEG ((float)(57.295779513082))
 #define DEG_TO_RAD ((float)(0.017453292519943))
@@ -38,10 +40,17 @@ typedef struct state_s {
 	  long timestamp;
 } state_t;
 typedef state_t setpoint_t;
+
 typedef struct __estimate_params{
 	float alpha;
 	float estimatedZ;
 	float estimatedVZ;
 }EstimateParams;
+
+typedef struct __BALL_DATA{
+	int timestamp;
+	float position[3];
+	float speed[3];
+}BallData;
 
 #endif /* COMMON_HEADER_H_ */

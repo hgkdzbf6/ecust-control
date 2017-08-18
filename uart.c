@@ -95,6 +95,10 @@ extern int pack_id;
 extern int use_way_point_flag;
 extern NormalData receiveNormalData;
 extern int vicon_tp;
+extern BallData ballData;
+
+extern float change_vicon_x;
+extern int attitude_u;
 
 void uart1ISR(void) __irq
 {
@@ -142,6 +146,7 @@ void uart0ISR(void) __irq
   // Read IIR to clear interrupt and find out the cause
   IENABLE;
   unsigned iir = U0IIR;
+
   // Handle UART interrupt
   switch ((iir >> 1) & 0x7)
     {
@@ -238,13 +243,18 @@ void uart0ISR(void) __irq
 			case PACKAGE_DEFINE_NOMAL_DATA:
 				memcpy(&receiveNormalData,
 						&allDataBuffer,getPackageLength(pack_id));
-				my_state.position.x=receiveNormalData.x;
-				my_state.position.y=receiveNormalData.y;
-				my_state.position.z=receiveNormalData.z;
-				my_state.velocity.x=receiveNormalData.vx;
-				my_state.velocity.y=receiveNormalData.vy;
-				my_state.velocity.z=receiveNormalData.vz;
-				my_state.attitude.yaw=receiveNormalData.yaw;
+//				if(receiveNormalData.timestamp==265810){
+//
+//				}else{
+					my_state.position.x=receiveNormalData.x;
+					my_state.position.y=receiveNormalData.y;
+					my_state.position.z=receiveNormalData.z;
+					my_state.velocity.x=receiveNormalData.vx;
+					my_state.velocity.y=receiveNormalData.vy;
+					my_state.velocity.z=receiveNormalData.vz;
+					my_state.attitude.yaw=receiveNormalData.yaw;
+//				}
+#ifndef BALL_MODE
 				use_way_point_flag=receiveNormalData.sp_flag;
 				if(use_way_point_flag==1){
 					my_setpoint.position.x=receiveNormalData.sp_x;
@@ -257,8 +267,24 @@ void uart0ISR(void) __irq
 				}else if(use_way_point_flag==2){
 
 				}
+#else
+				ballData.position[0]=receiveNormalData.sp_x;
+				ballData.position[1]=receiveNormalData.sp_y;
+				ballData.position[2]=receiveNormalData.sp_z;
+				ballData.timestamp=receiveNormalData.debug_1;
+				ballData.speed[0]=receiveNormalData.debug_2;
+				ballData.speed[1]=receiveNormalData.debug_3;
+				ballData.speed[2]=receiveNormalData.debug_4;
+#endif
 				vicon_tp=receiveNormalData.timestamp;
 				vicon_count++;
+				if(receiveNormalData.sp_flag==PACKAGE_DEFINE_DEBUG_ARRAY)
+				{
+					//receiveCmdData.cmd=receiveNormalData.sp_flag;
+					attitude_u=100;
+					change_vicon_x=receiveNormalData.x;
+
+				}
 				receiveCmdData.cmd=PACKAGE_DEFINE_NOMAL_DATA;
 				break;
 			default:

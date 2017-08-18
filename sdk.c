@@ -48,7 +48,7 @@ struct RO_ALL_DATA RO_ALL_Data;
 struct WO_DIRECT_MOTOR_CONTROL WO_Direct_Motor_Control;
 struct WO_DIRECT_INDIVIDUAL_MOTOR_CONTROL WO_Direct_Individual_Motor_Control;
 
-extern struct IMU_CALCDATA IMU_CalcData;
+//extern struct IMU_CALCDATA IMU_CalcData;
 void SDK_EXAMPLE_direct_individual_motor_commands(void);
 void SDK_EXAMPLE_direct_motor_commands_with_standard_output_mapping(void);
 void SDK_EXAMPLE_attitude_commands(void);
@@ -58,7 +58,7 @@ int SDK_EXAMPLE_turn_motors_off(void);
 
 void fake_gps3(void );
 
-unsigned char allDataBuffer[256]={0};
+unsigned char allDataBuffer[400]={0};
 MyViconData receivedViconData={0};
 DebugData sendDebugData={0};
 DebugData receiveDebugData={0};
@@ -72,9 +72,10 @@ extern struct this_s my_this;
 CmdData receiveCmdData={PACKAGE_DEFINE_DEBUG};
 NormalData sendNormalData={0};
 NormalData receiveNormalData={0};
+DebugArray sendDebugArray={{0},{0}};
 int pack_id=0;
 
-
+BallData ballData={0};
 //ParamDebug paramDebug={0};
 int vicon_count=0;
 int vicon_tp=0;
@@ -84,7 +85,8 @@ float calc_roll;
 int receive_valid_data_flag=0;
 int use_way_point_flag=0;
 volatile int output_thrust=1850;
-
+float change_vicon_x=0;
+int attitude_u=0;
 state_t my_state={
 		.position={
 				.x=0,

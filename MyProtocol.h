@@ -26,6 +26,11 @@ typedef struct __param_debug{
 	float calc_thrust;
 }ParamDebug;
 
+typedef struct __debug_array{
+	int time[20];
+	float data[20];
+}DebugArray;
+
 typedef struct __my_debug_data{
 	//unit: packages
 	int timestamp;
@@ -146,6 +151,7 @@ typedef enum __package_define{
 	PACKAGE_DEFINE_POSITION_WAY_POINT,
 	PACKAGE_DEFINE_LAND,
 	PACKAGE_DEFINE_NOMAL_DATA,
+	PACKAGE_DEFINE_DEBUG_ARRAY,
 }PackageDefine;
 
 typedef NormalData SqlData;
@@ -164,6 +170,7 @@ typedef struct __cmd_data{
 #define POSITION_WAY_POINT_LENGTH ((unsigned char)(sizeof(PositionWayPointData)))
 #define LAND_SIGNAL_LENGTH ((unsigned char)(sizeof(LandSignal)))
 #define NORMAL_DATA_LENGTH ((unsigned char)(sizeof(NormalData)))
+#define DEBUG_ARRAY_LENGTH ((unsigned char)(sizeof(DebugArray)))
 
 typedef enum __parse_status{
 	PARSE_NOT_START,

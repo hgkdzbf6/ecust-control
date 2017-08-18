@@ -137,11 +137,13 @@ unsigned char getPackageLength(PackageDefine pd){
 	case PACKAGE_DEFINE_CMD:
 		return CMD_DATA_LENGTH;
 	case PACKAGE_DEFINE_POSITION_WAY_POINT:
-			return POSITION_WAY_POINT_LENGTH;
+		return POSITION_WAY_POINT_LENGTH;
 	case PACKAGE_DEFINE_LAND:
-			return LAND_SIGNAL_LENGTH;
+		return LAND_SIGNAL_LENGTH;
 	case PACKAGE_DEFINE_NOMAL_DATA:
-			return NORMAL_DATA_LENGTH;
+		return NORMAL_DATA_LENGTH;
+	case PACKAGE_DEFINE_DEBUG_ARRAY:
+		return DEBUG_ARRAY_LENGTH;
 	default:
 		return -1;
 	}

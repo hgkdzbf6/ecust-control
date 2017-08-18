@@ -1,9 +1,9 @@
    1              		.file	"syscalls.c"
    3              		.text
    4              	.Ltext0:
- 158              		.align	2
- 164              		.global	_read_r
- 166              	_read_r:
+ 160              		.align	2
+ 166              		.global	_read_r
+ 168              	_read_r:
    1:syscalls.c    **** /***********************************************************************/
    2:syscalls.c    **** /*                                                                     */
    3:syscalls.c    **** /*  SYSCALLS.C:  System Calls Remapping                                */
@@ -23,109 +23,109 @@
   17:syscalls.c    **** // new code for _read_r provided by Alexey Shusharin - Thanks
   18:syscalls.c    **** _ssize_t _read_r(struct _reent *r, int file, void *ptr, size_t len)
   19:syscalls.c    **** {
- 168              	.LM0:
- 169              		@ Function supports interworking.
- 170              		@ args = 0, pretend = 0, frame = 32
- 171              		@ frame_needed = 1, uses_anonymous_args = 0
- 172 0000 0DC0A0E1 		mov	ip, sp
- 173 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 174 0008 04B04CE2 		sub	fp, ip, #4
- 175 000c 20D04DE2 		sub	sp, sp, #32
- 176 0010 1C000BE5 		str	r0, [fp, #-28]
- 177 0014 20100BE5 		str	r1, [fp, #-32]
- 178 0018 24200BE5 		str	r2, [fp, #-36]
- 179 001c 28300BE5 		str	r3, [fp, #-40]
+ 170              	.LM0:
+ 171              		@ Function supports interworking.
+ 172              		@ args = 0, pretend = 0, frame = 32
+ 173              		@ frame_needed = 1, uses_anonymous_args = 0
+ 174 0000 0DC0A0E1 		mov	ip, sp
+ 175 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 176 0008 04B04CE2 		sub	fp, ip, #4
+ 177 000c 20D04DE2 		sub	sp, sp, #32
+ 178 0010 1C000BE5 		str	r0, [fp, #-28]
+ 179 0014 20100BE5 		str	r1, [fp, #-32]
+ 180 0018 24200BE5 		str	r2, [fp, #-36]
+ 181 001c 28300BE5 		str	r3, [fp, #-40]
   20:syscalls.c    ****   char c;
   21:syscalls.c    ****   int  i;
   22:syscalls.c    ****   unsigned char *p;
   23:syscalls.c    **** 
   24:syscalls.c    ****   p = (unsigned char*)ptr;
- 181              	.LM1:
- 182 0020 24301BE5 		ldr	r3, [fp, #-36]
- 183 0024 10300BE5 		str	r3, [fp, #-16]
+ 183              	.LM1:
+ 184 0020 24301BE5 		ldr	r3, [fp, #-36]
+ 185 0024 10300BE5 		str	r3, [fp, #-16]
   25:syscalls.c    **** 
   26:syscalls.c    ****   for (i = 0; i < len; i++)
- 185              	.LM2:
- 186 0028 0030A0E3 		mov	r3, #0
- 187 002c 14300BE5 		str	r3, [fp, #-20]
- 188 0030 1F0000EA 		b	.L2
- 189              	.L3:
+ 187              	.LM2:
+ 188 0028 0030A0E3 		mov	r3, #0
+ 189 002c 14300BE5 		str	r3, [fp, #-20]
+ 190 0030 1F0000EA 		b	.L2
+ 191              	.L3:
   27:syscalls.c    ****   {
   28:syscalls.c    ****     c = UARTReadChar();
- 191              	.LM3:
- 192 0034 FEFFFFEB 		bl	UARTReadChar
- 193 0038 0030A0E1 		mov	r3, r0
- 194 003c 15304BE5 		strb	r3, [fp, #-21]
+ 193              	.LM3:
+ 194 0034 FEFFFFEB 		bl	UARTReadChar
+ 195 0038 0030A0E1 		mov	r3, r0
+ 196 003c 15304BE5 		strb	r3, [fp, #-21]
   29:syscalls.c    **** 
   30:syscalls.c    ****     *p++ = c;
- 196              	.LM4:
- 197 0040 10201BE5 		ldr	r2, [fp, #-16]
- 198 0044 15305BE5 		ldrb	r3, [fp, #-21]
- 199 0048 0030C2E5 		strb	r3, [r2, #0]
- 200 004c 10301BE5 		ldr	r3, [fp, #-16]
- 201 0050 013083E2 		add	r3, r3, #1
- 202 0054 10300BE5 		str	r3, [fp, #-16]
+ 198              	.LM4:
+ 199 0040 10201BE5 		ldr	r2, [fp, #-16]
+ 200 0044 15305BE5 		ldrb	r3, [fp, #-21]
+ 201 0048 0030C2E5 		strb	r3, [r2, #0]
+ 202 004c 10301BE5 		ldr	r3, [fp, #-16]
+ 203 0050 013083E2 		add	r3, r3, #1
+ 204 0054 10300BE5 		str	r3, [fp, #-16]
   31:syscalls.c    ****     UARTWriteChar(c);
- 204              	.LM5:
- 205 0058 15305BE5 		ldrb	r3, [fp, #-21]	@ zero_extendqisi2
- 206 005c 0300A0E1 		mov	r0, r3
- 207 0060 FEFFFFEB 		bl	UARTWriteChar
+ 206              	.LM5:
+ 207 0058 15305BE5 		ldrb	r3, [fp, #-21]	@ zero_extendqisi2
+ 208 005c 0300A0E1 		mov	r0, r3
+ 209 0060 FEFFFFEB 		bl	UARTWriteChar
   32:syscalls.c    **** 
   33:syscalls.c    ****     if (c == 0x0D && i <= (len - 2))
- 209              	.LM6:
- 210 0064 15305BE5 		ldrb	r3, [fp, #-21]	@ zero_extendqisi2
- 211 0068 0D0053E3 		cmp	r3, #13
- 212 006c 0D00001A 		bne	.L4
- 213 0070 14301BE5 		ldr	r3, [fp, #-20]
- 214 0074 28201BE5 		ldr	r2, [fp, #-40]
- 215 0078 022042E2 		sub	r2, r2, #2
- 216 007c 020053E1 		cmp	r3, r2
- 217 0080 0800008A 		bhi	.L4
+ 211              	.LM6:
+ 212 0064 15305BE5 		ldrb	r3, [fp, #-21]	@ zero_extendqisi2
+ 213 0068 0D0053E3 		cmp	r3, #13
+ 214 006c 0D00001A 		bne	.L4
+ 215 0070 14301BE5 		ldr	r3, [fp, #-20]
+ 216 0074 28201BE5 		ldr	r2, [fp, #-40]
+ 217 0078 022042E2 		sub	r2, r2, #2
+ 218 007c 020053E1 		cmp	r3, r2
+ 219 0080 0800008A 		bhi	.L4
   34:syscalls.c    ****     {
   35:syscalls.c    ****       *p = 0x0A;
- 219              	.LM7:
- 220 0084 10201BE5 		ldr	r2, [fp, #-16]
- 221 0088 0A30A0E3 		mov	r3, #10
- 222 008c 0030C2E5 		strb	r3, [r2, #0]
+ 221              	.LM7:
+ 222 0084 10201BE5 		ldr	r2, [fp, #-16]
+ 223 0088 0A30A0E3 		mov	r3, #10
+ 224 008c 0030C2E5 		strb	r3, [r2, #0]
   36:syscalls.c    ****       UARTWriteChar(0x0A);
- 224              	.LM8:
- 225 0090 0A00A0E3 		mov	r0, #10
- 226 0094 FEFFFFEB 		bl	UARTWriteChar
+ 226              	.LM8:
+ 227 0090 0A00A0E3 		mov	r0, #10
+ 228 0094 FEFFFFEB 		bl	UARTWriteChar
   37:syscalls.c    ****       return i + 2;
- 228              	.LM9:
- 229 0098 14301BE5 		ldr	r3, [fp, #-20]
- 230 009c 023083E2 		add	r3, r3, #2
- 231 00a0 2C300BE5 		str	r3, [fp, #-44]
- 232 00a4 080000EA 		b	.L7
- 233              	.L4:
+ 230              	.LM9:
+ 231 0098 14301BE5 		ldr	r3, [fp, #-20]
+ 232 009c 023083E2 		add	r3, r3, #2
+ 233 00a0 2C300BE5 		str	r3, [fp, #-44]
+ 234 00a4 080000EA 		b	.L7
+ 235              	.L4:
   26:syscalls.c    ****   for (i = 0; i < len; i++)
- 235              	.LM10:
- 236 00a8 14301BE5 		ldr	r3, [fp, #-20]
- 237 00ac 013083E2 		add	r3, r3, #1
- 238 00b0 14300BE5 		str	r3, [fp, #-20]
- 239              	.L2:
- 240 00b4 14201BE5 		ldr	r2, [fp, #-20]
- 241 00b8 28301BE5 		ldr	r3, [fp, #-40]
- 242 00bc 030052E1 		cmp	r2, r3
- 243 00c0 DBFFFF3A 		bcc	.L3
+ 237              	.LM10:
+ 238 00a8 14301BE5 		ldr	r3, [fp, #-20]
+ 239 00ac 013083E2 		add	r3, r3, #1
+ 240 00b0 14300BE5 		str	r3, [fp, #-20]
+ 241              	.L2:
+ 242 00b4 14201BE5 		ldr	r2, [fp, #-20]
+ 243 00b8 28301BE5 		ldr	r3, [fp, #-40]
+ 244 00bc 030052E1 		cmp	r2, r3
+ 245 00c0 DBFFFF3A 		bcc	.L3
   38:syscalls.c    ****     }
   39:syscalls.c    ****   }
   40:syscalls.c    ****   return i;
- 245              	.LM11:
- 246 00c4 14301BE5 		ldr	r3, [fp, #-20]
- 247 00c8 2C300BE5 		str	r3, [fp, #-44]
- 248              	.L7:
- 249 00cc 2C301BE5 		ldr	r3, [fp, #-44]
+ 247              	.LM11:
+ 248 00c4 14301BE5 		ldr	r3, [fp, #-20]
+ 249 00c8 2C300BE5 		str	r3, [fp, #-44]
+ 250              	.L7:
+ 251 00cc 2C301BE5 		ldr	r3, [fp, #-44]
   41:syscalls.c    **** }
- 251              	.LM12:
- 252 00d0 0300A0E1 		mov	r0, r3
- 253 00d4 0CD04BE2 		sub	sp, fp, #12
- 254 00d8 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 255 00dc 1EFF2FE1 		bx	lr
- 262              	.Lscope0:
- 263              		.align	2
- 269              		.global	_write_r
- 271              	_write_r:
+ 253              	.LM12:
+ 254 00d0 0300A0E1 		mov	r0, r3
+ 255 00d4 0CD04BE2 		sub	sp, fp, #12
+ 256 00d8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 257 00dc 1EFF2FE1 		bx	lr
+ 264              	.Lscope0:
+ 265              		.align	2
+ 271              		.global	_write_r
+ 273              	_write_r:
   42:syscalls.c    **** 
   43:syscalls.c    **** 
   44:syscalls.c    **** #if 0
@@ -162,104 +162,104 @@
   75:syscalls.c    ****     const void *ptr, 
   76:syscalls.c    ****     size_t len)
   77:syscalls.c    **** {
- 273              	.LM13:
- 274              		@ Function supports interworking.
- 275              		@ args = 0, pretend = 0, frame = 24
- 276              		@ frame_needed = 1, uses_anonymous_args = 0
- 277 00e0 0DC0A0E1 		mov	ip, sp
- 278 00e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 279 00e8 04B04CE2 		sub	fp, ip, #4
- 280 00ec 18D04DE2 		sub	sp, sp, #24
- 281 00f0 18000BE5 		str	r0, [fp, #-24]
- 282 00f4 1C100BE5 		str	r1, [fp, #-28]
- 283 00f8 20200BE5 		str	r2, [fp, #-32]
- 284 00fc 24300BE5 		str	r3, [fp, #-36]
+ 275              	.LM13:
+ 276              		@ Function supports interworking.
+ 277              		@ args = 0, pretend = 0, frame = 24
+ 278              		@ frame_needed = 1, uses_anonymous_args = 0
+ 279 00e0 0DC0A0E1 		mov	ip, sp
+ 280 00e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 281 00e8 04B04CE2 		sub	fp, ip, #4
+ 282 00ec 18D04DE2 		sub	sp, sp, #24
+ 283 00f0 18000BE5 		str	r0, [fp, #-24]
+ 284 00f4 1C100BE5 		str	r1, [fp, #-28]
+ 285 00f8 20200BE5 		str	r2, [fp, #-32]
+ 286 00fc 24300BE5 		str	r3, [fp, #-36]
   78:syscalls.c    **** 	int i;
   79:syscalls.c    **** 	const unsigned char *p;
   80:syscalls.c    **** 	
   81:syscalls.c    **** 	p = (const unsigned char*) ptr;
- 286              	.LM14:
- 287 0100 20301BE5 		ldr	r3, [fp, #-32]
- 288 0104 10300BE5 		str	r3, [fp, #-16]
+ 288              	.LM14:
+ 289 0100 20301BE5 		ldr	r3, [fp, #-32]
+ 290 0104 10300BE5 		str	r3, [fp, #-16]
   82:syscalls.c    **** 	
   83:syscalls.c    **** 	for (i = 0; i < len; i++) {
- 290              	.LM15:
- 291 0108 0030A0E3 		mov	r3, #0
- 292 010c 14300BE5 		str	r3, [fp, #-20]
- 293 0110 100000EA 		b	.L11
- 294              	.L12:
+ 292              	.LM15:
+ 293 0108 0030A0E3 		mov	r3, #0
+ 294 010c 14300BE5 		str	r3, [fp, #-20]
+ 295 0110 100000EA 		b	.L11
+ 296              	.L12:
   84:syscalls.c    **** 		if (*p == '\n' ) UARTWriteChar('\r');
- 296              	.LM16:
- 297 0114 10301BE5 		ldr	r3, [fp, #-16]
- 298 0118 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 299 011c 0A0053E3 		cmp	r3, #10
- 300 0120 0100001A 		bne	.L13
- 301 0124 0D00A0E3 		mov	r0, #13
- 302 0128 FEFFFFEB 		bl	UARTWriteChar
- 303              	.L13:
+ 298              	.LM16:
+ 299 0114 10301BE5 		ldr	r3, [fp, #-16]
+ 300 0118 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 301 011c 0A0053E3 		cmp	r3, #10
+ 302 0120 0100001A 		bne	.L13
+ 303 0124 0D00A0E3 		mov	r0, #13
+ 304 0128 FEFFFFEB 		bl	UARTWriteChar
+ 305              	.L13:
   85:syscalls.c    **** 		UARTWriteChar(*p++);
- 305              	.LM17:
- 306 012c 10301BE5 		ldr	r3, [fp, #-16]
- 307 0130 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
- 308 0134 0320A0E1 		mov	r2, r3
- 309 0138 10301BE5 		ldr	r3, [fp, #-16]
- 310 013c 013083E2 		add	r3, r3, #1
- 311 0140 10300BE5 		str	r3, [fp, #-16]
- 312 0144 0200A0E1 		mov	r0, r2
- 313 0148 FEFFFFEB 		bl	UARTWriteChar
+ 307              	.LM17:
+ 308 012c 10301BE5 		ldr	r3, [fp, #-16]
+ 309 0130 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 310 0134 0320A0E1 		mov	r2, r3
+ 311 0138 10301BE5 		ldr	r3, [fp, #-16]
+ 312 013c 013083E2 		add	r3, r3, #1
+ 313 0140 10300BE5 		str	r3, [fp, #-16]
+ 314 0144 0200A0E1 		mov	r0, r2
+ 315 0148 FEFFFFEB 		bl	UARTWriteChar
   83:syscalls.c    **** 	for (i = 0; i < len; i++) {
- 315              	.LM18:
- 316 014c 14301BE5 		ldr	r3, [fp, #-20]
- 317 0150 013083E2 		add	r3, r3, #1
- 318 0154 14300BE5 		str	r3, [fp, #-20]
- 319              	.L11:
- 320 0158 14201BE5 		ldr	r2, [fp, #-20]
- 321 015c 24301BE5 		ldr	r3, [fp, #-36]
- 322 0160 030052E1 		cmp	r2, r3
- 323 0164 EAFFFF3A 		bcc	.L12
+ 317              	.LM18:
+ 318 014c 14301BE5 		ldr	r3, [fp, #-20]
+ 319 0150 013083E2 		add	r3, r3, #1
+ 320 0154 14300BE5 		str	r3, [fp, #-20]
+ 321              	.L11:
+ 322 0158 14201BE5 		ldr	r2, [fp, #-20]
+ 323 015c 24301BE5 		ldr	r3, [fp, #-36]
+ 324 0160 030052E1 		cmp	r2, r3
+ 325 0164 EAFFFF3A 		bcc	.L12
   86:syscalls.c    **** 	}
   87:syscalls.c    **** 	
   88:syscalls.c    **** 	return len;
- 325              	.LM19:
- 326 0168 24301BE5 		ldr	r3, [fp, #-36]
+ 327              	.LM19:
+ 328 0168 24301BE5 		ldr	r3, [fp, #-36]
   89:syscalls.c    **** }
- 328              	.LM20:
- 329 016c 0300A0E1 		mov	r0, r3
- 330 0170 0CD04BE2 		sub	sp, fp, #12
- 331 0174 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 332 0178 1EFF2FE1 		bx	lr
- 338              	.Lscope1:
- 339              		.align	2
- 343              		.global	_close_r
- 345              	_close_r:
+ 330              	.LM20:
+ 331 016c 0300A0E1 		mov	r0, r3
+ 332 0170 0CD04BE2 		sub	sp, fp, #12
+ 333 0174 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 334 0178 1EFF2FE1 		bx	lr
+ 340              	.Lscope1:
+ 341              		.align	2
+ 345              		.global	_close_r
+ 347              	_close_r:
   90:syscalls.c    **** 
   91:syscalls.c    **** int _close_r(
   92:syscalls.c    ****     struct _reent *r, 
   93:syscalls.c    ****     int file)
   94:syscalls.c    **** {
- 347              	.LM21:
- 348              		@ Function supports interworking.
- 349              		@ args = 0, pretend = 0, frame = 8
- 350              		@ frame_needed = 1, uses_anonymous_args = 0
- 351 017c 0DC0A0E1 		mov	ip, sp
- 352 0180 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 353 0184 04B04CE2 		sub	fp, ip, #4
- 354 0188 08D04DE2 		sub	sp, sp, #8
- 355 018c 10000BE5 		str	r0, [fp, #-16]
- 356 0190 14100BE5 		str	r1, [fp, #-20]
+ 349              	.LM21:
+ 350              		@ Function supports interworking.
+ 351              		@ args = 0, pretend = 0, frame = 8
+ 352              		@ frame_needed = 1, uses_anonymous_args = 0
+ 353 017c 0DC0A0E1 		mov	ip, sp
+ 354 0180 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 355 0184 04B04CE2 		sub	fp, ip, #4
+ 356 0188 08D04DE2 		sub	sp, sp, #8
+ 357 018c 10000BE5 		str	r0, [fp, #-16]
+ 358 0190 14100BE5 		str	r1, [fp, #-20]
   95:syscalls.c    **** 	return 0;
- 358              	.LM22:
- 359 0194 0030A0E3 		mov	r3, #0
+ 360              	.LM22:
+ 361 0194 0030A0E3 		mov	r3, #0
   96:syscalls.c    **** }
- 361              	.LM23:
- 362 0198 0300A0E1 		mov	r0, r3
- 363 019c 0CD04BE2 		sub	sp, fp, #12
- 364 01a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 365 01a4 1EFF2FE1 		bx	lr
- 367              	.Lscope2:
- 368              		.align	2
- 374              		.global	_lseek_r
- 376              	_lseek_r:
+ 363              	.LM23:
+ 364 0198 0300A0E1 		mov	r0, r3
+ 365 019c 0CD04BE2 		sub	sp, fp, #12
+ 366 01a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 367 01a4 1EFF2FE1 		bx	lr
+ 369              	.Lscope2:
+ 370              		.align	2
+ 376              		.global	_lseek_r
+ 378              	_lseek_r:
   97:syscalls.c    **** 
   98:syscalls.c    **** _off_t _lseek_r(
   99:syscalls.c    ****     struct _reent *r, 
@@ -267,31 +267,31 @@
  101:syscalls.c    ****     _off_t ptr, 
  102:syscalls.c    ****     int dir)
  103:syscalls.c    **** {
- 378              	.LM24:
- 379              		@ Function supports interworking.
- 380              		@ args = 0, pretend = 0, frame = 16
- 381              		@ frame_needed = 1, uses_anonymous_args = 0
- 382 01a8 0DC0A0E1 		mov	ip, sp
- 383 01ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 384 01b0 04B04CE2 		sub	fp, ip, #4
- 385 01b4 10D04DE2 		sub	sp, sp, #16
- 386 01b8 10000BE5 		str	r0, [fp, #-16]
- 387 01bc 14100BE5 		str	r1, [fp, #-20]
- 388 01c0 18200BE5 		str	r2, [fp, #-24]
- 389 01c4 1C300BE5 		str	r3, [fp, #-28]
+ 380              	.LM24:
+ 381              		@ Function supports interworking.
+ 382              		@ args = 0, pretend = 0, frame = 16
+ 383              		@ frame_needed = 1, uses_anonymous_args = 0
+ 384 01a8 0DC0A0E1 		mov	ip, sp
+ 385 01ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 386 01b0 04B04CE2 		sub	fp, ip, #4
+ 387 01b4 10D04DE2 		sub	sp, sp, #16
+ 388 01b8 10000BE5 		str	r0, [fp, #-16]
+ 389 01bc 14100BE5 		str	r1, [fp, #-20]
+ 390 01c0 18200BE5 		str	r2, [fp, #-24]
+ 391 01c4 1C300BE5 		str	r3, [fp, #-28]
  104:syscalls.c    **** 	return (_off_t)0;	/*  Always indicate we are at file beginning.	*/
- 391              	.LM25:
- 392 01c8 0030A0E3 		mov	r3, #0
+ 393              	.LM25:
+ 394 01c8 0030A0E3 		mov	r3, #0
  105:syscalls.c    **** }
- 394              	.LM26:
- 395 01cc 0300A0E1 		mov	r0, r3
- 396 01d0 0CD04BE2 		sub	sp, fp, #12
- 397 01d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 398 01d8 1EFF2FE1 		bx	lr
- 400              	.Lscope3:
- 401              		.align	2
- 406              		.global	_fstat_r
- 408              	_fstat_r:
+ 396              	.LM26:
+ 397 01cc 0300A0E1 		mov	r0, r3
+ 398 01d0 0CD04BE2 		sub	sp, fp, #12
+ 399 01d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 400 01d8 1EFF2FE1 		bx	lr
+ 402              	.Lscope3:
+ 403              		.align	2
+ 408              		.global	_fstat_r
+ 410              	_fstat_r:
  106:syscalls.c    **** 
  107:syscalls.c    **** 
  108:syscalls.c    **** int _fstat_r(
@@ -299,67 +299,67 @@
  110:syscalls.c    ****     int file, 
  111:syscalls.c    ****     struct stat *st)
  112:syscalls.c    **** {
- 410              	.LM27:
- 411              		@ Function supports interworking.
- 412              		@ args = 0, pretend = 0, frame = 12
- 413              		@ frame_needed = 1, uses_anonymous_args = 0
- 414 01dc 0DC0A0E1 		mov	ip, sp
- 415 01e0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 416 01e4 04B04CE2 		sub	fp, ip, #4
- 417 01e8 0CD04DE2 		sub	sp, sp, #12
- 418 01ec 10000BE5 		str	r0, [fp, #-16]
- 419 01f0 14100BE5 		str	r1, [fp, #-20]
- 420 01f4 18200BE5 		str	r2, [fp, #-24]
+ 412              	.LM27:
+ 413              		@ Function supports interworking.
+ 414              		@ args = 0, pretend = 0, frame = 12
+ 415              		@ frame_needed = 1, uses_anonymous_args = 0
+ 416 01dc 0DC0A0E1 		mov	ip, sp
+ 417 01e0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 418 01e4 04B04CE2 		sub	fp, ip, #4
+ 419 01e8 0CD04DE2 		sub	sp, sp, #12
+ 420 01ec 10000BE5 		str	r0, [fp, #-16]
+ 421 01f0 14100BE5 		str	r1, [fp, #-20]
+ 422 01f4 18200BE5 		str	r2, [fp, #-24]
  113:syscalls.c    **** 	/*  Always set as character device.				*/
  114:syscalls.c    **** 	st->st_mode = S_IFCHR;	
- 422              	.LM28:
- 423 01f8 18201BE5 		ldr	r2, [fp, #-24]
- 424 01fc 023AA0E3 		mov	r3, #8192
- 425 0200 043082E5 		str	r3, [r2, #4]
+ 424              	.LM28:
+ 425 01f8 18201BE5 		ldr	r2, [fp, #-24]
+ 426 01fc 023AA0E3 		mov	r3, #8192
+ 427 0200 043082E5 		str	r3, [r2, #4]
  115:syscalls.c    **** 		/* assigned to strong type with implicit 	*/
  116:syscalls.c    **** 		/* signed/unsigned conversion.  Required by 	*/
  117:syscalls.c    **** 		/* newlib.					*/
  118:syscalls.c    **** 
  119:syscalls.c    **** 	return 0;
- 427              	.LM29:
- 428 0204 0030A0E3 		mov	r3, #0
+ 429              	.LM29:
+ 430 0204 0030A0E3 		mov	r3, #0
  120:syscalls.c    **** }
- 430              	.LM30:
- 431 0208 0300A0E1 		mov	r0, r3
- 432 020c 0CD04BE2 		sub	sp, fp, #12
- 433 0210 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 434 0214 1EFF2FE1 		bx	lr
- 436              	.Lscope4:
- 437              		.align	2
- 440              		.global	isatty
- 442              	isatty:
+ 432              	.LM30:
+ 433 0208 0300A0E1 		mov	r0, r3
+ 434 020c 0CD04BE2 		sub	sp, fp, #12
+ 435 0210 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 436 0214 1EFF2FE1 		bx	lr
+ 438              	.Lscope4:
+ 439              		.align	2
+ 442              		.global	isatty
+ 444              	isatty:
  121:syscalls.c    **** 
  122:syscalls.c    **** int isatty(int file); /* avoid warning */
  123:syscalls.c    **** 
  124:syscalls.c    **** int isatty(int file)
  125:syscalls.c    **** {
- 444              	.LM31:
- 445              		@ Function supports interworking.
- 446              		@ args = 0, pretend = 0, frame = 4
- 447              		@ frame_needed = 1, uses_anonymous_args = 0
- 448 0218 0DC0A0E1 		mov	ip, sp
- 449 021c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 450 0220 04B04CE2 		sub	fp, ip, #4
- 451 0224 04D04DE2 		sub	sp, sp, #4
- 452 0228 10000BE5 		str	r0, [fp, #-16]
+ 446              	.LM31:
+ 447              		@ Function supports interworking.
+ 448              		@ args = 0, pretend = 0, frame = 4
+ 449              		@ frame_needed = 1, uses_anonymous_args = 0
+ 450 0218 0DC0A0E1 		mov	ip, sp
+ 451 021c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 452 0220 04B04CE2 		sub	fp, ip, #4
+ 453 0224 04D04DE2 		sub	sp, sp, #4
+ 454 0228 10000BE5 		str	r0, [fp, #-16]
  126:syscalls.c    **** 	return 1;
- 454              	.LM32:
- 455 022c 0130A0E3 		mov	r3, #1
+ 456              	.LM32:
+ 457 022c 0130A0E3 		mov	r3, #1
  127:syscalls.c    **** }
- 457              	.LM33:
- 458 0230 0300A0E1 		mov	r0, r3
- 459 0234 0CD04BE2 		sub	sp, fp, #12
- 460 0238 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 461 023c 1EFF2FE1 		bx	lr
- 463              	.Lscope5:
- 464              		.align	2
- 468              		.global	_sbrk_r
- 470              	_sbrk_r:
+ 459              	.LM33:
+ 460 0230 0300A0E1 		mov	r0, r3
+ 461 0234 0CD04BE2 		sub	sp, fp, #12
+ 462 0238 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 463 023c 1EFF2FE1 		bx	lr
+ 465              	.Lscope5:
+ 466              		.align	2
+ 470              		.global	_sbrk_r
+ 472              	_sbrk_r:
  128:syscalls.c    **** 
  129:syscalls.c    **** #if 0
  130:syscalls.c    **** static void _exit (int n) {
@@ -392,80 +392,80 @@
  157:syscalls.c    ****     struct _reent *_s_r, 
  158:syscalls.c    ****     ptrdiff_t nbytes)
  159:syscalls.c    **** {
- 472              	.LM34:
- 473              		@ Function supports interworking.
- 474              		@ args = 0, pretend = 0, frame = 12
- 475              		@ frame_needed = 1, uses_anonymous_args = 0
- 476 0240 0DC0A0E1 		mov	ip, sp
- 477 0244 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
- 478 0248 04B04CE2 		sub	fp, ip, #4
- 479 024c 0CD04DE2 		sub	sp, sp, #12
- 480 0250 14000BE5 		str	r0, [fp, #-20]
- 481 0254 18100BE5 		str	r1, [fp, #-24]
+ 474              	.LM34:
+ 475              		@ Function supports interworking.
+ 476              		@ args = 0, pretend = 0, frame = 12
+ 477              		@ frame_needed = 1, uses_anonymous_args = 0
+ 478 0240 0DC0A0E1 		mov	ip, sp
+ 479 0244 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 480 0248 04B04CE2 		sub	fp, ip, #4
+ 481 024c 0CD04DE2 		sub	sp, sp, #12
+ 482 0250 14000BE5 		str	r0, [fp, #-20]
+ 483 0254 18100BE5 		str	r1, [fp, #-24]
  160:syscalls.c    **** 	char  *base;		/*  errno should be set to  ENOMEM on error	*/
  161:syscalls.c    **** 
  162:syscalls.c    **** 	if (!heap_ptr) {	/*  Initialize if first time through.		*/
- 483              	.LM35:
- 484 0258 4C309FE5 		ldr	r3, .L29
- 485 025c 003093E5 		ldr	r3, [r3, #0]
- 486 0260 000053E3 		cmp	r3, #0
- 487 0264 0200001A 		bne	.L26
+ 485              	.LM35:
+ 486 0258 4C309FE5 		ldr	r3, .L29
+ 487 025c 003093E5 		ldr	r3, [r3, #0]
+ 488 0260 000053E3 		cmp	r3, #0
+ 489 0264 0200001A 		bne	.L26
  163:syscalls.c    **** 		heap_ptr = _end;
- 489              	.LM36:
- 490 0268 3C209FE5 		ldr	r2, .L29
- 491 026c 3C309FE5 		ldr	r3, .L29+4
- 492 0270 003082E5 		str	r3, [r2, #0]
- 493              	.L26:
+ 491              	.LM36:
+ 492 0268 3C209FE5 		ldr	r2, .L29
+ 493 026c 3C309FE5 		ldr	r3, .L29+4
+ 494 0270 003082E5 		str	r3, [r2, #0]
+ 495              	.L26:
  164:syscalls.c    **** 	}
  165:syscalls.c    **** 	base = heap_ptr;	/*  Point to end of heap.			*/
- 495              	.LM37:
- 496 0274 30309FE5 		ldr	r3, .L29
- 497 0278 003093E5 		ldr	r3, [r3, #0]
- 498 027c 10300BE5 		str	r3, [fp, #-16]
+ 497              	.LM37:
+ 498 0274 30309FE5 		ldr	r3, .L29
+ 499 0278 003093E5 		ldr	r3, [r3, #0]
+ 500 027c 10300BE5 		str	r3, [fp, #-16]
  166:syscalls.c    **** 	heap_ptr += nbytes;	/*  Increase heap.				*/
- 500              	.LM38:
- 501 0280 24309FE5 		ldr	r3, .L29
- 502 0284 002093E5 		ldr	r2, [r3, #0]
- 503 0288 18301BE5 		ldr	r3, [fp, #-24]
- 504 028c 032082E0 		add	r2, r2, r3
- 505 0290 14309FE5 		ldr	r3, .L29
- 506 0294 002083E5 		str	r2, [r3, #0]
+ 502              	.LM38:
+ 503 0280 24309FE5 		ldr	r3, .L29
+ 504 0284 002093E5 		ldr	r2, [r3, #0]
+ 505 0288 18301BE5 		ldr	r3, [fp, #-24]
+ 506 028c 032082E0 		add	r2, r2, r3
+ 507 0290 14309FE5 		ldr	r3, .L29
+ 508 0294 002083E5 		str	r2, [r3, #0]
  167:syscalls.c    **** 	
  168:syscalls.c    **** 	return base;		/*  Return pointer to start of new heap area.	*/
- 508              	.LM39:
- 509 0298 10301BE5 		ldr	r3, [fp, #-16]
+ 510              	.LM39:
+ 511 0298 10301BE5 		ldr	r3, [fp, #-16]
  169:syscalls.c    **** }
- 511              	.LM40:
- 512 029c 0300A0E1 		mov	r0, r3
- 513 02a0 0CD04BE2 		sub	sp, fp, #12
- 514 02a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 515 02a8 1EFF2FE1 		bx	lr
- 516              	.L30:
- 517              		.align	2
- 518              	.L29:
- 519 02ac 00000000 		.word	heap_ptr
- 520 02b0 00000000 		.word	_end
- 525              	.Lscope6:
- 526              		.bss
- 527              		.align	2
- 528              	heap_ptr:
- 529 0000 00000000 		.space	4
- 531              		.text
- 533              	.Letext0:
- 534              		.ident	"GCC: (GNU) 4.1.1"
+ 513              	.LM40:
+ 514 029c 0300A0E1 		mov	r0, r3
+ 515 02a0 0CD04BE2 		sub	sp, fp, #12
+ 516 02a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 517 02a8 1EFF2FE1 		bx	lr
+ 518              	.L30:
+ 519              		.align	2
+ 520              	.L29:
+ 521 02ac 00000000 		.word	heap_ptr
+ 522 02b0 00000000 		.word	_end
+ 527              	.Lscope6:
+ 528              		.bss
+ 529              		.align	2
+ 530              	heap_ptr:
+ 531 0000 00000000 		.space	4
+ 533              		.text
+ 535              	.Letext0:
+ 536              		.ident	"GCC: (GNU) 4.1.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 syscalls.c
-     /tmp/ccVKZtzy.s:158    .text:00000000 $a
-     /tmp/ccVKZtzy.s:166    .text:00000000 _read_r
-     /tmp/ccVKZtzy.s:271    .text:000000e0 _write_r
-     /tmp/ccVKZtzy.s:345    .text:0000017c _close_r
-     /tmp/ccVKZtzy.s:376    .text:000001a8 _lseek_r
-     /tmp/ccVKZtzy.s:408    .text:000001dc _fstat_r
-     /tmp/ccVKZtzy.s:442    .text:00000218 isatty
-     /tmp/ccVKZtzy.s:470    .text:00000240 _sbrk_r
-     /tmp/ccVKZtzy.s:519    .text:000002ac $d
-     /tmp/ccVKZtzy.s:528    .bss:00000000 heap_ptr
-     /tmp/ccVKZtzy.s:527    .bss:00000000 $d
+     /tmp/ccTlzyH5.s:160    .text:00000000 $a
+     /tmp/ccTlzyH5.s:168    .text:00000000 _read_r
+     /tmp/ccTlzyH5.s:273    .text:000000e0 _write_r
+     /tmp/ccTlzyH5.s:347    .text:0000017c _close_r
+     /tmp/ccTlzyH5.s:378    .text:000001a8 _lseek_r
+     /tmp/ccTlzyH5.s:410    .text:000001dc _fstat_r
+     /tmp/ccTlzyH5.s:444    .text:00000218 isatty
+     /tmp/ccTlzyH5.s:472    .text:00000240 _sbrk_r
+     /tmp/ccTlzyH5.s:521    .text:000002ac $d
+     /tmp/ccTlzyH5.s:530    .bss:00000000 heap_ptr
+     /tmp/ccTlzyH5.s:529    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 UARTReadChar
